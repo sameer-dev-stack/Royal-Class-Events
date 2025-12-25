@@ -7,9 +7,10 @@ import Link from "next/link";
 import { Crown, Sparkles, ArrowRight } from "lucide-react";
 import { SignInButton } from "@clerk/nextjs";
 import { Unauthenticated } from "convex/react";
-// 1. Import the EventList component
 import EventList from "@/components/event-list";
+import InfiniteScrollBanner from "@/components/infinite-scroll-banner";
 import { FadeIn, StaggerContainer } from "@/components/ui/motion";
+import TicketCTA from "@/components/ticket-cta";
 
 export default function LandingPage() {
   return (
@@ -26,14 +27,14 @@ export default function LandingPage() {
               <span>The #1 Platform for Elite Experiences</span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tighter text-foreground space-y-2">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tighter text-foreground space-y-2">
               <span className="block">
                 Experience the
               </span>
               <span className="block text-gradient-gold relative">
                 Exclusive
                 {/* Decorative spark */}
-                <Sparkles className="absolute -top-6 -right-8 w-8 h-8 text-amber-400 rotate-12 animate-pulse" />
+                <Sparkles className="absolute -top-4 -right-6 md:-top-6 md:-right-8 w-6 h-6 md:w-8 md:h-8 text-amber-400 rotate-12 animate-pulse" />
               </span>
             </h1>
 
@@ -43,15 +44,15 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center sm:justify-start">
-              <Link href="/explore">
-                <Button size="xl" className="h-14 px-8 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all transform hover:-translate-y-1">
+              <Link href="/explore" className="w-full sm:w-auto">
+                <Button size="xl" className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all transform hover:-translate-y-1">
                   Explore Events
                 </Button>
               </Link>
 
               <Unauthenticated>
                 <SignInButton mode="modal">
-                  <Button variant="ghost" size="xl" className="h-14 px-8 rounded-full text-foreground hover:bg-foreground/10 group cursor-pointer">
+                  <Button variant="ghost" size="xl" className="hidden sm:flex h-14 px-8 rounded-full text-foreground hover:bg-foreground/10 group cursor-pointer">
                     Sign In
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
@@ -100,6 +101,9 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* --- INFINITE SCROLL BANNER --- */}
+      <InfiniteScrollBanner />
+
       {/* --- EVENT LIST SECTION (Categories & Upcoming) --- */}
       <section className="container mx-auto px-6 pb-24 relative z-10">
         <FadeIn delay={0.4}>
@@ -110,6 +114,8 @@ export default function LandingPage() {
           <EventList />
         </FadeIn>
       </section>
+
+      <TicketCTA />
 
     </div>
   );

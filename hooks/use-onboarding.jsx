@@ -21,7 +21,7 @@ export function useOnboarding() {
     if (isLoading || !currentUser) return;
 
     // Check if user hasn't completed onboarding
-    if (!currentUser.hasCompletedOnboarding) {
+    if (!currentUser?.metadata?.hasCompletedOnboarding) {
       // Check if current page requires onboarding
       const requiresOnboarding = ATTENDEE_PAGES.some((page) =>
         pathname.startsWith(page)
@@ -51,6 +51,6 @@ export function useOnboarding() {
     setShowOnboarding,
     handleOnboardingComplete,
     handleOnboardingSkip,
-    needsOnboarding: currentUser && !currentUser.hasCompletedOnboarding,
+    needsOnboarding: currentUser && !currentUser.metadata?.hasCompletedOnboarding,
   };
 }

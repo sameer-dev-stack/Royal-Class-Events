@@ -39,14 +39,14 @@ export default function EventList() {
 
   // 3. Calculate Real Counts for each Category
   const categoryCounts = events.reduce((acc, event) => {
-    const cat = event.category;
+    const cat = event.eventSubType || event.category;
     acc[cat] = (acc[cat] || 0) + 1;
     return acc;
   }, {});
 
   // 4. Get Upcoming Events (Top 6)
   const upcomingEvents = events
-    .filter((e) => e.startDate > Date.now())
+    .filter((e) => (e.timeConfiguration?.startDateTime || e.startDate) > Date.now())
     .slice(0, 6);
 
   return (

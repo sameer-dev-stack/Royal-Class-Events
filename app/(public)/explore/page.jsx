@@ -12,6 +12,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Carousel,
   CarouselContent,
@@ -80,8 +81,47 @@ export default function ExplorePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+      <div className="container mx-auto px-4 py-8">
+        {/* Hero Skeleton */}
+        <div className="pb-12 text-center space-y-4">
+          <Skeleton className="h-16 w-3/4 md:w-1/2 mx-auto" />
+          <Skeleton className="h-6 w-2/3 md:w-1/3 mx-auto" />
+        </div>
+
+        {/* Featured Carousel Skeleton */}
+        <div className="mb-16">
+          <Skeleton className="w-full h-[400px] rounded-xl" />
+        </div>
+
+        {/* Local Events Skeleton */}
+        <div className="mb-16">
+          <div className="flex justify-between items-end mb-6">
+            <div className="space-y-2">
+              <Skeleton className="h-10 w-48" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <Skeleton className="h-10 w-24" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="space-y-3">
+                <Skeleton className="h-40 w-full rounded-lg" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Categories Skeleton */}
+        <div className="mb-16">
+          <Skeleton className="h-10 w-64 mb-6" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
+              <Skeleton key={i} className="h-24 rounded-lg" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -108,7 +148,14 @@ export default function ExplorePage() {
           >
             <CarouselContent>
               {featuredEvents.map((event) => {
-                const displayImage = event.coverImage || getMockImage(event.category);
+                const displayImage = event.content?.coverImage?.url || event.coverImage || getMockImage(event.eventSubType || event.category);
+                const eventTitle = event.title?.en || event.title;
+                const eventDescription = event.description?.en || event.description;
+                const eventCity = event.metadata?.legacyProps?.city || event.city;
+                const eventState = event.metadata?.legacyProps?.state || event.state;
+                const eventCountry = event.metadata?.legacyProps?.country || event.country;
+                const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate;
+                const eventRegistrations = event.analytics?.registrations || event.registrationCount;
 
                 return (
                   <CarouselItem key={event._id}>
@@ -118,7 +165,7 @@ export default function ExplorePage() {
                     >
                       <Image
                         src={displayImage}
-                        alt={event.title}
+                        alt={eventTitle}
                         fill
                         className="object-cover"
                         priority
@@ -126,29 +173,29 @@ export default function ExplorePage() {
                       <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
                       <div className="relative h-full flex flex-col justify-end p-8 md:p-12">
                         <Badge className="w-fit mb-4" variant="secondary">
-                          {event.city}, {event.state || event.country}
+                          {eventCity}, {eventState || eventCountry}
                         </Badge>
                         <h2 className="text-3xl md:text-5xl font-bold mb-3 text-white">
-                          {event.title}
+                          {eventTitle}
                         </h2>
                         <p className="text-lg text-white/90 mb-4 max-w-2xl line-clamp-2">
-                          {event.description}
+                          {eventDescription}
                         </p>
                         <div className="flex items-center gap-4 text-white/80">
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
                             <span className="text-sm">
-                              {format(event.startDate, "PPP")}
+                              {format(eventStartDate, "PPP")}
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
                             <MapPin className="w-4 h-4" />
-                            <span className="text-sm">{event.city}</span>
+                            <span className="text-sm">{eventCity}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Users className="w-4 h-4" />
                             <span className="text-sm">
-                              {event.registrationCount} registered
+                              {eventRegistrations} registered
                             </span>
                           </div>
                         </div>

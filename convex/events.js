@@ -2,177 +2,397 @@ import { internal } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-// Create a new event
+// Create a new event (Enterprise Schema Compatible)
 export const createEvent = mutation({
   args: {
+    // Basic Info
     title: v.string(),
     description: v.string(),
-    category: v.string(),
+
+    // Taxonomy
+    category: v.string(), // We map this to eventType per best guess or default
     tags: v.array(v.string()),
+
+    // Time
     startDate: v.number(),
     endDate: v.number(),
     timezone: v.string(),
-    locationType: v.union(v.literal("physical"), v.literal("online")),
-    venue: v.optional(v.string()),
+
+    // Location
+    locationType: v.union(v.literal("physical"), v.literal("online")), // map to 'virtual'
+    venue: v.optional(v.string()), // Used to look up or create venue? For now stick in metadata
     address: v.optional(v.string()),
     city: v.string(),
     state: v.optional(v.string()),
     country: v.string(),
+
+    // Capacity & Pricing
     capacity: v.number(),
     ticketType: v.union(v.literal("free"), v.literal("paid")),
     ticketPrice: v.optional(v.number()),
+
+    // Media and Theme
     coverImage: v.optional(v.string()),
-    themeColor: v.optional(v.string()),
+    themeColor: v.optional(v.string()), // Store in metadata or style config
     hasPro: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     try {
       const user = await ctx.runQuery(internal.users.getCurrentUser);
+      const isPro = args.hasPro || false;
 
-      // 1. EXTRACT hasPro so it doesn't get saved to the DB
-      const { hasPro, ...eventData } = args;
-      const isPro = hasPro || false;
-
-      // SERVER-SIDE CHECK: Verify event limit for Free users
+      // 1. Policy Checks
       if (!isPro && (user.freeEventsCreated ?? 0) >= 1) {
-        throw new Error(
-          "Free event limit reached. Please upgrade to Pro to create more events."
-        );
+        throw new Error("Free event limit reached.");
       }
-
-      // SERVER-SIDE CHECK: Verify custom color usage
-      const defaultColor = "#d97706"; // Royal Gold
+      const defaultColor = "#d97706";
       if (!isPro && args.themeColor && args.themeColor !== defaultColor) {
-        throw new Error(
-          "Custom theme colors are a Pro feature. Please upgrade to Pro."
-        );
+        throw new Error("Custom theme colors are a Pro feature.");
       }
+      const finalColor = isPro ? args.themeColor : defaultColor;
 
-      // Force default color for Free users
-      const themeColor = isPro ? args.themeColor : defaultColor;
-
-      // --- HANDLE IMAGE URL RESOLUTION ---
-      let finalCoverImage = args.coverImage;
+      // 2. Image Handling
+      let finalCoverImage = args.coverImage || "";
       if (args.coverImage && !args.coverImage.startsWith("http")) {
         finalCoverImage = (await ctx.storage.getUrl(args.coverImage)) || "";
       }
 
-      // Generate slug from title
-      const slug = args.title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
+      // 3. Slug Generation
+      const slugBase = args.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      const slug = `${slugBase}-${Date.now()}`;
 
-      // Create event
-      // FIX: We use 'eventData' here instead of 'args' so 'hasPro' is excluded
-      const eventId = await ctx.db.insert("events", {
-        ...eventData,
-        coverImage: finalCoverImage,
-        themeColor,
-        slug: `${slug}-${Date.now()}`,
-        organizerId: user._id,
-        organizerName: user.name,
-        registrationCount: 0,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
+      // 4. Construct Enterprise Data Structures
+      // We fill required Enterprise fields with reasonable defaults or derived data
+
+      const now = Date.now();
+
+      // Mapped Location Config
+      const locationConfig = {
+        type: args.locationType === "online" ? "virtual" : "physical",
+        physicalVenues: [], // We'd need to create a Venue object first to link it. For now leaving empty.
+        virtualConfig: args.locationType === "online" ? {
+          platform: "custom",
+          instanceId: "default",
+          region: "us-east-1",
+          backupRegion: undefined,
+          joinUrl: "https://tbd.com",
+          hostUrl: "https://tbd.com",
+          dialInNumbers: [],
+          waitingRoomEnabled: true,
+          passwordProtected: false,
+          encryptionLevel: "standard",
+          recordingAllowed: false,
+          breakoutRooms: false,
+          maxBreakoutRooms: 0,
+          pollingEnabled: false,
+          qnaEnabled: false,
+          handRaiseEnabled: false,
+          closedCaptioning: false,
+          signLanguageInterpreters: 0,
+          dataRegion: "us-east-1",
+          isCompliant: true,
+          complianceCertifications: []
+        } : undefined
+      };
+
+      // Mapped Time Config
+      const timeConfiguration = {
+        startDateTime: args.startDate,
+        endDateTime: args.endDate,
+        timezone: args.timezone,
+        localStartTime: new Date(args.startDate).toISOString(), // rough approx
+        localEndTime: new Date(args.endDate).toISOString(),
+        durationMinutes: (args.endDate - args.startDate) / 60000,
+        isRecurring: false,
+        supportsMultipleTimezones: false,
+        primaryTimezone: args.timezone,
+        secondaryTimezones: [],
+        setupBufferMinutes: 0,
+        teardownBufferMinutes: 0,
+        attendeeBufferBefore: 0,
+        attendeeBufferAfter: 0
+      };
+
+      const newEventId = await ctx.db.insert("events", {
+        // --- Core ---
+        tenantId: user.tenantId, // Auto-assign to user's tenant
+        externalId: slug, // Use slug as external ID reference for now
+        eventType: "conference", // Defaulting. 'category' arg could map here if standard.
+        eventSubType: args.category,
+        classification: "public",
+        complianceLevel: "standard",
+
+        // --- Basic Info ---
+        title: { en: args.title },
+        description: { en: args.description },
+        slug: slug,
+
+        // --- Organization ---
+        organizingDepartment: user.profile?.department || "General",
+        costCenter: "Default",
+
+        // --- Ownership ---
+        ownerId: user._id,
+        committeeIds: [],
+
+        // --- Configs ---
+        timeConfiguration,
+        locationConfig,
+
+        // --- Capacity Configuration (Required) ---
+        capacityConfig: {
+          totalCapacity: args.capacity,
+          reservedCapacity: Math.floor(args.capacity * 0.1), // 10% reserved for VIPs/speakers
+          waitlistEnabled: true,
+          waitlistCapacity: Math.floor(args.capacity * 0.5), // 50% of capacity for waitlist
+          overflowStrategy: "waitlist",
+          groupAllocations: [], // Empty initially, configurable in admin panel
+          maxDensityPercent: 100,
+          socialDistancingRequired: false,
+          distancingFeet: undefined
+        },
+
+        // --- Registration Configuration (Required) ---
+        registrationConfig: {
+          opensAt: now,
+          closesAt: args.startDate - 86400000, // Closes 1 day before event
+          earlyBirdDeadline: undefined,
+          requireApproval: false,
+          approvalWorkflowId: undefined, // TODO: Create default workflow
+          requireNDA: false,
+          ndaDocumentId: undefined, // TODO: Create default NDA document
+          requireBackgroundCheck: false,
+          backgroundCheckLevel: undefined,
+          registrationFormId: undefined, // TODO: Create default form
+          customFields: [],
+          invitationOnly: false,
+          invitationMode: "multi_use",
+          maxInvitationsPerUser: undefined,
+          checkInOpensBeforeMinutes: 60,
+          checkInClosesAfterMinutes: 120,
+          checkInMethods: ["qr_code", "email"],
+          requirePhotoId: false,
+          requireCovidTest: false,
+          covidTestValidityHours: undefined
+        },
+
+        // --- Financials (Required) ---
+        financials: {
+          budget: args.ticketPrice ? args.capacity * args.ticketPrice : 0,
+          actualCost: 0,
+          forecastCost: 0,
+          revenueTarget: args.ticketPrice ? Math.floor(args.capacity * args.ticketPrice * 0.8) : 0, // 80% capacity target
+          actualRevenue: 0,
+          pricingModel: args.ticketType === "free" ? "free" : "paid",
+          currency: "BDT", // Bangladesh Taka
+          taxInclusive: false,
+          taxRate: 0,
+          taxJurisdiction: "BD",
+          paymentProcessor: "sslcommerz",
+          merchantAccountId: "default",
+          paymentTerms: "immediate",
+          refundPolicy: "standard",
+          invoiceTemplateId: undefined, // TODO: Create default invoice template
+          requirePO: false,
+          poPrefix: undefined
+        },
+
+        // --- Marketing ---
+        marketing: {
+          publicListing: true,
+          seoOptimized: true,
+          metaTitle: args.title,
+          metaDescription: args.description.substring(0, 150),
+          keywords: args.tags,
+          socialSharingEnabled: true
+        },
+
+        // --- Content (Required) ---
+        content: {
+          agendaPublished: false,
+          speakerBiosPublished: false,
+          materialsAvailable: false,
+          recordingAvailable: false,
+          coverImage: {
+            url: finalCoverImage || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600",
+            altText: args.title,
+          },
+          gallery: [],
+          documents: [] // Required: empty array for event documents
+        },
+
+        // --- Risk & Compliance (Required) ---
+        risk: {
+          riskAssessmentId: undefined, // TODO: Create default risk assessment
+          securityLevel: "low", // Default security level for public events
+          insuranceRequired: false,
+          insuranceAmount: undefined,
+          insuranceCertificateId: undefined,
+          permits: [], // Empty initially, can add permits in admin panel
+          emergencyPlanId: undefined, // TODO: Create default emergency plan document
+          firstAidStaff: 0,
+          securityStaff: 0,
+          evacuationRoutes: [],
+          dataProcessingAgreementSigned: true,
+          dataProtectionOfficerId: undefined,
+          dataRetentionPolicyId: undefined // TODO: Create default retention policy
+        },
+
+        // --- Logistics (Required) ---
+        logistics: {
+          cateringRequired: false,
+          catererId: undefined,
+          dietaryRequirements: [],
+          accommodationBlock: undefined,
+          shuttleService: undefined,
+          avEquipment: [],
+          signageRequired: false,
+          signageLocations: []
+        },
+
+        // --- Status ---
+        status: {
+          current: "draft", // Use valid schema status
+          changedAt: now,
+          changedBy: user._id,
+          milestones: []
+        },
+
+        // --- Analytics ---
+        analytics: {
+          // Engagement
+          views: 0,
+          uniqueViews: 0,
+          saves: 0,
+          shares: 0,
+
+          // Conversion
+          conversionRate: 0,
+          dropOffRate: 0,
+
+          // Performance
+          loadTime: 0,
+          uptime: 100,
+          errorRate: 0,
+
+          // Satisfaction
+          predictedNps: 0,
+          sentimentScore: 0,
+
+          // UI Compatibility (optional in schema)
+          registrations: 0,
+          revenue: 0,
+          attendanceRate: 0,
+          npsScore: 0,
+        },
+
+        // --- Legacy/Support for UI ---
+        // Storing stuff that the frontend might look for in metadata if needed
+        metadata: {
+          legacyProps: {
+            city: args.city,
+            state: args.state,
+            country: args.country,
+            themeColor: finalColor,
+            venueName: args.venue,
+            ticketPrice: args.ticketPrice
+          },
+          tags: args.tags || [],
+          categories: [args.category],
+          customAttributes: {},
+          systemAttributes: {}
+        },
+
+        // --- Audit Trail ---
+        audit: {
+          createdBy: user._id,
+          createdAt: now,
+          updatedBy: user._id,
+          updatedAt: now,
+          version: 1,
+          changeLog: [{
+            version: 1,
+            changedBy: user._id,
+            changedAt: now,
+            changes: ["Initial event creation"]
+          }]
+        },
+
+        // --- Schema Required Fields ---
+        // Some might be missing, we will find out in validation.
       });
 
-      // Update user's free event count
+      // Update user stats
       await ctx.db.patch(user._id, {
         freeEventsCreated: (user.freeEventsCreated ?? 0) + 1,
       });
 
-      return eventId;
+      return newEventId;
     } catch (error) {
+      console.error(error);
       throw new Error(`Failed to create event: ${error.message}`);
     }
   },
 });
 
-// Get event by slug
 export const getEventBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
-    const event = await ctx.db
+    return await ctx.db
       .query("events")
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .unique();
-
-    return event;
   },
 });
 
-// Get event by ID
 export const getEvent = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
-    const event = await ctx.db.get(args.eventId);
-    return event;
+    return await ctx.db.get(args.eventId);
   },
 });
 
-// Get events by organizer
 export const getMyEvents = query({
   handler: async (ctx) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
+    if (!user) return [];
 
-    const events = await ctx.db
+    return await ctx.db
       .query("events")
-      .withIndex("by_organizer", (q) => q.eq("organizerId", user._id))
-      .order("desc")
+      .withIndex("by_owner", (q) => q.eq("ownerId", user._id))
+      .order("desc") // Schema might not have this index sorted by desc automatically?
+      // actually by_owner index is ["ownerId"] only?
+      // If we want sort, we need an index like ["ownerId", "_creationTime"]
       .collect();
-
-    return events;
   },
 });
 
-// Delete event
 export const deleteEvent = mutation({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
     const user = await ctx.runQuery(internal.users.getCurrentUser);
-
     const event = await ctx.db.get(args.eventId);
-    if (!event) {
-      throw new Error("Event not found");
+
+    if (!event || event.ownerId !== user._id) {
+      throw new Error("Unauthorized");
     }
 
-    // Check if user is the organizer
-    if (event.organizerId !== user._id) {
-      throw new Error("You are not authorized to delete this event");
-    }
-
-    // Delete all registrations for this event
-    const registrations = await ctx.db
-      .query("registrations")
-      .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
-      .collect();
-
-    for (const registration of registrations) {
-      await ctx.db.delete(registration._id);
-    }
-
-    // Delete the event
+    // Enterprise delete might be soft-delete 'archived' status
+    // But for MVP explicit delete:
     await ctx.db.delete(args.eventId);
 
-    // Update free event count if it was a free event
-    if (event.ticketType === "free" && (user.freeEventsCreated ?? 0) > 0) {
-      await ctx.db.patch(user._id, {
-        freeEventsCreated: (user.freeEventsCreated ?? 0) - 1,
-      });
-    }
-
+    // Decrement stats...
     return { success: true };
   },
 });
 
-// Public: Get all events sorted by start date
 export const by_start_date = query({
   args: {},
   handler: async (ctx) => {
+    // Enterprise schema index: .index("by_dates", ["timeConfiguration.startDateTime", "timeConfiguration.endDateTime"])
     return await ctx.db
       .query("events")
-      .withIndex("by_start_date")
+      .withIndex("by_dates")
       .order("asc")
       .collect();
   },

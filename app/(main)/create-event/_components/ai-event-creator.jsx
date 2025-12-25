@@ -54,48 +54,64 @@ export default function AIEventCreator({ onEventGenerated }) {
           Generate with AI
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[500px] border-amber-500/20 bg-background/95 backdrop-blur-xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-purple-500" />
-            AI Event Creator
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Sparkles className="w-5 h-5 text-amber-500 fill-amber-500/20" />
+            <span className="bg-gradient-to-r from-amber-500 to-purple-600 bg-clip-text text-transparent font-bold">
+              AI Event Assistant
+            </span>
           </DialogTitle>
           <DialogDescription>
-            Describe your event idea and let AI create the details for you
+            Describe your vision, and we'll craft the perfect event details for you.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
-          <Textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Example: A tech meetup about React 19 for developers in Bangalore. It should cover new features like Actions and use hook improvements..."
-            rows={6}
-            className="resize-none"
-          />
+        <div className="space-y-6 py-2">
+          <div className="space-y-2">
+            <Textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="e.g., A luxury wine tasting evening in South Mumbai with jazz music..."
+              rows={5}
+              className="resize-none bg-secondary/30 border-primary/10 focus-visible:ring-amber-500/50"
+            />
+            <div className="flex flex-wrap gap-2">
+              <span className="text-xs text-muted-foreground font-medium mr-1">Try asking for:</span>
+              {["Tech Setup", "Music Fest", "Workshop", "Charity Gala"].map((suggestion) => (
+                <button
+                  key={suggestion}
+                  onClick={() => setPrompt(prev => prev ? prev + " " + suggestion : "Create a " + suggestion)}
+                  className="text-xs px-2 py-1 rounded-full bg-secondary hover:bg-amber-500/10 hover:text-amber-600 transition-colors border border-border/50"
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={() => setIsOpen(false)}
-              className="flex-1"
+              className="flex-1 hover:bg-secondary/80"
             >
               Cancel
             </Button>
             <Button
               onClick={generateEvent}
               disabled={loading || !prompt.trim()}
-              className="flex-1 gap-2"
+              className="flex-1 gap-2 bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white border-0 shadow-lg shadow-amber-500/20"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Generating...
+                  Thinking...
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4" />
-                  Generate
+                  <Sparkles className="w-4 h-4 fill-white/20" />
+                  Generate Magic
                 </>
               )}
             </Button>

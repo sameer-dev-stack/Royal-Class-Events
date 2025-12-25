@@ -6,6 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { ArrowLeft, TrendingUp, Users, Eye, DollarSign, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
     LineChart,
     Line,
@@ -31,8 +32,28 @@ export default function EventAnalyticsPage() {
 
     if (isLoading || !event) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-black/95">
-                <div className="animate-spin text-purple-500">Loading...</div>
+            <div className="min-h-screen bg-black/95 text-white p-8">
+                <div className="max-w-7xl mx-auto space-y-8">
+                    {/* Header Skeleton */}
+                    <div className="space-y-4">
+                        <Skeleton className="h-6 w-32 bg-white/10" />
+                        <Skeleton className="h-10 w-64 bg-white/10" />
+                        <Skeleton className="h-4 w-48 bg-white/10" />
+                    </div>
+
+                    {/* KPI Cards Skeleton */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        {[1, 2, 3, 4].map((i) => (
+                            <Skeleton key={i} className="h-32 rounded-xl bg-white/5 border border-white/10" />
+                        ))}
+                    </div>
+
+                    {/* Charts Grid Skeleton */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <Skeleton className="h-[400px] rounded-xl bg-white/5 border border-white/10" />
+                        <Skeleton className="h-[400px] rounded-xl bg-white/5 border border-white/10" />
+                    </div>
+                </div>
             </div>
         );
     }
@@ -62,7 +83,7 @@ export default function EventAnalyticsPage() {
                             </Button>
                         </div>
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                            {event.title} Analytics
+                            {event.title?.en || event.title} Analytics
                         </h1>
                         <p className="text-white/60">Real-time performance metrics and insights</p>
                     </div>
@@ -99,7 +120,7 @@ export default function EventAnalyticsPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{analyticsData?.totalRegistrations || 0}</div>
-                            <p className="text-xs text-white/50">{((analyticsData?.totalRegistrations / event.capacity) * 100).toFixed(1)}% of capacity</p>
+                            <p className="text-xs text-white/50">{((analyticsData?.totalRegistrations / (event.capacityConfig?.totalCapacity || event.capacity)) * 100).toFixed(1)}% of capacity</p>
                         </CardContent>
                     </Card>
 

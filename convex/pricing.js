@@ -193,24 +193,18 @@ export const getEventAnalytics = query({
             throw new Error("Event not found");
         }
 
-        // Get analytics snapshots
-        const snapshots = await ctx.db
-            .query("eventAnalytics")
-            .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
-            .order("desc")
-            .take(30); // Last 30 days
+        // eventAnalytics and priceHistory tables don't exist yet
+        const snapshots = [];
+        const priceHistory = [];
 
-        // Get price history
-        const priceHistory = await ctx.db
-            .query("priceHistory")
+        // Get actual registrations for accurate data
+        const registrations = await ctx.db
+            .query("registrations")
             .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
-            .order("desc")
-            .take(20);
+            .collect();
 
-        // Calculate Revenue
-        const totalRevenue = event.ticketPrice
-            ? (event.registrationCount || 0) * (event.currentPrice || event.ticketPrice)
-            : 0;
+        // Calculate Revenue from actual registrations
+        const totalRevenue = registrations.reduce((sum, reg) => sum + (reg.unitPrice || 0), 0);
 
         // Calculate Growth (dummy calculation for now, or based on snapshots)
         const lastWeekSnapshot = snapshots[6];
@@ -222,14 +216,14 @@ export const getEventAnalytics = query({
         return {
             totalRevenue,
             revenueGrowth,
-            totalViews: event.views || 0,
-            totalRegistrations: event.registrationCount || 0,
+            totalViews: event.analytics?.views || 0,
+            totalRegistrations: registrations.length,
             snapshots: snapshots.reverse(), // Return in chronological order for charts
             priceHistory,
             event: {
-                views: event.views || 0,
-                registrations: event.registrationCount || 0,
-                conversionRate: event.conversionRate || 0,
+                views: event.analytics?.views || 0,
+                registrations: registrations.length,
+                conversionRate: event.analytics?.conversionRate || 0,
                 predictedDemand: event.predictedDemand,
                 predictedRevenue: event.predictedRevenue,
             },

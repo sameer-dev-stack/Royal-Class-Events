@@ -77,7 +77,13 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
   };
 
   const handleComplete = async () => {
+    console.log("Starting onboarding completion...");
     try {
+      console.log("Calling completeOnboarding mutation with:", {
+        location,
+        interests: selectedInterests
+      });
+
       await completeOnboarding({
         location: {
           city: location.city,
@@ -86,11 +92,12 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
         },
         interests: selectedInterests,
       });
-      toast.success("Welcome to Spott! 🎉");
+      console.log("Mutation successful");
+      toast.success("Welcome to Royal Class Events! 🎉");
       onComplete();
     } catch (error) {
-      toast.error("Failed to complete onboarding");
-      console.error(error);
+      console.error("Onboarding failed:", error);
+      toast.error("Failed to complete onboarding: " + (error.message || "Unknown error"));
     }
   };
 
@@ -132,11 +139,10 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                   <button
                     key={category.id}
                     onClick={() => toggleInterest(category.id)}
-                    className={`p-4 rounded-lg border-2 transition-all hover:scale-105 ${
-                      selectedInterests.includes(category.id)
-                        ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
-                        : "border-border hover:border-purple-300"
-                    }`}
+                    className={`p-4 rounded-lg border-2 transition-all hover:scale-105 ${selectedInterests.includes(category.id)
+                      ? "border-purple-500 bg-purple-500/10 shadow-lg shadow-purple-500/20"
+                      : "border-border hover:border-purple-300"
+                      }`}
                   >
                     <div className="text-2xl mb-2">{category.icon}</div>
                     <div className="text-sm font-medium">{category.label}</div>

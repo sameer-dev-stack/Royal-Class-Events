@@ -9,6 +9,10 @@
  */
 
 import type * as TEST_INTELLIGENCE from "../TEST_INTELLIGENCE.js";
+import type * as admin from "../admin.js";
+import type * as battle_of_decks_seed from "../battle_of_decks_seed.js";
+import type * as bootstrap from "../bootstrap.js";
+import type * as clearData from "../clearData.js";
 import type * as dashboard from "../dashboard.js";
 import type * as events from "../events.js";
 import type * as explore from "../explore.js";
@@ -20,6 +24,7 @@ import type * as search from "../search.js";
 import type * as seed from "../seed.js";
 import type * as sslcommerz from "../sslcommerz.js";
 import type * as users from "../users.js";
+import type * as whiteout_seed from "../whiteout_seed.js";
 
 import type {
   ApiFromModules,
@@ -37,6 +42,10 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   TEST_INTELLIGENCE: typeof TEST_INTELLIGENCE;
+  admin: typeof admin;
+  battle_of_decks_seed: typeof battle_of_decks_seed;
+  bootstrap: typeof bootstrap;
+  clearData: typeof clearData;
   dashboard: typeof dashboard;
   events: typeof events;
   explore: typeof explore;
@@ -48,6 +57,7 @@ declare const fullApi: ApiFromModules<{
   seed: typeof seed;
   sslcommerz: typeof sslcommerz;
   users: typeof users;
+  whiteout_seed: typeof whiteout_seed;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 

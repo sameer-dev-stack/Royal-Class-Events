@@ -82,7 +82,7 @@ export default function CreateEventPage() {
 
   const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
   const { mutate: createEvent, isLoading } = useConvexMutation(api.events.createEvent);
-  const generateUploadUrl = useConvexMutation(api.files.generateUploadUrl);
+  const { mutate: generateUploadUrl } = useConvexMutation(api.files.generateUploadUrl);
 
   const {
     register,
@@ -123,8 +123,16 @@ export default function CreateEventPage() {
 
   const availableCities = useMemo(() => {
     if (!selectedCountry) return [];
-    if (!selectedState) return City.getCitiesOfCountry(selectedCountry); // Fallback if no state selected (some countries like Singapore)
-    return City.getCitiesOfState(selectedCountry, selectedState);
+    const cities = !selectedState
+      ? City.getCitiesOfCountry(selectedCountry)
+      : City.getCitiesOfState(selectedCountry, selectedState);
+
+    // Remove duplicates by city name
+    const uniqueCities = cities.filter((city, index, self) =>
+      index === self.findIndex((c) => c.name === city.name)
+    );
+
+    return uniqueCities;
   }, [selectedCountry, selectedState]);
 
   const colorPresets = [
@@ -248,6 +256,11 @@ export default function CreateEventPage() {
   // --- AI INTELLIGENCE HANDLERS ---
   const handleCheckAI = async () => {
     const country = watch("country");
+    const category = watch("category");
+    const city = watch("city");
+    const capacity = watch("capacity");
+    const ticketType = watch("ticketType");
+    const ticketPrice = watch("ticketPrice");
 
     if (!category || !country || !city || !capacity || !startDate) {
       toast.error("Please fill in Category, Location (Country & City), Capacity, and Start Date first");
@@ -479,7 +492,7 @@ export default function CreateEventPage() {
                   <Select value={field.value} onValueChange={(val) => { field.onChange(val); setValue("state", ""); setValue("city", ""); }}>
                     <SelectTrigger className="w-full bg-background border-input text-foreground"><SelectValue placeholder="Country" /></SelectTrigger>
                     <SelectContent className="bg-popover border-border text-popover-foreground max-h-[300px]">
-                      {countries.map((c) => (<SelectItem key={c.isoCode} value={c.isoCode}>{c.name}</SelectItem>))}
+                      {countries.map((c, idx) => (<SelectItem key={`${c.isoCode}-${idx}`} value={c.isoCode}>{c.name}</SelectItem>))}
                     </SelectContent>
                   </Select>
                 )}
@@ -491,7 +504,7 @@ export default function CreateEventPage() {
                   <Select value={field.value} onValueChange={(val) => { field.onChange(val); setValue("city", ""); }} disabled={!selectedCountry || availableStates.length === 0}>
                     <SelectTrigger className="w-full bg-background border-input text-foreground disabled:opacity-50"><SelectValue placeholder="State/Region" /></SelectTrigger>
                     <SelectContent className="bg-popover border-border text-popover-foreground max-h-[300px]">
-                      {availableStates.map((s) => (<SelectItem key={s.isoCode} value={s.isoCode}>{s.name}</SelectItem>))}
+                      {availableStates.map((s, idx) => (<SelectItem key={`${s.isoCode}-${idx}`} value={s.isoCode}>{s.name}</SelectItem>))}
                     </SelectContent>
                   </Select>
                 )}

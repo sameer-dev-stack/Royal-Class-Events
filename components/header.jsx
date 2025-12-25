@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Building, Crown, Plus, Ticket } from "lucide-react";
+import { Building, Crown, Plus, Ticket, Menu, X, ArrowRight } from "lucide-react";
 import { SignInButton, useAuth, UserButton } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated } from "convex/react";
 import { BarLoader } from "react-spinners";
@@ -15,10 +15,12 @@ import UpgradeModal from "./upgrade-modal";
 import { ModeToggle } from "./mode-toggle";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Header() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { isLoading } = useStoreUser();
   const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } =
@@ -40,7 +42,7 @@ export default function Header() {
       <nav
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
-          scrolled
+          scrolled || mobileMenuOpen
             ? "bg-background/80 backdrop-blur-xl border-border py-3"
             : "bg-transparent border-transparent py-5"
         )}
@@ -48,7 +50,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
           {/* ROYAL CLASS LOGO */}
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 group relative z-[60]">
             <div className="bg-amber-500/10 p-2 rounded-full border border-amber-500/20 group-hover:bg-amber-500/20 transition-colors">
               <Crown className="w-5 h-5 text-amber-500" />
             </div>
@@ -65,94 +67,248 @@ export default function Header() {
           </Link>
 
           {/* Search & Location - Desktop Only */}
-          <div className="hidden md:flex flex-1 justify-center px-8">
+          <div className="hidden lg:flex flex-1 justify-center px-8">
             <div className={cn("transition-opacity duration-300", scrolled ? "opacity-100" : "opacity-90")}>
               <SearchLocationBar />
             </div>
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center gap-4">
-            {/* Show Pro badge or Upgrade button */}
-            {!hasPro && (
+          <div className="flex items-center gap-2 md:gap-4 relative z-[60]">
+            <div className="hidden md:flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowUpgradeModal(true)}
+                asChild
                 className="text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
               >
-                Pricing
+                <Link href="/explore">Explore</Link>
               </Button>
-            )}
 
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="hidden sm:inline-flex text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
-            >
-              <Link href="/explore">Explore</Link>
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="hidden sm:inline-flex text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
-            >
-              <Link href="/contact">Contact</Link>
-            </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
+              >
+                <Link href="/contact">Contact</Link>
+              </Button>
+            </div>
 
             <ModeToggle />
 
-            <Authenticated>
-              {/* Create Event Button (Gold) */}
-              <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all">
-                <Link href="/create-event">
-                  <Plus className="w-4 h-4" />
-                  <span className="hidden sm:inline">Create Event</span>
-                </Link>
-              </Button>
-
-              {/* User Button */}
-              <UserButton
-                afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    avatarBox: "w-9 h-9 ring-2 ring-amber-500/20 hover:ring-amber-500 transition-all",
-                  },
-                }}
-              >
-                <UserButton.MenuItems>
-                  <UserButton.Link
-                    label="My Tickets"
-                    labelIcon={<Ticket size={16} />}
-                    href="/my-tickets"
-                  />
-                  <UserButton.Link
-                    label="My Events"
-                    labelIcon={<Building size={16} />}
-                    href="/my-events"
-                  />
-                  <UserButton.Action label="manageAccount" />
-                </UserButton.MenuItems>
-              </UserButton>
-            </Authenticated>
-
-            <Unauthenticated>
-              <SignInButton mode="modal">
-                <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-black font-semibold">
-                  Sign In
+            <div className="flex items-center gap-2">
+              <Authenticated>
+                {/* Create Event Button (Gold) - Hidden on smallest mobile */}
+                <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all">
+                  <Link href="/create-event">
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden md:inline">Create Event</span>
+                  </Link>
                 </Button>
-              </SignInButton>
-            </Unauthenticated>
+
+                {/* User Button */}
+                <UserButton
+                  afterSignOutUrl="/"
+                  appearance={{
+                    elements: {
+                      avatarBox: "w-9 h-9 ring-2 ring-amber-500/20 hover:ring-amber-500 transition-all",
+                    },
+                  }}
+                >
+                  <UserButton.MenuItems>
+                    <UserButton.Link
+                      label="My Tickets"
+                      labelIcon={<Ticket size={16} />}
+                      href="/my-tickets"
+                    />
+                    <UserButton.Link
+                      label="My Events"
+                      labelIcon={<Building size={16} />}
+                      href="/my-events"
+                    />
+                    <UserButton.Action label="manageAccount" />
+                  </UserButton.MenuItems>
+                </UserButton>
+              </Authenticated>
+
+              <Unauthenticated>
+                <SignInButton mode="modal">
+                  <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-black font-semibold">
+                    Sign In
+                  </Button>
+                </SignInButton>
+              </Unauthenticated>
+
+              {/* Hamburger Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden text-foreground hover:bg-foreground/10"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X /> : <Menu />}
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Mobile Search & Location - Below Header */}
-        <div className="md:hidden border-t border-border px-4 py-3 bg-background/60 backdrop-blur-md">
-          <SearchLocationBar />
-        </div>
+        {/* Mobile Menu Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <>
+              {/* Backdrop with blur */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 top-[60px] bg-black/40 backdrop-blur-sm z-[54] lg:hidden"
+                onClick={() => setMobileMenuOpen(false)}
+              />
+
+              {/* Drawer */}
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", damping: 30, stiffness: 300 }}
+                className="fixed right-0 top-[60px] bottom-0 w-[85vw] max-w-sm bg-background/95 backdrop-blur-xl border-l border-border z-[55] lg:hidden overflow-y-auto shadow-2xl"
+              >
+                <div className="h-full flex flex-col p-6">
+
+                  {/* Search Section */}
+                  <div className="mb-8">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
+                      Search & Discover
+                    </h2>
+                    <div className="bg-card/50 border border-border rounded-2xl p-4 shadow-lg backdrop-blur-sm">
+                      <SearchLocationBar />
+                    </div>
+                  </div>
+
+                  {/* Quick Actions Section */}
+                  <div className="mb-8">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
+                      Quick Actions
+                    </h2>
+                    <div className="space-y-3">
+                      <Authenticated>
+                        <Link
+                          href="/create-event"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block group"
+                        >
+                          <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 rounded-2xl p-5 shadow-xl group-hover:shadow-2xl transition-all group-active:scale-[0.98]">
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="flex items-center gap-4 relative z-10">
+                              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <Plus className="w-7 h-7 text-white" strokeWidth={2.5} />
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="font-bold text-lg text-white mb-0.5">Create Event</h3>
+                                <p className="text-sm text-white/80">Host your next experience</p>
+                              </div>
+                              <ArrowRight className="w-5 h-5 text-white/60 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                          </div>
+                        </Link>
+                      </Authenticated>
+
+                      <Link
+                        href="/explore"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block group"
+                      >
+                        <div className="bg-card/80 backdrop-blur-sm border-2 border-border rounded-2xl p-4 group-hover:border-amber-500/50 group-hover:bg-amber-500/5 transition-all group-active:scale-[0.98]">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gradient-to-br from-amber-500/20 to-amber-600/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                              <Ticket className="w-6 h-6 text-amber-500" strokeWidth={2} />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-base text-foreground mb-0.5">Explore Events</h3>
+                              <p className="text-xs text-muted-foreground">Discover amazing experiences</p>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* My Account Section */}
+                  <Authenticated>
+                    <div className="mb-8">
+                      <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
+                        My Account
+                      </h2>
+                      <div className="space-y-1 bg-card/30 backdrop-blur-sm rounded-2xl p-2 border border-border/50">
+                        <Link
+                          href="/my-tickets"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-amber-500/10 transition-all active:scale-[0.98] group"
+                        >
+                          <div className="w-9 h-9 bg-amber-500/10 rounded-lg flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                            <Ticket className="w-5 h-5 text-amber-500" strokeWidth={2} />
+                          </div>
+                          <span className="font-medium text-foreground flex-1">My Tickets</span>
+                          <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                        </Link>
+                        <Link
+                          href="/my-events"
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-amber-500/10 transition-all active:scale-[0.98] group"
+                        >
+                          <div className="w-9 h-9 bg-amber-500/10 rounded-lg flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                            <Building className="w-5 h-5 text-amber-500" strokeWidth={2} />
+                          </div>
+                          <span className="font-medium text-foreground flex-1">My Events</span>
+                          <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                        </Link>
+                      </div>
+                    </div>
+                  </Authenticated>
+
+                  {/* Resources Section */}
+                  <div className="mb-8">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
+                      Resources
+                    </h2>
+                    <div className="space-y-1">
+                      <Link
+                        href="/contact"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-muted/50 transition-all active:scale-[0.98] group"
+                      >
+                        <div className="w-9 h-9 bg-muted/50 rounded-lg flex items-center justify-center group-hover:bg-amber-500/10 transition-colors">
+                          <Crown className="w-5 h-5 text-muted-foreground group-hover:text-amber-500 transition-colors" strokeWidth={2} />
+                        </div>
+                        <span className="font-medium text-foreground flex-1">Contact Us</span>
+                        <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Footer - Pushed to bottom */}
+                  <div className="mt-auto pt-6 border-t border-border/50">
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                      <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/10 p-2.5 rounded-xl border border-amber-500/20">
+                        <Crown className="w-5 h-5 text-amber-500" />
+                      </div>
+                      <span className="text-sm font-bold text-foreground">
+                        Royal Class <span className="text-amber-500">Events</span>
+                      </span>
+                    </div>
+                    <p className="text-xs text-center text-muted-foreground leading-relaxed">
+                      © {new Date().getFullYear()} Royal Class Events<br />
+                      All rights reserved
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
 
         {isLoading && (
           <div className="absolute bottom-0 left-0 w-full">
@@ -161,7 +317,6 @@ export default function Header() {
         )}
       </nav>
 
-      {/* Onboarding Modal */}
       <OnboardingModal
         isOpen={showOnboarding}
         onClose={handleOnboardingSkip}

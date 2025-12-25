@@ -27,32 +27,33 @@ export function AttendeeCard({ registration }) {
 
   return (
     <Card className="py-0">
-      <CardContent className="p-4 flex items-start gap-4">
-        <div
-          className={`mt-1 p-2 rounded-full ${
-            registration.checkedIn ? "bg-green-100" : "bg-gray-100"
-          }`}
-        >
-          {registration.checkedIn ? (
-            <CheckCircle className="w-5 h-5 text-green-600" />
-          ) : (
-            <Circle className="w-5 h-5 text-gray-400" />
-          )}
-        </div>
+      <CardContent className="p-4 flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex flex-1 gap-4 items-start w-full">
+          <div
+            className={`mt-1 p-2 rounded-full ${registration.checkedIn ? "bg-green-100" : "bg-gray-100"
+              }`}
+          >
+            {registration.checkedIn ? (
+              <CheckCircle className="w-5 h-5 text-green-600" />
+            ) : (
+              <Circle className="w-5 h-5 text-gray-400" />
+            )}
+          </div>
 
-        <div className="flex-1 min-w-0">
-          <h3 className="font-semibold mb-1">{registration.attendeeName}</h3>
-          <p className="text-sm text-muted-foreground mb-2">
-            {registration.attendeeEmail}
-          </p>
-          <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-            <span>
-              {registration.checkedIn ? "⏰ Checked in" : "📅 Registered"}{" "}
-              {registration.checkedIn && registration.checkedInAt
-                ? format(registration.checkedInAt, "PPp")
-                : format(registration.registeredAt, "PPp")}
-            </span>
-            <span className="font-mono">QR: {registration.qrCode}</span>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold mb-1">{registration.attendeeName}</h3>
+            <p className="text-sm text-muted-foreground mb-2">
+              {registration.attendeeEmail}
+            </p>
+            <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
+              <span>
+                {registration.checkedIn ? "⏰ Checked in" : "📅 Registered"}{" "}
+                {registration.checkedIn && registration.checkedInAt
+                  ? format(registration.checkedInAt, "PPp")
+                  : format(registration.registeredAt, "PPp")}
+              </span>
+              <span className="font-mono hidden sm:inline">QR: {registration.qrCode}</span>
+            </div>
           </div>
         </div>
 
@@ -62,7 +63,7 @@ export function AttendeeCard({ registration }) {
             variant="outline"
             onClick={handleManualCheckIn}
             disabled={isLoading}
-            className="gap-2"
+            className="w-full sm:w-auto gap-2"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

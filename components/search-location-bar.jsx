@@ -214,10 +214,10 @@ export default function SearchLocationBar() {
                     onClick={() => handleEventClick(event.slug)}
                     className="px-4 py-3 hover:bg-white/5 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0"
                   >
-                    <div className="text-xl">{getCategoryIcon(event.category)}</div>
+                    <div className="text-xl">{getCategoryIcon(event.eventSubType || event.category)}</div>
                     <div>
-                      <p className="text-sm font-medium text-black dark:text-white">{event.title}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{event.city} • {format(new Date(event.startDate), "MMM d")}</p>
+                      <p className="text-sm font-medium text-black dark:text-white">{event.title?.en || event.title}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{event.metadata?.legacyProps?.city || event.city} • {format(new Date(event.timeConfiguration?.startDateTime || event.startDate), "MMM d")}</p>
                     </div>
                   </div>
                 )) : (

@@ -29,6 +29,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
 import QRScannerModal from "../_components/qr-scanner-modal";
@@ -112,8 +113,52 @@ export default function EventDashboardPage() {
 
   if (isLoading || loadingRegistrations) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+      <div className="min-h-screen pb-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Navigation Skeleton */}
+          <div className="mb-6 mt-8">
+            <Skeleton className="h-9 w-32" />
+          </div>
+
+          {/* Event Cover Skeleton */}
+          <Skeleton className="h-[350px] w-full rounded-2xl mb-6" />
+
+          {/* Header Skeleton */}
+          <div className="flex flex-col gap-5 sm:flex-row items-start justify-between mb-8">
+            <div className="flex-1 space-y-3">
+              <Skeleton className="h-10 w-2/3 max-w-md" />
+              <div className="flex gap-4">
+                <Skeleton className="h-6 w-24" />
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-6 w-40" />
+              </div>
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Skeleton className="h-9 w-24" />
+              <Skeleton className="h-9 w-24" />
+              <Skeleton className="h-9 w-24" />
+            </div>
+          </div>
+
+          {/* Stats Skeleton */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-24 rounded-xl" />
+            ))}
+          </div>
+
+          {/* Attendees Skeleton */}
+          <div className="space-y-4">
+            <Skeleton className="h-8 w-48 mb-4" />
+            <div className="flex gap-4 mb-4">
+              <Skeleton className="h-10 flex-1" />
+              <Skeleton className="h-10 w-32" />
+            </div>
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-24 w-full rounded-xl" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -123,6 +168,15 @@ export default function EventDashboardPage() {
   }
 
   const { event, stats } = dashboardData;
+  const eventTitle = event.title?.en || event.title;
+  const eventCoverImage = event.content?.coverImage?.url || event.coverImage;
+  const eventCategory = event.eventSubType || event.category;
+  const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate;
+  const eventLocationType = event.locationConfig?.type || event.locationType;
+  const eventCity = event.metadata?.legacyProps?.city || event.city;
+  const eventState = event.metadata?.legacyProps?.state || event.state;
+  const eventCountry = event.metadata?.legacyProps?.country || event.country;
+  const eventTicketType = event.financials?.pricingModel || event.ticketType;
 
   // Filter registrations based on active tab and search
   const filteredRegistrations = registrations?.filter((reg) => {
@@ -155,11 +209,11 @@ export default function EventDashboardPage() {
           </Button>
         </div>
 
-        {event.coverImage && (
+        {eventCoverImage && (
           <div className="relative h-[350px] rounded-2xl overflow-hidden mb-6">
             <Image
-              src={event.coverImage}
-              alt={event.title}
+              src={eventCoverImage}
+              alt={eventTitle}
               fill
               className="object-cover"
               priority
@@ -170,22 +224,22 @@ export default function EventDashboardPage() {
         {/* Event Header */}
         <div className="flex flex-col gap-5 sm:flex-row items-start justify-between mb-4">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-3">{event.title}</h1>
+            <h1 className="text-3xl font-bold mb-3">{eventTitle}</h1>
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
               <Badge variant="outline">
-                {getCategoryIcon(event.category)}{" "}
-                {getCategoryLabel(event.category)}
+                {getCategoryIcon(eventCategory)}{" "}
+                {getCategoryLabel(eventCategory)}
               </Badge>
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
-                <span>{format(event.startDate, "PPP")}</span>
+                <span>{format(eventStartDate, "PPP")}</span>
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
                 <span>
-                  {event.locationType === "online"
+                  {(eventLocationType === "virtual" || eventLocationType === "online")
                     ? "Online"
-                    : `${event.city}, ${event.state || event.country}`}
+                    : `${eventCity}, ${eventState || eventCountry}`}
                 </span>
               </div>
             </div>
@@ -264,7 +318,7 @@ export default function EventDashboardPage() {
             </CardContent>
           </Card>
 
-          {event.ticketType === "paid" ? (
+          {eventTicketType === "paid" ? (
             <Card className="py-0">
               <CardContent className="p-6 flex items-center gap-3">
                 <div className="p-3 bg-blue-100 rounded-lg">
