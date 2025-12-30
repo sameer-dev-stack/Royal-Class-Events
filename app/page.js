@@ -4,15 +4,15 @@ import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Crown, Sparkles, ArrowRight } from "lucide-react";
-import { SignInButton } from "@clerk/nextjs";
-import { Unauthenticated } from "convex/react";
+import { Crown, Sparkles, ArrowRight, Building, Ticket } from "lucide-react";
+import { useSession } from "next-auth/react";
 import EventList from "@/components/event-list";
 import InfiniteScrollBanner from "@/components/infinite-scroll-banner";
-import { FadeIn, StaggerContainer } from "@/components/ui/motion";
+import { FadeIn } from "@/components/ui/motion";
 import TicketCTA from "@/components/ticket-cta";
 
 export default function LandingPage() {
+  const { status } = useSession();
   return (
     <div className="min-h-screen">
 
@@ -44,20 +44,20 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center sm:justify-start">
-              <Link href="/explore" className="w-full sm:w-auto">
-                <Button size="xl" className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all transform hover:-translate-y-1">
+              <Button size="xl" asChild className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all transform hover:-translate-y-1">
+                <Link href="/explore">
                   Explore Events
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
-              <Unauthenticated>
-                <SignInButton mode="modal">
-                  <Button variant="ghost" size="xl" className="hidden sm:flex h-14 px-8 rounded-full text-foreground hover:bg-foreground/10 group cursor-pointer">
+              {status === "unauthenticated" && (
+                <Button variant="ghost" size="xl" asChild className="hidden sm:flex h-14 px-8 rounded-full text-foreground hover:bg-foreground/10 group cursor-pointer">
+                  <Link href="/sign-in">
                     Sign In
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </SignInButton>
-              </Unauthenticated>
+                  </Link>
+                </Button>
+              )}
             </div>
           </FadeIn>
 
@@ -104,7 +104,7 @@ export default function LandingPage() {
       {/* --- INFINITE SCROLL BANNER --- */}
       <InfiniteScrollBanner />
 
-      {/* --- EVENT LIST SECTION (Categories & Upcoming) --- */}
+      {/* --- EVENT LIST SECTION (Upcoming Events) --- */}
       <section className="container mx-auto px-6 pb-24 relative z-10">
         <FadeIn delay={0.4}>
           <div className="flex items-center gap-4 mb-8">
@@ -113,6 +113,62 @@ export default function LandingPage() {
           </div>
           <EventList />
         </FadeIn>
+      </section>
+
+      {/* --- CHOOSE YOUR JOURNEY SECTION --- */}
+      <section className="py-24 bg-background relative overflow-hidden border-t border-border/50">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Choose Your <span className="text-gradient-gold">Journey</span></h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-light">
+              Whether you're looking for the next exclusive experience or hosting a high-end gala, we have you covered.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Attendee Path */}
+            <div className="group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden">
+              <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-colors" />
+              <div className="relative z-10 space-y-6">
+                <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform duration-500">
+                  <Ticket className="w-8 h-8 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-2 text-foreground">Browse as Attendee</h3>
+                  <p className="text-muted-foreground leading-relaxed font-light">
+                    Browse exclusive events, secure your tickets, and manage your premium passes in one place.
+                  </p>
+                </div>
+                <Link href="/explore?role=attendee" className="block">
+                  <Button variant="outline" className="w-full h-12 rounded-xl hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-all font-bold gap-2">
+                    Browse <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Organizer Path */}
+            <div className="group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden">
+              <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors" />
+              <div className="relative z-10 space-y-6">
+                <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform duration-500">
+                  <Building className="w-8 h-8 text-amber-500" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold mb-2 text-foreground">Join as Organizer</h3>
+                  <p className="text-muted-foreground leading-relaxed font-light">
+                    Create luxury events, manage guest lists, and track real-time analytics with your host dashboard.
+                  </p>
+                </div>
+                <Link href="/create-event?role=organizer" className="block">
+                  <Button className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold shadow-lg shadow-amber-900/20 transition-all transform group-hover:-translate-y-1">
+                    Start Hosting <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <TicketCTA />

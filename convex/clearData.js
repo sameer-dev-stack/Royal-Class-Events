@@ -1,4 +1,4 @@
-import { internalMutation } from "./_generated/server";
+import { internalMutation, query } from "./_generated/server";
 
 export const clearAll = internalMutation({
     args: {},
@@ -17,5 +17,21 @@ export const clearAll = internalMutation({
             }
         }
         return "Data cleared";
+    },
+});
+
+export const getStats = query({
+    args: {},
+    handler: async (ctx) => {
+        const tables = [
+            "users", "tenants", "venues", "events",
+            "ticketTiers", "registrations", "payments"
+        ];
+        const stats = {};
+        for (const table of tables) {
+            const docs = await ctx.db.query(table).collect();
+            stats[table] = docs.length;
+        }
+        return stats;
     },
 });

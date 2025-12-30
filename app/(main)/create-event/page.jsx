@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/incompatible-library */
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,9 +10,9 @@ import { format } from "date-fns";
 import { State, City, Country } from "country-state-city";
 import { CalendarIcon, Loader2, Sparkles, Crown, Upload, Image as ImageIcon } from "lucide-react";
 import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { useAuth } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,6 @@ import {
 import UnsplashImagePicker from "@/components/unsplash-image-picker";
 import AIEventCreator from "./_components/ai-event-creator";
 import AIIntelligencePanel from "@/components/ai-intelligence-panel";
-import UpgradeModal from "@/components/upgrade-modal";
 import { CATEGORIES } from "@/lib/data";
 import Image from "next/image";
 
@@ -61,6 +60,8 @@ const eventSchema = z.object({
   ticketPrice: z.number().optional(),
   coverImage: z.string().optional(),
   themeColor: z.string().default("#d97706"),
+  venueType: z.enum(["manual", "existing", "template", "custom"]).default("manual"),
+  venueDesignId: z.string().optional(),
 });
 
 export default function CreateEventPage() {
@@ -68,8 +69,6 @@ export default function CreateEventPage() {
   const fileInputRef = useRef(null);
 
   const [showImagePicker, setShowImagePicker] = useState(false);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const [upgradeReason, setUpgradeReason] = useState("limit");
   const [imagePreview, setImagePreview] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -77,12 +76,17 @@ export default function CreateEventPage() {
   const [aiPrediction, setAiPrediction] = useState(null);
   const [isCheckingAI, setIsCheckingAI] = useState(false);
 
-  const { has } = useAuth();
-  const hasPro = has?.({ plan: "pro" });
+  // TODO: Implement Pro subscription check with Supabase/Stripe
+  const hasPro = false;
 
-  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
+  // Role Check
+  const { isOrganizer, isAdmin, isLoading: isRoleLoading, user } = useUserRoles();
+
   const { mutate: createEvent, isLoading } = useConvexMutation(api.events.createEvent);
   const { mutate: generateUploadUrl } = useConvexMutation(api.files.generateUploadUrl);
+  const { mutate: createVenueDesign } = useConvexMutation(api.venueDesigns.create);
+
+  const currentUser = user; // Alias for existing code compatibility
 
   const {
     register,
@@ -104,8 +108,13 @@ export default function CreateEventPage() {
       city: "",
       startTime: "",
       endTime: "",
+      venueType: "existing",
     },
   });
+
+  const venueType = watch("venueType");
+  const { data: templates } = useConvexQuery(api.venueDesigns.listTemplates, {});
+  const { data: myDesigns } = useConvexQuery(api.venueDesigns.listMyDesigns, {});
 
   const themeColor = watch("themeColor");
   const ticketType = watch("ticketType");
@@ -135,18 +144,49 @@ export default function CreateEventPage() {
     return uniqueCities;
   }, [selectedCountry, selectedState]);
 
+  // Determine if user is authorized
+  const isAuthorized = isOrganizer || isAdmin;
+
+  // If loading, show loader
+  if (isRoleLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
+      </div>
+    );
+  }
+
+  // If logged in but not an organizer, show message instead of redirecting immediately
+  if (user && !isAuthorized) {
+    return (
+      <div className="flex h-screen items-center justify-center p-6 text-center">
+        <div className="max-w-md space-y-4">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-amber-500/10 rounded-full mb-4">
+            <Crown className="w-10 h-10 text-amber-500" />
+          </div>
+          <h2 className="text-2xl font-bold">Organizer Account Required</h2>
+          <p className="text-muted-foreground">
+            You are currently signed in as an Attendee. To host events, you need an Organizer account.
+          </p>
+          <div className="flex flex-col gap-3">
+            <Button asChild className="bg-amber-500 hover:bg-amber-600 text-black">
+              <a href="/sign-up/organizer">Switch to Organizer Account</a>
+            </Button>
+            <Button variant="ghost" onClick={() => router.push("/")}>
+              Back to Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const colorPresets = [
     "#d97706", "#09090b", "#1e3a8a",
     ...(hasPro ? ["#7f1d1d", "#065f46", "#831843", "#4c1d95"] : []),
   ];
 
   const handleColorClick = (color) => {
-    const isLocked = !hasPro && !["#d97706", "#09090b", "#1e3a8a"].includes(color);
-    if (isLocked) {
-      setUpgradeReason("color");
-      setShowUpgradeModal(true);
-      return;
-    }
     setValue("themeColor", color);
   };
 
@@ -197,10 +237,15 @@ export default function CreateEventPage() {
         return;
       }
 
-      if (!hasPro && currentUser?.freeEventsCreated >= 1) {
-        setUpgradeReason("limit");
-        setShowUpgradeModal(true);
-        return;
+      let finalVenueDesignId = data.venueType !== "manual" ? data.venueDesignId : undefined;
+
+      // Handle Brand-New Custom Venue
+      if (data.venueType === "custom") {
+        const newDesignId = await createVenueDesign({
+          name: `${data.title} - Custom Venue`,
+          baseArchetype: "blank"
+        });
+        finalVenueDesignId = newDesignId;
       }
 
       await createEvent({
@@ -212,7 +257,6 @@ export default function CreateEventPage() {
         endDate: end.getTime(),
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         locationType: data.locationType,
-        locationType: data.locationType,
         venue: data.venue || undefined,
         address: data.address || undefined,
         city: data.city,
@@ -223,6 +267,7 @@ export default function CreateEventPage() {
         ticketPrice: data.ticketPrice || undefined,
         coverImage: data.coverImage || undefined,
         themeColor: data.themeColor,
+        venueDesignId: finalVenueDesignId,
         hasPro,
       });
 
@@ -551,6 +596,92 @@ export default function CreateEventPage() {
             )}
           </div>
 
+          <div className="space-y-4 pt-6 border-t border-border">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-500" />
+              <Label className="text-lg font-bold">Venue & Seating</Label>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                { id: "existing", label: "Existing Venue", icon: "🏛️" },
+                { id: "template", label: "Use Template", icon: "📋" },
+                { id: "manual", label: "Simple Map", icon: "✏️" },
+                { id: "custom", label: "Custom Venue", icon: "✨" },
+              ].map((type) => (
+                <div
+                  key={type.id}
+                  onClick={() => setValue("venueType", type.id)}
+                  className={`cursor-pointer p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 text-center ${venueType === type.id
+                    ? "border-amber-500 bg-amber-500/10 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
+                    : "border-border bg-card hover:border-border/80"
+                    }`}
+                >
+                  <span className="text-2xl">{type.icon}</span>
+                  <span className="text-xs font-bold leading-tight">{type.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {venueType === "existing" && (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                <Label className="text-muted-foreground">Select Venue</Label>
+                <Controller
+                  control={control}
+                  name="venueDesignId"
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="bg-background border-input text-foreground">
+                        <SelectValue placeholder="Chose a venue..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border-border text-popover-foreground">
+                        {myDesigns?.length === 0 && <div className="p-4 text-sm text-center opacity-50">No designs found. Create one first or use a template.</div>}
+                        {myDesigns?.map(d => (
+                          <SelectItem key={d._id} value={d._id}>{d.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+            )}
+
+            {venueType === "template" && (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                <Label className="text-muted-foreground">Select Template</Label>
+                <Controller
+                  control={control}
+                  name="venueDesignId"
+                  render={({ field }) => (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="bg-background border-input text-foreground">
+                        <SelectValue placeholder="Chose a template..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border-border text-popover-foreground">
+                        {templates?.length === 0 && <div className="p-4 text-sm text-center opacity-50">No templates available.</div>}
+                        {templates?.map(t => (
+                          <SelectItem key={t._id} value={t._id}>{t.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+            )}
+
+            {venueType === "manual" && (
+              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs text-amber-500/80 italic animate-in fade-in slide-in-from-top-2">
+                You can upload a 2D floor plan and draw zones after publishing the event.
+              </div>
+            )}
+
+            {venueType === "custom" && (
+              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs text-amber-500/80 italic animate-in fade-in slide-in-from-top-2">
+                A new venue design will be created for this event. You'll be redirected to the Venue Designer after publishing.
+              </div>
+            )}
+          </div>
+
           <div className="space-y-2">
             <Label className="text-muted-foreground">Capacity</Label>
             <Input type="number" {...register("capacity", { valueAsNumber: true })} placeholder="100" className="bg-background border-input text-foreground" />
@@ -579,12 +710,6 @@ export default function CreateEventPage() {
           }}
         />
       )}
-
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        trigger={upgradeReason}
-      />
     </div>
   );
 }

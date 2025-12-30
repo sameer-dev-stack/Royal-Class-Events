@@ -16,10 +16,7 @@ const nextConfig = {
       },
     ],
   },
-  // Allow Cloudflare tunnel domains in development
-  allowedDevOrigins: [
-    /^https:\/\/.*\.trycloudflare\.com$/,
-  ],
+
 };
 
 export default nextConfig;

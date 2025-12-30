@@ -156,7 +156,7 @@
   }
 
   html {
-    @apply scroll-smooth;
+    /* Scroll smooth handled by Next.js or removed to avoid warnings */
   }
 
   body {

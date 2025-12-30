@@ -5,33 +5,39 @@ import { api } from "@/convex/_generated/api";
 export async function POST(request) {
     try {
         const body = await request.json();
-        const { amount, eventId, userId } = body;
+        console.log("Payment Init Received Body:", body);
+        const { amount, eventId, userId, attendeeName, attendeeEmail, ticketQuantity } = body;
 
         if (!amount || !eventId || !userId) {
-            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+            console.error("Payment Init Error: Missing required fields", { amount, eventId, userId });
+            return NextResponse.json({ error: `Missing fields: ${!amount ? 'amount ' : ''}${!eventId ? 'eventId ' : ''}${!userId ? 'userId' : ''}` }, { status: 400 });
         }
 
         // Generate Transaction ID
         const tran_id = `TRAN_${Date.now()}_${Math.random().toString(36).substring(7).toUpperCase()}`;
 
         // Create Pending Record in Convex
-        // We use fetchMutation to call Convex from the server side
-        const paymentId = await fetchMutation(api.sslcommerz.initPayment, {
+        const { paymentId, regId } = await fetchMutation(api.sslcommerz.initPayment, {
             eventId,
             userId,
-            amount,
+            amount: parseFloat(amount),
             tranId: tran_id,
+            attendeeName: attendeeName || "Guest",
+            attendeeEmail: attendeeEmail || "",
+            ticketQuantity: ticketQuantity || 1,
         });
 
-        // Construct Mock Gateway URL
-        // In production, this would be the SSL Commerz Sandbox/Live URL with form data
-        const baseUrl = process.env.NEXT_PUBLIC_HOST_URL || "http://localhost:3000";
-        const gatewayUrl = `${baseUrl}/payment/mock?tran_id=${tran_id}&amount=${amount}&store_id=royal_class_events`;
+        // Construct Gateway URL (Detect host for tunnels)
+        const host = request.headers.get("host");
+        const protocol = request.headers.get("x-forwarded-proto") || "http";
+        const baseUrl = `${protocol}://${host}`;
+        const gatewayUrl = `${baseUrl}/payment/sslcommerz?amount=${amount}&eventId=${eventId}&userId=${userId}&tran_id=${tran_id}&regId=${regId}`;
 
         return NextResponse.json({
             status: "SUCCESS",
-            gatewayPageURL: gatewayUrl, // This matches SSL Commerz API response structure logic
-            tran_id
+            gatewayPageURL: gatewayUrl,
+            tran_id,
+            paymentId
         });
 
     } catch (error) {

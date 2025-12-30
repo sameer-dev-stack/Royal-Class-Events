@@ -45,17 +45,23 @@ export default function UpgradeModal({ isOpen, onClose, trigger = "limit" }) {
               <li className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-500" /> Custom Branding
               </li>
+              <li className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500" /> Advanced Analytics
+              </li>
+              <li className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500" /> Dedicated Account Manager
+              </li>
             </ul>
-            <div className="mt-4 pt-4 border-t border-border flex items-end justify-between">
-              <div>
-                <span className="text-2xl font-bold text-foreground">$29</span>
-                <span className="text-muted-foreground text-sm">/month</span>
-              </div>
+            <div className="mt-4 pt-4 border-t border-border">
+              <p className="text-sm font-medium text-foreground mb-2">Enterprise Pricing</p>
+              <p className="text-xs text-muted-foreground">
+                Contact us for custom pricing tailored to your organization's needs.
+              </p>
             </div>
           </div>
 
           <p className="text-xs text-center text-muted-foreground">
-            Secure payment gateway is currently being configured.
+            Get in touch with our team to discuss your requirements.
           </p>
         </div>
 
@@ -65,7 +71,7 @@ export default function UpgradeModal({ isOpen, onClose, trigger = "limit" }) {
             Dismiss
           </Button>
           <Button className="flex-1 bg-amber-600 hover:bg-amber-700 text-white border-none">
-            Upgrade Now
+            Contact Us
           </Button>
         </div>
       </DialogContent>

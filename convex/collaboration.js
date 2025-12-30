@@ -1,0 +1,37 @@
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+import { internal } from "./_generated/api";
+
+// Log a change event for the activity stream
+export const logChange = mutation({
+    args: {
+        designId: v.id("venueDesigns"),
+        action: v.string(),
+        elementType: v.string(),
+        elementId: v.optional(v.string()),
+        changeset: v.any(),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.runQuery(internal.users.getCurrentUser);
+        return await ctx.db.insert("collaborationEvents", {
+            designId: args.designId,
+            userId: user._id,
+            action: args.action,
+            elementType: args.elementType,
+            elementId: args.elementId,
+            changeset: args.changeset,
+            timestamp: Date.now(),
+        });
+    },
+});
+
+export const getHistory = query({
+    args: { designId: v.id("venueDesigns") },
+    handler: async (ctx, args) => {
+        return await ctx.db
+            .query("collaborationEvents")
+            .withIndex("byDesign", (q) => q.eq("designId", args.designId))
+            .order("desc")
+            .take(50);
+    },
+});

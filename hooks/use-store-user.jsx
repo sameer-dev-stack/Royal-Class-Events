@@ -1,38 +1,50 @@
-import { useUser } from "@clerk/nextjs";
-import { useConvexAuth } from "convex/react";
 import { useEffect, useState } from "react";
-import { useMutation } from "convex/react";
-import { api } from "../convex/_generated/api";
+import { useSession } from "next-auth/react";
+import { useConvexMutation } from "@/hooks/use-convex-query";
+import { api } from "@/convex/_generated/api";
 
+/**
+ * Hook to synchronize the authenticated user with the Convex database.
+ * Adapted for NextAuth.js.
+ * Works with both Real and Mock Auth (via backend bypass).
+ */
 export function useStoreUser() {
-  const { isLoading, isAuthenticated } = useConvexAuth();
-  const { user } = useUser();
-  // When this state is set we know the server
-  // has stored the user.
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === "authenticated";
+
   const [userId, setUserId] = useState(null);
-  const storeUser = useMutation(api.users.store);
-  // Call the `storeUser` mutation function to store
-  // the current user in the `users` table and return the `Id` value.
+  const [storeFailed, setStoreFailed] = useState(false);
+
+  const { mutate: storeUser } = useConvexMutation(api.users.store);
+
   useEffect(() => {
-    // If the user is not logged in don't do anything
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !session?.user) {
+      setUserId(null);
       return;
     }
-    // Store the user in the database.
-    // Recall that `storeUser` gets the user information via the `auth`
-    // object on the server. You don't need to pass anything manually here.
-    async function createUser() {
-      const id = await storeUser();
-      setUserId(id);
+
+    const syncUser = async () => {
+      try {
+        // We pass 'organizer' role suggestion for the dev user
+        const resultId = await storeUser({ role: "organizer" });
+        setUserId(resultId);
+        console.log("useStoreUser: Synced user to Convex:", resultId);
+      } catch (e) {
+        console.error("useStoreUser: Sync failed", e);
+        setStoreFailed(true);
+      }
+    };
+
+    if (isAuthenticated) {
+      syncUser();
     }
-    createUser();
-    return () => setUserId(null);
-    // Make sure the effect reruns if the user logs in with
-    // a different identity
-  }, [isAuthenticated, storeUser, user?.id]);
-  // Combine the local state with the state from context
+
+  }, [isAuthenticated, session]);
+
   return {
-    isLoading: isLoading || (isAuthenticated && userId === null),
-    isAuthenticated: isAuthenticated && userId !== null,
+    isLoading: status === "loading",
+    isAuthenticated,
+    userId,
+    storeFailed,
   };
 }

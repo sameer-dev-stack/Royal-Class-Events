@@ -1,33 +1,40 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { Building, Crown, Plus, Ticket, Menu, X, ArrowRight } from "lucide-react";
-import { SignInButton, useAuth, UserButton } from "@clerk/nextjs";
-import { Authenticated, Unauthenticated } from "convex/react";
 import { BarLoader } from "react-spinners";
 import { useStoreUser } from "@/hooks/use-store-user";
 import { useOnboarding } from "@/hooks/use-onboarding";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import OnboardingModal from "./onboarding-modal";
 import SearchLocationBar from "./search-location-bar";
 import { Button } from "@/components/ui/button";
-import UpgradeModal from "./upgrade-modal";
 import { ModeToggle } from "./mode-toggle";
-import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import UserButton from "./auth/user-button";
+import { useSession } from "next-auth/react";
 
-export default function Header() {
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+function HeaderContent() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { isLoading } = useStoreUser();
-  const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } =
-    useOnboarding();
+  const { data: session } = useSession();
+  const isAuthenticated = !!session;
 
-  const { has } = useAuth();
-  const hasPro = has?.({ plan: "pro" });
+  const { isLoading, storeFailed } = useStoreUser();
+  const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } = useOnboarding();
+  const { isAdmin, isOrganizer } = useUserRoles();
+
+  useEffect(() => {
+    // Debug logging for user session
+    if (session) {
+      console.log("Header: NextAuth session active for:", session.user?.email);
+    } else {
+      console.log("Header: No active NextAuth session.");
+    }
+  }, [session]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,13 +64,6 @@ export default function Header() {
             <span className="text-xl font-bold tracking-tighter text-foreground">
               Royal Class <span className="text-amber-500">Events</span>
             </span>
-
-            {hasPro && (
-              <Badge className="bg-amber-500 text-black hover:bg-amber-400 gap-1 ml-2">
-                <Crown className="w-3 h-3" />
-                Pro
-              </Badge>
-            )}
           </Link>
 
           {/* Search & Location - Desktop Only */}
@@ -98,47 +98,36 @@ export default function Header() {
             <ModeToggle />
 
             <div className="flex items-center gap-2">
-              <Authenticated>
-                {/* Create Event Button (Gold) - Hidden on smallest mobile */}
-                <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all">
-                  <Link href="/create-event">
-                    <Plus className="w-4 h-4" />
-                    <span className="hidden md:inline">Create Event</span>
-                  </Link>
-                </Button>
+              {isAuthenticated ? (
+                <>
+                  {/* Create Event Button (Gold) - Hidden on smallest mobile */}
+                  {(isOrganizer || isAdmin) && (
+                    <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all">
+                      <Link href="/create-event">
+                        <Plus className="w-4 h-4" />
+                        <span className="hidden md:inline">Create Event</span>
+                      </Link>
+                    </Button>
+                  )}
 
-                {/* User Button */}
-                <UserButton
-                  afterSignOutUrl="/"
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-9 h-9 ring-2 ring-amber-500/20 hover:ring-amber-500 transition-all",
-                    },
-                  }}
-                >
-                  <UserButton.MenuItems>
-                    <UserButton.Link
-                      label="My Tickets"
-                      labelIcon={<Ticket size={16} />}
-                      href="/my-tickets"
-                    />
-                    <UserButton.Link
-                      label="My Events"
-                      labelIcon={<Building size={16} />}
-                      href="/my-events"
-                    />
-                    <UserButton.Action label="manageAccount" />
-                  </UserButton.MenuItems>
-                </UserButton>
-              </Authenticated>
-
-              <Unauthenticated>
-                <SignInButton mode="modal">
-                  <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-black font-semibold">
-                    Sign In
+                  {/* User Button - NextAuth */}
+                  <UserButton />
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className="hidden sm:flex text-muted-foreground hover:text-amber-400"
+                  >
+                    <Link href="/sign-up">Get Started</Link>
                   </Button>
-                </SignInButton>
-              </Unauthenticated>
+                  <Button size="sm" asChild className="bg-amber-500 hover:bg-amber-600 text-black font-semibold">
+                    <Link href="/sign-in">Sign In</Link>
+                  </Button>
+                </>
+              )}
 
               {/* Hamburger Button */}
               <Button
@@ -157,7 +146,6 @@ export default function Header() {
         <AnimatePresence>
           {mobileMenuOpen && (
             <>
-              {/* Backdrop with blur */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -167,7 +155,6 @@ export default function Header() {
                 onClick={() => setMobileMenuOpen(false)}
               />
 
-              {/* Drawer */}
               <motion.div
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
@@ -177,7 +164,6 @@ export default function Header() {
               >
                 <div className="h-full flex flex-col p-6">
 
-                  {/* Search Section */}
                   <div className="mb-8">
                     <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
                       Search & Discover
@@ -187,13 +173,12 @@ export default function Header() {
                     </div>
                   </div>
 
-                  {/* Quick Actions Section */}
                   <div className="mb-8">
                     <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
                       Quick Actions
                     </h2>
                     <div className="space-y-3">
-                      <Authenticated>
+                      {isAuthenticated && (isOrganizer || isAdmin) && (
                         <Link
                           href="/create-event"
                           onClick={() => setMobileMenuOpen(false)}
@@ -213,7 +198,7 @@ export default function Header() {
                             </div>
                           </div>
                         </Link>
-                      </Authenticated>
+                      )}
 
                       <Link
                         href="/explore"
@@ -236,8 +221,7 @@ export default function Header() {
                     </div>
                   </div>
 
-                  {/* My Account Section */}
-                  <Authenticated>
+                  {isAuthenticated && (
                     <div className="mb-8">
                       <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
                         My Account
@@ -267,9 +251,8 @@ export default function Header() {
                         </Link>
                       </div>
                     </div>
-                  </Authenticated>
+                  )}
 
-                  {/* Resources Section */}
                   <div className="mb-8">
                     <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 px-1">
                       Resources
@@ -289,7 +272,6 @@ export default function Header() {
                     </div>
                   </div>
 
-                  {/* Footer - Pushed to bottom */}
                   <div className="mt-auto pt-6 border-t border-border/50">
                     <div className="flex items-center justify-center gap-2 mb-4">
                       <div className="bg-gradient-to-br from-amber-500/20 to-amber-600/10 p-2.5 rounded-xl border border-amber-500/20">
@@ -322,12 +304,18 @@ export default function Header() {
         onClose={handleOnboardingSkip}
         onComplete={handleOnboardingComplete}
       />
-
-      <UpgradeModal
-        isOpen={showUpgradeModal}
-        onClose={() => setShowUpgradeModal(false)}
-        trigger="header"
-      />
     </>
+  );
+}
+
+export default function Header() {
+  return (
+    <Suspense fallback={
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-md border-b border-border py-4">
+        <div className="max-w-7xl mx-auto px-6 h-8" />
+      </nav>
+    }>
+      <HeaderContent />
+    </Suspense>
   );
 }

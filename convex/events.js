@@ -34,6 +34,7 @@ export const createEvent = mutation({
     // Media and Theme
     coverImage: v.optional(v.string()),
     themeColor: v.optional(v.string()), // Store in metadata or style config
+    venueDesignId: v.optional(v.id("venueDesigns")),
     hasPro: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
@@ -41,15 +42,13 @@ export const createEvent = mutation({
       const user = await ctx.runQuery(internal.users.getCurrentUser);
       const isPro = args.hasPro || false;
 
-      // 1. Policy Checks
-      if (!isPro && (user.freeEventsCreated ?? 0) >= 1) {
-        throw new Error("Free event limit reached.");
+      // 1. Role & Policy Checks
+      const hasRole = user.roles?.some(r => r.key === "organizer" || r.key === "admin" || r.permissions.includes("*"));
+      if (!hasRole) {
+        throw new Error("Unauthorized: You need an Organizer role to create events.");
       }
-      const defaultColor = "#d97706";
-      if (!isPro && args.themeColor && args.themeColor !== defaultColor) {
-        throw new Error("Custom theme colors are a Pro feature.");
-      }
-      const finalColor = isPro ? args.themeColor : defaultColor;
+
+      const finalColor = args.themeColor || "#d97706";
 
       // 2. Image Handling
       let finalCoverImage = args.coverImage || "";
@@ -125,6 +124,7 @@ export const createEvent = mutation({
         // --- Basic Info ---
         title: { en: args.title },
         description: { en: args.description },
+        venueDesignId: args.venueDesignId, // ADDED
         slug: slug,
 
         // --- Organization ---
@@ -345,10 +345,26 @@ export const getEventBySlug = query({
   },
 });
 
-export const getEvent = query({
-  args: { eventId: v.id("events") },
+export const getById = query({
+  args: { id: v.id("events") },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.eventId);
+    // Fetch event by ID
+    const event = await ctx.db.get(args.id);
+    if (!event) return null;
+
+    // Resolve seat map image URL if it's a storage ID
+    if (event.seatMapConfig?.storageId && !event.seatMapConfig.imageUrl) {
+      const url = await ctx.storage.getUrl(event.seatMapConfig.storageId);
+      return {
+        ...event,
+        seatMapConfig: {
+          ...event.seatMapConfig,
+          imageUrl: url || ""
+        }
+      };
+    }
+
+    return event;
   },
 });
 
@@ -373,7 +389,9 @@ export const deleteEvent = mutation({
     const user = await ctx.runQuery(internal.users.getCurrentUser);
     const event = await ctx.db.get(args.eventId);
 
-    if (!event || event.ownerId !== user._id) {
+    const hasAdminRole = user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+
+    if (!event || (event.ownerId !== user._id && !hasAdminRole)) {
       throw new Error("Unauthorized");
     }
 
@@ -382,6 +400,50 @@ export const deleteEvent = mutation({
     await ctx.db.delete(args.eventId);
 
     // Decrement stats...
+    return { success: true };
+  },
+});
+
+export const update = mutation({
+  args: {
+    id: v.id("events"),
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    venueDesignId: v.optional(v.id("venueDesigns")), // ADDED
+    seatMapConfig: v.optional(v.object({
+      imageUrl: v.string(),
+      storageId: v.optional(v.string()),
+      zones: v.array(v.object({
+        id: v.string(),
+        name: v.string(),
+        color: v.string(),
+        price: v.number(),
+        capacity: v.optional(v.number()),
+        x: v.optional(v.number()),
+        y: v.optional(v.number()),
+        width: v.optional(v.number()),
+        height: v.optional(v.number()),
+        shape: v.optional(v.union(v.literal("rect"), v.literal("circle"), v.literal("ellipse"), v.literal("path"))),
+        rotation: v.optional(v.number()),
+        path: v.optional(v.string())
+      }))
+    }))
+  },
+  handler: async (ctx, args) => {
+    const { id, ...updates } = args;
+    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    const event = await ctx.db.get(id);
+
+    if (!event || event.ownerId !== user._id) {
+      throw new Error("Unauthorized");
+    }
+
+    // If seatMapConfig has a storageId, resolve the URL before saving if imageUrl is empty
+    if (updates.seatMapConfig?.storageId && !updates.seatMapConfig.imageUrl) {
+      updates.seatMapConfig.imageUrl = (await ctx.storage.getUrl(updates.seatMapConfig.storageId)) || "";
+    }
+
+    await ctx.db.patch(id, updates);
     return { success: true };
   },
 });

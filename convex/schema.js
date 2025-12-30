@@ -14,7 +14,8 @@ export default defineSchema({
       v.literal('ping'),
       v.literal('onelogin'),
       v.literal('custom_saml'),
-      v.literal('clerk')
+      v.literal('clerk'),
+      v.literal('supabase')
     ),
     authMetadata: v.optional(v.any()),
 
@@ -126,7 +127,7 @@ export default defineSchema({
     }),
 
     // Roles & Permissions (RBAC with ABAC attributes)
-    roles: v.array(
+    roles: v.optional(v.array(
       v.object({
         roleId: v.id("roles"),
         assignedBy: v.id("users"),
@@ -134,7 +135,7 @@ export default defineSchema({
         expiresAt: v.optional(v.number()),
         context: v.optional(v.any()), // Event-specific role context
       })
-    ),
+    )),
 
     // Session Management
     sessions: v.optional(
@@ -201,6 +202,17 @@ export default defineSchema({
       searchField: "profile.displayName",
       filterFields: ["tenantId", "status", "profile.department"],
     }),
+
+  // ==================== ROLES & PERMISSIONS ====================
+  roles: defineTable({
+    key: v.string(), // admin, organizer, attendee, support
+    name: v.string(),
+    description: v.string(),
+    permissions: v.array(v.string()),
+    isSystem: v.boolean(),
+    metadata: v.optional(v.any()),
+  })
+    .index("by_key", ["key"]),
 
   // ==================== TENANTS/ORGANIZATIONS ====================
   tenants: defineTable({
@@ -276,11 +288,11 @@ export default defineSchema({
       fontFamily: v.string(),
       customCss: v.optional(v.string()),
       favicon: v.optional(v.string()),
-      emailTemplateId: v.id("emailTemplates"),
+      emailTemplateId: v.optional(v.id("emailTemplates")),
     }),
 
     // Settings
-    settings: v.object({
+    settings: v.optional(v.object({
       requireMfa: v.boolean(),
       passwordPolicyId: v.id("passwordPolicies"),
       sessionTimeoutMinutes: v.number(),
@@ -291,7 +303,7 @@ export default defineSchema({
       dateFormat: v.string(),
       timeFormat: v.string(),
       firstDayOfWeek: v.number(),
-    }),
+    })),
 
     // Status
     status: v.union(
@@ -382,387 +394,40 @@ export default defineSchema({
     sponsorId: v.optional(v.id("users")), // Executive sponsor
     committeeIds: v.array(v.id("committees")),
 
-    // Time Management
-    timeConfiguration: v.object({
-      startDateTime: v.number(),
-      endDateTime: v.number(),
-      timezone: v.string(),
-      localStartTime: v.string(), // ISO format
-      localEndTime: v.string(),
-      durationMinutes: v.number(),
+    // Configuration
+    timeConfiguration: v.optional(v.any()),
+    locationConfig: v.optional(v.any()),
+    capacityConfig: v.optional(v.any()),
+    registrationConfig: v.optional(v.any()),
+    financials: v.optional(v.any()),
+    marketing: v.optional(v.any()),
+    content: v.optional(v.any()),
+    risk: v.optional(v.any()),
+    logistics: v.optional(v.any()),
 
-      // Scheduling
-      isRecurring: v.boolean(),
-      recurrenceRule: v.optional(
-        v.object({
-          frequency: v.union(v.literal('daily'), v.literal('weekly'), v.literal('monthly'), v.literal('yearly')),
-          interval: v.number(),
-          byDay: v.optional(v.array(v.string())),
-          byMonthDay: v.optional(v.array(v.number())),
-          byYearDay: v.optional(v.array(v.number())),
-          until: v.optional(v.number()),
-          count: v.optional(v.number()),
-          exceptions: v.optional(v.array(v.number())),
-        })
-      ),
-
-      // Timezone complexities
-      supportsMultipleTimezones: v.boolean(),
-      primaryTimezone: v.string(),
-      secondaryTimezones: v.array(v.string()),
-
-      // Buffer times
-      setupBufferMinutes: v.number(),
-      teardownBufferMinutes: v.number(),
-      attendeeBufferBefore: v.number(),
-      attendeeBufferAfter: v.number(),
-    }),
-
-    // Location Complexity
-    locationConfig: v.object({
-      type: v.union(v.literal('physical'), v.literal('virtual'), v.literal('hybrid'), v.literal('multi_venue')),
-
-      // Physical venues (can be multiple)
-      physicalVenues: v.array(
-        v.object({
-          venueId: v.id("venues"),
-          purpose: v.string(), // main, breakout, registration, etc.
-          capacity: v.number(),
-          setupStyle: v.string(), // theater, classroom, banquet, etc.
-          bookingReference: v.string(),
-          costCenter: v.string(),
-          contactPerson: v.object({
-            name: v.string(),
-            phone: v.string(),
-            email: v.string(),
-            emergencyContact: v.string(),
-          }),
-        })
-      ),
-
-      // Virtual configuration
-      virtualConfig: v.optional(
-        v.object({
-          platform: v.string(),
-          instanceId: v.string(),
-          region: v.string(),
-          backupRegion: v.optional(v.string()),
-
-          // Access
-          joinUrl: v.string(),
-          hostUrl: v.string(),
-          dialInNumbers: v.array(
-            v.object({
-              country: v.string(),
-              number: v.string(),
-              pin: v.string(),
-              language: v.string(),
-            })
-          ),
-
-          // Security
-          waitingRoomEnabled: v.boolean(),
-          passwordProtected: v.boolean(),
-          encryptionLevel: v.string(),
-          recordingAllowed: v.boolean(),
-
-          // Features
-          breakoutRooms: v.boolean(),
-          maxBreakoutRooms: v.number(),
-          pollingEnabled: v.boolean(),
-          qnaEnabled: v.boolean(),
-          handRaiseEnabled: v.boolean(),
-          closedCaptioning: v.boolean(),
-          signLanguageInterpreters: v.number(),
-
-          // Compliance
-          dataRegion: v.string(),
-          isCompliant: v.boolean(),
-          complianceCertifications: v.array(v.string()),
-        })
-      ),
-
-      // Hybrid specifics
-      hybridConfig: v.optional(
-        v.object({
-          virtualAttendanceAllowed: v.boolean(),
-          maxVirtualAttendees: v.number(),
-          streamingEnabled: v.boolean(),
-          streamUrl: v.optional(v.string()),
-          streamKey: v.optional(v.string()),
-          simulcastTo: v.array(v.string()),
-        })
-      ),
-    }),
-
-    // Capacity & Attendance
-    capacityConfig: v.object({
-      totalCapacity: v.number(),
-      reservedCapacity: v.number(), // For VIPs, speakers, etc.
-      waitlistEnabled: v.boolean(),
-      waitlistCapacity: v.number(),
-      overflowStrategy: v.union(
-        v.literal('deny'),
-        v.literal('waitlist'),
-        v.literal('overflow_room'),
-        v.literal('virtual_overflow')
-      ),
-
-      // Group allocations
-      groupAllocations: v.array(
-        v.object({
-          groupId: v.id("groups"),
-          allocatedSeats: v.number(),
-          usedSeats: v.number(),
-          priority: v.number(),
-        })
-      ),
-
-      // Density tracking
-      maxDensityPercent: v.number(),
-      socialDistancingRequired: v.boolean(),
-      distancingFeet: v.optional(v.number()),
-    }),
-
-    // Registration
-    registrationConfig: v.object({
-      opensAt: v.number(),
-      closesAt: v.number(),
-      earlyBirdDeadline: v.optional(v.number()),
-
-      // Requirements
-      requireApproval: v.boolean(),
-      approvalWorkflowId: v.optional(v.id("workflows")),
-      requireNDA: v.boolean(),
-      ndaDocumentId: v.optional(v.id("documents")),
-      requireBackgroundCheck: v.boolean(),
-      backgroundCheckLevel: v.optional(v.string()),
-
-      // Forms
-      registrationFormId: v.optional(v.id("forms")),
-      customFields: v.array(
-        v.object({
-          id: v.string(),
-          label: v.string(),
-          type: v.string(),
-          required: v.boolean(),
-          validation: v.optional(v.string()),
-          visibility: v.array(v.string()), // admin, attendee, public
-        })
-      ),
-
-      // Invitations
-      invitationOnly: v.boolean(),
-      invitationMode: v.union(v.literal('single_use'), v.literal('multi_use'), v.literal('domain')),
-      maxInvitationsPerUser: v.optional(v.number()),
-
-      // Check-in
-      checkInOpensBeforeMinutes: v.number(),
-      checkInClosesAfterMinutes: v.number(),
-      checkInMethods: v.array(v.string()),
-      requirePhotoId: v.boolean(),
-      requireCovidTest: v.boolean(),
-      covidTestValidityHours: v.optional(v.number()),
-    }),
-
-    // Financials
-    financials: v.object({
-      budget: v.number(),
-      actualCost: v.number(),
-      forecastCost: v.number(),
-      revenueTarget: v.number(),
-      actualRevenue: v.number(),
-
-      // Pricing
-      pricingModel: v.union(
-        v.literal('free'),
-        v.literal('paid'),
-        v.literal('sponsored'),
-        v.literal('invitation'),
-        v.literal('hybrid')
-      ),
-      currency: v.string(),
-
-      // Tax
-      taxInclusive: v.boolean(),
-      taxRate: v.number(),
-      taxJurisdiction: v.string(),
-
-      // Payment
-      paymentProcessor: v.string(),
-      merchantAccountId: v.string(),
-      paymentTerms: v.string(),
-      refundPolicy: v.string(),
-
-      // Invoicing
-      invoiceTemplateId: v.optional(v.id("templates")),
-      requirePO: v.boolean(),
-      poPrefix: v.optional(v.string()),
-    }),
-
-    // Marketing
-    marketing: v.object({
-      publicListing: v.boolean(),
-      seoOptimized: v.boolean(),
-      metaTitle: v.string(),
-      metaDescription: v.string(),
-      keywords: v.array(v.string()),
-
-      // Campaigns
-      campaignId: v.optional(v.string()),
-      utmSource: v.optional(v.string()),
-      utmMedium: v.optional(v.string()),
-      utmCampaign: v.optional(v.string()),
-
-      // Social
-      socialSharingEnabled: v.boolean(),
-      hashtag: v.optional(v.string()),
-      socialImage: v.optional(v.string()),
-    }),
-
-    // Content
-    content: v.object({
-      agendaPublished: v.boolean(),
-      speakerBiosPublished: v.boolean(),
-      materialsAvailable: v.boolean(),
-      recordingAvailable: v.boolean(),
-
-      // Media
-      coverImage: v.object({
-        url: v.string(),
-        altText: v.string(),
-        credits: v.optional(v.string()),
-        license: v.optional(v.string()),
-      }),
-      gallery: v.array(
-        v.object({
-          url: v.string(),
-          type: v.string(),
-          caption: v.string(),
-          order: v.number(),
-        })
-      ),
-
-      // Documents
-      documents: v.array(v.id("documents")),
-
-      // Translations
-      translations: v.optional(v.any()),
-    }),
-
-    // Risk & Compliance
-    risk: v.object({
-      riskAssessmentId: v.optional(v.id("riskAssessments")),
-      securityLevel: v.union(v.literal('low'), v.literal('medium'), v.literal('high'), v.literal('critical')),
-
-      // Insurance
-      insuranceRequired: v.boolean(),
-      insuranceAmount: v.optional(v.number()),
-      insuranceCertificateId: v.optional(v.id("documents")),
-
-      // Permits
-      permits: v.array(
-        v.object({
-          type: v.string(),
-          number: v.string(),
-          issuingAuthority: v.string(),
-          validFrom: v.number(),
-          validTo: v.number(),
-          documentId: v.id("documents"),
-        })
-      ),
-
-      // Safety
-      emergencyPlanId: v.optional(v.id("documents")),
-      firstAidStaff: v.number(),
-      securityStaff: v.number(),
-      evacuationRoutes: v.array(v.string()),
-
-      // Data Protection
-      dataProcessingAgreementSigned: v.boolean(),
-      dataProtectionOfficerId: v.optional(v.id("users")),
-      dataRetentionPolicyId: v.optional(v.id("retentionPolicies")),
-    }),
-
-    // Logistics
-    logistics: v.object({
-      // Catering
-      cateringRequired: v.boolean(),
-      catererId: v.optional(v.id("vendors")),
-      dietaryRequirements: v.array(v.string()),
-
-      // Accommodation
-      accommodationBlock: v.optional(
-        v.object({
-          hotelId: v.id("vendors"),
-          roomBlockCode: v.string(),
-          cutoffDate: v.number(),
-          rate: v.number(),
-        })
-      ),
-
-      // Transportation
-      shuttleService: v.optional(
-        v.object({
-          providerId: v.id("vendors"),
-          schedule: v.array(
-            v.object({
-              from: v.string(),
-              to: v.string(),
-              departure: v.string(),
-              capacity: v.number(),
-            })
-          ),
-        })
-      ),
-
-      // Equipment
-      avEquipment: v.array(
-        v.object({
-          item: v.string(),
-          quantity: v.number(),
-          providerId: v.id("vendors"),
-          deliveryTime: v.number(),
-          setupTime: v.number(),
-        })
-      ),
-
-      // Signage
-      signageRequired: v.boolean(),
-      signageLocations: v.array(v.string()),
-    }),
+    // Seat Map Configuration
+    seatMapConfig: v.optional(v.object({
+      imageUrl: v.string(),
+      storageId: v.optional(v.string()), // Added for internal storage reference
+      zones: v.array(v.object({
+        id: v.string(),
+        name: v.string(),
+        color: v.string(),
+        price: v.number(),
+        capacity: v.optional(v.number()),
+        // Spatial Data (Temporarily optional to allow backfill)
+        x: v.optional(v.number()),
+        y: v.optional(v.number()),
+        width: v.optional(v.number()),
+        height: v.optional(v.number()),
+        shape: v.optional(v.union(v.literal("rect"), v.literal("circle"), v.literal("ellipse"), v.literal("path"))),
+        rotation: v.optional(v.number()),
+        path: v.optional(v.string()) // For custom shapes if needed
+      }))
+    })),
 
     // Status & Workflow
-    status: v.object({
-      current: v.union(
-        v.literal('draft'),
-        v.literal('pending_approval'),
-        v.literal('approved'),
-        v.literal('planning'),
-        v.literal('marketing'),
-        v.literal('registration_open'),
-        v.literal('live'),
-        v.literal('completed'),
-        v.literal('archived'),
-        v.literal('cancelled')
-      ),
-      previous: v.optional(v.string()),
-      changedAt: v.number(),
-      changedBy: v.id("users"),
-      reason: v.optional(v.string()),
-
-      // Milestones
-      milestones: v.array(
-        v.object({
-          name: v.string(),
-          dueDate: v.number(),
-          completed: v.boolean(),
-          completedAt: v.optional(v.number()),
-          completedBy: v.optional(v.id("users")),
-          dependencies: v.array(v.string()),
-        })
-      ),
-    }),
+    status: v.optional(v.any()),
 
     // Analytics
     analytics: v.object({
@@ -1034,6 +699,31 @@ export default defineSchema({
       ),
     }),
 
+    // Seat Map Configuration
+    seatMapEnabled: v.optional(v.boolean()),
+    seatMapConfig: v.optional(v.object({
+      defaultLayoutType: v.union(
+        v.literal('stadium'),
+        v.literal('theater'),
+        v.literal('conference'),
+        v.literal('outdoor')
+      ),
+      totalSeats: v.number(),
+      canvasWidth: v.number(),  // SVG canvas width
+      canvasHeight: v.number(), // SVG canvas height
+      seatWidth: v.number(),    // Seat circle/rect size
+      seatSpacing: v.number(),  // Space between seats
+      rowSpacing: v.number(),   // Space between rows
+      centerX: v.number(),      // Center point for stadium/theater
+      centerY: v.number(),
+      stagePosition: v.optional(v.object({
+        x: v.number(),
+        y: v.number(),
+        width: v.number(),
+        height: v.number(),
+      })),
+    })),
+
     // Status
     status: v.union(
       v.literal('active'),
@@ -1064,203 +754,35 @@ export default defineSchema({
     code: v.string(), // Internal code like VIP-001
 
     // Pricing strategy
-    pricing: v.object({
-      basePrice: v.number(),
-      currency: v.string(),
-      taxRate: v.number(),
-      taxInclusive: v.boolean(),
-
-      // Dynamic pricing
-      dynamicPricingEnabled: v.boolean(),
-      pricingRules: v.optional(
-        v.array(
-          v.object({
-            trigger: v.string(), // date, quantity, etc.
-            condition: v.any(),
-            adjustmentType: v.union(v.literal('fixed'), v.literal('percentage')),
-            value: v.number(),
-            maxPrice: v.optional(v.number()),
-            minPrice: v.optional(v.number()),
-          })
-        )
-      ),
-
-      // Discounts
-      earlyBirdPrice: v.optional(v.number()),
-      earlyBirdDeadline: v.optional(v.number()),
-      groupDiscount: v.optional(
-        v.object({
-          minQuantity: v.number(),
-          discountPercent: v.number(),
-        })
-      ),
-      memberDiscount: v.optional(
-        v.object({
-          discountPercent: v.number(),
-          memberTypes: v.array(v.string()),
-        })
-      ),
-    }),
+    pricing: v.optional(v.any()),
 
     // Inventory
-    inventory: v.object({
-      totalQuantity: v.number(),
-      reservedQuantity: v.number(),
-      soldQuantity: v.number(),
-      waitlistQuantity: v.number(),
-
-      // Release strategy
-      releaseSchedule: v.array(
-        v.object({
-          batchNumber: v.number(),
-          quantity: v.number(),
-          releaseDate: v.number(),
-          conditions: v.optional(v.array(v.string())),
-        })
-      ),
-
-      // Hold management
-      holds: v.array(
-        v.object({
-          holdId: v.string(),
-          quantity: v.number(),
-          heldBy: v.id("users"),
-          heldUntil: v.number(),
-          purpose: v.string(),
-        })
-      ),
-    }),
+    inventory: v.optional(v.any()),
 
     // Sales window
-    salesWindow: v.object({
-      startDate: v.number(),
-      endDate: v.number(),
-      timezone: v.string(),
-
-      // Restrictions
-      purchaseLimitPerUser: v.number(),
-      purchaseLimitPerTransaction: v.number(),
-      requireApproval: v.boolean(),
-      approvalWorkflowId: v.optional(v.id("workflows")),
-
-      // Visibility
-      visibility: v.union(
-        v.literal('public'),
-        v.literal('hidden'),
-        v.literal('password_protected'),
-        v.literal('invite_only')
-      ),
-      visibilityPassword: v.optional(v.string()),
-      visibleToGroups: v.optional(v.array(v.id("groups"))),
-    }),
+    salesWindow: v.optional(v.any()),
 
     // Ticket features
-    features: v.object({
-      transferable: v.boolean(),
-      refundable: v.boolean(),
-      upgradeable: v.boolean(),
-      downgradeable: v.boolean(),
-
-      // Access
-      accessLevel: v.number(),
-      accessAreas: v.array(v.string()),
-      sessionAccess: v.array(v.id("sessions")),
-
-      // Perks
-      includedPerks: v.array(
-        v.object({
-          type: v.string(),
-          description: v.string(),
-          value: v.optional(v.number()),
-          redemptionInstructions: v.optional(v.string()),
-        })
-      ),
-
-      // Digital assets
-      includesDigitalGoods: v.boolean(),
-      digitalGoods: v.optional(v.array(v.id("documents"))),
-    }),
+    features: v.optional(v.any()),
 
     // Fulfillment
-    fulfillment: v.object({
-      deliveryMethod: v.union(
-        v.literal('digital'),
-        v.literal('print_at_home'),
-        v.literal('will_call'),
-        v.literal('mail'),
-        v.literal('mobile')
-      ),
-
-      // Will call details
-      willCallDetails: v.optional(
-        v.object({
-          location: v.string(),
-          hours: v.string(),
-          requiredId: v.array(v.string()),
-        })
-      ),
-
-      // Shipping
-      shipping: v.optional(
-        v.object({
-          provider: v.string(),
-          cost: v.number(),
-          countries: v.array(v.string()),
-          processingDays: v.number(),
-          trackingRequired: v.boolean(),
-        })
-      ),
-
-      // Printing
-      printSettings: v.optional(
-        v.object({
-          templateId: v.string(),
-          barcodeType: v.string(),
-          includesMap: v.boolean(),
-        })
-      ),
-    }),
+    fulfillment: v.optional(v.any()),
 
     // Compliance
-    compliance: v.object({
-      termsUrl: v.string(),
-      privacyUrl: v.string(),
-      refundPolicyUrl: v.string(),
-
-      // Age restrictions
-      minAge: v.optional(v.number()),
-      maxAge: v.optional(v.number()),
-      idRequired: v.boolean(),
-
-      // Legal
-      disclaimer: v.optional(v.string()),
-      waiverRequired: v.boolean(),
-      waiverDocumentId: v.optional(v.id("documents")),
-    }),
+    compliance: v.optional(v.any()),
 
     // Status
-    status: v.union(
-      v.literal('draft'),
-      v.literal('active'),
-      v.literal('paused'),
-      v.literal('sold_out'),
-      v.literal('archived')
-    ),
+    status: v.optional(v.any()),
 
     // Analytics
-    analytics: v.object({
-      views: v.number(),
-      conversionRate: v.number(),
-      averagePurchaseTime: v.number(),
-      cartAbandonmentRate: v.number(),
-    }),
+    analytics: v.optional(v.any()),
 
     // Audit
-    createdBy: v.id("users"),
-    createdAt: v.number(),
-    updatedBy: v.id("users"),
-    updatedAt: v.number(),
-    version: v.number(),
+    createdBy: v.optional(v.id("users")),
+    createdAt: v.optional(v.number()),
+    updatedBy: v.optional(v.id("users")),
+    updatedAt: v.optional(v.number()),
+    version: v.optional(v.number()),
   })
     .index("by_event", ["eventId"])
     .index("by_external_id", ["externalId"])
@@ -1271,570 +793,49 @@ export default defineSchema({
 
   // ==================== REGISTRATIONS ====================
   registrations: defineTable({
-    // Core
     tenantId: v.optional(v.id("tenants")),
     eventId: v.id("events"),
     userId: v.id("users"),
     externalId: v.string(),
     registrationNumber: v.string(),
-
-    // Ticket details
     ticketTierId: v.optional(v.id("ticketTiers")),
     ticketQuantity: v.number(),
     unitPrice: v.number(),
 
-    // Status lifecycle
-    status: v.object({
-      current: v.union(
-        v.literal('draft'),
-        v.literal('pending_payment'),
-        v.literal('pending_approval'),
-        v.literal('confirmed'),
-        v.literal('waitlisted'),
-        v.literal('cancelled'),
-        v.literal('refunded'),
-        v.literal('transferred'),
-        v.literal('upgraded'),
-        v.literal('no_show'),
-        v.literal('checked_in'),
-        v.literal('completed')
-      ),
-      history: v.array(
-        v.object({
-          status: v.string(),
-          changedAt: v.number(),
-          changedBy: v.union(v.id("users"), v.literal('system')),
-          reason: v.optional(v.string()),
-          notes: v.optional(v.string()),
-        })
-      ),
-      lastUpdated: v.number(),
-    }),
-
-    // Attendee information
-    attendeeInfo: v.object({
-      // Primary attendee
-      primary: v.object({
-        userId: v.id("users"),
-        registrationType: v.union(v.literal('self'), v.literal('group_leader'), v.literal('corporate')),
-
-        // Verified info
-        verifiedName: v.string(),
-        verifiedEmail: v.string(),
-        verifiedPhone: v.optional(v.string()),
-
-        // Badge info
-        badgeName: v.string(),
-        badgeTitle: v.string(),
-        badgeCompany: v.string(),
-        badgeColor: v.string(),
-
-        // Dietary & accessibility
-        dietaryRestrictions: v.array(v.string()),
-        accessibilityRequirements: v.array(v.string()),
-        medicalConditions: v.optional(v.string()),
-        emergencyContact: v.optional(
-          v.object({
-            name: v.string(),
-            relationship: v.string(),
-            phone: v.string(),
-          })
-        ),
-      }),
-
-      // Additional attendees (for group registrations)
-      additionalAttendees: v.optional(
-        v.array(
-          v.object({
-            index: v.number(),
-            firstName: v.string(),
-            lastName: v.string(),
-            email: v.string(),
-            ticketType: v.string(),
-            dietaryRestrictions: v.array(v.string()),
-            badgeName: v.string(),
-            checkedIn: v.boolean(),
-            checkInTime: v.optional(v.number()),
-          })
-        )
-      ),
-
-      // Group details
-      groupInfo: v.optional(
-        v.object({
-          groupId: v.id("groups"),
-          groupName: v.string(),
-          isGroupLeader: v.boolean(),
-          groupSize: v.number(),
-          groupDiscountApplied: v.boolean(),
-          groupCode: v.optional(v.string()),
-        })
-      ),
-
-      // Corporate details
-      corporateInfo: v.optional(
-        v.object({
-          companyId: v.id("companies"),
-          department: v.string(),
-          costCenter: v.string(),
-          poNumber: v.optional(v.string()),
-          billingContactId: v.optional(v.id("users")),
-        })
-      ),
-    }),
-
-    // Financials
-    financials: v.object({
-      // Amounts
-      subtotal: v.number(),
-      taxAmount: v.number(),
-      discountAmount: v.number(),
-      serviceFee: v.number(),
-      processingFee: v.number(),
-      totalAmount: v.number(),
-      amountPaid: v.number(),
-      amountDue: v.number(),
-      currency: v.string(),
-
-      // Discounts
-      discounts: v.array(
-        v.object({
-          type: v.string(),
-          code: v.string(),
-          amount: v.number(),
-          appliedAt: v.number(),
-          appliedBy: v.id("users"),
-        })
-      ),
-
-      // Payment methods
-      paymentMethod: v.optional(
-        v.object({
-          type: v.union(
-            v.literal('credit_card'),
-            v.literal('debit_card'),
-            v.literal('bank_transfer'),
-            v.literal('check'),
-            v.literal('cash'),
-            v.literal('invoice'),
-            v.literal('comp')
-          ),
-          details: v.optional(v.any()),
-          lastFour: v.optional(v.string()),
-          expiry: v.optional(v.string()),
-        })
-      ),
-
-      // Invoicing
-      invoiceNumber: v.optional(v.string()),
-      invoiceDate: v.optional(v.number()),
-      invoiceDueDate: v.optional(v.number()),
-      invoiceStatus: v.optional(v.string()),
-
-      // Refunds
-      refunds: v.array(
-        v.object({
-          refundId: v.string(),
-          amount: v.number(),
-          reason: v.string(),
-          processedAt: v.number(),
-          processedBy: v.id("users"),
-          method: v.string(),
-          status: v.string(),
-        })
-      ),
-    }),
-
-    // Check-in details
-    checkIn: v.object({
-      status: v.union(v.literal('not_checked_in'), v.literal('checked_in'), v.literal('late'), v.literal('no_show')),
-      checkInTime: v.optional(v.number()),
-      checkOutTime: v.optional(v.number()),
-      checkInMethod: v.optional(
-        v.union(
-          v.literal('qr_scan'),
-          v.literal('manual'),
-          v.literal('nfc'),
-          v.literal('facial_recognition'),
-          v.literal('mobile_app')
-        )
-      ),
-      checkedInBy: v.optional(v.id("users")),
-      location: v.optional(v.string()),
-      deviceId: v.optional(v.string()),
-
-      // Badge printing
-      badgePrinted: v.boolean(),
-      badgePrintTime: v.optional(v.number()),
-      badgePrinterId: v.optional(v.string()),
-      badgePrintCount: v.number(),
-
-      // Materials
-      materialsDistributed: v.array(
-        v.object({
-          item: v.string(),
-          distributedAt: v.number(),
-          distributedBy: v.id("users"),
-          quantity: v.number(),
-        })
-      ),
-    }),
-
-    // Session attendance
-    sessionAttendance: v.array(
-      v.object({
-        sessionId: v.id("sessions"),
-        status: v.union(v.literal('registered'), v.literal('attended'), v.literal('cancelled'), v.literal('no_show')),
-        registeredAt: v.number(),
-        attendedAt: v.optional(v.number()),
-        duration: v.optional(v.number()),
-        seatNumber: v.optional(v.string()),
-        feedbackSubmitted: v.boolean(),
-        feedbackId: v.optional(v.id("feedbacks")),
-      })
-    ),
-
-    // Communication
-    communication: v.object({
-      // Preferences
-      preferences: v.object({
-        emailUpdates: v.boolean(),
-        smsUpdates: v.boolean(),
-        pushNotifications: v.boolean(),
-        partnerCommunications: v.boolean(),
-        photoRelease: v.boolean(),
-      }),
-
-      // History
-      sentEmails: v.array(
-        v.object({
-          templateId: v.string(),
-          sentAt: v.number(),
-          opened: v.boolean(),
-          openedAt: v.optional(v.number()),
-          clicked: v.boolean(),
-          clickedAt: v.optional(v.number()),
-        })
-      ),
-
-      // SMS
-      sentSms: v.array(
-        v.object({
-          templateId: v.string(),
-          sentAt: v.number(),
-          delivered: v.boolean(),
-          read: v.boolean(),
-        })
-      ),
-    }),
-
-    // Source tracking
-    source: v.object({
-      // Acquisition
-      referrer: v.optional(v.string()),
-      campaign: v.optional(v.string()),
-      medium: v.optional(v.string()),
-      source: v.optional(v.string()),
-      landingPage: v.optional(v.string()),
-
-      // Device
-      deviceType: v.string(),
-      browser: v.string(),
-      os: v.string(),
-      ipAddress: v.string(),
-      geoLocation: v.optional(
-        v.object({
-          country: v.string(),
-          region: v.string(),
-          city: v.string(),
-          lat: v.number(),
-          lon: v.number(),
-        })
-      ),
-
-      // User journey
-      firstVisit: v.number(),
-      registrationStarted: v.number(),
-      registrationCompleted: v.number(),
-      timeToComplete: v.number(),
-      stepsCompleted: v.array(v.string()),
-      abandonedSteps: v.array(v.string()),
-    }),
-
-    // Compliance
-    compliance: v.object({
-      termsAccepted: v.boolean(),
-      termsAcceptedAt: v.number(),
-      termsVersion: v.string(),
-
-      privacyAccepted: v.boolean(),
-      privacyAcceptedAt: v.number(),
-      privacyVersion: v.string(),
-
-      waiverSigned: v.boolean(),
-      waiverSignedAt: v.optional(v.number()),
-      waiverDocumentId: v.optional(v.id("documents")),
-
-      ndaSigned: v.boolean(),
-      ndaSignedAt: v.optional(v.number()),
-      ndaDocumentId: v.optional(v.id("documents")),
-
-      photoRelease: v.boolean(),
-      ageVerified: v.boolean(),
-      idVerified: v.boolean(),
-      backgroundCheckPassed: v.optional(v.boolean()),
-    }),
-
-    // Metadata
-    metadata: v.object({
-      tags: v.array(v.string()),
-      customFields: v.optional(v.any()),
-      notes: v.optional(v.string()),
-      internalNotes: v.optional(v.string()),
-      priority: v.number(),
-    }),
-
-    // Audit trail
-    audit: v.object({
-      createdBy: v.union(v.id("users"), v.literal('system')),
-      createdAt: v.number(),
-      updatedBy: v.id("users"),
-      updatedAt: v.number(),
-      cancelledBy: v.optional(v.id("users")),
-      cancelledAt: v.optional(v.number()),
-      cancelledReason: v.optional(v.string()),
-      version: v.number(),
-    }),
+    // Flexible sections
+    status: v.optional(v.any()),
+    attendeeInfo: v.optional(v.any()),
+    financials: v.optional(v.any()),
+    checkIn: v.optional(v.any()),
+    sessionAttendance: v.optional(v.any()),
+    communication: v.optional(v.any()),
+    source: v.optional(v.any()),
+    compliance: v.optional(v.any()),
+    metadata: v.optional(v.any()),
+    audit: v.optional(v.any()),
   })
     .index("by_event", ["eventId"])
     .index("by_user", ["userId"])
-    .index("by_event_user", ["eventId", "userId"])
-    .index("by_status", ["status.current"])
-    .index("by_ticket_tier", ["ticketTierId"])
-    .index("by_checkin", ["checkIn.status"])
-    .index("by_date", ["audit.createdAt"])
-    .index("by_external_id", ["externalId"])
-    .index("by_registration_number", ["registrationNumber"])
-    .index("by_group", ["attendeeInfo.groupInfo.groupId"])
-    .index("by_company", ["attendeeInfo.corporateInfo.companyId"])
-    .searchIndex("registration_search", {
-      searchField: "attendeeInfo.primary.verifiedName",
-      filterFields: [
-        "tenantId",
-        "eventId",
-        "status.current",
-        "checkIn.status"
-      ],
-    }),
+    .index("by_event_user", ["eventId", "userId"]),
 
   // ==================== PAYMENTS ====================
   payments: defineTable({
-    tenantId: v.id("tenants"),
+    tenantId: v.optional(v.id("tenants")),
     registrationId: v.id("registrations"),
     externalId: v.string(),
     paymentNumber: v.string(),
 
-    // Amounts
-    amount: v.object({
-      subtotal: v.number(),
-      tax: v.number(),
-      fees: v.number(),
-      discount: v.number(),
-      total: v.number(),
-      currency: v.string(),
-      exchangeRate: v.optional(v.number()),
-      convertedAmount: v.optional(v.number()),
-      convertedCurrency: v.optional(v.string()),
-    }),
-
-    // Method details
-    method: v.object({
-      type: v.union(
-        v.literal('credit_card'),
-        v.literal('debit_card'),
-        v.literal('bank_transfer'),
-        v.literal('check'),
-        v.literal('cash'),
-        v.literal('digital_wallet'),
-        v.literal('crypto'),
-        v.literal('invoice'),
-        v.literal('comp'),
-        v.literal('voucher')
-      ),
-
-      // Card details (tokenized)
-      card: v.optional(
-        v.object({
-          token: v.string(),
-          brand: v.string(),
-          last4: v.string(),
-          expiryMonth: v.number(),
-          expiryYear: v.number(),
-          country: v.string(),
-          fingerprint: v.string(),
-        })
-      ),
-
-      // Bank transfer
-      bankTransfer: v.optional(
-        v.object({
-          reference: v.string(),
-          bankName: v.string(),
-          accountLast4: v.string(),
-          routingNumber: v.string(),
-        })
-      ),
-
-      // Digital wallet
-      digitalWallet: v.optional(
-        v.object({
-          provider: v.string(),
-          walletId: v.string(),
-          email: v.string(),
-        })
-      ),
-
-      // Check
-      check: v.optional(
-        v.object({
-          checkNumber: v.string(),
-          bankName: v.string(),
-          receivedDate: v.number(),
-          clearedDate: v.optional(v.number()),
-        })
-      ),
-
-      // Invoice
-      invoice: v.optional(
-        v.object({
-          invoiceNumber: v.string(),
-          dueDate: v.number(),
-          terms: v.string(),
-          poNumber: v.optional(v.string()),
-        })
-      ),
-    }),
-
-    // Processor details
-    processor: v.object({
-      name: v.string(),
-      transactionId: v.string(),
-      authorizationCode: v.string(),
-      avsResult: v.optional(v.string()),
-      cvvResult: v.optional(v.string()),
-      riskScore: v.optional(v.number()),
-      riskLevel: v.optional(v.string()),
-      processorFee: v.number(),
-      settlementCurrency: v.string(),
-    }),
-
-    // Status lifecycle
-    status: v.object({
-      current: v.union(
-        v.literal('pending'),
-        v.literal('authorized'),
-        v.literal('captured'),
-        v.literal('settled'),
-        v.literal('failed'),
-        v.literal('voided'),
-        v.literal('refunded'),
-        v.literal('disputed'),
-        v.literal('chargeback')
-      ),
-      history: v.array(
-        v.object({
-          status: v.string(),
-          timestamp: v.number(),
-          initiatedBy: v.union(v.id("users"), v.literal('system'), v.literal('processor')),
-          reason: v.optional(v.string()),
-          metadata: v.optional(v.any()),
-        })
-      ),
-    }),
-
-    // Timeline
-    timeline: v.object({
-      initiatedAt: v.number(),
-      authorizedAt: v.optional(v.number()),
-      capturedAt: v.optional(v.number()),
-      settledAt: v.optional(v.number()),
-      failedAt: v.optional(v.number()),
-      voidedAt: v.optional(v.number()),
-      refundedAt: v.optional(v.number()),
-    }),
-
-    // Refunds
-    refunds: v.array(
-      v.object({
-        refundId: v.string(),
-        amount: v.number(),
-        reason: v.string(),
-        initiatedBy: v.id("users"),
-        initiatedAt: v.number(),
-        processedAt: v.optional(v.number()),
-        status: v.string(),
-        processorRefundId: v.optional(v.string()),
-      })
-    ),
-
-    // Disputes & Chargebacks
-    disputes: v.array(
-      v.object({
-        disputeId: v.string(),
-        type: v.string(),
-        reason: v.string(),
-        amount: v.number(),
-        currency: v.string(),
-        initiatedAt: v.number(),
-        respondedAt: v.optional(v.number()),
-        resolvedAt: v.optional(v.number()),
-        resolution: v.optional(v.string()),
-        evidence: v.array(
-          v.object({
-            type: v.string(),
-            url: v.string(),
-            submittedAt: v.number(),
-          })
-        ),
-      })
-    ),
-
-    // Compliance
-    compliance: v.object({
-      pciCompliant: v.boolean(),
-      tokenized: v.boolean(),
-      encrypted: v.boolean(),
-      auditTrail: v.boolean(),
-      retentionPolicyId: v.id("retentionPolicies"),
-    }),
-
-    // Metadata
-    metadata: v.object({
-      billingAddress: v.optional(
-        v.object({
-          line1: v.string(),
-          line2: v.optional(v.string()),
-          city: v.string(),
-          state: v.string(),
-          postalCode: v.string(),
-          country: v.string(),
-        })
-      ),
-      customerIp: v.optional(v.string()),
-      deviceId: v.optional(v.string()),
-      fraudScore: v.optional(v.number()),
-      riskFlags: v.array(v.string()),
-      customFields: v.optional(v.any()),
-    }),
-
-    // Audit
-    audit: v.object({
-      createdBy: v.union(v.id("users"), v.literal('system')),
-      createdAt: v.number(),
-      updatedBy: v.id("users"),
-      updatedAt: v.number(),
-      version: v.number(),
-    }),
+    // Flexible sections
+    amount: v.optional(v.any()),
+    method: v.optional(v.any()),
+    processor: v.optional(v.any()),
+    status: v.optional(v.any()),
+    timeline: v.optional(v.any()),
+    refunds: v.optional(v.any()),
+    disputes: v.optional(v.any()),
+    compliance: v.optional(v.any()),
+    metadata: v.optional(v.any()),
+    audit: v.optional(v.any()),
   })
     .index("by_tenant", ["tenantId"])
     .index("by_registration", ["registrationId"])
@@ -3918,5 +2919,356 @@ export default defineSchema({
   })
     .index("by_tenant_model", ["tenantId", "modelId"])
     .index("by_evaluation_date", ["evaluatedAt"])
-    .index("by_performance", ["metrics.accuracy"])
+    .index("by_performance", ["metrics.accuracy"]),
+
+  // ==================== MOCK COMMUNICATIONS (DEV ONLY) ====================
+  mock_communications: defineTable({
+    type: v.union(v.literal('email'), v.literal('sms')),
+    recipient: v.string(),
+    subject: v.optional(v.string()),
+    body: v.string(),
+    metadata: v.optional(v.any()),
+    sentAt: v.number(),
+    status: v.string(), // sent, failed
+  })
+    .index("by_recipient", ["recipient"])
+    .index("by_type", ["type"]),
+
+  // ==================== SEAT MAP SYSTEM ====================
+
+  // Venue Sections (e.g., VIP, Premium, Standard)
+  sections: defineTable({
+    venueId: v.id("venues"),
+    eventId: v.optional(v.id("events")), // Event-specific overrides
+    name: v.string(), // "VIP Section A", "Balcony Left"
+    sectionType: v.union(
+      v.literal('vip'),
+      v.literal('premium'),
+      v.literal('standard'),
+      v.literal('accessible'),
+      v.literal('standing')
+    ),
+    priceZoneId: v.optional(v.id("priceZones")),
+
+    // Layout configuration
+    layoutType: v.union(
+      v.literal('stadium'), // Concentric circles
+      v.literal('theater'),  // Fan-shaped rows
+      v.literal('conference'), // Grid layout
+      v.literal('outdoor')   // Freeform
+    ),
+
+    // Geometry for rendering (polygon coordinates)
+    geometry: v.optional(v.object({
+      type: v.literal('polygon'),
+      coordinates: v.array(v.object({
+        x: v.number(),
+        y: v.number()
+      }))
+    })),
+
+    // Display properties
+    displayOrder: v.number(),
+    color: v.string(), // Hex color for section
+
+    // Metadata
+    capacity: v.number(),
+    rowCount: v.number(),
+    seatsPerRow: v.number(),
+    properties: v.optional(v.any()),
+
+    // Audit
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_venue", ["venueId"])
+    .index("by_event", ["eventId"])
+    .index("by_price_zone", ["priceZoneId"]),
+
+  // Price Zones for seat pricing tiers
+  priceZones: defineTable({
+    name: v.string(),
+    eventId: v.optional(v.id("events")), // Event-specific pricing
+    venueId: v.optional(v.id("venues")), // Default venue pricing
+
+    // Pricing
+    basePrice: v.number(),
+    currency: v.string(),
+
+    // Dynamic pricing (optional AI features)
+    dynamicPricingEnabled: v.boolean(),
+    surgeMultiplier: v.optional(v.number()), // 1.5 = 50% surge
+    demandThreshold: v.optional(v.number()), // % sold to trigger surge
+
+    // Features included
+    features: v.array(v.string()), // ["Early entry", "Meet & greet"]
+
+    // Status
+    isActive: v.boolean(),
+
+    // Audit
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_event", ["eventId"])
+    .index("by_venue", ["venueId"])
+    .index("by_price", ["basePrice"]),
+
+  // Individual Seats
+  seats: defineTable({
+    sectionId: v.id("sections"),
+    eventId: v.optional(v.id("events")), // Link to specific event
+
+    // Identification
+    rowLabel: v.string(), // "A", "B", "1", "2"
+    seatNumber: v.number(), // 1, 2, 3...
+    displayLabel: v.optional(v.string()), // "A-12" for display
+
+    // Position on canvas (for rendering)
+    xPosition: v.number(),
+    yPosition: v.number(),
+
+    // Status
+    status: v.union(
+      v.literal('available'),
+      v.literal('selected'),   // Currently being selected by a user
+      v.literal('held'),       // Temporarily reserved (10 min hold)
+      v.literal('booked'),     // Confirmed reservation
+      v.literal('reserved'),   // Reserved by organizers
+      v.literal('unavailable') // Broken, removed, etc.
+    ),
+
+    // Seat type and features
+    seatType: v.union(
+      v.literal('standard'),
+      v.literal('wheelchair'),
+      v.literal('companion'), // Next to wheelchair
+      v.literal('aisle'),
+      v.literal('box'),      // Private box
+      v.literal('standing')  // Standing room
+    ),
+
+    // Quality scoring (for AI recommendations)
+    viewQualityScore: v.optional(v.number()), // 0-100
+    accessibilityScore: v.optional(v.number()), // 0-100
+
+    // References
+    currentHoldId: v.optional(v.id("seatHolds")),
+    registrationId: v.optional(v.id("registrations")),
+
+    // Metadata
+    properties: v.optional(v.any()), // Custom attributes
+
+    // Audit
+    lastStatusChange: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_section", ["sectionId"])
+    .index("by_event", ["eventId"])
+    .index("by_status", ["status"])
+    .index("by_section_row", ["sectionId", "rowLabel"])
+    .index("by_hold", ["currentHoldId"])
+    .index("by_registration", ["registrationId"]),
+
+  // Seat Holds (temporary reservations with TTL)
+  seatHolds: defineTable({
+    eventId: v.id("events"),
+    seatIds: v.array(v.id("seats")),
+
+    // User information
+    userId: v.optional(v.id("users")),
+    sessionId: v.string(), // Browser session ID
+
+    // Hold timing
+    holdExpiresAt: v.number(), // Timestamp when hold expires
+    holdDurationMs: v.number(), // Usually 600000 (10 minutes)
+
+    // AI Recommendation context (if seats were recommended)
+    aiScore: v.optional(v.number()), // 0-100 recommendation confidence
+    selectionReason: v.optional(v.string()), // "Best value", "Great view"
+    recommendationFactors: v.optional(v.object({
+      priceMatch: v.number(),
+      viewQuality: v.number(),
+      groupCohesion: v.number(),
+      accessibility: v.number(),
+    })),
+
+    // Status
+    status: v.union(
+      v.literal('active'),
+      v.literal('expired'),
+      v.literal('converted'), // Converted to booking
+      v.literal('released')   // Manually released
+    ),
+
+    // Metadata
+    userAgent: v.optional(v.string()),
+    ipAddress: v.optional(v.string()),
+
+    // Audit
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_event", ["eventId"])
+    .index("by_user", ["userId"])
+    .index("by_session", ["sessionId"])
+    .index("by_status", ["status"])
+    .index("by_expiry", ["holdExpiresAt"]),
+
+  // Seat Events (audit trail for all seat status changes)
+  seatEvents: defineTable({
+    seatId: v.id("seats"),
+    eventId: v.id("events"),
+
+    // Event details
+    eventType: v.union(
+      v.literal('hold_created'),
+      v.literal('hold_expired'),
+      v.literal('hold_released'),
+      v.literal('booking_confirmed'),
+      v.literal('booking_cancelled'),
+      v.literal('status_changed'),
+      v.literal('seat_created'),
+      v.literal('seat_updated')
+    ),
+
+    // State transition
+    fromStatus: v.optional(v.string()),
+    toStatus: v.string(),
+
+    // Actor
+    userId: v.optional(v.id("users")),
+    sessionId: v.optional(v.string()),
+
+    // Context
+    holdId: v.optional(v.id("seatHolds")),
+    registrationId: v.optional(v.id("registrations")),
+    metadata: v.optional(v.any()),
+
+    // Timestamp
+    occurredAt: v.number(),
+  })
+    .index("by_seat", ["seatId"])
+    .index("by_event", ["eventId"])
+    .index("by_type", ["eventType"])
+    .index("by_timestamp", ["occurredAt"])
+    .index("by_user", ["userId"]),
+  // --- Enterprise Venue Design System ---
+  venueDesigns: defineTable({
+    venueId: v.optional(v.string()), // Flexible for now
+    name: v.string(),
+    designVersion: v.number(),
+    designState: v.any(), // full snapshot JSON
+    baseArchetype: v.optional(v.string()),
+    customArchetype: v.optional(v.any()),
+    designLayers: v.array(v.any()),
+    tenantId: v.optional(v.string()), // Optional for MVP
+    createdBy: v.id("users"),
+    isTemplate: v.boolean(),
+    templateCategory: v.optional(v.string()),
+    approvalState: v.string(),
+    lastPublishedAt: v.optional(v.number()),
+  })
+    .index("byVenue", ["venueId"]),
+  // .index("byTenant", ["tenantId"]), // Tenant ID might not be indexed yet if not fully implemented
+
+  stages: defineTable({
+    designId: v.id("venueDesigns"),
+    name: v.string(),
+    type: v.string(),
+    geometry: v.any(),
+    position: v.any(),
+    properties: v.any(),
+    lightingGrid: v.optional(v.any()),
+    audioZones: v.optional(v.array(v.any())),
+    safetyMargins: v.optional(v.any()),
+  }).index("byDesign", ["designId"]),
+
+  // Enhanced Zones (Hierarchical)
+  venueZones: defineTable({
+    designId: v.id("venueDesigns"),
+    parentZoneId: v.optional(v.id("venueZones")),
+    name: v.string(),
+    type: v.string(),
+    category: v.string(),
+    boundary: v.any(), // GeoJSON or Konva Path
+    capacityConfig: v.any(),
+    accessPoints: v.array(v.any()),
+    connectivity: v.any(),
+    amenities: v.array(v.any()),
+    pricingTierId: v.optional(v.id("ticketTiers")), // Link to existing tiers
+    viewScore: v.optional(v.number()),
+    safetyRating: v.optional(v.number()),
+    display: v.any(),
+  })
+    .index("byDesign", ["designId"])
+    .index("byParent", ["parentZoneId"]),
+
+  seatRules: defineTable({
+    zoneId: v.id("venueZones"),
+    generationType: v.string(),
+    parameters: v.any(),
+    numberingSchema: v.any(),
+    seatDistribution: v.optional(v.any()),
+    accessibilityRules: v.optional(v.any()),
+    validationRules: v.optional(v.any()),
+    active: v.boolean(),
+  }).index("byZone", ["zoneId"]),
+
+  amenities: defineTable({
+    designId: v.id("venueDesigns"),
+    zoneId: v.optional(v.id("venueZones")),
+    type: v.string(),
+    name: v.string(),
+    boundary: v.any(),
+    capacity: v.optional(v.number()),
+    servicePoints: v.array(v.any()),
+    queueArea: v.optional(v.any()),
+    equipment: v.array(v.any()),
+    staffRequired: v.number(),
+    revenueZone: v.boolean(),
+  }).index("byDesign", ["designId"]),
+
+  collaborationEvents: defineTable({
+    designId: v.id("venueDesigns"),
+    userId: v.id("users"),
+    action: v.string(),
+    elementType: v.string(),
+    elementId: v.optional(v.string()),
+    changeset: v.any(),
+    comment: v.optional(v.string()),
+    timestamp: v.number(),
+  }).index("byDesign", ["designId"]),
+
+  aiRecommendations: defineTable({
+    designId: v.id("venueDesigns"),
+    type: v.string(),
+    confidence: v.number(),
+    currentState: v.any(),
+    suggestedChanges: v.any(),
+    impact: v.any(),
+    applied: v.boolean(),
+    createdAt: v.number(),
+  }).index("byDesign", ["designId"]),
+
+  // --- Real-time Seat Status & Mapping ---
+  seats: defineTable({
+    designId: v.id("venueDesigns"),
+    zoneId: v.id("venueZones"),
+    row: v.optional(v.string()),
+    number: v.optional(v.number()),
+    name: v.string(), // E.g. "A-12"
+    x: v.number(),
+    y: v.number(),
+    status: v.string(), // "available", "reserved", "sold", "blocked"
+    price: v.number(),
+    attributes: v.optional(v.any()), // { accessible: true, companion: true }
+    eventId: v.optional(v.id("events")), // Link to specific event instance if needed
+    reservedUntil: v.optional(v.number()), // For temporary cart hold
+    buyerId: v.optional(v.string()),
+  })
+    .index("byDesign", ["designId"])
+    .index("byZone", ["zoneId"])
+    .index("byEventStatus", ["eventId", "status"]),
 });

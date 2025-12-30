@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Send, Loader2, Sparkles, User, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 export default function ChatBot() {
@@ -69,8 +68,8 @@ export default function ChatBot() {
           size="icon"
           className={cn(
             "h-14 w-14 rounded-full shadow-lg transition-all duration-300",
-            isOpen 
-              ? "bg-destructive hover:bg-destructive/90 rotate-90" 
+            isOpen
+              ? "bg-destructive hover:bg-destructive/90 rotate-90"
               : "bg-amber-600 hover:bg-amber-700 hover:scale-110 shadow-[0_0_20px_rgba(217,119,6,0.5)]"
           )}
         >
@@ -106,7 +105,7 @@ export default function ChatBot() {
             </div>
 
             {/* Messages Area */}
-            <div 
+            <div
               ref={scrollRef}
               className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
             >
@@ -141,7 +140,7 @@ export default function ChatBot() {
                   </div>
                 </div>
               ))}
-              
+
               {isLoading && (
                 <div className="flex justify-start w-full">
                   <div className="flex max-w-[80%] gap-2">
@@ -168,9 +167,9 @@ export default function ChatBot() {
                   className="pr-12 bg-background border-input focus-visible:ring-amber-500 rounded-xl"
                   disabled={isLoading}
                 />
-                <Button 
-                  type="submit" 
-                  size="icon" 
+                <Button
+                  type="submit"
+                  size="icon"
                   disabled={!input.trim() || isLoading}
                   className="absolute right-1 h-8 w-8 rounded-lg bg-amber-600 hover:bg-amber-700 text-white"
                 >

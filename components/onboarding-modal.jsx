@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { MapPin, Heart, ArrowRight, ArrowLeft } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { MapPin, Heart, ArrowRight, ArrowLeft, Crown } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -27,21 +28,45 @@ import {
 import { CATEGORIES } from "@/lib/data";
 
 export default function OnboardingModal({ isOpen, onClose, onComplete }) {
+  const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
+  const [selectedRole, setSelectedRole] = useState(null); // 'attendee' or 'organizer'
+
+  // Detect role from URL or localStorage on mount
+  useEffect(() => {
+    if (isOpen) {
+      // First check URL params
+      const roleParam = searchParams.get("role");
+      if (roleParam === "organizer" || roleParam === "attendee") {
+        setSelectedRole(roleParam);
+        setStep(2); // Automatically skip to interests selection
+        return;
+      }
+
+      // Then check localStorage (set by role-specific sign-up pages)
+      const pendingRole = localStorage.getItem("pendingRole");
+      if (pendingRole === "organizer" || pendingRole === "attendee") {
+        setSelectedRole(pendingRole);
+        setStep(2); // Automatically skip to interests selection
+        // Clear it so it doesn't persist for future logins
+        localStorage.removeItem("pendingRole");
+      }
+    }
+  }, [isOpen, searchParams]);
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [location, setLocation] = useState({
     state: "",
     city: "",
-    country: "India",
+    country: "Bangladesh",
   });
 
   const { mutate: completeOnboarding, isLoading } = useConvexMutation(
     api.users.completeOnboarding
   );
 
-  // Get Indian states
+  // Get Bangladesh states
   const indianStates = useMemo(() => {
-    return State.getStatesOfCountry("IN");
+    return State.getStatesOfCountry("BD");
   }, []);
 
   // Get cities based on selected state
@@ -49,7 +74,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
     if (!location.state) return [];
     const selectedState = indianStates.find((s) => s.name === location.state);
     if (!selectedState) return [];
-    return City.getCitiesOfState("IN", selectedState.isoCode);
+    return City.getCitiesOfState("BD", selectedState.isoCode);
   }, [location.state, indianStates]);
 
   const toggleInterest = (categoryId) => {
@@ -61,15 +86,19 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
   };
 
   const handleNext = () => {
-    if (step === 1 && selectedInterests.length < 3) {
+    if (step === 1 && !selectedRole) {
+      toast.error("Please select a role to continue");
+      return;
+    }
+    if (step === 2 && selectedInterests.length < 3) {
       toast.error("Please select at least 3 interests");
       return;
     }
-    if (step === 2 && (!location.city || !location.state)) {
+    if (step === 3 && (!location.city || !location.state)) {
       toast.error("Please select both state and city");
       return;
     }
-    if (step < 2) {
+    if (step < 3) {
       setStep(step + 1);
     } else {
       handleComplete();
@@ -79,11 +108,6 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
   const handleComplete = async () => {
     console.log("Starting onboarding completion...");
     try {
-      console.log("Calling completeOnboarding mutation with:", {
-        location,
-        interests: selectedInterests
-      });
-
       await completeOnboarding({
         location: {
           city: location.city,
@@ -91,6 +115,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
           country: location.country,
         },
         interests: selectedInterests,
+        role: selectedRole,
       });
       console.log("Mutation successful");
       toast.success("Welcome to Royal Class Events! 🎉");
@@ -101,7 +126,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
     }
   };
 
-  const progress = (step / 2) * 100;
+  const progress = (step / 3) * 100;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -112,6 +137,11 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
           </div>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             {step === 1 ? (
+              <>
+                <Crown className="w-6 h-6 text-amber-500" />
+                Choose your path
+              </>
+            ) : step === 2 ? (
               <>
                 <Heart className="w-6 h-6 text-purple-500" />
                 What interests you?
@@ -125,14 +155,53 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
           </DialogTitle>
           <DialogDescription>
             {step === 1
-              ? "Select at least 3 categories to personalize your experience"
-              : "We'll show you events happening near you"}
+              ? "Select how you'll use Royal Class Events"
+              : step === 2
+                ? "Select at least 3 categories to personalize your experience"
+                : "We'll show you events happening near you"}
           </DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
-          {/* Step 1: Select Interests */}
+          {/* Step 1: Role Selection */}
           {step === 1 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button
+                onClick={() => setSelectedRole("attendee")}
+                className={`p-6 rounded-xl border-2 text-left transition-all hover:scale-[1.02] ${selectedRole === "attendee"
+                  ? "border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/20"
+                  : "border-border hover:border-amber-500/50"
+                  }`}
+              >
+                <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
+                  <Heart className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Discover Events</h3>
+                <p className="text-muted-foreground text-sm">
+                  I want to browse events, buy tickets, and attend experiences.
+                </p>
+              </button>
+
+              <button
+                onClick={() => setSelectedRole("organizer")}
+                className={`p-6 rounded-xl border-2 text-left transition-all hover:scale-[1.02] ${selectedRole === "organizer"
+                  ? "border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/20"
+                  : "border-border hover:border-amber-500/50"
+                  }`}
+              >
+                <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
+                  <Crown className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                </div>
+                <h3 className="text-lg font-bold mb-2">Host Events</h3>
+                <p className="text-muted-foreground text-sm">
+                  I want to create events, manage tickets, and track analytics.
+                </p>
+              </button>
+            </div>
+          )}
+
+          {/* Step 2: Select Interests */}
+          {step === 2 && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto p-2">
                 {CATEGORIES.map((category) => (
@@ -167,8 +236,8 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
             </div>
           )}
 
-          {/* Step 2: Location */}
-          {step === 2 && (
+          {/* Step 3: Location */}
+          {step === 3 && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -261,7 +330,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
           >
             {isLoading
               ? "Completing..."
-              : step === 2
+              : step === 3
                 ? "Complete Setup"
                 : "Continue"}
             <ArrowRight className="w-4 h-4" />

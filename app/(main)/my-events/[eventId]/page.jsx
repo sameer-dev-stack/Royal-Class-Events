@@ -19,7 +19,9 @@ import {
   Download,
   Search,
   Eye,
+  Grid3X3,
 } from "lucide-react";
+import Link from "next/link";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -181,9 +183,9 @@ export default function EventDashboardPage() {
   // Filter registrations based on active tab and search
   const filteredRegistrations = registrations?.filter((reg) => {
     const matchesSearch =
-      reg.attendeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      reg.attendeeEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      reg.qrCode.toLowerCase().includes(searchQuery.toLowerCase());
+      (reg.attendeeName?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+      (reg.attendeeEmail?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+      (reg.qrCode?.toLowerCase() || "").includes(searchQuery.toLowerCase());
 
     if (activeTab === "all") return matchesSearch && reg.status === "confirmed";
     if (activeTab === "checked-in")
@@ -242,10 +244,19 @@ export default function EventDashboardPage() {
                     : `${eventCity}, ${eventState || eventCountry}`}
                 </span>
               </div>
+              <Badge variant="secondary" className="bg-blue-500/10 text-blue-400 border-blue-500/20">
+                {event.venueDesignId ? "Enterprise Venue Design" : "Simple Seating Map"}
+              </Badge>
             </div>
           </div>
 
           <div className="flex gap-2 w-full sm:w-auto">
+            <Link href={`/my-events/${eventId}/builder`}>
+              <Button className="bg-[linear-gradient(135deg,#9333ea,#4f46e5)] text-white font-bold shadow-lg hover:shadow-purple-500/25 border-0 rounded-lg">
+                <Grid3X3 className="w-4 h-4 mr-2" />
+                Configure Seating
+              </Button>
+            </Link>
             <Button
               variant="outline"
               size="sm"
@@ -325,7 +336,7 @@ export default function EventDashboardPage() {
                   <TrendingUp className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">₹{stats.totalRevenue}</p>
+                  <p className="text-2xl font-bold">৳{stats.totalRevenue}</p>
                   <p className="text-sm text-muted-foreground">Revenue</p>
                 </div>
               </CardContent>

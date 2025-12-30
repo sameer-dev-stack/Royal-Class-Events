@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { format } from "date-fns";
 import {
@@ -38,12 +38,15 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import TicketModal from "./_components/ticket-modal";
 
 export default function MyTicketsPage() {
   const router = useRouter();
-  const { user } = useUser();
+  const { data: session } = useSession();
+  const user = session?.user;
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
   // Fetch user's registrations
   const { data: registrations, isLoading } = useConvexQuery(
@@ -68,10 +71,8 @@ export default function MyTicketsPage() {
     }
   };
 
-  const downloadQRCode = (registration) => {
-    // In a real app, you'd generate a proper QR code image
-    // For now, we'll just show the QR code value
-    toast.success("QR Code: " + registration.checkIn.qrCode);
+  const handleViewTicket = (registration) => {
+    setSelectedTicket(registration);
   };
 
   if (isLoading) {
@@ -129,7 +130,7 @@ export default function MyTicketsPage() {
       const eventDate = event.timeConfiguration?.endDateTime || event.endDate;
       return matchesSearch && eventDate < Date.now();
     }
-    if (filterStatus === "checked-in") return matchesSearch && reg.checkIn.isCheckedIn;
+    if (filterStatus === "checked-in") return matchesSearch && reg.checkIn?.status === "checked_in";
 
     return matchesSearch;
   });
@@ -216,7 +217,7 @@ export default function MyTicketsPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Checked In</p>
                   <p className="text-2xl font-bold">
-                    {registrations.filter((r) => r.checkIn.isCheckedIn).length}
+                    {registrations.filter((r) => r.checkIn?.status === "checked_in").length}
                   </p>
                 </div>
               </div>
@@ -234,7 +235,7 @@ export default function MyTicketsPage() {
                   <p className="text-2xl font-bold">
                     {registrations.filter((r) => {
                       const eventDate = r.event?.timeConfiguration?.endDateTime || r.event?.endDate;
-                      return eventDate < Date.now() && r.checkIn.isCheckedIn;
+                      return eventDate < Date.now() && r.checkIn?.status === "checked_in";
                     }).length}
                   </p>
                 </div>
@@ -285,7 +286,7 @@ export default function MyTicketsPage() {
                         )}
                         {/* Status Badge */}
                         <div className="absolute top-4 left-4">
-                          {registration.checkIn.isCheckedIn ? (
+                          {registration.checkIn?.status === "checked_in" ? (
                             <Badge className="bg-green-500 hover:bg-green-600">
                               <CheckCircle className="w-3 h-3 mr-1" />
                               Checked In
@@ -341,13 +342,13 @@ export default function MyTicketsPage() {
                           <div>
                             <p className="text-xs text-muted-foreground mb-1">Registered</p>
                             <p className="text-sm font-medium">
-                              {format(registration.createdAt, "MMM dd, yyyy")}
+                              {format(registration.audit?.createdAt || registration.createdAt || Date.now(), "MMM dd, yyyy")}
                             </p>
                           </div>
                           <div>
                             <p className="text-xs text-muted-foreground mb-1">Status</p>
                             <p className="text-sm font-medium capitalize">
-                              {registration.status.current.replace("_", " ")}
+                              {(typeof registration.status === 'object' ? registration.status?.current : registration.status || "confirmed").replace("_", " ")}
                             </p>
                           </div>
                         </div>
@@ -359,54 +360,62 @@ export default function MyTicketsPage() {
                             className="gap-2"
                             onClick={() => router.push(`/events/${event.slug}`)}
                           >
-                          View Event
-                          <ArrowRight className="w-4 h-4" />
-                        </Button>
-
-                        <Button
-                          variant="outline"
-                          className="gap-2"
-                          onClick={() => downloadQRCode(registration)}
-                        >
-                          <QrCode className="w-4 h-4" />
-                          QR Code
-                        </Button>
-
-                        <Button
-                          variant="outline"
-                          className="gap-2"
-                          onClick={() => handleShare(event)}
-                        >
-                          <Share2 className="w-4 h-4" />
-                          Share
-                        </Button>
-
-                        {eventVenue && (
-                          <Button
-                            variant="ghost"
-                            className="gap-2"
-                            asChild
-                          >
-                            <a
-                              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(eventVenue + " " + eventCity)}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <ExternalLink className="w-4 h-4" />
-                              Directions
-                            </a>
+                            View Event
+                            <ArrowRight className="w-4 h-4" />
                           </Button>
-                        )}
+
+                          <Button
+                            variant="outline"
+                            className="gap-2"
+                            onClick={() => handleViewTicket(registration)}
+                          >
+                            <Ticket className="w-4 h-4" />
+                            Ticket
+                          </Button>
+
+                          <Button
+                            variant="outline"
+                            className="gap-2"
+                            onClick={() => handleShare(event)}
+                          >
+                            <Share2 className="w-4 h-4" />
+                            Share
+                          </Button>
+
+                          {eventVenue && (
+                            <Button
+                              variant="ghost"
+                              className="gap-2"
+                              asChild
+                            >
+                              <a
+                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(eventVenue + " " + eventCity)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                                Directions
+                              </a>
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
+                  </CardContent>
                 </Card>
-        );
+              );
             })
           )}
+        </div>
       </div>
+
+      <TicketModal
+        isOpen={!!selectedTicket}
+        onClose={() => setSelectedTicket(null)}
+        registration={selectedTicket}
+        event={selectedTicket?.event}
+      />
     </div>
-    </div >
   );
 }
+

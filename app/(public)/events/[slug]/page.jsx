@@ -23,8 +23,7 @@ import {
 import { useConvexQuery } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-// 1. ADD useClerk HERE
-import { useUser, useClerk } from "@clerk/nextjs";
+import { useSession } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,13 +33,13 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
 import RegisterModal from "./_components/register-modal";
+import SeatSelectionModal from "./_components/seat-selection-modal";
 
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { user } = useUser();
-  // 2. GET THE OPEN SIGN IN FUNCTION
-  const { openSignIn } = useClerk();
+  const { data: session } = useSession();
+  const user = session?.user;
   const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   // Fetch event details
@@ -75,8 +74,8 @@ export default function EventDetailPage() {
 
   const handleRegister = () => {
     if (!user) {
-      // 3. IF NOT LOGGED IN, OPEN THE LOGIN MODAL AUTOMATICALLY
-      openSignIn();
+      // Redirect to sign-in with return URL
+      router.push(`/sign-in?redirect=/events/${params.slug}`);
       return;
     }
     setShowRegisterModal(true);
@@ -396,11 +395,19 @@ export default function EventDetailPage() {
 
       {/* Register Modal */}
       {showRegisterModal && (
-        <RegisterModal
-          event={event}
-          isOpen={showRegisterModal}
-          onClose={() => setShowRegisterModal(false)}
-        />
+        event.seatMapConfig ? (
+          <SeatSelectionModal
+            event={event}
+            isOpen={showRegisterModal}
+            onClose={() => setShowRegisterModal(false)}
+          />
+        ) : (
+          <RegisterModal
+            event={event}
+            isOpen={showRegisterModal}
+            onClose={() => setShowRegisterModal(false)}
+          />
+        )
       )}
     </div>
   );

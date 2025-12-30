@@ -1,0 +1,122 @@
+/* Checkout Page Theme Variables */
+:root {
+    /* Light Mode (Default for this spec if user prefers light) */
+    --page-bg: #F8F9FA;
+    --surface-card: #FFFFFF;
+    --text-primary: #1A1A1A;
+    --text-secondary: #555555;
+    --border-color: #E0E0E0;
+    --input-bg: #FFFFFF;
+    --accent-primary: #FBB03B;
+    --shadow-style: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    --alert-bg: #FFE5E5;
+    --alert-text: #D90000;
+}
+
+.dark {
+    /* Dark Mode (Royal Class Events Default) */
+    --page-bg: #020202;
+    --surface-card: #111111;
+    --text-primary: #FFFFFF;
+    --text-secondary: #CCCCCC;
+    --border-color: #333333;
+    --input-bg: #1A1A1A;
+    --accent-primary: #FBB03B;
+    --shadow-style: none;
+    --alert-bg: #3A0000;
+    --alert-text: #FF4D4D;
+}
+
+/* Apply theme variables to checkout page */
+.checkout-page {
+    background-color: var(--page-bg);
+    color: var(--text-primary);
+}
+
+.checkout-card {
+    background-color: var(--surface-card);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-style);
+}
+
+.checkout-input {
+    background-color: var(--input-bg);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.checkout-input:focus {
+    border-color: var(--accent-primary);
+    outline: none;
+}
+
+.checkout-timer-alert {
+    background-color: var(--alert-bg);
+    color: var(--alert-text);
+}
+
+/* Payment Method Cards */
+.payment-method-card {
+    border: 2px solid var(--border-color);
+    background-color: var(--surface-card);
+    transition: all 0.2s ease;
+}
+
+.payment-method-card:hover {
+    border-color: var(--accent-primary);
+    opacity: 0.8;
+}
+
+.payment-method-card.selected {
+    border-color: var(--accent-primary);
+    background-color: rgba(251, 176, 59, 0.05);
+}
+
+/* Mobile FAB */
+@media (max-width: 1024px) {
+    .mobile-fab {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem;
+        background-color: var(--surface-card);
+        border-top: 1px solid var(--border-color);
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 50;
+    }
+
+    /* Add padding to body to prevent content hiding behind FAB */
+    .checkout-page {
+        padding-bottom: 100px;
+    }
+}
+
+/* Trust Badge Icons */
+.trust-badges {
+    filter: grayscale(100%);
+    opacity: 0.5;
+}
+
+.dark .trust-badges {
+    filter: grayscale(100%) brightness(2);
+}
+
+/* Promo Code Success Animation */
+@keyframes promo-success {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.promo-applied {
+    animation: promo-success 0.3s ease;
+}

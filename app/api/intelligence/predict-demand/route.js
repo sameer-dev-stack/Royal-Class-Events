@@ -29,6 +29,21 @@ export async function POST(request) {
 
     } catch (error) {
         console.error('Error calling Python service:', error);
+
+        // DEV_FALLBACK: If Python service is down, return mock data in development
+        const isDev = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_DEV_AUTH === "true";
+        if (isDev) {
+            console.log("Using DEV_FALLBACK for predict-demand");
+            return Response.json({
+                success: true,
+                data: {
+                    demand_score: Math.floor(Math.random() * 40) + 60, // 60-100
+                    confidence: 0.85,
+                    reasoning: "Mock prediction: High demand expected based on historical luxury event trends in this region."
+                }
+            });
+        }
+
         return Response.json(
             { error: error.message },
             { status: 500 }

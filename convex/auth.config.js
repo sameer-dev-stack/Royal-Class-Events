@@ -1,8 +1,12 @@
 export default {
   providers: [
     {
-      domain: process.env.CLERK_JWT_ISSUER_DOMAIN,
-      applicationID: "convex",
+      domain: "https://hidxuswxgpizfoqshsss.supabase.co/auth/v1",
+      applicationID: "authenticated",
+    },
+    {
+      domain: "https://hidxuswxgpizfoqshsss.supabase.co",
+      applicationID: "authenticated",
     },
   ],
 };

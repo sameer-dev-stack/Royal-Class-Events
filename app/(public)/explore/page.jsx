@@ -243,12 +243,11 @@ export default function ExplorePage() {
         </div>
       )}
 
-      {/* Browse by Category */}
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6">Browse by Category</h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
-          {categoriesWithCounts.map((category) => (
+          {categoriesWithCounts.filter(cat => cat.count > 0).map((category) => (
             <Card
               key={category.id}
               className="py-2 group cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50"

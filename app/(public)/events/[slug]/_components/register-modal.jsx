@@ -6,7 +6,7 @@ import { Loader2, Ticket, CheckCircle, Crown } from "lucide-react";
 import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { useUser } from "@clerk/nextjs";
+import { useSession } from "next-auth/react";
 
 import {
   Dialog,
@@ -22,11 +22,10 @@ import { Separator } from "@/components/ui/separator";
 
 export default function RegisterModal({ event, isOpen, onClose }) {
   const router = useRouter();
-  const { user } = useUser();
-  const [name, setName] = useState(user?.fullName || "");
-  const [email, setEmail] = useState(
-    user?.primaryEmailAddress?.emailAddress || ""
-  );
+  const { data: session } = useSession();
+  const user = session?.user;
+  const [name, setName] = useState(user?.user_metadata?.full_name || "");
+  const [email, setEmail] = useState(user?.email || "");
   const [isSuccess, setIsSuccess] = useState(false);
 
   const { mutate: registerForEvent, isLoading } = useConvexMutation(
@@ -36,6 +35,8 @@ export default function RegisterModal({ event, isOpen, onClose }) {
   // Fetch Convex User to get the real Database ID
   const { data: convexUser } = useConvexQuery(api.users.getCurrentUser);
 
+  const eventTitle = event.title?.en || event.title;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -44,50 +45,17 @@ export default function RegisterModal({ event, isOpen, onClose }) {
       return;
     }
 
-    try {
-      // IF PAID EVENT -> Redirect to SSL Commerz (Mock)
-      if (event.ticketType === "paid" && event.ticketPrice > 0) {
-
-        if (!convexUser) {
-          toast.error("User profile syncing... please try again in a moment.");
-          return;
-        }
-
-        toast.loading("Redirecting to payment gateway...");
-
-        const response = await fetch("/api/sslcommerz/init", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            eventId: event._id,
-            userId: convexUser._id, // Send CONVEX ID, not Clerk ID
-            amount: event.ticketPrice
-          })
-        });
-
-        const data = await response.json();
-
-        if (data.gatewayPageURL) {
-          window.location.href = data.gatewayPageURL;
-        } else {
-          console.error("Payment Init Failed:", data);
-          toast.error(data.error || "Failed to initiate payment");
-        }
-        return;
-      }
-
-      // IF FREE EVENT -> Direct Registration
-      await registerForEvent({
-        eventId: event._id,
-        attendeeName: name,
-        attendeeEmail: email,
-      });
-
-      setIsSuccess(true);
-      toast.success("Registration successful! 🎉");
-    } catch (error) {
-      toast.error(error.message || "Registration failed");
+    // Store attendee info in session/local storage for checkout
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('attendeeInfo', JSON.stringify({
+        fullName: name,
+        email: email,
+      }));
     }
+
+    // Redirect to checkout page with event info
+    router.push(`/checkout?eventId=${event.slug || event._id}`);
+    onClose();
   };
 
   const handleViewTicket = () => {
@@ -139,14 +107,14 @@ export default function RegisterModal({ event, isOpen, onClose }) {
             <DialogTitle className="text-white">Royal Registration</DialogTitle>
           </div>
           <DialogDescription className="text-gray-400">
-            Secure your spot for <span className="text-white font-medium">{event.title}</span>
+            Secure your spot for <span className="text-white font-medium">{eventTitle}</span>
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Event Summary */}
           <div className="bg-zinc-900 border border-white/10 p-4 rounded-lg space-y-2">
-            <p className="font-semibold text-white">{event.title}</p>
+            <p className="font-semibold text-white">{eventTitle}</p>
             <p className="text-sm text-gray-400">
               {event.ticketType === "free" ? (
                 <span className="text-emerald-400 font-medium">Free Entry</span>
@@ -217,7 +185,7 @@ export default function RegisterModal({ event, isOpen, onClose }) {
               ) : (
                 <>
                   <Ticket className="w-4 h-4" />
-                  Confirm
+                  Continue to Checkout
                 </>
               )}
             </Button>

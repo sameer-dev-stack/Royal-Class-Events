@@ -13,39 +13,37 @@ import {
     ShieldAlert,
     Crown
 } from "lucide-react";
-import { useConvexQuery } from "@/hooks/use-convex-query";
-import { api } from "@/convex/_generated/api";
-import { useAuth } from "@clerk/nextjs";
+import { useUserRoles } from "@/hooks/use-user-roles";
+import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
 export default function AdminLayout({ children }) {
     const router = useRouter();
     const pathname = usePathname();
-    const { isLoaded, userId, signOut } = useAuth();
+    const { data: session, status } = useSession();
+    const user = session?.user;
+    const authLoading = status === "loading";
 
-    // Fetch current user with roles
-    const { data: currentUser, isLoading } = useConvexQuery(api.users.getCurrentUser);
+    // Fetch current user with roles using new hook
+    const { user: currentUser, isLoading, isAdmin } = useUserRoles();
 
     // Auth Check
     useEffect(() => {
-        if (isLoaded && !isLoading) {
-            if (!userId) {
+        if (!authLoading && !isLoading) {
+            if (!user) {
                 router.push("/");
                 return;
             }
 
-            if (currentUser) {
-                // const roles = currentUser.roles || [];
-                // if (!roles.includes("super_admin")) {
-                //     // Not an admin
-                //     router.push("/");
-                // }
+            if (currentUser && !isAdmin) {
+                // Not an admin, redirect home
+                router.push("/");
             }
         }
-    }, [isLoaded, isLoading, userId, currentUser, router]);
+    }, [authLoading, isLoading, user, currentUser, isAdmin, router]);
 
-    if (isLoading || !isLoaded || !currentUser) {
+    if (isLoading || authLoading || !currentUser) {
         return (
             <div className="flex h-screen items-center justify-center bg-black">
                 <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
@@ -53,10 +51,10 @@ export default function AdminLayout({ children }) {
         );
     }
 
-    // Double check render block (prevents flash)
-    // if (!currentUser.roles?.includes("super_admin")) {
-    //     return null;
-    // }
+    // Guard render
+    if (!isAdmin) {
+        return null;
+    }
 
     const navItems = [
         { label: "Overview", icon: LayoutDashboard, href: "/admin" },
@@ -106,7 +104,7 @@ export default function AdminLayout({ children }) {
                     <Button
                         variant="ghost"
                         className="w-full justify-start text-red-500 hover:text-red-400 hover:bg-red-500/10 gap-3"
-                        onClick={() => signOut(() => router.push("/"))}
+                        onClick={async () => { await signOut(); router.push("/"); }}
                     >
                         <LogOut className="w-4 h-4" />
                         Sign Out

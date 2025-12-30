@@ -14,6 +14,18 @@ export async function POST(req) {
       );
     }
 
+    // DEV_FALLBACK: If no API key, return mock response in development
+    if (!process.env.GEMINI_API_KEY) {
+      const isDev = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_DEV_AUTH === "true";
+      if (isDev) {
+        console.log("Using DEV_FALLBACK for chat API");
+        return NextResponse.json({
+          role: "assistant",
+          content: "Welcome to Royal Class Events! I am your AI concierge. Currently, I am operating in development mode with mock responses. How can I assist you with our elite experiences today?"
+        });
+      }
+    }
+
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Construct the chat history with a system instruction
@@ -21,7 +33,8 @@ export async function POST(req) {
       history: [
         {
           role: "user",
-          parts: [{ text: `You are the AI Concierge for "Royal Class Events", a premium event management platform. 
+          parts: [{
+            text: `You are the AI Concierge for "Royal Class Events", a premium event management platform. 
           
           Your name is "Royal Assistant".
           Your tone should be professional, polite, and helpful (like a high-end hotel concierge).
@@ -52,7 +65,7 @@ export async function POST(req) {
     // For this implementation, we will feed the conversation history from the client into the chat session
     // filtering out the system message we just added manually to avoid duplication if the client sends it,
     // though typically the client just sends user/model pairs.
-    
+
     // Valid roles for Gemini are 'user' and 'model'.
     const validHistory = messages.slice(0, -1).map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
@@ -62,7 +75,7 @@ export async function POST(req) {
     // Start a new chat with the history provided by the client
     const chatSession = model.startChat({
       history: [
-         {
+        {
           role: "user",
           parts: [{ text: `System Instruction: You are the AI Concierge for "Royal Class Events". Be helpful, polite, and brief.` }],
         },

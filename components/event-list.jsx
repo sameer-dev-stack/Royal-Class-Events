@@ -8,7 +8,10 @@ import EventCardSkeleton from "./event-card-skeleton";
 import { Loader2, Crown, ArrowRight, CalendarX } from "lucide-react";
 import Link from "next/link";
 
+import { useRouter } from "next/navigation";
+
 export default function EventList() {
+  const router = useRouter();
   // 1. Fetch all active events from database
   const events = useQuery(api.events.by_start_date);
 
@@ -59,7 +62,7 @@ export default function EventList() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {CATEGORIES.map((category) => {
+          {CATEGORIES.filter(cat => (categoryCounts[cat.id] || 0) > 0).map((category) => {
             const count = categoryCounts[category.id] || 0;
 
             return (
@@ -100,7 +103,11 @@ export default function EventList() {
         {upcomingEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {upcomingEvents.map((event) => (
-              <EventCard key={event._id} event={event} />
+              <EventCard
+                key={event._id}
+                event={event}
+                onClick={() => router.push(`/events/${event.slug || event._id}`)}
+              />
             ))}
           </div>
         ) : (

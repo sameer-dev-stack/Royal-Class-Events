@@ -1,9 +1,11 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
@@ -14,6 +16,19 @@ import EventCard from "@/components/event-card";
 
 export default function MyEventsPage() {
   const router = useRouter();
+
+  // Role Check
+  const { isOrganizer, isAdmin, isLoading: isRoleLoading, user } = useUserRoles();
+
+  useEffect(() => {
+    if (!isRoleLoading && user && !isOrganizer && !isAdmin) {
+      toast.error("You need an Organizer account to view this page.");
+      router.push("/");
+    }
+  }, [isRoleLoading, user, isOrganizer, isAdmin, router]);
+
+  // If loading or not authorized, show loader (same as data loading below)
+  const isAuthorized = user && (isOrganizer || isAdmin);
 
   const { data: events, isLoading } = useConvexQuery(api.events.getMyEvents);
   const { mutate: deleteEvent } = useConvexMutation(api.events.deleteEvent);
@@ -33,12 +48,13 @@ export default function MyEventsPage() {
     }
   };
 
-  // Navigate to event dashboard instead of event detail
+
+
   const handleEventClick = (eventId) => {
     router.push(`/my-events/${eventId}`);
   };
 
-  if (isLoading) {
+  if (isLoading || isRoleLoading || !isAuthorized) {
     return (
       <div className="min-h-screen pb-20 px-4">
         <div className="max-w-7xl mx-auto">
