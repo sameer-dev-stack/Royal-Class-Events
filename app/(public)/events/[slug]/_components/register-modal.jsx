@@ -51,6 +51,7 @@ export default function RegisterModal({ event, isOpen, onClose }) {
         fullName: name,
         email: email,
       }));
+<<<<<<< HEAD
 
       // PERSIST TICKET DATA FOR CHECKOUT
       sessionStorage.setItem('checkoutTickets', JSON.stringify([{
@@ -60,6 +61,8 @@ export default function RegisterModal({ event, isOpen, onClose }) {
         quantity: 1
       }]));
       sessionStorage.setItem('checkoutEventId', event._id);
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     }
 
     // Redirect to checkout page with event info

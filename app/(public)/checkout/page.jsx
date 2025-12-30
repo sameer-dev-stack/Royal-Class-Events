@@ -93,11 +93,18 @@ export default function CheckoutPage() {
                     const parsed = JSON.parse(storedTickets);
                     if (Array.isArray(parsed)) {
                         setTickets(parsed.map((t, idx) => ({
+<<<<<<< HEAD
                             id: t.seatId || t.ticketId || idx, // Prefer seatId for uniqueness
                             name: t.name,
                             price: t.price,
                             quantity: t.quantity,
                             details: t // Keep full details
+=======
+                            id: t.ticketId || idx,
+                            name: t.name,
+                            price: t.price,
+                            quantity: t.quantity
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                         })));
                     }
                 } catch (e) {
@@ -254,7 +261,10 @@ export default function CheckoutPage() {
                     attendeeName: attendeeInfo.fullName,
                     attendeeEmail: attendeeInfo.email,
                     ticketQuantity: tickets.reduce((sum, t) => sum + t.quantity, 0),
+<<<<<<< HEAD
                     tickets: tickets.map(t => t.details || t), // Send full details
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                 }),
             });
 

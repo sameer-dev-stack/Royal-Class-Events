@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import { useParams, useRouter } from "next/navigation";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
@@ -52,6 +53,22 @@ export default function SeatingBuilderPage() {
     };
 
     if (isLoading || !event) {
+=======
+import { useParams } from "next/navigation";
+import { useConvexQuery } from "@/hooks/use-convex-query";
+import { api } from "@/convex/_generated/api";
+import { Loader2, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import SeatingBuilder from "@/components/organizer/seating-builder";
+
+export default function SeatingBuilderPage() {
+    const params = useParams();
+    const eventId = params.eventId;
+    const { data: event, isLoading } = useConvexQuery(api.events.getById, { id: eventId });
+
+    if (isLoading) {
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
         return (
             <div className="flex items-center justify-center min-h-screen bg-black">
                 <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
@@ -59,6 +76,7 @@ export default function SeatingBuilderPage() {
         );
     }
 
+<<<<<<< HEAD
     return (
         <div className="fixed inset-0 z-[60] bg-[#0a0a0a] text-white font-['Manrope'] flex flex-col overflow-hidden select-none cursor-default">
             {/* Header */}
@@ -92,10 +110,34 @@ export default function SeatingBuilderPage() {
                         <Save className="w-4 h-4 mr-2" />
                         Help
                     </Button>
+=======
+    if (!event) {
+        return <div className="text-white">Event not found</div>;
+    }
+
+    return (
+        <div className="min-h-screen bg-[#111] text-white font-['Manrope']">
+            {/* Header */}
+            <header className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-[#181611]">
+                <div className="flex items-center gap-4">
+                    <Link href={`/my-events/${eventId}`}>
+                        <Button variant="ghost" size="icon" className="text-white/60 hover:text-white hover:bg-white/5">
+                            <ArrowLeft className="w-5 h-5" />
+                        </Button>
+                    </Link>
+                    <div>
+                        <h1 className="text-lg font-bold">Seating Builder</h1>
+                        <p className="text-xs text-white/50">{event.title?.en || (typeof event.title === 'string' ? event.title : 'Untitled Event')}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-3">
+                    {/* Save logic is handled inside the builder component */}
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                 </div>
             </header>
 
             {/* Builder Area */}
+<<<<<<< HEAD
             <div className="flex-1 w-full relative overflow-hidden">
                 <SeatToolkit
                     mode="designer"
@@ -104,6 +146,10 @@ export default function SeatingBuilderPage() {
                     }}
                     data={event.venueLayout || null}
                 />
+=======
+            <div className="h-[calc(100vh-64px)]">
+                <SeatingBuilder event={event} />
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
             </div>
         </div>
     );

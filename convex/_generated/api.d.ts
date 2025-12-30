@@ -18,7 +18,10 @@ import type * as collaboration from "../collaboration.js";
 import type * as communications from "../communications.js";
 import type * as dashboard from "../dashboard.js";
 import type * as events from "../events.js";
+<<<<<<< HEAD
 import type * as events_seating from "../events_seating.js";
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
 import type * as explore from "../explore.js";
 import type * as files from "../files.js";
 import type * as intelligence from "../intelligence.js";
@@ -28,7 +31,10 @@ import type * as registrations from "../registrations.js";
 import type * as roles from "../roles.js";
 import type * as search from "../search.js";
 import type * as seatMapExamples from "../seatMapExamples.js";
+<<<<<<< HEAD
 import type * as seatMapToolkit from "../seatMapToolkit.js";
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
 import type * as seatMaps from "../seatMaps.js";
 import type * as seatRecommendations from "../seatRecommendations.js";
 import type * as seats from "../seats.js";
@@ -48,6 +54,17 @@ import type {
   FunctionReference,
 } from "convex/server";
 
+<<<<<<< HEAD
+=======
+/**
+ * A utility for referencing Convex functions in your app's API.
+ *
+ * Usage:
+ * ```js
+ * const myFunctionReference = api.myModule.myFunction;
+ * ```
+ */
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
 declare const fullApi: ApiFromModules<{
   TEST_INTELLIGENCE: typeof TEST_INTELLIGENCE;
   admin: typeof admin;
@@ -59,7 +76,10 @@ declare const fullApi: ApiFromModules<{
   communications: typeof communications;
   dashboard: typeof dashboard;
   events: typeof events;
+<<<<<<< HEAD
   events_seating: typeof events_seating;
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
   explore: typeof explore;
   files: typeof files;
   intelligence: typeof intelligence;
@@ -69,7 +89,10 @@ declare const fullApi: ApiFromModules<{
   roles: typeof roles;
   search: typeof search;
   seatMapExamples: typeof seatMapExamples;
+<<<<<<< HEAD
   seatMapToolkit: typeof seatMapToolkit;
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
   seatMaps: typeof seatMaps;
   seatRecommendations: typeof seatRecommendations;
   seats: typeof seats;
@@ -83,6 +106,7 @@ declare const fullApi: ApiFromModules<{
   whiteout_seed: typeof whiteout_seed;
   zones: typeof zones;
 }>;
+<<<<<<< HEAD
 
 /**
  * A utility for referencing Convex functions in your app's public API.
@@ -107,6 +131,16 @@ export declare const api: FilterApi<
  */
 export declare const internal: FilterApi<
   typeof fullApi,
+=======
+declare const fullApiWithMounts: typeof fullApi;
+
+export declare const api: FilterApi<
+  typeof fullApiWithMounts,
+  FunctionReference<any, "public">
+>;
+export declare const internal: FilterApi<
+  typeof fullApiWithMounts,
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
   FunctionReference<any, "internal">
 >;
 

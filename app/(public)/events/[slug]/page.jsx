@@ -306,6 +306,10 @@ export default function EventDetailPage() {
 
               <CardContent className="p-8 space-y-8">
                 {/* Price Display */}
+<<<<<<< HEAD
+=======
+                {/* Price Display - HIDDEN FOR NOW
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-gray-400 uppercase tracking-widest">Ticket Price</p>
                   <div className="flex items-baseline gap-2">
@@ -324,6 +328,10 @@ export default function EventDetailPage() {
                     </Badge>
                   )}
                 </div>
+<<<<<<< HEAD
+=======
+                */}
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
 
                 <Separator className="bg-white/10" />
 

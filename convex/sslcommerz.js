@@ -12,7 +12,10 @@ export const initPayment = mutation({
         attendeeName: v.string(),
         attendeeEmail: v.string(),
         ticketQuantity: v.number(),
+<<<<<<< HEAD
         tickets: v.optional(v.any()), // New: Array of ticket/seat details
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     },
     handler: async (ctx, args) => {
         // Check if event exists
@@ -40,8 +43,12 @@ export const initPayment = mutation({
             },
             metadata: {
                 qrCode: `pending-${args.tranId}`,
+<<<<<<< HEAD
                 isSSLCommerz: true,
                 tickets: args.tickets, // Store full ticket details (seat IDs etc)
+=======
+                isSSLCommerz: true
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
             },
             audit: {
                 createdAt: Date.now(),

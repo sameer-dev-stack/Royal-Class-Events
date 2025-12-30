@@ -338,6 +338,7 @@ export const createEvent = mutation({
 export const getEventBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
+<<<<<<< HEAD
     const event = await ctx.db
       .query("events")
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
@@ -363,6 +364,12 @@ export const getEventBySlug = query({
       ...event,
       ticketPrice: ticketPrice || 0
     };
+=======
+    return await ctx.db
+      .query("events")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .unique();
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
   },
 });
 
@@ -385,6 +392,7 @@ export const getById = query({
       };
     }
 
+<<<<<<< HEAD
     let ticketPrice = event.metadata?.legacyProps?.ticketPrice;
 
     if (ticketPrice === undefined || ticketPrice === 0) {
@@ -403,6 +411,9 @@ export const getById = query({
       ...event,
       ticketPrice: ticketPrice || 0
     };
+=======
+    return event;
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
   },
 });
 
@@ -486,6 +497,7 @@ export const update = mutation({
   },
 });
 
+<<<<<<< HEAD
 export const saveVenueLayout = mutation({
   args: {
     eventId: v.id("events"),
@@ -514,6 +526,8 @@ export const saveVenueLayout = mutation({
   },
 });
 
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
 export const by_start_date = query({
   args: {},
   handler: async (ctx) => {

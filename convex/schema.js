@@ -405,6 +405,7 @@ export default defineSchema({
     risk: v.optional(v.any()),
     logistics: v.optional(v.any()),
 
+<<<<<<< HEAD
     // Royal Seat Engine (Optional Seating Configuration)
     seatingMode: v.optional(v.union(
       v.literal("GENERAL_ADMISSION"),
@@ -415,6 +416,8 @@ export default defineSchema({
     // Venue Layout (Only for Reserved/Hybrid modes)
     venueLayout: v.optional(v.any()),
 
+=======
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     // Seat Map Configuration
     seatMapConfig: v.optional(v.object({
       imageUrl: v.string(),
@@ -3251,7 +3254,11 @@ export default defineSchema({
     timestamp: v.number(),
   }).index("byDesign", ["designId"]),
 
+<<<<<<< HEAD
   designAiRecommendations: defineTable({
+=======
+  aiRecommendations: defineTable({
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     designId: v.id("venueDesigns"),
     type: v.string(),
     confidence: v.number(),
@@ -3263,7 +3270,11 @@ export default defineSchema({
   }).index("byDesign", ["designId"]),
 
   // --- Real-time Seat Status & Mapping ---
+<<<<<<< HEAD
   designSeats: defineTable({
+=======
+  seats: defineTable({
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     designId: v.id("venueDesigns"),
     zoneId: v.id("venueZones"),
     row: v.optional(v.string()),

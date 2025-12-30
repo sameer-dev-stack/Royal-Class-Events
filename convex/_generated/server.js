@@ -16,6 +16,10 @@ import {
   internalActionGeneric,
   internalMutationGeneric,
   internalQueryGeneric,
+<<<<<<< HEAD
+=======
+  componentsGeneric,
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
 } from "convex/server";
 
 /**
@@ -80,6 +84,7 @@ export const action = actionGeneric;
 export const internalAction = internalActionGeneric;
 
 /**
+<<<<<<< HEAD
  * Define an HTTP action.
  *
  * The wrapped function will be used to respond to HTTP requests received
@@ -89,5 +94,12 @@ export const internalAction = internalActionGeneric;
  * @param func - The function. It receives an {@link ActionCtx} as its first argument
  * and a Fetch API `Request` object as its second.
  * @returns The wrapped function. Import this function from `convex/http.js` and route it to hook it up.
+=======
+ * Define a Convex HTTP action.
+ *
+ * @param func - The function. It receives an {@link ActionCtx} as its first argument, and a `Request` object
+ * as its second.
+ * @returns The wrapped endpoint function. Route a URL path to this function in `convex/http.js`.
+>>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
  */
 export const httpAction = httpActionGeneric;
