@@ -96,6 +96,15 @@ function HeaderContent() {
                 asChild
                 className="text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
               >
+                <Link href="/about">About</Link>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
+              >
                 <Link href="/contact">Contact</Link>
               </Button>
             </div>

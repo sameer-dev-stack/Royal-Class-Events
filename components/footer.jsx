@@ -102,11 +102,11 @@ export default function Footer() {
               <div className="space-y-4">
                 <h4 className="font-bold text-gray-900 dark:text-white text-sm">About Us</h4>
                 <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Our Story</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Careers</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Press Center</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Legal & Privacy</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Contact Us</Link></li>
+                  <li><Link href="/about" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Our Story</Link></li>
+                  <li><Link href="/careers" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Careers</Link></li>
+                  <li><Link href="/press" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Press Center</Link></li>
+                  <li><Link href="/legal" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Legal & Privacy</Link></li>
+                  <li><Link href="/contact" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Contact Us</Link></li>
                 </ul>
               </div>
 
@@ -114,10 +114,10 @@ export default function Footer() {
               <div className="space-y-4">
                 <h4 className="font-bold text-gray-900 dark:text-white text-sm">For Organisers</h4>
                 <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-                  <li><Link href="/create-event" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">List Your Event</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Ticketing Solutions</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Scanning App</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Marketing Services</Link></li>
+                  <li><Link href="/organizers/list-event" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">List Your Event</Link></li>
+                  <li><Link href="/organizers/ticketing" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Ticketing Solutions</Link></li>
+                  <li><Link href="/organizers/scanning-app" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Scanning App</Link></li>
+                  <li><Link href="/organizers/marketing" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Marketing Services</Link></li>
                   <li>
                     <Button size="sm" className="mt-2 bg-amber-600 hover:bg-amber-700 text-white border-none rounded-full px-4 h-8 text-xs font-bold">
                       Create Event
@@ -130,10 +130,10 @@ export default function Footer() {
               <div className="space-y-4">
                 <h4 className="font-bold text-gray-900 dark:text-white text-sm">Services</h4>
                 <ul className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Event Staffing</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Ticket Printing</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Access Control</Link></li>
-                  <li><Link href="#" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Analytics</Link></li>
+                  <li><Link href="/services/staffing" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Event Staffing</Link></li>
+                  <li><Link href="/services/printing" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Ticket Printing</Link></li>
+                  <li><Link href="/services/access-control" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Access Control</Link></li>
+                  <li><Link href="/services/analytics" className="hover:text-amber-600 dark:hover:text-amber-500 transition-colors">Analytics</Link></li>
                 </ul>
               </div>
 

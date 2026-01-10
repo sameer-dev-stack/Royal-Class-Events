@@ -1,1 +1,11 @@
 node_modules
+.next
+.env*
+*.log
+*.meta
+*.sst
+git_files.txt
+table_lines.txt
+convex_log.txt
+convex_error.log
+.DS_Store
