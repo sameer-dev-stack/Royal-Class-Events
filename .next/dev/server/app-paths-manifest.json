@@ -1,0 +1,17 @@
+{
+  "/(auth)/sign-in/page": "app/(auth)/sign-in/page.js",
+  "/(auth)/sign-up/attendee/page": "app/(auth)/sign-up/attendee/page.js",
+  "/(auth)/sign-up/organizer/page": "app/(auth)/sign-up/organizer/page.js",
+  "/(auth)/sign-up/page": "app/(auth)/sign-up/page.js",
+  "/(main)/contact/page": "app/(main)/contact/page.js",
+  "/(main)/create-event/page": "app/(main)/create-event/page.js",
+  "/(main)/my-events/page": "app/(main)/my-events/page.js",
+  "/(main)/my-tickets/page": "app/(main)/my-tickets/page.js",
+  "/(organizer)/scanner/page": "app/(organizer)/scanner/page.js",
+  "/(public)/events/[slug]/page": "app/(public)/events/[slug]/page.js",
+  "/(public)/explore/[slug]/page": "app/(public)/explore/[slug]/page.js",
+  "/(public)/explore/page": "app/(public)/explore/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/page": "app/page.js"
+}

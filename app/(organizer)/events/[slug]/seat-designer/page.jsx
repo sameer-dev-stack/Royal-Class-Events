@@ -7,6 +7,7 @@ import { Save, ArrowLeft, Loader2 } from "lucide-react";
 import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
+import useAuthStore from "@/hooks/use-auth-store";
 import { toast } from "sonner";
 import "@mezh-hq/react-seat-toolkit/styles";
 import "../../../../../../seat-toolkit-theme.css";
@@ -26,6 +27,7 @@ export default function SeatDesignerPage({ params }) {
     const router = useRouter();
     const [layoutData, setLayoutData] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
+    const { token } = useAuthStore();
 
     // Fetch event data
     const { data: event, isLoading } = useConvexQuery(api.events.getEventBySlug, {
@@ -35,7 +37,7 @@ export default function SeatDesignerPage({ params }) {
     // Fetch existing seat map layout
     const { data: existingLayout } = useConvexQuery(
         api.seatMapToolkit.getSeatMapLayout,
-        event?._id ? { eventId: event._id } : "skip"
+        event?._id ? { eventId: event._id, token } : "skip"
     );
 
     // Save mutation
@@ -70,6 +72,7 @@ export default function SeatDesignerPage({ params }) {
             await saveSeatMap({
                 eventId: event._id,
                 layoutData: layoutData,
+                token,
             });
 
             toast.success("Seat map saved successfully!");
@@ -102,7 +105,7 @@ export default function SeatDesignerPage({ params }) {
         );
     }
 
-    const eventTitle = event.title?.en || event.title;
+    const eventTitle = event.title?.en || (typeof event.title === "string" ? event.title : "Untitled Event");
 
     return (
         <div className="h-screen flex flex-col bg-[#0a0a0a]">

@@ -1,4 +1,4 @@
-import { internal } from "./_generated/api";
+import { internal, api } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
@@ -36,14 +36,18 @@ export const createEvent = mutation({
     themeColor: v.optional(v.string()), // Store in metadata or style config
     venueDesignId: v.optional(v.id("venueDesigns")),
     hasPro: v.optional(v.boolean()),
+    token: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     try {
-      const user = await ctx.runQuery(internal.users.getCurrentUser);
+      const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
       const isPro = args.hasPro || false;
 
       // 1. Role & Policy Checks
-      const hasRole = user.roles?.some(r => r.key === "organizer" || r.key === "admin" || r.permissions.includes("*"));
+      const hasRole = user.role === "organizer" ||
+        user.role === "admin" ||
+        user.roles?.some(r => r.key === "organizer" || r.key === "admin" || r.permissions.includes("*"));
+
       if (!hasRole) {
         throw new Error("Unauthorized: You need an Organizer role to create events.");
       }
@@ -338,7 +342,6 @@ export const createEvent = mutation({
 export const getEventBySlug = query({
   args: { slug: v.string() },
   handler: async (ctx, args) => {
-<<<<<<< HEAD
     const event = await ctx.db
       .query("events")
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
@@ -364,36 +367,40 @@ export const getEventBySlug = query({
       ...event,
       ticketPrice: ticketPrice || 0
     };
-=======
-    return await ctx.db
-      .query("events")
-      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
-      .unique();
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
   },
 });
 
 export const getById = query({
-  args: { id: v.id("events") },
+  args: { id: v.union(v.id("events"), v.string()) },
   handler: async (ctx, args) => {
+    const eventId = ctx.db.normalizeId("events", args.id);
+    if (!eventId) return null;
+
     // Fetch event by ID
-    const event = await ctx.db.get(args.id);
+    const event = await ctx.db.get(eventId);
     if (!event) return null;
 
     // Resolve seat map image URL if it's a storage ID
+    let finalEvent = { ...event };
+
     if (event.seatMapConfig?.storageId && !event.seatMapConfig.imageUrl) {
       const url = await ctx.storage.getUrl(event.seatMapConfig.storageId);
-      return {
-        ...event,
-        seatMapConfig: {
-          ...event.seatMapConfig,
-          imageUrl: url || ""
-        }
+      finalEvent.seatMapConfig = {
+        ...event.seatMapConfig,
+        imageUrl: url || ""
       };
     }
 
-<<<<<<< HEAD
-    let ticketPrice = event.metadata?.legacyProps?.ticketPrice;
+    // Resolve venueLayout background URL if it's a storage ID
+    if (event.venueLayout?.background && !event.venueLayout.background.startsWith("http")) {
+      const url = await ctx.storage.getUrl(event.venueLayout.background);
+      finalEvent.venueLayout = {
+        ...event.venueLayout,
+        background: url || ""
+      };
+    }
+
+    let ticketPrice = finalEvent.metadata?.legacyProps?.ticketPrice;
 
     if (ticketPrice === undefined || ticketPrice === 0) {
       // Try to find from ticket tiers
@@ -411,36 +418,72 @@ export const getById = query({
       ...event,
       ticketPrice: ticketPrice || 0
     };
-=======
-    return event;
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
+  },
+});
+
+
+
+export const getOrganizerStats = query({
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) return { revenue: 0, ticketsSold: 0, activeEvents: 0 };
+
+    const events = await ctx.db
+      .query("events")
+      .withIndex("by_owner", (q) => q.eq("ownerId", user._id))
+      .collect();
+
+    let revenue = 0;
+    let ticketsSold = 0;
+    let activeEvents = 0;
+
+    for (const event of events) {
+      // Safely access potentially nested/optional fields
+      const rev = event.financials?.actualRevenue ?? event.analytics?.revenue ?? 0;
+      const tix = event.analytics?.registrations ?? 0;
+
+      revenue += rev;
+      ticketsSold += tix;
+
+      if (event.status?.current === "published") {
+        activeEvents++;
+      }
+    }
+
+    return { revenue, ticketsSold, activeEvents };
   },
 });
 
 export const getMyEvents = query({
-  handler: async (ctx) => {
-    const user = await ctx.runQuery(internal.users.getCurrentUser);
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
     if (!user) return [];
 
     return await ctx.db
       .query("events")
       .withIndex("by_owner", (q) => q.eq("ownerId", user._id))
-      .order("desc") // Schema might not have this index sorted by desc automatically?
-      // actually by_owner index is ["ownerId"] only?
-      // If we want sort, we need an index like ["ownerId", "_creationTime"]
+      .order("desc")
       .collect();
   },
 });
 
+
 export const deleteEvent = mutation({
-  args: { eventId: v.id("events") },
+  args: {
+    eventId: v.id("events"),
+    token: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
-    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) throw new Error("Not logged in");
+
     const event = await ctx.db.get(args.eventId);
 
-    const hasAdminRole = user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+    const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
 
-    if (!event || (event.ownerId !== user._id && !hasAdminRole)) {
+    if (!event || (event.ownerId !== user._id && !isAdmin)) {
       throw new Error("Unauthorized");
     }
 
@@ -476,14 +519,19 @@ export const update = mutation({
         rotation: v.optional(v.number()),
         path: v.optional(v.string())
       }))
-    }))
+    })),
+    token: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const { id, ...updates } = args;
-    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    const { id, token, ...updates } = args;
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: token });
+    if (!user) throw new Error("Not logged in");
+
     const event = await ctx.db.get(id);
 
-    if (!event || event.ownerId !== user._id) {
+    const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+
+    if (!event || (event.ownerId !== user._id && !isAdmin)) {
       throw new Error("Unauthorized");
     }
 
@@ -497,27 +545,41 @@ export const update = mutation({
   },
 });
 
-<<<<<<< HEAD
 export const saveVenueLayout = mutation({
   args: {
-    eventId: v.id("events"),
+    eventId: v.string(), // Accept any string (ID or Slug)
     layout: v.any(),
+    totalSeats: v.optional(v.number()),
     mode: v.optional(v.string()),
+    token: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const user = await ctx.runQuery(internal.users.getCurrentUser);
-    const event = await ctx.db.get(args.eventId);
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) throw new Error("Not logged in");
 
-    if (!event) throw new Error("Event not found");
+    let event = null;
+    const normalizedId = ctx.db.normalizeId("events", args.eventId);
 
-    // Authorization check
-    if (event.ownerId !== user._id) {
-      const hasAdminRole = user.roles?.some(r => r.key === "admin");
-      if (!hasAdminRole) throw new Error("Unauthorized");
+    if (normalizedId) {
+      event = await ctx.db.get(normalizedId);
     }
 
-    await ctx.db.patch(args.eventId, {
+    if (!event) {
+      event = await ctx.db.query("events")
+        .withIndex("by_slug", (q) => q.eq("slug", args.eventId))
+        .unique();
+    }
+
+    if (!event) throw new Error(`Event not found for identifier: ${args.eventId}`);
+
+    if (event.ownerId !== user._id) {
+      const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin");
+      if (!isAdmin) throw new Error("Unauthorized");
+    }
+
+    await ctx.db.patch(event._id, {
       venueLayout: args.layout,
+      totalSeats: args.totalSeats || 0,
       seatingMode: "RESERVED_SEATING",
       updatedAt: Date.now(),
     });
@@ -525,17 +587,16 @@ export const saveVenueLayout = mutation({
     return { success: true };
   },
 });
-
-=======
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
 export const by_start_date = query({
   args: {},
   handler: async (ctx) => {
-    // Enterprise schema index: .index("by_dates", ["timeConfiguration.startDateTime", "timeConfiguration.endDateTime"])
-    return await ctx.db
+    const list = await ctx.db
       .query("events")
       .withIndex("by_dates")
       .order("asc")
       .collect();
+    return list;
   },
 });
+
+export const getOrganizerEvents = getMyEvents;

@@ -3,9 +3,11 @@
 import { use, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { Save, ArrowLeft, Loader2 } from "lucide-react";
+import { Save, ArrowLeft, Loader2, ShieldAlert } from "lucide-react";
 import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
+import { useUserRoles } from "@/hooks/use-user-roles";
+import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import "@mezh-hq/react-seat-toolkit/styles";
@@ -26,6 +28,8 @@ export default function VenueBuilderPage({ params }) {
     const router = useRouter();
     const [layoutData, setLayoutData] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
+    const { isAuthenticated, user } = useAuthStore();
+    const { isAdmin, isLoading: isRoleLoading } = useUserRoles();
 
     // Fetch event data
     const { data: event, isLoading } = useConvexQuery(api.events.getEventBySlug, {
@@ -81,7 +85,7 @@ export default function VenueBuilderPage({ params }) {
         }
     };
 
-    if (isLoading) {
+    if (isLoading || isRoleLoading) {
         return (
             <div className="h-screen flex items-center justify-center bg-[#0a0a0a]">
                 <Loader2 className="w-8 h-8 animate-spin text-[#FBB03B]" />
@@ -90,6 +94,23 @@ export default function VenueBuilderPage({ params }) {
     }
 
     if (!event) return <div className="text-white">Event not found</div>;
+
+    // Authorization Guard
+    const isOwner = isAuthenticated && user?._id && event.ownerId && user._id === event.ownerId;
+    const canManage = isOwner || isAdmin;
+
+    if (!canManage) {
+        return (
+            <div className="h-screen flex flex-col items-center justify-center bg-[#0a0a0a] text-white p-8 text-center">
+                <div className="p-4 bg-red-500/10 rounded-full mb-4">
+                    <ShieldAlert className="w-12 h-12 text-red-500" />
+                </div>
+                <h1 className="text-2xl font-bold mb-2">Access Restricted</h1>
+                <p className="text-gray-400 mb-6">You do not have permission to access the Venue Builder for this event.</p>
+                <Button onClick={() => router.push("/dashboard")}>Return to Dashboard</Button>
+            </div>
+        );
+    }
 
     // Security check: If not in reserved/hybrid mode, redirect back
     if (event.seatingMode === "GENERAL_ADMISSION") {
@@ -121,7 +142,7 @@ export default function VenueBuilderPage({ params }) {
                         Back to Tickets
                     </Button>
                     <div>
-                        <h1 className="text-xl font-bold text-white">{event.title?.en}</h1>
+                        <h1 className="text-xl font-bold text-white">{event.title?.en || (typeof event.title === "string" ? event.title : "Untitled Event")}</h1>
                         <p className="text-sm text-gray-400">Venue Builder</p>
                     </div>
                 </div>

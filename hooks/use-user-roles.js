@@ -1,25 +1,31 @@
 import { useConvexQuery } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
+import useAuthStore from "@/hooks/use-auth-store";
 
 export function useUserRoles() {
-    const { data: user, isLoading } = useConvexQuery(api.users.getCurrentUser);
+    const { token } = useAuthStore();
+    const { data: user, isLoading } = useConvexQuery(api.users.getCurrentUser, { token: token || undefined });
 
     const roles = user?.roles || [];
+    const role = user?.role;
 
-    const hasRole = (roleKey) => roles.some((r) => r.key === roleKey);
-    const hasPermission = (permission) => {
-        if (hasRole("admin")) return true; // Admin has all permissions
-        return roles.some((r) => r.permissions.includes(permission) || r.permissions.includes("*"));
-    };
+    if (!user && !isLoading) {
+        console.log("Current User Role: Not Logged In (User is null)");
+    } else if (user) {
+        console.log("Current User Role:", role, roles);
+    }
+
+    const hasRole = (roleKey) => role === roleKey || roles.some(r => r.key === roleKey);
+    const hasPermission = (permissionKey) => roles.some(role =>
+        role.permissions && role.permissions.includes(permissionKey)
+    );
 
     return {
         user,
         isLoading,
-        roles: roles.map(r => r.key),
         isAdmin: hasRole("admin"),
-        isOrganizer: hasRole("organizer"),
+        isOrganizer: hasRole("organizer") || hasRole("admin"),
         isAttendee: hasRole("attendee"),
-        isSupport: hasRole("support"),
         hasRole,
         hasPermission,
     };

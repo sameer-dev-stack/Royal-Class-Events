@@ -1,6 +1,6 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { internal } from "./_generated/api";
+import { internal, api } from "./_generated/api";
 
 // Create a new Master Venue Design
 export const create = mutation({
@@ -8,9 +8,10 @@ export const create = mutation({
         venueId: v.optional(v.string()),
         name: v.string(),
         baseArchetype: v.optional(v.string()),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.runQuery(internal.users.getCurrentUser);
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
         if (!user) throw new Error("Unauthenticated");
 
         return await ctx.db.insert("venueDesigns", {
@@ -46,8 +47,8 @@ export const getByVenue = query({
 });
 
 export const listTemplates = query({
-    args: {},
-    handler: async (ctx) => {
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
         return await ctx.db
             .query("venueDesigns")
             .filter((q) => q.eq(q.field("isTemplate"), true))
@@ -56,9 +57,9 @@ export const listTemplates = query({
 });
 
 export const listMyDesigns = query({
-    args: {},
-    handler: async (ctx) => {
-        const user = await ctx.runQuery(internal.users.getCurrentUser);
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
         if (!user) return [];
         return await ctx.db
             .query("venueDesigns")

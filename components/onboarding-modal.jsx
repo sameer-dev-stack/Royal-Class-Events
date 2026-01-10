@@ -26,8 +26,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CATEGORIES } from "@/lib/data";
+import useAuthStore from "@/hooks/use-auth-store";
 
 export default function OnboardingModal({ isOpen, onClose, onComplete }) {
+  const { token } = useAuthStore();
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState(null); // 'attendee' or 'organizer'
@@ -116,6 +118,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
         },
         interests: selectedInterests,
         role: selectedRole,
+        token,
       });
       console.log("Mutation successful");
       toast.success("Welcome to Royal Class Events! 🎉");

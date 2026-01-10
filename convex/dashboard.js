@@ -1,12 +1,15 @@
-import { internal } from "./_generated/api";
+import { internal, api } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 // Get event with detailed stats for dashboard
 export const getEventDashboard = query({
-  args: { eventId: v.id("events") },
+  args: {
+    eventId: v.id("events"),
+    token: v.optional(v.string())
+  },
   handler: async (ctx, args) => {
-    const user = await ctx.runQuery(internal.users.getCurrentUser);
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
 
     if (!user) {
       throw new Error("User not found");
@@ -30,10 +33,10 @@ export const getEventDashboard = query({
 
     // Calculate stats
     const totalRegistrations = registrations.filter(
-      (r) => r.status === "confirmed"
+      (r) => r.status?.current === "confirmed" || r.status === "confirmed"
     ).length;
     const checkedInCount = registrations.filter(
-      (r) => r.checkedIn && r.status === "confirmed"
+      (r) => r.checkIn?.status === "checked_in" && (r.status?.current === "confirmed" || r.status === "confirmed")
     ).length;
     const pendingCount = totalRegistrations - checkedInCount;
 

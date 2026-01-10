@@ -31,7 +31,7 @@ export default function OrderConfirmationPage() {
         registrationId ? { registrationId } : "skip"
     );
 
-    const eventTitle = registration?.event?.title?.en || registration?.event?.title || "Sample Event";
+    const eventTitle = registration?.event?.title?.en || (typeof registration?.event?.title === "string" ? registration?.event?.title : "Sample Event");
 
     const handleShare = async () => {
         if (navigator.share) {

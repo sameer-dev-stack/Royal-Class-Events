@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { internal } from "./_generated/api";
+import { internal, api } from "./_generated/api";
 
 // ==================== VENUE LAYOUT MANAGEMENT ====================
 
@@ -30,13 +30,14 @@ export const createVenueLayout = mutation({
             basePrice: v.number(),
             color: v.string(),
             displayOrder: v.number(),
-        }))
+        })),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.runQuery(internal.users.getCurrentUser);
-        const hasAdminRole = user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
 
-        if (!hasAdminRole) {
+        if (!isAdmin) {
             throw new Error("Unauthorized: Admin access required");
         }
 
@@ -200,9 +201,10 @@ export const holdSeats = mutation({
         eventId: v.id("events"),
         seatIds: v.array(v.id("seats")),
         sessionId: v.string(),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.runQuery(internal.users.getCurrentUser);
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
         const now = Date.now();
         const holdDuration = 10 * 60 * 1000; // 10 minutes
 

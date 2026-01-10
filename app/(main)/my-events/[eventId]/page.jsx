@@ -25,6 +25,7 @@ import Link from "next/link";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import useAuthStore from "@/hooks/use-auth-store";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -45,16 +46,17 @@ export default function EventDashboardPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showQRScanner, setShowQRScanner] = useState(false);
+  const { token } = useAuthStore();
 
   // Fetch event dashboard data
   const { data: dashboardData, isLoading } = useConvexQuery(
     api.dashboard.getEventDashboard,
-    { eventId }
+    { eventId, token }
   );
 
   // Fetch registrations
   const { data: registrations, isLoading: loadingRegistrations } =
-    useConvexQuery(api.registrations.getEventRegistrations, { eventId });
+    useConvexQuery(api.registrations.getEventRegistrations, { eventId, token });
 
   // Delete event mutation
   const { mutate: deleteEvent, isLoading: isDeleting } = useConvexMutation(
@@ -69,7 +71,7 @@ export default function EventDashboardPage() {
     if (!confirmed) return;
 
     try {
-      await deleteEvent({ eventId });
+      await deleteEvent({ eventId, token });
       toast.success("Event deleted successfully");
       router.push("/my-events");
     } catch (error) {
@@ -108,7 +110,7 @@ export default function EventDashboardPage() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${dashboardData?.event.title || "event"}_registrations.csv`;
+    a.download = `${(dashboardData?.event.title?.en || dashboardData?.event.title || "event")}_registrations.csv`;
     a.click();
     toast.success("CSV exported successfully");
   };
@@ -170,7 +172,7 @@ export default function EventDashboardPage() {
   }
 
   const { event, stats } = dashboardData;
-  const eventTitle = event.title?.en || event.title;
+  const eventTitle = event.title?.en || (typeof event.title === "string" ? event.title : "Untitled Event");
   const eventCoverImage = event.content?.coverImage?.url || event.coverImage;
   const eventCategory = event.eventSubType || event.category;
   const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate;
@@ -251,8 +253,8 @@ export default function EventDashboardPage() {
           </div>
 
           <div className="flex gap-2 w-full sm:w-auto">
-            <Link href={`/my-events/${eventId}/builder`}>
-              <Button className="bg-[linear-gradient(135deg,#9333ea,#4f46e5)] text-white font-bold shadow-lg hover:shadow-purple-500/25 border-0 rounded-lg">
+            <Link href={`/seat-builder?eventId=${eventId}`}>
+              <Button className="bg-[linear-gradient(135deg,#fac529,#eab308)] text-black font-bold shadow-lg hover:shadow-amber-500/25 border-0 rounded-lg">
                 <Grid3X3 className="w-4 h-4 mr-2" />
                 Configure Seating
               </Button>
@@ -421,6 +423,7 @@ export default function EventDashboardPage() {
                 <AttendeeCard
                   key={registration._id}
                   registration={registration}
+                  token={token}
                 />
               ))
             ) : (
@@ -437,6 +440,7 @@ export default function EventDashboardPage() {
         <QRScannerModal
           isOpen={showQRScanner}
           onClose={() => setShowQRScanner(false)}
+          token={token}
         />
       )}
     </div>

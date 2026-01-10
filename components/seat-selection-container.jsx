@@ -4,15 +4,9 @@ import { useEffect, useState } from "react";
 import UniversalMapViewer from "./universal-map-viewer";
 import ZoneTicketList from "./zone-ticket-list";
 import { cn } from "@/lib/utils";
-<<<<<<< HEAD
 import { ArrowRight } from "lucide-react";
 
 export default function SeatSelectionContainer({ seatMapConfig, tickets, onUpdateQuantity, selectedTickets, totalPrice, onProceed }) {
-=======
-import { ArrowRight } from "lucide-react"; // Added for the new button icon
-
-export default function SeatSelectionContainer({ seatMapConfig, tickets, onUpdateQuantity, selectedTickets, totalPrice, onProceed }) { // Added new props for the updated functionality
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     if (!seatMapConfig) return null;
 
     return (
@@ -21,19 +15,11 @@ export default function SeatSelectionContainer({ seatMapConfig, tickets, onUpdat
             <div className="w-full lg:w-2/3 h-[350px] lg:h-full shrink-0 bg-[#181611] relative border-r border-white/10 group overflow-hidden">
                 <UniversalMapViewer imageUrl={seatMapConfig.imageUrl} />
 
-<<<<<<< HEAD
                 {/* Map Legend/Info Overlay */}
                 <div className="absolute top-6 left-6 bg-black/60 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10 z-20">
                     <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-[#fac529] text-sm font-bold">📍</span>
                         <span className="text-white text-sm font-medium">Venue Map</span>
-=======
-                {/* Map Legend/Info Overlay (Matches Snippet) */}
-                <div className="absolute top-6 left-6 bg-black/60 backdrop-blur-md px-4 py-2 rounded-lg border border-white/10 z-20">
-                    <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#fac529] text-sm font-bold">📍</span>
-                        <span className="text-white text-sm font-medium">Madison Square Garden, NY</span>
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                     </div>
                 </div>
             </div>

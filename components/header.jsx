@@ -14,35 +14,40 @@ import { ModeToggle } from "./mode-toggle";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import UserButton from "./auth/user-button";
-import { useSession } from "next-auth/react";
+import useAuthStore from "@/hooks/use-auth-store";
+
+import { usePathname } from "next/navigation";
 
 function HeaderContent() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const { data: session } = useSession();
-  const isAuthenticated = !!session;
-
-  const { isLoading, storeFailed } = useStoreUser();
+  const { isAuthenticated, user } = useAuthStore();
   const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } = useOnboarding();
   const { isAdmin, isOrganizer } = useUserRoles();
 
-  useEffect(() => {
-    // Debug logging for user session
-    if (session) {
-      console.log("Header: NextAuth session active for:", session.user?.email);
-    } else {
-      console.log("Header: No active NextAuth session.");
-    }
-  }, [session]);
+  // Hooks must be called before any returns
+  useStoreUser(); // Sync user to Convex on mount/auth change
+
+  const isLoading = false; // Add actual loading state if needed from auth store or queries
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Conditional rendering happens in the return or after hooks
+  if (!mounted) return null;
+
+  // Hide header on seat-builder pages - now safe to return after hooks
+  if (pathname?.startsWith("/seat-builder")) return null;
+
 
   return (
     <>
@@ -110,7 +115,7 @@ function HeaderContent() {
                     </Button>
                   )}
 
-                  {/* User Button - NextAuth */}
+                  {/* User Button */}
                   <UserButton />
                 </>
               ) : (

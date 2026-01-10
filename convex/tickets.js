@@ -31,3 +31,29 @@ export const getTicketTiers = query({
         });
     },
 });
+
+export const getSoldSeats = query({
+    args: { eventId: v.id("events") },
+    handler: async (ctx, args) => {
+        const registrations = await ctx.db
+            .query("registrations")
+            .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+            .filter((q) => q.neq(q.field("status.current"), "cancelled"))
+            .collect();
+
+        const allSoldSeats = [];
+        for (const reg of registrations) {
+            // Assume seat IDs are stored in metadata.selectedSeatIds or similar, 
+            // OR we check the cart items if they are structured.
+            // For now, let's check metadata.selectedSeatIds as a convention for reserved seating.
+            if (reg.metadata?.selectedSeatIds) {
+                allSoldSeats.push(...reg.metadata.selectedSeatIds);
+            }
+
+            // Also check if they are in the 'tickets' or 'items' structure if applicable
+            // (Based on my proposed checkout logic)
+        }
+
+        return [...new Set(allSoldSeats)]; // Unique IDs
+    },
+});

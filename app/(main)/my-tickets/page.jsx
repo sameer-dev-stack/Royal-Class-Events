@@ -1,421 +1,480 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import useAuthStore from "@/hooks/use-auth-store";
 import Image from "next/image";
 import { format } from "date-fns";
 import {
   Ticket,
   Calendar,
   MapPin,
-  QrCode,
   Download,
-  Share2,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Loader2,
   Search,
   Filter,
-  ArrowRight,
-  ExternalLink
+  XCircle,
+  Clock,
+  ExternalLink,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+import QRCode from "react-qr-code";
 import { useConvexQuery } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
-import { toast } from "sonner";
-
+import { useMutation } from "convex/react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import TicketModal from "./_components/ticket-modal";
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 
 export default function MyTicketsPage() {
   const router = useRouter();
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { user, token, isAuthenticated } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [selectedTicket, setSelectedTicket] = useState(null);
+
+  // Modal State
+  const [selectedGroup, setSelectedGroup] = useState(null); // { event, tickets }
+  const [currentTicketIndex, setCurrentTicketIndex] = useState(0);
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const cancelRegistration = useMutation(api.registrations.cancelRegistration);
 
   // Fetch user's registrations
   const { data: registrations, isLoading } = useConvexQuery(
-    api.registrations.getMyRegistrations
+    api.registrations.getMyRegistrations,
+    { token: token ?? undefined }
   );
 
-  const handleShare = async (event) => {
-    const url = `${window.location.origin}/events/${event.slug}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: event.title?.en || event.title,
-          text: `Check out this event: ${event.title?.en || event.title}`,
-          url: url,
-        });
-      } catch (error) {
-        // User cancelled
-      }
-    } else {
-      navigator.clipboard.writeText(url);
-      toast.success("Event link copied!");
+  const handleCancelTicket = async (registrationId) => {
+    if (!confirm("Are you sure you want to cancel this ticket? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      await cancelRegistration({ registrationId, token });
+      toast.success("Ticket cancelled successfully");
+      // If we are in the modal, we might want to refresh or close it if the last ticket is cancelled
+      // For now, simple toast is enough.
+    } catch (error) {
+      toast.error("Failed to cancel ticket: " + error.message);
     }
   };
 
-  const handleViewTicket = (registration) => {
-    setSelectedTicket(registration);
-  };
+  if (!isMounted) return null;
 
-  if (isLoading) {
+  if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!registrations || registrations.length === 0) {
-    return (
-      <div className="min-h-screen px-4 py-12">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">My Tickets</h1>
-
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-16 px-4">
-              <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-6">
-                <Ticket className="w-10 h-10 text-muted-foreground" />
-              </div>
-              <h3 className="text-2xl font-bold mb-2">No Tickets Yet</h3>
-              <p className="text-muted-foreground text-center mb-8 max-w-md">
-                You haven't registered for any events yet. Explore amazing events and get your tickets!
-              </p>
-              <Button
-                size="lg"
-                className="gap-2"
-                onClick={() => router.push("/explore")}
-              >
-                Browse Events
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </CardContent>
-          </Card>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 text-center px-6">
+        <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center">
+          <Ticket className="w-10 h-10 text-amber-500" />
         </div>
+        <div className="space-y-2">
+          <h1 className="text-3xl font-black tracking-tight">Your Premium Passes</h1>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Please sign in to view and manage your exclusive event registrations.
+          </p>
+        </div>
+        <Button
+          onClick={() => router.push("/sign-in")}
+          className="bg-amber-500 hover:bg-amber-600 text-black font-bold h-12 px-8 rounded-xl"
+        >
+          Sign In Now
+        </Button>
       </div>
     );
   }
 
-  // Filter and search registrations
-  const filteredRegistrations = registrations.filter((reg) => {
-    const event = reg.event;
-    if (!event) return false;
+  const now = new Date();
 
-    const eventTitle = event.title?.en || event.title || "";
-    const matchesSearch = eventTitle.toLowerCase().includes(searchQuery.toLowerCase());
+  // 1. Initial filter based on Search and Status Dropdown
+  const filteredRegistrations = registrations?.filter((reg) => {
+    const title = reg.event?.title?.en || reg.event?.title || "";
+    const matchesSearch = title.toString().toLowerCase().includes(searchQuery.toLowerCase()) ||
+      reg.registrationNumber?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    if (filterStatus === "all") return matchesSearch;
-    if (filterStatus === "upcoming") {
-      const eventDate = event.timeConfiguration?.startDateTime || event.startDate;
-      return matchesSearch && eventDate > Date.now();
-    }
-    if (filterStatus === "past") {
-      const eventDate = event.timeConfiguration?.endDateTime || event.endDate;
-      return matchesSearch && eventDate < Date.now();
-    }
-    if (filterStatus === "checked-in") return matchesSearch && reg.checkIn?.status === "checked_in";
+    const currentStatus = typeof reg.status === "string" ? reg.status : reg.status?.current;
+    const matchesDropdown = filterStatus === "all" || currentStatus === filterStatus;
 
-    return matchesSearch;
+    return matchesSearch && matchesDropdown;
   });
 
-  return (
-    <div className="min-h-screen px-4 py-12">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12">
-          <div>
-            <h1 className="text-5xl font-bold mb-2">My Tickets</h1>
-            <p className="text-muted-foreground text-lg">
-              {registrations.length} {registrations.length === 1 ? "ticket" : "tickets"} in your collection
-            </p>
-          </div>
+  // 2. Segregate into Active and History based on Tab logic
+  const activeRegistrations = filteredRegistrations?.filter(reg => {
+    const status = typeof reg.status === "string" ? reg.status : reg.status?.current;
+    const endDate = new Date(reg.event?.timeConfiguration?.endDateTime || reg.event?.timeConfiguration?.startDateTime);
+    return status === 'confirmed' && endDate > now;
+  });
 
-          {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1 sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search events..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+  const historyRegistrations = filteredRegistrations?.filter(reg => {
+    const status = typeof reg.status === "string" ? reg.status : reg.status?.current;
+    const endDate = new Date(reg.event?.timeConfiguration?.endDateTime || reg.event?.timeConfiguration?.startDateTime);
+    return status === 'cancelled' || status === 'refunded' || endDate < now;
+  });
+
+  const GroupedEventList = ({ data, emptyTitle, emptyMessage, isHistoryTab }) => {
+    if (!data || data.length === 0) {
+      return (
+        <div className="text-center py-20 bg-card/20 rounded-3xl border border-dashed border-white/10">
+          <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
+            <Ticket className="w-8 h-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-xl font-bold mb-2">{emptyTitle}</h3>
+          <p className="text-muted-foreground">{emptyMessage}</p>
+        </div>
+      );
+    }
+
+    // Grouping for the UI display
+    const grouped = Object.values(data.reduce((acc, reg) => {
+      const eventId = reg.event?._id;
+      if (!eventId) return acc;
+      if (!acc[eventId]) acc[eventId] = { event: reg.event, tickets: [] };
+      acc[eventId].tickets.push(reg);
+      return acc;
+    }, {}));
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {grouped.map(({ event, tickets }) => (
+          <div
+            key={event._id}
+            onClick={() => {
+              setSelectedGroup({ event, tickets });
+              setCurrentTicketIndex(0);
+            }}
+            className={cn(
+              "group relative flex flex-col bg-card/40 backdrop-blur-md rounded-3xl border border-white/5 hover:border-amber-500/30 transition-all cursor-pointer overflow-hidden shadow-xl",
+              isHistoryTab && "grayscale-[0.5] opacity-80"
+            )}
+          >
+            {/* Event Image */}
+            <div className="relative h-48 overflow-hidden">
+              <Image
+                src={event.mediaConfiguration?.coverImage || "/hero_image.jpeg"}
+                alt={event.title?.en || event.title || "Event"}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
+
+              {/* Ticket Count Badge */}
+              <Badge className="absolute top-4 right-4 bg-amber-500 text-black font-black px-3 py-1 rounded-full shadow-lg border-none">
+                {tickets.length} {tickets.length > 1 ? "Tickets" : "Ticket"}
+              </Badge>
             </div>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-full sm:w-40">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue placeholder="Filter" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Tickets</SelectItem>
-                <SelectItem value="upcoming">Upcoming</SelectItem>
-                <SelectItem value="past">Past</SelectItem>
-                <SelectItem value="checked-in">Checked In</SelectItem>
-              </SelectContent>
-            </Select>
+
+            {/* Event Info */}
+            <div className="p-6 space-y-4">
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold line-clamp-1">{event.title?.en || event.title}</h3>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
+                  <Calendar className="w-3 h-3 text-amber-500" />
+                  <span>{event.timeConfiguration?.startDateTime ? format(new Date(event.timeConfiguration.startDateTime), "MMM do, yyyy") : "TBA"}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 text-sm text-foreground/80">
+                <MapPin className="w-3 h-3 text-amber-500" />
+                <span className="line-clamp-1">{event.locationConfiguration?.venueName || "TBA"}</span>
+              </div>
+
+              <div className="pt-2">
+                <Button className="w-full bg-amber-500/10 hover:bg-amber-500 text-amber-500 hover:text-black font-bold rounded-xl transition-all">
+                  Manage Passes
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
+        ))}
+      </div>
+    );
+  };
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-lg">
-                  <Ticket className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Tickets</p>
-                  <p className="text-2xl font-bold">{registrations.length}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+  const selectedTicket = selectedGroup?.tickets[currentTicketIndex];
+  const totalTickets = selectedGroup?.tickets.length || 0;
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-green-500/10 rounded-lg">
-                  <Calendar className="w-6 h-6 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Upcoming</p>
-                  <p className="text-2xl font-bold">
-                    {registrations.filter((r) => {
-                      const eventDate = r.event?.timeConfiguration?.startDateTime || r.event?.startDate;
-                      return eventDate > Date.now();
-                    }).length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+  const nextTicket = () => {
+    if (currentTicketIndex < totalTickets - 1) {
+      setCurrentTicketIndex(currentTicketIndex + 1);
+    }
+  };
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-500/10 rounded-lg">
-                  <CheckCircle className="w-6 h-6 text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Checked In</p>
-                  <p className="text-2xl font-bold">
-                    {registrations.filter((r) => r.checkIn?.status === "checked_in").length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+  const prevTicket = () => {
+    if (currentTicketIndex > 0) {
+      setCurrentTicketIndex(currentTicketIndex - 1);
+    }
+  };
 
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-amber-500/10 rounded-lg">
-                  <Clock className="w-6 h-6 text-amber-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Attended</p>
-                  <p className="text-2xl font-bold">
-                    {registrations.filter((r) => {
-                      const eventDate = r.event?.timeConfiguration?.endDateTime || r.event?.endDate;
-                      return eventDate < Date.now() && r.checkIn?.status === "checked_in";
-                    }).length}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tickets List */}
-        <div className="space-y-6">
-          {filteredRegistrations.length === 0 ? (
-            <Card className="border-dashed">
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <p className="text-muted-foreground">No tickets match your search</p>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredRegistrations.map((registration) => {
-              const event = registration.event;
-              if (!event) return null;
-
-              const eventTitle = event.title?.en || event.title;
-              const eventCoverImage = event.content?.coverImage?.url || event.coverImage;
-              const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate;
-              const eventEndDate = event.timeConfiguration?.endDateTime || event.endDate;
-              const eventCity = event.metadata?.legacyProps?.city || event.city;
-              const eventVenue = event.metadata?.legacyProps?.venueName || event.venue;
-              const isUpcoming = eventStartDate > Date.now();
-              const isPast = eventEndDate < Date.now();
-
-              return (
-                <Card key={registration._id} className="overflow-hidden hover:border-primary/50 transition-colors">
-                  <CardContent className="p-0">
-                    <div className="grid md:grid-cols-[300px_1fr] gap-0">
-                      {/* Event Image */}
-                      <div className="relative h-48 md:h-full">
-                        {eventCoverImage ? (
-                          <Image
-                            src={eventCoverImage}
-                            alt={eventTitle}
-                            fill
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                            <Ticket className="w-16 h-16 text-muted-foreground" />
-                          </div>
-                        )}
-                        {/* Status Badge */}
-                        <div className="absolute top-4 left-4">
-                          {registration.checkIn?.status === "checked_in" ? (
-                            <Badge className="bg-green-500 hover:bg-green-600">
-                              <CheckCircle className="w-3 h-3 mr-1" />
-                              Checked In
-                            </Badge>
-                          ) : isUpcoming ? (
-                            <Badge className="bg-blue-500 hover:bg-blue-600">
-                              <Clock className="w-3 h-3 mr-1" />
-                              Upcoming
-                            </Badge>
-                          ) : isPast ? (
-                            <Badge variant="secondary">
-                              <XCircle className="w-3 h-3 mr-1" />
-                              Past Event
-                            </Badge>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      {/* Event Details */}
-                      <div className="p-6 md:p-8 space-y-6">
-                        {/* Header */}
-                        <div className="space-y-3">
-                          <h3 className="text-2xl font-bold line-clamp-2">
-                            {eventTitle}
-                          </h3>
-
-                          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-4 h-4" />
-                              <span>{format(eventStartDate, "MMM dd, yyyy")}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4" />
-                              <span>{format(eventStartDate, "h:mm a")}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <MapPin className="w-4 h-4" />
-                              <span>{eventCity}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <Separator />
-
-                        {/* Ticket Info */}
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-1">Ticket ID</p>
-                            <p className="font-mono text-sm font-bold">
-                              {registration.registrationNumber}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-1">Registered</p>
-                            <p className="text-sm font-medium">
-                              {format(registration.audit?.createdAt || registration.createdAt || Date.now(), "MMM dd, yyyy")}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-1">Status</p>
-                            <p className="text-sm font-medium capitalize">
-                              {(typeof registration.status === 'object' ? registration.status?.current : registration.status || "confirmed").replace("_", " ")}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex flex-wrap gap-3">
-                          <Button
-                            variant="default"
-                            className="gap-2"
-                            onClick={() => router.push(`/events/${event.slug}`)}
-                          >
-                            View Event
-                            <ArrowRight className="w-4 h-4" />
-                          </Button>
-
-                          <Button
-                            variant="outline"
-                            className="gap-2"
-                            onClick={() => handleViewTicket(registration)}
-                          >
-                            <Ticket className="w-4 h-4" />
-                            Ticket
-                          </Button>
-
-                          <Button
-                            variant="outline"
-                            className="gap-2"
-                            onClick={() => handleShare(event)}
-                          >
-                            <Share2 className="w-4 h-4" />
-                            Share
-                          </Button>
-
-                          {eventVenue && (
-                            <Button
-                              variant="ghost"
-                              className="gap-2"
-                              asChild
-                            >
-                              <a
-                                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(eventVenue + " " + eventCity)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                <ExternalLink className="w-4 h-4" />
-                                Directions
-                              </a>
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })
-          )}
+  return (
+    <div className="space-y-12 pb-20">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">
+            <Ticket className="w-3 h-3" />
+            <span>Member Access</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter">My <span className="text-gradient-gold">Tickets</span></h1>
+          <p className="text-muted-foreground font-light text-lg">Manage your digital event passes in one place.</p>
         </div>
       </div>
 
-      <TicketModal
-        isOpen={!!selectedTicket}
-        onClose={() => setSelectedTicket(null)}
-        registration={selectedTicket}
-        event={selectedTicket?.event}
-      />
+      {/* Control Bar: Tabs + Search/Filter */}
+      <div className="space-y-8">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              placeholder="Search by event name..."
+              className="pl-12 h-14 bg-card/40 border-white/5 rounded-2xl focus:ring-amber-500/50"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="h-14 px-6 rounded-2xl border-white/5 bg-card/40 gap-2 min-w-[140px]">
+                <Filter className="w-5 h-5 text-amber-500" />
+                <span className="capitalize">{filterStatus === 'all' ? 'All Status' : filterStatus}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 bg-zinc-900 border-white/10">
+              <DropdownMenuItem onClick={() => setFilterStatus("all")}>All Statuses</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilterStatus("confirmed")}>Confirmed</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilterStatus("pending")}>Pending</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setFilterStatus("cancelled")}>Cancelled</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <Tabs defaultValue="active" className="w-full">
+          <TabsList className="bg-white/5 border border-white/10 p-1 h-14 rounded-2xl inline-flex w-full sm:w-auto mb-10">
+            <TabsTrigger
+              value="active"
+              className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold transition-all px-8 h-full"
+            >
+              Active Passes
+            </TabsTrigger>
+            <TabsTrigger
+              value="history"
+              className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold transition-all px-8 h-full"
+            >
+              History
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="active" className="mt-0 focus-visible:outline-none">
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-64 rounded-3xl" />
+                ))}
+              </div>
+            ) : (
+              <GroupedEventList
+                data={activeRegistrations}
+                emptyTitle="No active tickets"
+                emptyMessage="You don't have any upcoming confirmed event registrations."
+                isHistoryTab={false}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="history" className="mt-0 focus-visible:outline-none">
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-64 rounded-3xl" />
+                ))}
+              </div>
+            ) : (
+              <GroupedEventList
+                data={historyRegistrations}
+                emptyTitle="No history found"
+                emptyMessage="You don't have any past or cancelled event registrations."
+                isHistoryTab={true}
+              />
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Ticket Group Modal with Navigation */}
+      <Dialog open={!!selectedGroup} onOpenChange={() => setSelectedGroup(null)}>
+        <DialogContent className="sm:max-w-md bg-zinc-950 border-white/10 p-0 overflow-hidden outline-none">
+          {selectedGroup && selectedTicket && (
+            <div className="flex flex-col">
+              {/* Top Banner & Header */}
+              <div className="relative h-40">
+                <Image
+                  src={selectedGroup.event?.mediaConfiguration?.coverImage || "/hero_image.jpeg"}
+                  alt={selectedGroup.event?.title?.en || selectedGroup.event?.title}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent" />
+
+                <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
+                  <Button
+                    className="bg-black/40 hover:bg-black/60 backdrop-blur-md border-none text-white h-8 rounded-full text-xs font-bold"
+                    size="sm"
+                    onClick={() => router.push(`/events/${selectedGroup.event.slug}`)}
+                  >
+                    <ExternalLink className="w-3 h-3 mr-2 text-amber-500" />
+                    Event Details
+                  </Button>
+
+                  {totalTickets > 1 && (
+                    <Badge className="bg-amber-500 text-black border-none font-bold">
+                      Ticket {currentTicketIndex + 1} of {totalTickets}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Multi-Ticket Navigator (Tabs-like buttons) */}
+              <div className="px-8 pb-8 -mt-12 relative z-10 space-y-6">
+                <div className="bg-zinc-900 rounded-3xl p-6 border border-white/5 shadow-2xl space-y-6">
+                  {/* Navigation for multiple tickets */}
+                  {totalTickets > 1 && (
+                    <div className="flex items-center justify-between pb-4">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={currentTicketIndex === 0}
+                        onClick={prevTicket}
+                        className="h-10 w-10 rounded-full bg-white/5 hover:bg-white/10 disabled:opacity-30"
+                      >
+                        <ChevronLeft className="w-6 h-6" />
+                      </Button>
+
+                      <div className="flex gap-1.5">
+                        {selectedGroup.tickets.map((_, i) => (
+                          <div
+                            key={i}
+                            className={cn(
+                              "w-2 h-2 rounded-full transition-all",
+                              i === currentTicketIndex ? "bg-amber-500 w-4" : "bg-white/10"
+                            )}
+                          />
+                        ))}
+                      </div>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        disabled={currentTicketIndex === totalTickets - 1}
+                        onClick={nextTicket}
+                        className="h-10 w-10 rounded-full bg-white/5 hover:bg-white/10 disabled:opacity-30"
+                      >
+                        <ChevronRight className="w-6 h-6" />
+                      </Button>
+                    </div>
+                  )}
+
+                  <div className="text-center space-y-2">
+                    <DialogTitle className="text-2xl font-black text-white leading-tight">
+                      {selectedGroup.event?.title?.en || selectedGroup.event?.title}
+                    </DialogTitle>
+                    <p className="text-amber-500 font-bold uppercase tracking-[0.2em] text-[10px]">Secure Digital Pass</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 py-6 border-y border-white/5">
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Date</p>
+                      <p className="font-bold text-sm text-white">
+                        {format(new Date(selectedGroup.event?.timeConfiguration?.startDateTime), "MMM do, yyyy")}
+                      </p>
+                    </div>
+                    <div className="space-y-1 text-right">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Ticket ID</p>
+                      <p className="font-bold text-sm text-amber-500 font-mono tracking-tighter">
+                        {selectedTicket.registrationNumber}
+                      </p>
+                    </div>
+                    <div className="space-y-1 col-span-2">
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Venue & Seat</p>
+                      <p className="font-bold text-sm text-white line-clamp-1">
+                        {selectedGroup.event?.locationConfiguration?.venueName}
+                        {selectedTicket.seatNumber && <span className="text-amber-500 ml-2"> - {selectedTicket.seatNumber}</span>}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* QR Code */}
+                  <div className="bg-white p-4 rounded-2xl mx-auto w-48 h-48 flex items-center justify-center shadow-inner">
+                    <QRCode
+                      value={selectedTicket.registrationNumber}
+                      size={160}
+                      style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                      viewBox={`0 0 256 256`}
+                    />
+                  </div>
+
+                  <div className="text-center">
+                    <Badge variant="outline" className={cn(
+                      "rounded-full px-4 py-1 font-black uppercase text-[10px] tracking-widest",
+                      selectedTicket.checkIn?.status === "checked_in"
+                        ? "bg-green-500/10 text-green-500 border-green-500/20"
+                        : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                    )}>
+                      {selectedTicket.checkIn?.status === "checked_in" ? (
+                        <><CheckCircle2 className="w-3 h-3 mr-2" /> Entry Verified</>
+                      ) : (
+                        <><Clock className="w-3 h-3 mr-2" /> Valid Entry Pass</>
+                      )}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <Button className="w-full h-12 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-wider shadow-lg">
+                    <Download className="w-4 h-4 mr-2" />
+                    Download This PDF
+                  </Button>
+
+                  {(typeof selectedTicket.status === 'string' ? selectedTicket.status : selectedTicket.status?.current) !== "cancelled" && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleCancelTicket(selectedTicket.originalId || selectedTicket._id)}
+                      className="w-full h-12 rounded-xl text-red-500/70 hover:text-red-500 hover:bg-red-500/5 font-bold"
+                    >
+                      <XCircle className="w-4 h-4 mr-2" />
+                      Cancel Registration
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-

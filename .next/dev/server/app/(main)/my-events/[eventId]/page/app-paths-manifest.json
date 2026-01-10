@@ -1,0 +1,3 @@
+{
+  "/(main)/my-events/[eventId]/page": "app/(main)/my-events/[eventId]/page.js"
+}

@@ -64,7 +64,6 @@ export default function SignInForm() {
                     </div>
                     <h1 className="text-2xl font-bold">Welcome Back</h1>
                     <p className="text-muted-foreground mt-2">Sign in to your account</p>
-                    <p className="text-xs text-amber-500 mt-2">Dev Tip: Use test@example.com / password123</p>
                 </div>
 
                 {/* Google Sign In */}

@@ -1,28 +1,31 @@
 "use client";
 
-<<<<<<< HEAD
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import { Loader2, ArrowLeft, Save, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
+
+// Custom Hooks
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
-import { Loader2, ArrowLeft, Save } from "lucide-react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import dynamic from "next/dynamic";
-import { useState } from "react";
 
-// Seat Toolkit Dynamic Import
+// 1. Dynamic Import for Canvas (Prevents "window is undefined" error)
 const SeatToolkit = dynamic(
     () => import("@mezh-hq/react-seat-toolkit").then((mod) => mod.SeatToolkit),
     {
-        ssr: false, loading: () => (
-            <div className="flex items-center justify-center min-h-[400px]">
-                <Loader2 className="w-6 h-6 animate-spin text-amber-500" />
-                <span className="ml-2">Loading Designer...</span>
+        ssr: false,
+        loading: () => (
+            <div className="flex flex-col items-center justify-center h-full text-amber-500 gap-2">
+                <Loader2 className="w-8 h-8 animate-spin" />
+                <span className="text-sm font-medium">Initializing Design Engine...</span>
             </div>
         )
     }
 );
+
+// Styles
 import "@mezh-hq/react-seat-toolkit/styles";
 import "@/app/seat-toolkit-theme.css";
 
@@ -32,10 +35,11 @@ export default function SeatingBuilderPage() {
     const eventId = params.eventId;
     const [isSaving, setIsSaving] = useState(false);
 
-    // Fetch event data
+    // 2. Fetch Event Data
     const { data: event, isLoading } = useConvexQuery(api.events.getById, { id: eventId });
     const { mutate: saveVenueLayout } = useConvexMutation(api.events.saveVenueLayout);
 
+    // 3. Handle Save
     const handleSave = async (json) => {
         setIsSaving(true);
         try {
@@ -43,7 +47,7 @@ export default function SeatingBuilderPage() {
                 eventId: eventId,
                 layout: json,
             });
-            toast.success("Layout Saved");
+            toast.success("Venue Layout Saved Successfully");
         } catch (error) {
             console.error(error);
             toast.error("Failed to save layout");
@@ -52,93 +56,89 @@ export default function SeatingBuilderPage() {
         }
     };
 
-    if (isLoading || !event) {
-=======
-import { useParams } from "next/navigation";
-import { useConvexQuery } from "@/hooks/use-convex-query";
-import { api } from "@/convex/_generated/api";
-import { Loader2, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import SeatingBuilder from "@/components/organizer/seating-builder";
+    // 4. Suppress Library Warning (AirplaneMode bug in library)
+    useEffect(() => {
+        const originalError = console.error;
+        console.error = (...args) => {
+            if (typeof args[0] === 'string' && args[0].includes('airplaneMode')) {
+                return;
+            }
+            originalError.apply(console, args);
+        };
+        return () => {
+            console.error = originalError;
+        };
+    }, []);
 
-export default function SeatingBuilderPage() {
-    const params = useParams();
-    const eventId = params.eventId;
-    const { data: event, isLoading } = useConvexQuery(api.events.getById, { id: eventId });
-
+    // Loading State
     if (isLoading) {
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
         return (
-            <div className="flex items-center justify-center min-h-screen bg-black">
+            <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
             </div>
         );
     }
 
-<<<<<<< HEAD
+    if (!event) {
+        return (
+            <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex items-center justify-center text-white">
+                Event not found
+            </div>
+        );
+    }
+
     return (
-        <div className="fixed inset-0 z-[60] bg-[#0a0a0a] text-white font-['Manrope'] flex flex-col overflow-hidden select-none cursor-default">
-            {/* Header */}
-            <header className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-[#111] shrink-0">
+        // === FULL SCREEN WRAPPER ===
+        // Uses 'fixed inset-0 z-[9999]' to overlay the entire dashboard.
+        // This fixes the Cursor Offset issue by resetting coordinates to (0,0).
+        <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex flex-col overflow-hidden animate-in fade-in duration-300">
+
+            {/* --- HEADER --- */}
+            <header className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-[#111] shrink-0 shadow-md z-50">
                 <div className="flex items-center gap-4">
                     <Button
                         variant="ghost"
-                        size="icon"
+                        size="sm"
                         onClick={() => router.back()}
-                        className="text-white/60 hover:text-white hover:bg-white/5"
+                        className="text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
                     >
-                        <ArrowLeft className="w-5 h-5" />
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Dashboard
                     </Button>
+                    <div className="h-6 w-px bg-white/10" />
                     <div>
-                        <h1 className="text-lg font-bold">Venue Designer</h1>
-                        <p className="text-xs text-white/50">
+                        <h1 className="text-sm font-bold text-white tracking-wide">VENUE DESIGNER</h1>
+                        <p className="text-xs text-white/50 max-w-[200px] truncate">
                             {event.title?.en || (typeof event.title === "string" ? event.title : "Untitled Event")}
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    {isSaving && <span className="text-xs text-amber-500 animate-pulse">Saving changes...</span>}
-                    <Button
-                        onClick={() => {
-                            toast.info("Click the 'Export' icon in the toolkit to save.");
-                        }}
-                        variant="outline"
-                        className="border-white/10 text-white hover:bg-white/5"
-                    >
-                        <Save className="w-4 h-4 mr-2" />
-                        Help
-                    </Button>
-=======
-    if (!event) {
-        return <div className="text-white">Event not found</div>;
-    }
-
-    return (
-        <div className="min-h-screen bg-[#111] text-white font-['Manrope']">
-            {/* Header */}
-            <header className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-[#181611]">
                 <div className="flex items-center gap-4">
-                    <Link href={`/my-events/${eventId}`}>
-                        <Button variant="ghost" size="icon" className="text-white/60 hover:text-white hover:bg-white/5">
-                            <ArrowLeft className="w-5 h-5" />
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-lg font-bold">Seating Builder</h1>
-                        <p className="text-xs text-white/50">{event.title?.en || (typeof event.title === 'string' ? event.title : 'Untitled Event')}</p>
+                    {/* Save Status */}
+                    <div className="flex items-center gap-2 text-xs">
+                        {isSaving ? (
+                            <span className="text-amber-500 flex items-center gap-1">
+                                <Loader2 className="w-3 h-3 animate-spin" /> Saving...
+                            </span>
+                        ) : (
+                            <span className="text-green-500 flex items-center gap-1">
+                                <CheckCircle className="w-3 h-3" /> Ready
+                            </span>
+                        )}
                     </div>
-                </div>
-                <div className="flex items-center gap-3">
-                    {/* Save logic is handled inside the builder component */}
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
+
+                    {/* Helper Text */}
+                    <div className="bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded text-xs text-amber-500 font-medium">
+                        Click "Export" in toolbar to save
+                    </div>
                 </div>
             </header>
 
-            {/* Builder Area */}
-<<<<<<< HEAD
-            <div className="flex-1 w-full relative overflow-hidden">
+            {/* --- CANVAS AREA --- */}
+            {/* 'select-none' prevents cursor flickering during drag */}
+            {/* 'isolate' prevents CSS leaks from parent theme */}
+            <div className="relative flex-1 w-full bg-[#181611] select-none isolate overflow-hidden cursor-default">
                 <SeatToolkit
                     mode="designer"
                     events={{
@@ -146,10 +146,6 @@ export default function SeatingBuilderPage() {
                     }}
                     data={event.venueLayout || null}
                 />
-=======
-            <div className="h-[calc(100vh-64px)]">
-                <SeatingBuilder event={event} />
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
             </div>
         </div>
     );

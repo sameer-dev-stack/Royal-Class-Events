@@ -13,6 +13,7 @@ import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { useUserRoles } from "@/hooks/use-user-roles";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import useAuthStore from "@/hooks/use-auth-store";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,13 +43,13 @@ import Image from "next/image";
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 const eventSchema = z.object({
-  title: z.string().min(3, "Title is too short"),
-  description: z.string().min(10, "Description is too short"),
+  title: z.string().min(1, "Event Name is required").min(3, "Title must be at least 3 characters"),
+  description: z.string().min(1, "Description is required").min(10, "Description must be at least 10 characters"),
   category: z.string().min(1, "Please select a category"),
   startDate: z.date({ required_error: "Start Date is required" }),
   endDate: z.date({ required_error: "End Date is required" }),
-  startTime: z.string().regex(timeRegex, "Start Time is required"),
-  endTime: z.string().regex(timeRegex, "End Time is required"),
+  startTime: z.string().min(1, "Start Time is required").regex(timeRegex, "Invalid time format"),
+  endTime: z.string().min(1, "End Time is required").regex(timeRegex, "Invalid time format"),
   locationType: z.enum(["physical", "online"]).default("physical"),
   venue: z.string().optional(),
   address: z.string().optional(),
@@ -80,11 +81,13 @@ export default function CreateEventPage() {
   const hasPro = false;
 
   // Role Check
+  const { token } = useAuthStore();
   const { isOrganizer, isAdmin, isLoading: isRoleLoading, user } = useUserRoles();
 
-  const { mutate: createEvent, isLoading } = useConvexMutation(api.events.createEvent);
+  const { mutate: createEvent, isLoading: isCreating } = useConvexMutation(api.events.createEvent);
   const { mutate: generateUploadUrl } = useConvexMutation(api.files.generateUploadUrl);
   const { mutate: createVenueDesign } = useConvexMutation(api.venueDesigns.create);
+  const { mutate: upgradeToOrganizer, isLoading: isUpgrading } = useConvexMutation(api.users.upgradeToOrganizer);
 
   const currentUser = user; // Alias for existing code compatibility
 
@@ -113,8 +116,8 @@ export default function CreateEventPage() {
   });
 
   const venueType = watch("venueType");
-  const { data: templates } = useConvexQuery(api.venueDesigns.listTemplates, {});
-  const { data: myDesigns } = useConvexQuery(api.venueDesigns.listMyDesigns, {});
+  const { data: templates } = useConvexQuery(api.venueDesigns.listTemplates, { token });
+  const { data: myDesigns } = useConvexQuery(api.venueDesigns.listMyDesigns, { token });
 
   const themeColor = watch("themeColor");
   const ticketType = watch("ticketType");
@@ -147,30 +150,50 @@ export default function CreateEventPage() {
   // Determine if user is authorized
   const isAuthorized = isOrganizer || isAdmin;
 
-  // If loading, show loader
-  if (isRoleLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
-      </div>
-    );
+  // Pre-emptive Auth Guard for Guests
+  useEffect(() => {
+    if (!isRoleLoading && !user) {
+      router.push(`/sign-in?redirect=${encodeURIComponent("/create-event")}`);
+    }
+  }, [isRoleLoading, user, router]);
+
+  // If loading or not logged in (redirecting), show loader
+  if (isRoleLoading || !user) {
+    return null; // Don't render anything while redirecting or loading
   }
 
   // If logged in but not an organizer, show message instead of redirecting immediately
   if (user && !isAuthorized) {
     return (
       <div className="flex h-screen items-center justify-center p-6 text-center">
-        <div className="max-w-md space-y-4">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-amber-500/10 rounded-full mb-4">
+        <div className="max-w-md space-y-6">
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-amber-500/10 rounded-full">
             <Crown className="w-10 h-10 text-amber-500" />
           </div>
-          <h2 className="text-2xl font-bold">Organizer Account Required</h2>
-          <p className="text-muted-foreground">
-            You are currently signed in as an Attendee. To host events, you need an Organizer account.
-          </p>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold">Organizer Account Required</h2>
+            <p className="text-muted-foreground">
+              You are currently signed in as an Attendee. To host events, you need to upgrade to an Organizer account.
+            </p>
+          </div>
           <div className="flex flex-col gap-3">
-            <Button asChild className="bg-amber-500 hover:bg-amber-600 text-black">
-              <a href="/sign-up/organizer">Switch to Organizer Account</a>
+            <Button
+              onClick={async () => {
+                try {
+                  await upgradeToOrganizer({ token });
+                  toast.success("Account upgraded! Redirecting...");
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 1000);
+                } catch (e) {
+                  toast.error("Failed to upgrade: " + e.message);
+                }
+              }}
+              disabled={isUpgrading}
+              className="h-12 bg-amber-500 hover:bg-amber-600 text-black font-bold"
+            >
+              {isUpgrading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+              Switch to Organizer Account
             </Button>
             <Button variant="ghost" onClick={() => router.push("/")}>
               Back to Home
@@ -269,6 +292,7 @@ export default function CreateEventPage() {
         themeColor: data.themeColor,
         venueDesignId: finalVenueDesignId,
         hasPro,
+        token,
       });
 
       toast.success("Event created successfully! 🎉");
@@ -290,11 +314,9 @@ export default function CreateEventPage() {
   // --- ERROR HANDLER FOR DEBUGGING ---
   const onError = (errors) => {
     console.log("Form Validation Errors:", errors);
-    const firstError = Object.values(errors)[0];
-    if (firstError) {
-      toast.error(`Validation Error: ${firstError.message}`);
-    } else {
-      toast.error("Please check all required fields.");
+    const errorCount = Object.keys(errors).length;
+    if (errorCount > 0) {
+      toast.error(`Please fix ${errorCount} error${errorCount > 1 ? 's' : ''} to continue.`);
     }
   };
 
@@ -483,7 +505,8 @@ export default function CreateEventPage() {
                 </Popover>
                 <Input type="time" {...register("startTime")} className="bg-background border-input text-foreground" />
               </div>
-              {(errors.startDate || errors.startTime) && <p className="text-sm text-red-500">Date/Time required</p>}
+              {errors.startDate && <p className="text-xs text-red-500 mt-1">{errors.startDate.message}</p>}
+              {errors.startTime && <p className="text-xs text-red-500 mt-1">{errors.startTime.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -502,7 +525,8 @@ export default function CreateEventPage() {
                 </Popover>
                 <Input type="time" {...register("endTime")} className="bg-background border-input text-foreground" />
               </div>
-              {(errors.endDate || errors.endTime) && <p className="text-sm text-red-500">Date/Time required</p>}
+              {errors.endDate && <p className="text-xs text-red-500 mt-1">{errors.endDate.message}</p>}
+              {errors.endTime && <p className="text-xs text-red-500 mt-1">{errors.endTime.message}</p>}
             </div>
           </div>
 
@@ -694,8 +718,8 @@ export default function CreateEventPage() {
             onUsePrice={handleUseAIPrice}
           />
 
-          <Button type="submit" disabled={isLoading} className="w-full py-6 text-lg rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all border-none">
-            {isLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Publishing...</> : "Publish Event"}
+          <Button type="submit" disabled={isCreating} className="w-full py-6 text-lg rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all border-none">
+            {isCreating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Publishing...</> : "Publish Event"}
           </Button>
         </form>
       </div>

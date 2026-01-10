@@ -6,11 +6,7 @@ export async function POST(request) {
     try {
         const body = await request.json();
         console.log("Payment Init Received Body:", body);
-<<<<<<< HEAD
-        const { amount, eventId, userId, attendeeName, attendeeEmail, ticketQuantity, tickets } = body;
-=======
-        const { amount, eventId, userId, attendeeName, attendeeEmail, ticketQuantity } = body;
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
+        const { amount, eventId, userId, attendeeName, attendeeEmail, ticketQuantity, tickets, seatIds } = body;
 
         if (!amount || !eventId || !userId) {
             console.error("Payment Init Error: Missing required fields", { amount, eventId, userId });
@@ -29,10 +25,8 @@ export async function POST(request) {
             attendeeName: attendeeName || "Guest",
             attendeeEmail: attendeeEmail || "",
             ticketQuantity: ticketQuantity || 1,
-<<<<<<< HEAD
-            tickets: tickets || [], // Pass tickets
-=======
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
+            tickets: tickets || [],
+            seatIds: seatIds || [], // Pass seatIds to Convex
         });
 
         // Construct Gateway URL (Detect host for tunnels)

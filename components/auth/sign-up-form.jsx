@@ -3,11 +3,15 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Crown, Heart, Mail, Lock, User, Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
+
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function SignUpForm({ role = null }) {
     const [email, setEmail] = useState("");
@@ -16,6 +20,8 @@ export default function SignUpForm({ role = null }) {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
+
+    const registerUser = useMutation(api.users.registerUser);
 
     // Store role in localStorage for onboarding
     useEffect(() => {
@@ -28,19 +34,39 @@ export default function SignUpForm({ role = null }) {
         e.preventDefault();
         setIsLoading(true);
 
-        // MOCK SIGN UP: In a real app, this would call an API endpoint to create the user
-        // For Credentials Dev, we just redirect to sign in with a message
-        setTimeout(() => {
+        try {
+            const result = await registerUser({
+                name: fullName,
+                email,
+                password,
+                role: role || "attendee"
+            });
+
+            if (result.success) {
+                toast.success("Account created successfully!");
+                // Redirect to sign-in so NextAuth can establish a session
+                router.push("/sign-in");
+            } else {
+                toast.error(result.error || "Registration failed");
+            }
+        } catch (error) {
+            console.error("Sign-up error:", error);
+            toast.error("An unexpected error occurred during registration.");
+        } finally {
             setIsLoading(false);
-            toast.success("Account created! Please sign in with the test credentials.");
-            router.push("/sign-in");
-        }, 1000);
+        }
     };
 
     const handleGoogleSignUp = async () => {
         setIsLoading(true);
-        toast.info("Google Sign-Up will be enabled in production.");
-        setIsLoading(false);
+        try {
+            // For sign-up, we still use the "google" provider
+            // The role is stored in localStorage by the useEffect above
+            await signIn("google", { callbackUrl: "/explore" });
+        } catch (error) {
+            toast.error("Failed to sign up with Google");
+            setIsLoading(false);
+        }
     };
 
     const isOrganizer = role === "organizer";

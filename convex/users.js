@@ -1,105 +1,110 @@
-import { internal } from "./_generated/api";
+import { internal, api } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
- * Stores or updates a user from an identity provider (e.g. Supabase).
- * This function determines if the user is new or existing based on externalId.
+ * CRYPTO HELPERS (SHA-256)
+ * Secure password hashing and verification
  */
-export const store = mutation({
+async function hashPassword(password) {
+  const salt = Math.random().toString(36).substring(2, 15);
+  const textBuffer = new TextEncoder().encode(salt + password);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", textBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return `${salt}:${hashHex}`;
+}
+
+async function verifyPassword(password, storedHash) {
+  if (!storedHash || !storedHash.includes(':')) return false;
+  const [salt, originalHash] = storedHash.split(':');
+  const textBuffer = new TextEncoder().encode(salt + password);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", textBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex === originalHash;
+}
+
+function generateToken() {
+  return Math.random().toString(36).substr(2) + Date.now().toString(36);
+}
+
+// =========================================================
+// AUTHENTICATION MUTATIONS (MASTER)
+// =========================================================
+
+/**
+ * registerUser: Creates a new user with a hashed password and assigns initial roles.
+ */
+export const registerUser = mutation({
   args: {
-    role: v.optional(v.string()),
+    name: v.string(),
+    email: v.string(),
+    password: v.string(),
+    role: v.string(), // "organizer" or "attendee"
   },
   handler: async (ctx, args) => {
-    let identity = await ctx.auth.getUserIdentity();
-
-    // DEV_AUTH_BYPASS
-    if (!identity) {
-      const isDev = process.env.NODE_ENV === "development"; // Simple check, or use a specific env var if exposed
-      if (isDev || true) { // Forcing true for now as requested "mock everything"
-        console.log("Store: No identity found, using MOCK identity for Dev.");
-        identity = {
-          subject: "mock-user-id-12345",
-          tokenIdentifier: "mock-user-id-12345",
-          name: "Test User",
-          givenName: "Test",
-          familyName: "User",
-          email: "test@example.com",
-          emailVerified: true
-        };
-      } else {
-        console.log("Store: Authentication identity not found in request context.");
-        throw new Error("Called store without authentication present");
-      }
-    }
-
-    // Standardize IDs: subject is the Supabase UID (UUID)
-    const externalId = identity.subject || identity.tokenIdentifier;
-    console.log("Store: Mutation called for externalId:", externalId, "with role suggestion:", args.role);
-
-    const user = await ctx.db
+    // 1. Check duplicate email (Efficient Index lookup)
+    const existingByProfile = await ctx.db
       .query("users")
-      .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
-      .unique();
-
-    const now = Date.now();
-
-    if (user !== null) {
-      // If user exists but has no roles, and a role was requested, assign it.
-      if (args.role && (!user.roles || user.roles.length === 0)) {
-        const requestedRole = await ctx.db
-          .query("roles")
-          .withIndex("by_key", (q) => q.eq("key", args.role))
-          .first();
-
-        if (requestedRole) {
-          await ctx.db.patch(user._id, {
-            roles: [{
-              roleId: requestedRole._id,
-              assignedBy: user._id,
-              assignedAt: now,
-            }],
-            updatedAt: now,
-          });
-          console.log("Store: Patched existing user with requested role:", args.role);
-        }
-      }
-      return user._id;
-    }
-
-    // New User Logic
-    console.log("Store: Creating new user for:", externalId, "with role suggestion:", args.role);
-
-    // 1. Prepare Role
-    const roleToAssign = (args.role === 'organizer' || args.role === 'attendee') ? args.role : 'attendee';
-    const targetRole = await ctx.db
-      .query("roles")
-      .withIndex("by_key", (q) => q.eq("key", roleToAssign))
+      .withIndex("by_email", (q) => q.eq("profile.primaryEmail.address", args.email))
       .first();
 
-    // 2. Map Profile
-    const nameParts = (identity.name || "Guest User").split(" ");
-    const legalFirstName = identity.givenName || nameParts[0];
-    const legalLastName = identity.familyName || nameParts.slice(1).join(" ") || "";
+    const existingByTopLevel = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("email"), args.email))
+      .first();
 
-    const userToInsert = {
-      externalId,
-      authProvider: 'supabase',
+    if (existingByProfile || existingByTopLevel) {
+      return { success: false, error: "Email already registered!" };
+    }
+
+    // 2. Lookup role document to get _id
+    const roleDoc = await ctx.db
+      .query("roles")
+      .withIndex("by_key", (q) => q.eq("key", args.role))
+      .first();
+
+    if (!roleDoc) {
+      return { success: false, error: "Requested role not found in system." };
+    }
+
+    const now = Date.now();
+    const passwordHash = await hashPassword(args.password);
+
+    // 3. Insert user document
+    const newUserId = await ctx.db.insert("users", {
+      name: args.name,
+      email: args.email,
+      passwordHash: passwordHash,
+      role: args.role, // Unified Role String
+      status: "active",
+      statusChangedAt: now,
+      externalId: `custom_${now}`,
+      authProvider: "internal",
+      createdAt: now,
+      updatedAt: now,
+      version: 1,
       profile: {
-        legalFirstName,
-        legalLastName,
-        displayName: identity.name || "Guest",
+        legalFirstName: args.name.split(' ')[0] || args.name,
+        legalLastName: args.name.split(' ').slice(1).join(' ') || "User",
+        displayName: args.name,
         title: "Member",
-        department: "Community",
-        employeeId: externalId.slice(0, 8),
-        employeeType: "full_time",
+        department: "General",
+        employeeId: `EMP-${now}`,
+        primaryEmail: {
+          address: args.email,
+          verified: false,
+          isMarketingAllowed: false,
+          isTransactionalAllowed: true,
+        },
         timezone: "UTC",
         locale: "en-US",
         currencyPreference: "USD",
         dataProcessingConsent: {
           consentedAt: now,
           version: "1.0",
-          purposes: ["service_delivery"],
+          purposes: ["auth"],
         },
         mfaEnabled: false,
         accessibility: {
@@ -107,96 +112,206 @@ export const store = mutation({
           wheelchairAccess: false,
           dietaryRestrictions: [],
         },
-        primaryEmail: {
-          address: identity.email || "",
-          verified: identity.emailVerified || false,
-          isMarketingAllowed: false,
-          isTransactionalAllowed: true,
-        },
+        employeeType: "full_time"
       },
-      roles: [], // MUST START EMPTY TO INSERT SAFELY THEN PATCH OR INCLUDE IF ROLE FOUND
-      status: 'active',
-      statusChangedAt: now,
-      createdAt: now,
-      updatedAt: now,
-      version: 1,
-    };
+    });
 
-    // If we found the role, we can include it immediately if it satisfies the ID type
-    if (targetRole) {
-      userToInsert.roles = [{
-        roleId: targetRole._id,
-        assignedBy: externalId, // Temporary externalId until we have user ID? No, must be v.id("users")
+    // 4. Assign Resolved Role Record
+    await ctx.db.patch(newUserId, {
+      roles: [{
+        roleId: roleDoc._id,
+        assignedBy: newUserId,
         assignedAt: now,
-      }];
-    }
+      }]
+    });
 
-    // Wait! Schema says assignedBy must be v.id("users"). 
-    // So we MUST insert with empty array first, get ID, then patch.
-    userToInsert.roles = [];
+    // 5. Generate Session
+    const token = generateToken();
+    const expiresAt = now + 30 * 24 * 60 * 60 * 1000; // 30 days
 
-    const newUserId = await ctx.db.insert("users", userToInsert);
+    await ctx.db.insert("user_sessions", {
+      userId: newUserId,
+      token,
+      expiresAt,
+    });
 
-    // 3. Post-insert role patch if found
-    if (targetRole) {
-      await ctx.db.patch(newUserId, {
-        roles: [{
-          roleId: targetRole._id,
-          assignedBy: newUserId, // Now we have the correct user ID
-          assignedAt: now,
-        }],
-      });
-      console.log("Store: Successfully created user and assigned role:", roleToAssign);
-    } else {
-      console.log("Store: Created user but NO role found for key:", roleToAssign);
-    }
-
-    return newUserId;
+    return {
+      success: true,
+      token,
+      userId: newUserId,
+      role: args.role,
+      name: args.name,
+      email: args.email
+    };
   },
 });
 
-export const getCurrentUser = query({
-  handler: async (ctx) => {
-    let identity = await ctx.auth.getUserIdentity();
+/**
+ * login: Validates credentials and returns a session token.
+ */
+export const login = mutation({
+  args: {
+    email: v.string(),
+    password: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // 1. Find User (Using new optimized index)
+    let user = await ctx.db
+      .query("users")
+      .withIndex("by_top_level_email", (q) => q.eq("email", args.email))
+      .first();
 
-    // DEV_AUTH_BYPASS
-    if (!identity) {
-      // Using the same mock ID as 'store'
-      const mockId = "mock-user-id-12345";
-      // We only return the mock user if they exist in DB. 
-      // If "store" hasn't been called yet, this might still return null, which is correct behavior (not logged in yet in DB terms).
-      // BUT for "dummy auth", we want to simulate being logged in.
-      // Let's assume the client passes a token or we just fallback.
-
-      // Ideally, the mock user is already in the DB.
-      identity = { subject: mockId, tokenIdentifier: mockId };
+    if (!user) {
+      // Fallback for legacy or SSO users
+      user = await ctx.db
+        .query("users")
+        .withIndex("by_email", (q) => q.eq("profile.primaryEmail.address", args.email))
+        .first();
     }
 
-    const externalId = identity.subject || identity.tokenIdentifier;
+    if (!user) {
+      console.log("Login: User not found for email:", args.email);
+      throw new Error("Invalid credentials");
+    }
 
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
-      .unique();
+    if (!user.passwordHash) {
+      console.log("Login: User exists but has no password hash (SSO/Legacy):", args.email);
+      throw new Error("Invalid credentials (no password set for this account)");
+    }
+
+    // 2. Verify Password
+    const isValid = await verifyPassword(args.password, user.passwordHash);
+    if (!isValid) {
+      console.log("Login: Password mismatch for user:", args.email);
+      throw new Error("Invalid credentials");
+    }
+
+    // 3. Manage Session
+    const token = generateToken();
+    const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days
+
+    await ctx.db.insert("user_sessions", {
+      userId: user._id,
+      token,
+      expiresAt,
+    });
+
+    return {
+      success: true,
+      token,
+      userId: user._id,
+      role: user.role || "attendee",
+      name: user.name || user.profile?.displayName,
+      email: user.email || user.profile?.primaryEmail?.address,
+    };
+  },
+});
+
+/**
+ * logout: Revokes a session token.
+ */
+export const logout = mutation({
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    if (!args.token) return { success: true };
+
+    const session = await ctx.db
+      .query("user_sessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (session) {
+      await ctx.db.delete(session._id);
+    }
+    return { success: true };
+  },
+});
+
+// =========================================================
+// IDENTITY & ROLES (MASTER)
+// =========================================================
+
+export const getCurrentUser = query({
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    let user = null;
+
+    if (args.token) {
+      const session = await ctx.db
+        .query("user_sessions")
+        .withIndex("by_token", (q) => q.eq("token", args.token))
+        .first();
+
+      if (session && session.expiresAt > Date.now()) {
+        user = await ctx.db.get(session.userId);
+      }
+    }
+
+    if (!user) {
+      let identity = await ctx.auth.getUserIdentity();
+      if (!identity && process.env.NODE_ENV === "development") {
+        const mockId = "mock-user-id-12345";
+        identity = { subject: mockId, tokenIdentifier: mockId };
+      }
+      if (!identity) return null;
+
+      const externalId = identity.subject || identity.tokenIdentifier;
+      user = await ctx.db
+        .query("users")
+        .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+        .unique();
+    }
 
     if (!user) return null;
 
-    // Enhance user object with resolved roles
-    const roles = await Promise.all(
+    // Resolve roles for standard structure
+    let resolvedRoles = await Promise.all(
       (user.roles || []).map(async (userRole) => {
-        const role = await ctx.db.get(userRole.roleId);
-        return role ? { ...role, ...userRole } : null;
+        const roleDoc = await ctx.db.get(userRole.roleId);
+        return roleDoc ? { ...roleDoc, ...userRole } : null;
       })
     );
 
+    const roleKey = resolvedRoles.filter(Boolean)[0]?.key || user.role || "attendee";
+
     return {
       ...user,
-      roles: roles.filter(Boolean),
+      role: roleKey,
+      roles: resolvedRoles.filter(Boolean),
     };
   },
 });
 
-const SELF_ASSIGNABLE_ROLES = ["attendee", "organizer"];
+export const upgradeToOrganizer = mutation({
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) throw new Error("Not logged in");
+
+    const roleDoc = await ctx.db
+      .query("roles")
+      .withIndex("by_key", (q) => q.eq("key", "organizer"))
+      .first();
+
+    if (!roleDoc) throw new Error("Role 'organizer' not found");
+
+    const hasOrganizer = user.role === "organizer" || user.roles?.some(r => r.key === "organizer");
+
+    if (!hasOrganizer) {
+      const currentRoles = user.roles || [];
+      await ctx.db.patch(user._id, {
+        role: "organizer",
+        roles: [...currentRoles, {
+          roleId: roleDoc._id,
+          assignedBy: user._id,
+          assignedAt: Date.now(),
+        }]
+      });
+      return { success: true, message: "Upgraded to Organizer" };
+    }
+    return { success: true, message: "Already an organizer" };
+  },
+});
 
 export const completeOnboarding = mutation({
   args: {
@@ -207,29 +322,11 @@ export const completeOnboarding = mutation({
     }),
     interests: v.array(v.string()),
     role: v.optional(v.string()),
+    token: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    let identity = await ctx.auth.getUserIdentity();
-    console.log("completeOnboarding: Identity found:", identity ? "YES" : "NO");
-
-    // DEV_AUTH_BYPASS
-    if (!identity) {
-      console.log("completeOnboarding: Using MOCK identity");
-      identity = { subject: "mock-user-id-12345", tokenIdentifier: "mock-user-id-12345" };
-    }
-
-    const externalId = identity.subject || identity.tokenIdentifier;
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
-      .unique();
-
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
     if (!user) throw new Error("User not found");
-
-    if (args.role && !SELF_ASSIGNABLE_ROLES.includes(args.role)) {
-      throw new Error(`Cannot self-assign role '${args.role}'. Admin approval required.`);
-    }
 
     const newMetadata = {
       ...(user.metadata || {}),
@@ -245,10 +342,12 @@ export const completeOnboarding = mutation({
         .first();
 
       if (organizerRole) {
-        const hasRole = user.roles.some(r => r.roleId === organizerRole._id);
+        const currentRoles = user.roles || [];
+        const hasRole = currentRoles.some(r => r.roleId === organizerRole._id);
         if (!hasRole) {
           await ctx.db.patch(user._id, {
-            roles: [...user.roles, {
+            role: "organizer",
+            roles: [...currentRoles, {
               roleId: organizerRole._id,
               assignedBy: user._id,
               assignedAt: Date.now()
@@ -264,5 +363,84 @@ export const completeOnboarding = mutation({
     });
 
     return user._id;
+  },
+});
+
+/**
+ * store: Mutation for SSO/Auth Identity Sync (Legacy/Support)
+ */
+export const store = mutation({
+  args: { role: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    let identity = await ctx.auth.getUserIdentity();
+    if (!identity && process.env.NODE_ENV === "development") {
+      identity = {
+        subject: "mock-user-id-12345",
+        tokenIdentifier: "mock-user-id-12345",
+        name: "Test User",
+        email: "test@example.com",
+      };
+    }
+    if (!identity) {
+      console.log("Store: No identity found. Skipping sync.");
+      return null;
+    }
+
+    const externalId = identity.subject || identity.tokenIdentifier;
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+      .unique();
+
+    if (user !== null) return user._id;
+
+    const roleToAssign = (args.role === 'organizer' || args.role === 'attendee') ? args.role : 'attendee';
+    const now = Date.now();
+
+    const newUser = {
+      externalId,
+      authProvider: 'sso',
+      role: roleToAssign,
+      profile: {
+        legalFirstName: identity.givenName || identity.name?.split(" ")[0] || "Guest",
+        legalLastName: identity.familyName || identity.name?.split(" ").slice(1).join(" ") || "",
+        displayName: identity.name || "Guest",
+        primaryEmail: { address: identity.email || "", verified: true, isMarketingAllowed: false, isTransactionalAllowed: true },
+        timezone: "UTC",
+        locale: "en-US",
+        currencyPreference: "USD",
+        title: "Member",
+        department: "General",
+        employeeId: externalId.slice(0, 8),
+        employeeType: "full_time"
+      },
+      status: 'active',
+      statusChangedAt: now,
+      createdAt: now,
+      updatedAt: now,
+      version: 1,
+    };
+
+    const newUserId = await ctx.db.insert("users", newUser);
+
+    const targetRole = await ctx.db
+      .query("roles")
+      .withIndex("by_key", (q) => q.eq("key", roleToAssign))
+      .first();
+
+    if (targetRole) {
+      await ctx.db.patch(newUserId, {
+        roles: [{ roleId: targetRole._id, assignedBy: newUserId, assignedAt: now }]
+      });
+    }
+
+    return newUserId;
+  },
+});
+
+export const debugGetAllSessions = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("user_sessions").collect();
   },
 });

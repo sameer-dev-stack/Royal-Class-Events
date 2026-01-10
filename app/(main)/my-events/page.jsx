@@ -6,6 +6,7 @@ import { Plus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
 import { useUserRoles } from "@/hooks/use-user-roles";
+import useAuthStore from "@/hooks/use-auth-store";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
@@ -16,6 +17,7 @@ import EventCard from "@/components/event-card";
 
 export default function MyEventsPage() {
   const router = useRouter();
+  const { token } = useAuthStore();
 
   // Role Check
   const { isOrganizer, isAdmin, isLoading: isRoleLoading, user } = useUserRoles();
@@ -30,7 +32,7 @@ export default function MyEventsPage() {
   // If loading or not authorized, show loader (same as data loading below)
   const isAuthorized = user && (isOrganizer || isAdmin);
 
-  const { data: events, isLoading } = useConvexQuery(api.events.getMyEvents);
+  const { data: events, isLoading } = useConvexQuery(api.events.getMyEvents, { token });
   const { mutate: deleteEvent } = useConvexMutation(api.events.deleteEvent);
 
   const handleDelete = async (eventId) => {
@@ -41,7 +43,7 @@ export default function MyEventsPage() {
     if (!confirmed) return;
 
     try {
-      await deleteEvent({ eventId });
+      await deleteEvent({ eventId, token });
       toast.success("Event deleted successfully");
     } catch (error) {
       toast.error(error.message || "Failed to delete event");

@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export default function QRScannerModal({ isOpen, onClose }) {
+export default function QRScannerModal({ isOpen, onClose, token }) {
   const [scannerReady, setScannerReady] = useState(false);
   const [error, setError] = useState(null);
 
@@ -24,7 +24,7 @@ export default function QRScannerModal({ isOpen, onClose }) {
 
   const handleCheckIn = async (qrCode) => {
     try {
-      const result = await checkInAttendee({ qrCode });
+      const result = await checkInAttendee({ qrCode, token });
 
       if (result.success) {
         toast.success("✅ Check-in successful!");

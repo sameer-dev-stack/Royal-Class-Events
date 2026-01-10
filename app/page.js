@@ -1,18 +1,24 @@
 "use client";
 
-import React from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Crown, Sparkles, ArrowRight, Building, Ticket } from "lucide-react";
-import { useSession } from "next-auth/react";
 import EventList from "@/components/event-list";
 import InfiniteScrollBanner from "@/components/infinite-scroll-banner";
 import { FadeIn } from "@/components/ui/motion";
 import TicketCTA from "@/components/ticket-cta";
+import useAuthStore from "@/hooks/use-auth-store";
 
 export default function LandingPage() {
-  const { status } = useSession();
+  const { isAuthenticated } = useAuthStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="min-h-screen">
 
@@ -50,7 +56,7 @@ export default function LandingPage() {
                 </Link>
               </Button>
 
-              {status === "unauthenticated" && (
+              {mounted && !isAuthenticated && (
                 <Button variant="ghost" size="xl" asChild className="hidden sm:flex h-14 px-8 rounded-full text-foreground hover:bg-foreground/10 group cursor-pointer">
                   <Link href="/sign-in">
                     Sign In

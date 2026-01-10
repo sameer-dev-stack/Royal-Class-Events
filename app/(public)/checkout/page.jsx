@@ -41,6 +41,7 @@ export default function CheckoutPage() {
     // State Management
     const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
     const [tickets, setTickets] = useState([]);
+    const [seatIds, setSeatIds] = useState([]); // Added seatIds state
     const [useUserInfo, setUseUserInfo] = useState(false);
     const [agreeToTerms, setAgreeToTerms] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState("bkash");
@@ -93,22 +94,28 @@ export default function CheckoutPage() {
                     const parsed = JSON.parse(storedTickets);
                     if (Array.isArray(parsed)) {
                         setTickets(parsed.map((t, idx) => ({
-<<<<<<< HEAD
                             id: t.seatId || t.ticketId || idx, // Prefer seatId for uniqueness
                             name: t.name,
                             price: t.price,
                             quantity: t.quantity,
                             details: t // Keep full details
-=======
-                            id: t.ticketId || idx,
-                            name: t.name,
-                            price: t.price,
-                            quantity: t.quantity
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                         })));
                     }
                 } catch (e) {
                     console.error('Failed to parse checkout tickets:', e);
+                }
+            }
+
+            // Load Seat IDs
+            const storedSeatIds = sessionStorage.getItem('checkoutSeatIds');
+            if (storedSeatIds) {
+                try {
+                    const parsed = JSON.parse(storedSeatIds);
+                    if (Array.isArray(parsed)) {
+                        setSeatIds(parsed);
+                    }
+                } catch (e) {
+                    console.error('Failed to parse checkout seat IDs:', e);
                 }
             }
         }
@@ -261,10 +268,8 @@ export default function CheckoutPage() {
                     attendeeName: attendeeInfo.fullName,
                     attendeeEmail: attendeeInfo.email,
                     ticketQuantity: tickets.reduce((sum, t) => sum + t.quantity, 0),
-<<<<<<< HEAD
                     tickets: tickets.map(t => t.details || t), // Send full details
-=======
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
+                    seatIds: seatIds, // Send seatIds to API
                 }),
             });
 
@@ -280,7 +285,16 @@ export default function CheckoutPage() {
         } catch (error) {
             console.error("Checkout Error:", error);
             toast.dismiss();
-            toast.error(error.message || "Something went wrong. Please try again.");
+
+            // Handle Seats Taken Error
+            if (error.message.includes("seats") && error.message.includes("sold")) {
+                toast.error("One or more selected seats have just been sold. Redirecting you to pick new ones...");
+                setTimeout(() => {
+                    router.push(`/events/${event.slug}`);
+                }, 3000);
+            } else {
+                toast.error(error.message || "Something went wrong. Please try again.");
+            }
         } finally {
             setIsProcessing(false);
         }
@@ -371,7 +385,14 @@ export default function CheckoutPage() {
                                         className="flex items-center justify-between p-4 rounded-lg border border-border"
                                     >
                                         <div className="flex-1">
-                                            <p className="font-medium text-foreground">{ticket.name}</p>
+                                            <p className="font-medium text-foreground">
+                                                {ticket.name}
+                                                {ticket.details?.seatId && (
+                                                    <span className="ml-2 text-xs bg-[#FBB03B]/10 text-[#FBB03B] px-2 py-0.5 rounded-full border border-[#FBB03B]/20">
+                                                        {ticket.details.name || ticket.details.seatId}
+                                                    </span>
+                                                )}
+                                            </p>
                                             <p className="text-sm text-muted-foreground">BDT {ticket.price.toLocaleString()}</p>
                                         </div>
 

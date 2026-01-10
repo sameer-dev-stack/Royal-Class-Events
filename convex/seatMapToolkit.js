@@ -9,9 +9,10 @@ export const saveSeatMapLayout = mutation({
     args: {
         eventId: v.id("events"),
         layoutData: v.any(), // The full JSON export from seat-toolkit
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.runQuery(internal.users.getCurrentUser);
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
         const event = await ctx.db.get(args.eventId);
 
         if (!event || event.ownerId !== user._id) {

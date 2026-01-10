@@ -21,11 +21,7 @@ export const generateGrid = mutation({
             const rowLabel = alphabet[r % 26] + (Math.floor(r / 26) > 0 ? Math.floor(r / 26) : "");
 
             for (let s = 1; s <= args.seatsPerRow; s++) {
-<<<<<<< HEAD
                 await ctx.db.insert("designSeats", {
-=======
-                await ctx.db.insert("seats", {
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                     designId: args.designId,
                     zoneId: args.zoneId,
                     row: rowLabel,
@@ -47,11 +43,7 @@ export const getByDesign = query({
     args: { designId: v.id("venueDesigns") },
     handler: async (ctx, args) => {
         return await ctx.db
-<<<<<<< HEAD
             .query("designSeats")
-=======
-            .query("seats")
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
             .withIndex("byDesign", (q) => q.eq("designId", args.designId))
             .collect();
     },
@@ -61,11 +53,7 @@ export const getByZone = query({
     args: { zoneId: v.id("venueZones") },
     handler: async (ctx, args) => {
         return await ctx.db
-<<<<<<< HEAD
             .query("designSeats")
-=======
-            .query("seats")
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
             .withIndex("byZone", (q) => q.eq("zoneId", args.zoneId))
             .collect();
     },
@@ -73,11 +61,7 @@ export const getByZone = query({
 
 // Reserve a seat temporarily (locking logic)
 export const reserveSeat = mutation({
-<<<<<<< HEAD
     args: { seatId: v.id("designSeats"), userId: v.string() },
-=======
-    args: { seatId: v.id("seats"), userId: v.string() },
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     handler: async (ctx, args) => {
         const seat = await ctx.db.get(args.seatId);
         if (!seat || seat.status !== "available") throw new Error("Seat unavailable");

@@ -1,18 +1,12 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { api } from "./_generated/api";
 
 /**
  * Helper: Get current user with resolved roles
  */
-async function getCurrentUserWithRoles(ctx) {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return null;
-
-    const user = await ctx.db
-        .query("users")
-        .withIndex("by_external_id", (q) => q.eq("externalId", identity.tokenIdentifier))
-        .unique();
-
+async function getCurrentUserWithRoles(ctx, token) {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token });
     if (!user) return null;
 
     // Resolve role objects
@@ -29,11 +23,11 @@ async function getCurrentUserWithRoles(ctx) {
 /**
  * Helper: Check if current user has admin role
  */
-async function requireAdmin(ctx) {
-    const user = await getCurrentUserWithRoles(ctx);
+async function requireAdmin(ctx, token) {
+    const user = await getCurrentUserWithRoles(ctx, token);
     if (!user) throw new Error("Unauthorized");
 
-    const isAdmin = user.roles.some((r) => r.key === "admin");
+    const isAdmin = user.role === "admin" || user.roles.some((r) => r.key === "admin");
     if (!isAdmin) throw new Error("Admin access required");
 
     return user;
@@ -42,13 +36,14 @@ async function requireAdmin(ctx) {
 /**
  * Helper: Check if current user has a specific role
  */
-export async function requireRole(ctx, requiredRole) {
-    const user = await getCurrentUserWithRoles(ctx);
+export async function requireRole(ctx, requiredRole, token) {
+    const user = await getCurrentUserWithRoles(ctx, token);
     if (!user) throw new Error("Unauthorized");
 
-    const hasRole = user.roles.some(
-        (r) => r.key === requiredRole || r.key === "admin"
-    );
+    const hasRole = user.role === requiredRole ||
+        user.role === "admin" ||
+        user.roles.some((r) => r.key === requiredRole || r.key === "admin");
+
     if (!hasRole) throw new Error(`Requires ${requiredRole} role`);
 
     return user;
@@ -69,8 +64,9 @@ export const getAllRoles = query({
  * Get pending role upgrade requests (admin only)
  */
 export const getPendingRoleRequests = query({
-    handler: async (ctx) => {
-        await requireAdmin(ctx);
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        await requireAdmin(ctx, args.token);
 
         // Get users with pending role requests in metadata
         const users = await ctx.db.query("users").collect();
@@ -88,9 +84,10 @@ export const requestRoleUpgrade = mutation({
     args: {
         requestedRole: v.string(),
         reason: v.optional(v.string()),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const user = await getCurrentUserWithRoles(ctx);
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
         if (!user) throw new Error("Unauthorized");
 
         // Check if role exists
@@ -129,9 +126,10 @@ export const requestRoleUpgrade = mutation({
 export const approveRoleUpgrade = mutation({
     args: {
         userId: v.id("users"),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const admin = await requireAdmin(ctx);
+        const admin = await requireAdmin(ctx, args.token);
 
         const user = await ctx.db.get(args.userId);
         if (!user) throw new Error("User not found");
@@ -170,9 +168,10 @@ export const denyRoleUpgrade = mutation({
     args: {
         userId: v.id("users"),
         reason: v.optional(v.string()),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        await requireAdmin(ctx);
+        await requireAdmin(ctx, args.token);
 
         const user = await ctx.db.get(args.userId);
         if (!user) throw new Error("User not found");
@@ -199,9 +198,10 @@ export const adminAssignRole = mutation({
     args: {
         userId: v.id("users"),
         roleKey: v.string(),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const admin = await requireAdmin(ctx);
+        const admin = await requireAdmin(ctx, args.token);
 
         // Prevent admins from modifying themselves
         if (args.userId === admin._id) {
@@ -248,9 +248,10 @@ export const adminRemoveRole = mutation({
     args: {
         userId: v.id("users"),
         roleKey: v.string(),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const admin = await requireAdmin(ctx);
+        const admin = await requireAdmin(ctx, args.token);
 
         // Prevent admins from modifying themselves
         if (args.userId === admin._id) {

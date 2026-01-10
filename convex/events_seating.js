@@ -1,3 +1,7 @@
+// Synced at: 2026-01-01T11:10:00+06:00
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+import { api, internal } from "./_generated/api";
 
 export const updateSeatingMode = mutation({
     args: {
@@ -6,25 +10,30 @@ export const updateSeatingMode = mutation({
             v.literal("GENERAL_ADMISSION"),
             v.literal("RESERVED_SEATING"),
             v.literal("HYBRID")
-        )
+        ),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.runQuery(internal.users.getCurrentUser);
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
         const event = await ctx.db.get(args.eventId);
 
         if (!event) throw new Error("Event not found");
 
         // Authorization check
         // Note: We're doing a basic check here. In production, use robust permission logic.
-        if (event.organizerId !== user._id) {
+        if (event.ownerId !== user._id) {
             // Allow admins or authorized users
-            const hasAdminRole = user.roles?.some(r => r.key === "admin");
-            if (!hasAdminRole) throw new Error("Unauthorized to update event seating mode");
+            const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+            if (!isAdmin) throw new Error("Unauthorized to update event seating mode");
         }
 
         const updates = {
             seatingMode: args.seatingMode,
-            updatedAt: Date.now()
+            audit: {
+                ...event.audit,
+                updatedAt: Date.now()
+            },
+            updatedAt: undefined // 🛡️ Schema Guard: Delete legacy top-level field
         };
 
         // If switching to GENERAL_ADMISSION, clear venue layout to free up space/confusion
@@ -45,18 +54,19 @@ export const updateSeatingMode = mutation({
 export const saveVenueLayout = mutation({
     args: {
         eventId: v.id("events"),
-        layoutData: v.any() // Storing the full toolkit JSON
+        layout: v.any(),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.runQuery(internal.users.getCurrentUser);
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
         const event = await ctx.db.get(args.eventId);
 
         if (!event) throw new Error("Event not found");
 
         // Authorization check
-        if (event.organizerId !== user._id) {
-            const hasAdminRole = user.roles?.some(r => r.key === "admin");
-            if (!hasAdminRole) throw new Error("Unauthorized");
+        if (event.ownerId !== user._id) {
+            const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+            if (!isAdmin) throw new Error("Unauthorized");
         }
 
         // Ensure we are in a mode that supports layout
@@ -65,8 +75,12 @@ export const saveVenueLayout = mutation({
         }
 
         await ctx.db.patch(args.eventId, {
-            venueLayout: args.layoutData,
-            updatedAt: Date.now()
+            venueLayout: args.layout,
+            audit: {
+                ...event.audit,
+                updatedAt: Date.now()
+            },
+            updatedAt: undefined // 🛡️ Schema Guard: Delete legacy top-level field
         });
 
         return { success: true };

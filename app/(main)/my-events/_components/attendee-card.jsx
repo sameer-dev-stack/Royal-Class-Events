@@ -7,14 +7,14 @@ import { CheckCircle, Circle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 // Attendee Card Component
-export function AttendeeCard({ registration }) {
+export function AttendeeCard({ registration, token }) {
   const { mutate: checkInAttendee, isLoading } = useConvexMutation(
     api.registrations.checkInAttendee
   );
 
   const handleManualCheckIn = async () => {
     try {
-      const result = await checkInAttendee({ qrCode: registration.qrCode });
+      const result = await checkInAttendee({ qrCode: registration.qrCode, token });
       if (result.success) {
         toast.success("Attendee checked in successfully");
       } else {

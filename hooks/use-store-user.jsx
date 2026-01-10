@@ -1,7 +1,10 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useConvexMutation } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
+import { useSearchParams } from "next/navigation";
 
 /**
  * Hook to synchronize the authenticated user with the Convex database.
@@ -10,6 +13,7 @@ import { api } from "@/convex/_generated/api";
  */
 export function useStoreUser() {
   const { data: session, status } = useSession();
+  const searchParams = useSearchParams();
   const isAuthenticated = status === "authenticated";
 
   const [userId, setUserId] = useState(null);
@@ -25,8 +29,11 @@ export function useStoreUser() {
 
     const syncUser = async () => {
       try {
-        // We pass 'organizer' role suggestion for the dev user
-        const resultId = await storeUser({ role: "organizer" });
+        const urlRole = searchParams.get("role");
+        const roleSuggestion = urlRole === "organizer" || urlRole === "attendee" ? urlRole : "attendee";
+
+        console.log("useStoreUser: Syncing with role suggestion:", roleSuggestion);
+        const resultId = await storeUser({ role: roleSuggestion });
         setUserId(resultId);
         console.log("useStoreUser: Synced user to Convex:", resultId);
       } catch (e) {
@@ -35,11 +42,11 @@ export function useStoreUser() {
       }
     };
 
-    if (isAuthenticated) {
+    if (isAuthenticated && session?.user && !userId && !storeFailed) {
       syncUser();
     }
 
-  }, [isAuthenticated, session]);
+  }, [isAuthenticated, session, storeUser, searchParams]);
 
   return {
     isLoading: status === "loading",

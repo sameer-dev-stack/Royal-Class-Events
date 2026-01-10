@@ -12,12 +12,26 @@ export const initPayment = mutation({
         attendeeName: v.string(),
         attendeeEmail: v.string(),
         ticketQuantity: v.number(),
-<<<<<<< HEAD
-        tickets: v.optional(v.any()), // New: Array of ticket/seat details
-=======
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
+        tickets: v.optional(v.any()),
+        seatIds: v.optional(v.array(v.string())), // Added seatIds
     },
     handler: async (ctx, args) => {
+        // 🛡️ Sniper Check: Concurrency Guard
+        if (args.seatIds && args.seatIds.length > 0) {
+            const existingRegistrations = await ctx.db
+                .query("registrations")
+                .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+                .filter((q) => q.neq(q.field("status.current"), "cancelled"))
+                .collect();
+
+            const allSoldSeats = existingRegistrations.flatMap(reg => reg.metadata?.selectedSeatIds || []);
+            const takenSeats = args.seatIds.filter(id => allSoldSeats.includes(id));
+
+            if (takenSeats.length > 0) {
+                throw new Error("One or more selected seats have just been sold.");
+            }
+        }
+
         // Check if event exists
         const event = await ctx.db.get(args.eventId);
         if (!event) throw new Error("Event not found");
@@ -43,12 +57,9 @@ export const initPayment = mutation({
             },
             metadata: {
                 qrCode: `pending-${args.tranId}`,
-<<<<<<< HEAD
                 isSSLCommerz: true,
-                tickets: args.tickets, // Store full ticket details (seat IDs etc)
-=======
-                isSSLCommerz: true
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
+                tickets: args.tickets,
+                selectedSeatIds: args.seatIds || [], // Save precise IDs
             },
             audit: {
                 createdAt: Date.now(),
@@ -124,13 +135,19 @@ export const validatePayment = mutation({
 
         // If success, Confirm Registration
         if (newStatus === "completed") {
+            const registration = await ctx.db.get(payment.registrationId);
             const ticketId = `TKT-${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
+
+            // 🛡️ Pattern: MERGE metadata, don't replace
+            const existingMeta = registration.metadata || {};
+
             await ctx.db.patch(payment.registrationId, {
                 status: {
                     current: "confirmed",
                     updatedAt: Date.now()
                 },
                 metadata: {
+                    ...existingMeta,
                     qrCode: ticketId,
                     confirmedAt: Date.now()
                 }

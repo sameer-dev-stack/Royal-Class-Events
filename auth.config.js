@@ -24,16 +24,20 @@ export const authConfig = {
             return true;
         },
         async session({ session, token }) {
-            if (token.sub && session.user) {
+            if (token && session.user) {
                 session.user.id = token.sub;
+                session.user.role = token.role;
+                session.user.token = token.convexToken;
             }
             return session;
         },
         async jwt({ token, user }) {
             if (user) {
-                token.sub = user.id
+                token.sub = user.id;
+                token.role = user.role;
+                token.convexToken = user.token; // The internal Convex session token
             }
-            return token
+            return token;
         }
     },
     providers: [], // Add providers with an empty array for now

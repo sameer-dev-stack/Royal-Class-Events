@@ -19,14 +19,9 @@ const URLImage = ({ src, onLoaded }) => {
         if (image && onLoaded) {
             onLoaded({ width: image.width, height: image.height });
         }
-<<<<<<< HEAD
         // eslint-disable-next-line
-    }, [image]); // Only trigger when image loads/changes
+    }, [image, onLoaded]); // Only trigger when image loads/changes
     return <KonvaImage image={image} listening={false} />;
-=======
-    }, [image, onLoaded]);
-    return <KonvaImage image={image} />;
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
 };
 
 export default function SeatingBuilder({ event }) {
@@ -38,7 +33,6 @@ export default function SeatingBuilder({ event }) {
     const [stageSize, setStageSize] = useState({ width: 800, height: 600 });
     const [imageSize, setImageSize] = useState({ width: 0, height: 0 }); // Natural size
 
-<<<<<<< HEAD
     // Sync mapUrl when event prop updates
     useEffect(() => {
         if (event.seatMapConfig?.imageUrl) {
@@ -47,9 +41,6 @@ export default function SeatingBuilder({ event }) {
             setMapUrl(null);
         }
     }, [event.seatMapConfig?.imageUrl]);
-
-=======
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     // --- Refs ---
     const stageRef = useRef(null);
     const transformerRef = useRef(null);
@@ -183,7 +174,6 @@ export default function SeatingBuilder({ event }) {
 
     const selectedZone = zones.find(z => z.id === selectedId);
 
-<<<<<<< HEAD
     // --- Image Loading Handler ---
     const handleImageLoaded = (size) => {
         if (size.width !== stageSize.width || size.height !== stageSize.height) {
@@ -208,15 +198,11 @@ export default function SeatingBuilder({ event }) {
             toast.error("Failed to remove map");
         }
     };
-
-=======
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
     return (
         <div className="flex h-full bg-[#111]">
             {/* Sidebar Controls */}
             <div className="w-80 bg-[#181611] border-r border-white/10 p-6 flex flex-col gap-6 overflow-y-auto">
                 <div>
-<<<<<<< HEAD
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-white font-bold">Venue Map</h3>
                         {event.seatMapConfig?.imageUrl && (
@@ -230,19 +216,12 @@ export default function SeatingBuilder({ event }) {
                             </Button>
                         )}
                     </div>
-=======
-                    <h3 className="text-white font-bold mb-4">Venue Map</h3>
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                     <div
                         className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:border-[#fac529]/50 transition-colors bg-white/5"
                         onClick={() => fileInputRef.current?.click()}
                     >
                         <Upload className="w-8 h-8 text-white/50 mb-2" />
-<<<<<<< HEAD
                         <span className="text-xs text-white/50">{event.seatMapConfig?.imageUrl ? "Change map" : "Click to upload map"}</span>
-=======
-                        <span className="text-xs text-white/50">Click to upload map</span>
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                         <input
                             type="file"
                             ref={fileInputRef}
@@ -359,7 +338,6 @@ export default function SeatingBuilder({ event }) {
                     >
                         <Layer>
                             {/* Background Image */}
-<<<<<<< HEAD
                             {mapUrl && (
                                 <URLImage
                                     src={mapUrl}
@@ -372,23 +350,6 @@ export default function SeatingBuilder({ event }) {
                             {!mapUrl && (
                                 <Text text="Upload a map to begin" x={300} y={100} fill="white" fontSize={20} />
                             )}
-=======
-                            {event.seatMapConfig?.imageUrl ? (
-                                <URLImage
-                                    src={event.seatMapConfig.imageUrl}
-                                    onLoaded={(size) => {
-                                        // Auto-fit stage to image, max out at reasonable size
-                                        // For MVP we just use fixed stage or updated size
-                                        // Ideally we scale the stage to fit the viewport
-                                        setStageSize(size);
-                                        setImageSize(size);
-                                    }}
-                                />
-                            ) : (
-                                <Text text="Upload a map to begin" x={300} y={300} fill="white" fontSize={20} />
-                            )}
-
->>>>>>> cb4158069d9f1bd3710882ab55b9222d8a7291f5
                             {/* Zones */}
                             {zones.map((zone) => (
                                 <Group

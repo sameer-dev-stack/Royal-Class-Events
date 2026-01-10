@@ -1,12 +1,25 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Crown, Heart, Users, Sparkles, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import useAuthStore from "@/hooks/use-auth-store";
 
 export default function SignUpLandingPage() {
+    const { isAuthenticated } = useAuthStore();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.push("/explore");
+        }
+    }, [isAuthenticated, router]);
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12">
+            {/* ... rest of the component remains the same ... */}
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
