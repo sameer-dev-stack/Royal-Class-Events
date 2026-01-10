@@ -123,7 +123,7 @@ export default function UserButton() {
                     )}
 
                     <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
-                        <Link href="/dashboard" className="flex items-center w-full px-2">
+                        <Link href="/account/profile" className="flex items-center w-full px-2">
                             <Settings className="w-4 h-4 mr-3 opacity-70" />
                             <span className="text-sm font-medium italic tracking-tight">Account Settings</span>
                         </Link>

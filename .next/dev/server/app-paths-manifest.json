@@ -17,6 +17,9 @@
   "/(public)/legal/page": "app/(public)/legal/page.js",
   "/(public)/press/page": "app/(public)/press/page.js",
   "/(public)/services/[slug]/page": "app/(public)/services/[slug]/page.js",
+  "/account/notifications/page": "app/account/notifications/page.js",
+  "/account/profile/page": "app/account/profile/page.js",
+  "/account/security/page": "app/account/security/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/page": "app/page.js"

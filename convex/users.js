@@ -438,6 +438,64 @@ export const store = mutation({
   },
 });
 
+
+/**
+ * updateProfile: Allows users to update their personal information.
+ */
+export const updateProfile = mutation({
+  args: {
+    token: v.string(),
+    name: v.optional(v.string()),
+    bio: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    // 1. Validate Session
+    const session = await ctx.db
+      .query("user_sessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!session || session.expiresAt < Date.now()) {
+      throw new Error("Invalid or expired session");
+    }
+
+    const userId = session.userId;
+    const user = await ctx.db.get(userId);
+    if (!user) throw new Error("User not found");
+
+    // 2. Prepare Updates
+    const patches = {
+      updatedAt: Date.now(),
+    };
+
+    if (args.name) {
+      patches.name = args.name;
+      // Update nested profile displayName and names as well
+      const profile = { ...user.profile };
+      profile.displayName = args.name;
+      profile.legalFirstName = args.name.split(' ')[0] || profile.legalFirstName;
+      profile.legalLastName = args.name.split(' ').slice(1).join(' ') || profile.legalLastName;
+      patches.profile = profile;
+    }
+
+    if (args.bio !== undefined) {
+      // Store bio in metadata or profile (extending schema internally)
+      const profile = { ...(patches.profile || user.profile) };
+      profile.bio = args.bio; // Adding to profile object
+      patches.profile = profile;
+    }
+
+    // 3. Patch Database
+    await ctx.db.patch(userId, patches);
+
+    return {
+      success: true,
+      userId,
+      name: patches.name || user.name,
+    };
+  },
+});
+
 export const debugGetAllSessions = query({
   args: {},
   handler: async (ctx) => {

@@ -114,10 +114,10 @@ function HeaderContent() {
             <div className="flex items-center gap-2">
               {isAuthenticated ? (
                 <>
-                  {/* Create Event Button (Gold) - Hidden on smallest mobile */}
-                  {(isOrganizer || isAdmin) && (
+                  {/* Create Event Button (Gold) - Visible for all logged in, but redirects to upgrade if attendee */}
+                  {isAuthenticated && (
                     <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all">
-                      <Link href="/create-event">
+                      <Link href={(isOrganizer || isAdmin) ? "/create-event" : "/account/profile"}>
                         <Plus className="w-4 h-4" />
                         <span className="hidden md:inline">Create Event</span>
                       </Link>
@@ -192,9 +192,9 @@ function HeaderContent() {
                       Quick Actions
                     </h2>
                     <div className="space-y-3">
-                      {isAuthenticated && (isOrganizer || isAdmin) && (
+                      {isAuthenticated && (
                         <Link
-                          href="/create-event"
+                          href={(isOrganizer || isAdmin) ? "/create-event" : "/account/profile"}
                           onClick={() => setMobileMenuOpen(false)}
                           className="block group"
                         >
@@ -206,7 +206,7 @@ function HeaderContent() {
                               </div>
                               <div className="flex-1">
                                 <h3 className="font-bold text-lg text-white mb-0.5">Create Event</h3>
-                                <p className="text-sm text-white/80">Host your next experience</p>
+                                <p className="text-sm text-white/80">{(isOrganizer || isAdmin) ? "Host your next experience" : "Upgrade to host events"}</p>
                               </div>
                               <ArrowRight className="w-5 h-5 text-white/60 group-hover:translate-x-1 transition-transform" />
                             </div>
