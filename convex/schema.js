@@ -120,7 +120,7 @@ export default defineSchema(
         }),
 
         // Metadata
-        employeeType: v.union(v.literal('full_time'), v.literal('part_time'), v.literal('contractor'), v.literal('vendor')),
+        employeeType: v.union(v.literal('full_time'), v.literal('part_time'), v.literal('contractor'), v.literal('vendor'), v.literal('supplier')),
         hireDate: v.optional(v.number()),
         costCenter: v.optional(v.string()),
         badgeNumber: v.optional(v.string()),
@@ -3347,6 +3347,18 @@ export default defineSchema(
         v.literal('inactive')
       ),
 
+      // Showcasing
+      portfolios: v.optional(v.array(
+        v.object({
+          url: v.string(),
+          type: v.union(v.literal('image'), v.literal('video')),
+          caption: v.optional(v.string()),
+        })
+      )),
+
+      // Availability
+      availability: v.optional(v.array(v.number())), // Array of timestamps for unavailable dates
+
       // Audit
       createdAt: v.number(),
       updatedAt: v.number(),
@@ -3360,7 +3372,7 @@ export default defineSchema(
         filterFields: ["status", "location.city", "location.country"],
       }),
 
-    supplierPackages: defineTable({
+    services: defineTable({
       supplierId: v.id("suppliers"),
       name: v.string(),
       description: v.string(),
@@ -3371,17 +3383,20 @@ export default defineSchema(
     }).index("by_supplier", ["supplierId"]),
 
     // ==================== COMMERCE & MESSAGING ====================
-    rfqs: defineTable({
+    leads: defineTable({
       supplierId: v.id("suppliers"),
       userId: v.id("users"), // The client
       eventId: v.optional(v.id("events")), // Linked event context
 
       status: v.union(
-        v.literal('pending'),
+        v.literal('new'),
+        v.literal('viewed'),
+        v.literal('contacted'),
         v.literal('quoted'),
         v.literal('booked'),
         v.literal('declined'),
-        v.literal('expired')
+        v.literal('expired'),
+        v.literal('archived')
       ),
 
       details: v.object({
@@ -3389,13 +3404,17 @@ export default defineSchema(
         guestCount: v.optional(v.number()),
         budget: v.optional(v.number()),
         requirements: v.string(),
+        location: v.optional(v.string()),
       }),
+
+      lastActionAt: v.number(),
 
       quote: v.optional(v.object({
         amount: v.number(),
         currency: v.string(),
         validUntil: v.optional(v.number()),
         note: v.optional(v.string()),
+        services: v.optional(v.array(v.id("services"))),
       })),
 
       conversationId: v.optional(v.id("conversations")),
@@ -3405,7 +3424,28 @@ export default defineSchema(
     })
       .index("by_supplier", ["supplierId"])
       .index("by_user", ["userId"])
-      .index("by_status", ["status"]),
+      .index("by_status", ["status"])
+      .index("by_supplier_status", ["supplierId", "status"]),
+
+    reviews: defineTable({
+      supplierId: v.id("suppliers"),
+      userId: v.id("users"),
+      rating: v.number(), // 1-5
+      comment: v.string(),
+
+      // Verified Purchase/Booking
+      leadId: v.optional(v.id("leads")),
+      verified: v.boolean(),
+
+      response: v.optional(v.object({
+        comment: v.string(),
+        respondedAt: v.number(),
+      })),
+
+      createdAt: v.number(),
+    })
+      .index("by_supplier", ["supplierId"])
+      .index("by_rating", ["rating"]),
 
     conversations: defineTable({
       participants: v.array(v.id("users")), // User IDs involved

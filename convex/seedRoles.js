@@ -53,6 +53,21 @@ export const seed = internalMutation({
             },
         ];
 
+        // Add Supplier Role
+        roles.push({
+            key: "supplier",
+            name: "Supplier / Vendor",
+            description: "Manage storefront, services, and leads",
+            permissions: [
+                "profile:manage",
+                "services:manage",
+                "leads:view",
+                "leads:respond",
+                "storefront:edit",
+                "analytics:view_basic"
+            ],
+        });
+
         // Seed Roles
         const roleIds = {};
         for (const role of roles) {

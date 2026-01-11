@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/Meskat/Documents/Royal-Class-Events-main/components/ui/skeleton.jsx"],"sourcesContent":["import { cn } from \"@/lib/utils\"\n\nfunction Skeleton({\n    className,\n    ...props\n}) {\n    return (\n        <div\n            className={cn(\"animate-pulse rounded-md bg-muted\", className)}\n            {...props}\n        />\n    )\n}\n\nexport { Skeleton }\n"],"names":[],"mappings":";;;;;AAAA;;;AAEA,SAAS,SAAS,EACd,SAAS,EACT,GAAG,OACN;IACG,qBACI,8OAAC;QACG,WAAW,IAAA,kHAAE,EAAC,qCAAqC;QAClD,GAAG,KAAK;;;;;;AAGrB"}}]
-}
