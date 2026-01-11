@@ -264,7 +264,7 @@ export const getCurrentUser = query({
 
     if (!user) return null;
 
-    // Resolve roles for standard structure
+    // 4. Resolve and Prioritize Roles
     let resolvedRoles = await Promise.all(
       (user.roles || []).map(async (userRole) => {
         const roleDoc = await ctx.db.get(userRole.roleId);
@@ -272,12 +272,29 @@ export const getCurrentUser = query({
       })
     );
 
-    const roleKey = resolvedRoles.filter(Boolean)[0]?.key || user.role || "attendee";
+    resolvedRoles = resolvedRoles.filter(Boolean);
+
+    // Prioritization: admin > organizer > attendee
+    const priorityOrder = ["admin", "organizer", "attendee"];
+
+    // Collect all candidate roles from both the array and the direct field
+    const candidateRoles = resolvedRoles.map(r => r.key);
+    if (user.role) candidateRoles.push(user.role);
+
+    // Sort to find the highest priority role
+    candidateRoles.sort((a, b) => {
+      const idxA = priorityOrder.indexOf(a);
+      const idxB = priorityOrder.indexOf(b);
+      // Handle unknown roles (put them at the end)
+      return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
+    });
+
+    const roleKey = candidateRoles[0] || "attendee";
 
     return {
       ...user,
       role: roleKey,
-      roles: resolvedRoles.filter(Boolean),
+      roles: resolvedRoles,
     };
   },
 });
@@ -299,17 +316,31 @@ export const upgradeToOrganizer = mutation({
 
     if (!hasOrganizer) {
       const currentRoles = user.roles || [];
+      const now = Date.now();
+
       await ctx.db.patch(user._id, {
         role: "organizer",
         roles: [...currentRoles, {
           roleId: roleDoc._id,
           assignedBy: user._id,
-          assignedAt: Date.now(),
+          assignedAt: now,
         }]
       });
-      return { success: true, message: "Upgraded to Organizer" };
+
+      // Re-fetch to get the fresh object with resolved roles for the frontend
+      const updatedUser = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+      return {
+        success: true,
+        message: "Upgraded to Organizer",
+        user: updatedUser
+      };
     }
-    return { success: true, message: "Already an organizer" };
+
+    return {
+      success: true,
+      message: "Already an organizer",
+      user
+    };
   },
 });
 

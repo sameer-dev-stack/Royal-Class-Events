@@ -16,6 +16,11 @@ export function useUserRoles() {
     }
 
     const hasRole = (roleKey) => role === roleKey || roles.some(r => r.key === roleKey);
+
+    // Explicit Admin Check
+    const isAdmin = role === "admin" || roles.some(r => r.key === "admin");
+    const isOrganizer = isAdmin || role === "organizer" || roles.some(r => r.key === "organizer");
+    const isAttendee = !isOrganizer; // Default fallback
     const hasPermission = (permissionKey) => roles.some(role =>
         role.permissions && role.permissions.includes(permissionKey)
     );
@@ -23,9 +28,9 @@ export function useUserRoles() {
     return {
         user,
         isLoading,
-        isAdmin: hasRole("admin"),
-        isOrganizer: hasRole("organizer") || hasRole("admin"),
-        isAttendee: hasRole("attendee"),
+        isAdmin,
+        isOrganizer,
+        isAttendee,
         hasRole,
         hasPermission,
     };

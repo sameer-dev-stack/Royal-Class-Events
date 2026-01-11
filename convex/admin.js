@@ -3,43 +3,55 @@ import { v } from "convex/values";
 import { api } from "./_generated/api";
 
 // --- Helper for Auth Check ---
-async function checkAdmin(ctx) {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+async function checkAdmin(ctx, token) {
+    let user = null;
+
+    // 1. Try Custom Session Token (Internal Auth)
+    if (token) {
+        const session = await ctx.db
+            .query("user_sessions")
+            .withIndex("by_token", (q) => q.eq("token", token))
+            .first();
+
+        if (session && session.expiresAt > Date.now()) {
+            user = await ctx.db.get(session.userId);
+        }
+    }
+
+    // 2. Fallback to Context Auth (Clerk/NextAuth if configured)
+    if (!user) {
+        const identity = await ctx.auth.getUserIdentity();
+        if (identity) {
+            const externalId = identity.subject || identity.tokenIdentifier;
+            user = await ctx.db
+                .query("users")
+                .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
+                .unique();
+        }
+    }
+
+    if (!user) {
         throw new Error("Unauthorized");
     }
 
-    const user = await ctx.db
-        .query("users")
-        .withIndex("by_external_id", (q) => q.eq("externalId", identity.tokenIdentifier))
-        .unique();
+    // Check for admin role
+    const hasAdminRole = user.role === "admin" || (user.roles || []).some(r => r.key === "admin");
 
-    if (!user) {
-        throw new Error("User not found");
+    if (!hasAdminRole) {
+        throw new Error("Access denied: Admin rights required");
     }
-
-    // Check for super_admin role
-    // const roles = user.roles || [];
-    // if (!roles.includes("super_admin")) {
-    //     throw new Error("Access denied: Admin rights required");
-    // }
-
-    // TEMPORARY: Allow access for testing as requested
-    console.log("Allowing admin access for testing user:", user.profile?.displayName);
 
     return user;
 }
 
 // --- Dashboard Stats ---
 export const getDashboardStats = query({
-    args: {},
-    handler: async (ctx) => {
-        await checkAdmin(ctx);
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
 
         const now = Date.now();
 
-        // This is inefficient for massive scale, but fine for MVP/Admin
-        // For scale, we would use aggregate tables or mutations to update counters.
         const users = await ctx.db.query("users").collect();
         const events = await ctx.db.query("events").collect();
         const registrations = await ctx.db.query("registrations").collect();
@@ -48,13 +60,22 @@ export const getDashboardStats = query({
         const totalEvents = events.length;
         const activeEvents = events.filter(e => e.status?.current === 'published').length;
 
-        // Revenue Calculation (approximate from registrations)
-        // In real world, query 'payments' or 'invoices' table
         const totalRevenue = registrations.reduce((sum, reg) => sum + (reg.amountPaid || 0), 0);
 
-        // Recent Signups (last 30 days)
         const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000);
         const newUsers = users.filter(u => u.createdAt > thirtyDaysAgo).length;
+
+        // Prepare chart data: Sign-ups over last 7 days
+        const chartData = [];
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date(now - i * 24 * 60 * 60 * 1000);
+            const dateStr = date.toISOString().split('T')[0];
+            const count = users.filter(u => {
+                const uDate = new Date(u.createdAt).toISOString().split('T')[0];
+                return uDate === dateStr;
+            }).length;
+            chartData.push({ date: dateStr, signups: count });
+        }
 
         return {
             totalUsers,
@@ -62,23 +83,34 @@ export const getDashboardStats = query({
             totalEvents,
             activeEvents,
             totalRevenue,
-            recentRegistrations: registrations.slice(0, 5) // Just a few for feed
+            recentRegistrations: registrations.slice(0, 5),
+            chartData
         };
     }
 });
 
 // --- User Management ---
+export const getAllUsers = query({
+    args: {
+        limit: v.optional(v.number()),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+        return await ctx.db.query("users").order("desc").take(args.limit || 100);
+    }
+});
+
 export const searchUsers = query({
     args: {
         query: v.optional(v.string()),
         limit: v.optional(v.number()),
+        token: v.optional(v.string())
     },
     handler: async (ctx, args) => {
-        await checkAdmin(ctx);
+        await checkAdmin(ctx, args.token);
 
         let usersQuery = ctx.db.query("users");
-
-        // Convex search is best, but for simple MVP admin list:
         const users = await usersQuery.order("desc").take(args.limit || 50);
 
         if (args.query) {
@@ -94,11 +126,10 @@ export const searchUsers = query({
 });
 
 export const toggleUserBan = mutation({
-    args: { userId: v.id("users"), banned: v.boolean() },
+    args: { userId: v.id("users"), banned: v.boolean(), token: v.optional(v.string()) },
     handler: async (ctx, args) => {
-        const admin = await checkAdmin(ctx);
+        const admin = await checkAdmin(ctx, args.token);
 
-        // Prevent banning yourself
         if (admin._id === args.userId) {
             throw new Error("You cannot ban yourself");
         }
@@ -106,10 +137,9 @@ export const toggleUserBan = mutation({
         const targetUser = await ctx.db.get(args.userId);
         if (!targetUser) throw new Error("User not found");
 
-        // Prevent banning other admins
         const targetRoles = targetUser.roles || [];
         if (targetRoles.includes("super_admin")) {
-            throw new Error("Cannot ban a Super Admin. Demote them first.");
+            throw new Error("Cannot ban a Super Admin.");
         }
 
         await ctx.db.patch(args.userId, {
@@ -120,28 +150,29 @@ export const toggleUserBan = mutation({
 });
 
 export const promoteToAdmin = mutation({
-    args: { userId: v.id("users") },
+    args: { userId: v.id("users"), token: v.optional(v.string()) },
     handler: async (ctx, args) => {
-        await checkAdmin(ctx);
+        await checkAdmin(ctx, args.token);
 
         const user = await ctx.db.get(args.userId);
         if (!user) throw new Error("User not found");
 
-        const currentRoles = user.roles || [];
-        if (!currentRoles.includes("super_admin")) {
-            await ctx.db.patch(args.userId, {
-                roles: [...currentRoles, "super_admin"],
-                updatedAt: Date.now()
-            });
-        }
+        await ctx.db.patch(args.userId, {
+            role: "admin",
+            roles: [...(user.roles || []), {
+                key: "admin",
+                assignedAt: Date.now(),
+                assignedBy: (await checkAdmin(ctx, args.token))._id
+            }]
+        });
     }
 });
 
 // --- Event Management ---
-export const getAllEventsAdmin = query({
-    args: { limit: v.optional(v.number()) },
+export const getAllEvents = query({
+    args: { limit: v.optional(v.number()), token: v.optional(v.string()) },
     handler: async (ctx, args) => {
-        await checkAdmin(ctx);
+        await checkAdmin(ctx, args.token);
 
         return await ctx.db
             .query("events")
@@ -150,10 +181,19 @@ export const getAllEventsAdmin = query({
     }
 });
 
-export const deleteEventAdmin = mutation({
-    args: { eventId: v.id("events") },
+// Deprecated alias for compatibility if needed
+export const getAllEventsAdmin = query({
+    args: { limit: v.optional(v.number()), token: v.optional(v.string()) },
     handler: async (ctx, args) => {
-        await checkAdmin(ctx);
+        await checkAdmin(ctx, args.token);
+        return await ctx.db.query("events").order("desc").take(args.limit || 50);
+    }
+});
+
+export const deleteEventAdmin = mutation({
+    args: { eventId: v.id("events"), token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
 
         // Check for existing registrations
         const registrations = await ctx.db
@@ -166,5 +206,50 @@ export const deleteEventAdmin = mutation({
         }
 
         await ctx.db.delete(args.eventId);
+    }
+});
+
+// --- Finance & Transactions ---
+export const getFinanceData = query({
+    args: {
+        limit: v.optional(v.number()),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+
+        const registrations = await ctx.db
+            .query("registrations")
+            .order("desc")
+            .take(args.limit || 50);
+
+        // Enhance registrations with user and event names
+        const enriched = await Promise.all(
+            registrations.map(async (reg) => {
+                let user = null;
+                let event = null;
+
+                try {
+                    if (reg.userId) user = await ctx.db.get(reg.userId);
+                } catch (err) {
+                    console.error(`Failed to fetch user for reg ${reg._id}:`, err.message);
+                }
+
+                try {
+                    if (reg.eventId) event = await ctx.db.get(reg.eventId);
+                } catch (err) {
+                    console.error(`Failed to fetch event for reg ${reg._id}:`, err.message);
+                }
+
+                return {
+                    ...reg,
+                    userName: user?.name || user?.profile?.displayName || "Unknown User",
+                    userEmail: user?.email || user?.profile?.primaryEmail?.address || "No Email",
+                    eventTitle: event?.title || "Unknown Event",
+                };
+            })
+        );
+
+        return enriched;
     }
 });

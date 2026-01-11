@@ -8,15 +8,20 @@ const useAuthStore = create(
       user: null,
       token: Cookies.get("auth-token") || undefined,
       isAuthenticated: !!Cookies.get("auth-token"),
-      role: null,
+      viewMode: "attendee",
 
       login: (userData, token) => {
         Cookies.set("auth-token", token, { expires: 30 }); // 30 days
+        const role = userData.role;
+        // Default to organizer view if they have permissions
+        const initialViewMode = (role === "organizer" || role === "admin") ? "organizer" : "attendee";
+
         set({
           user: userData,
           token: token,
           isAuthenticated: true,
-          role: userData.role
+          role: role,
+          viewMode: initialViewMode
         });
       },
 
@@ -26,15 +31,30 @@ const useAuthStore = create(
           user: null,
           token: null,
           isAuthenticated: false,
-          role: null
+          role: null,
+          viewMode: "attendee"
         });
       },
 
+      setViewMode: (mode) => {
+        set({ viewMode: mode });
+      },
+
       updateUser: (userData) => {
-        set((state) => ({
-          user: { ...state.user, ...userData },
-          role: userData.role || state.role
-        }));
+        set((state) => {
+          const newRole = userData.role || state.role;
+          // Auto-switch to organizer view if role upgrades
+          let newViewMode = state.viewMode;
+          if ((newRole === "organizer" || newRole === "admin") && state.role !== newRole) {
+            newViewMode = "organizer";
+          }
+
+          return {
+            user: { ...state.user, ...userData },
+            role: newRole,
+            viewMode: newViewMode
+          };
+        });
       }
     }),
     {

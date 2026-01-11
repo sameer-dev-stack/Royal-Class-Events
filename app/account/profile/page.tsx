@@ -99,14 +99,19 @@ export default function ProfileSettingsPage() {
         setIsUpgrading(true);
         try {
             const result = await upgradeToOrganizer({ token: currentToken });
-            if (result.success) {
+            if (result.success && result.user) {
+                // 1. Instant State Update (Optimistic/Immediate)
+                updateUser(result.user);
+
                 toast.success("Account Upgraded to Organizer!", {
                     icon: <Crown className="w-5 h-5 text-amber-500" />,
+                    className: "bg-zinc-900 border-amber-500/50 text-amber-500 font-bold",
                 });
-                // Force reload to refresh roles and permissions across the app
+
+                // 2. Smooth Redirect to Dashboard
                 setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+                    router.push("/dashboard");
+                }, 800);
             } else {
                 toast.error(result.message || "Upgrade failed");
             }

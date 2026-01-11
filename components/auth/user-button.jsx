@@ -13,12 +13,12 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Ticket, Building, LogOut, Settings, User, Crown } from "lucide-react";
+import { Ticket, Building, LogOut, Settings, RefreshCcw, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function UserButton() {
-    const { logout, user, isAuthenticated, role } = useAuthStore();
+    const { logout, user, isAuthenticated, role, viewMode, setViewMode } = useAuthStore();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -43,16 +43,18 @@ export default function UserButton() {
         }
     };
 
-    // Role-based styling
-    const isOrganizer = role === "organizer";
+    // Role & View Mode Logic
+    const hasOrganizerAccess = role === "organizer" || role === "admin";
     const isAdmin = role === "admin";
+    const isOrganizerView = viewMode === "organizer";
 
-    const roleStyles = (isOrganizer || isAdmin)
+    // Visuals depend on View Mode
+    const roleStyles = isOrganizerView
         ? "ring-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:ring-amber-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]"
         : "ring-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)] hover:ring-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]";
 
-    const badgeLabel = isAdmin ? "ADMIN" : isOrganizer ? "ORGANIZER" : "ATTENDEE";
-    const badgeColor = isAdmin ? "bg-red-500" : isOrganizer ? "bg-amber-500" : "bg-blue-500 text-white";
+    const badgeLabel = (isOrganizerView && isAdmin) ? "ADMIN" : (isOrganizerView ? "ORGANIZER" : "ATTENDEE");
+    const badgeColor = (isOrganizerView && isAdmin) ? "bg-red-500" : (isOrganizerView ? "bg-amber-500" : "bg-blue-500 text-white");
 
     // Get user display info
     const displayName = user.name || user.email?.split("@")[0] || "User";
@@ -63,6 +65,19 @@ export default function UserButton() {
         .join("")
         .toUpperCase()
         .slice(0, 2);
+
+    const handleViewSwitch = () => {
+        const newMode = isOrganizerView ? "attendee" : "organizer";
+        setViewMode(newMode);
+        toast.success(`Switched to ${newMode === "organizer" ? "Organizer" : "Attendee"} View`);
+
+        // Optional: Redirect if switching to organizer view
+        if (newMode === "organizer") {
+            router.push("/dashboard");
+        } else {
+            router.push("/");
+        }
+    };
 
     return (
         <DropdownMenu>
@@ -75,7 +90,7 @@ export default function UserButton() {
                         <AvatarImage src={avatarUrl} alt={displayName} />
                         <AvatarFallback className={cn(
                             "font-bold text-sm transition-colors",
-                            (isOrganizer || isAdmin)
+                            isOrganizerView
                                 ? "bg-amber-500/10 text-amber-500 group-hover:bg-amber-500/20"
                                 : "bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20"
                         )}>
@@ -101,11 +116,27 @@ export default function UserButton() {
                                 {badgeLabel}
                             </span>
                         </div>
-                        <p className="text-[11px] text-muted-foreground truncate opacity-80">{user.email}</p>
+                        <p className="text[11px] text-muted-foreground truncate opacity-80">{user.email}</p>
                     </div>
                 </div>
 
                 <div className="space-y-1">
+                    {/* View Toggle for Organizers */}
+                    {hasOrganizerAccess && (
+                        <>
+                            <DropdownMenuItem
+                                onClick={handleViewSwitch}
+                                className="rounded-lg h-10 cursor-pointer focus:bg-accent focus:text-accent-foreground transition-colors mb-1"
+                            >
+                                <RefreshCcw className="w-4 h-4 mr-3 opacity-70" />
+                                <span className="text-sm font-medium">
+                                    Switch to {isOrganizerView ? "Attendee" : "Organizer"} View
+                                </span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="my-1 bg-border/40" />
+                        </>
+                    )}
+
                     <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
                         <Link href="/my-tickets" className="flex items-center w-full px-2">
                             <Ticket className="w-4 h-4 mr-3 opacity-70" />
@@ -113,13 +144,23 @@ export default function UserButton() {
                         </Link>
                     </DropdownMenuItem>
 
-                    {(isOrganizer || isAdmin) && (
-                        <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
-                            <Link href="/my-events" className="flex items-center w-full px-2">
-                                <Building className="w-4 h-4 mr-3 opacity-70" />
-                                <span className="text-sm font-medium italic tracking-tight">My Events</span>
-                            </Link>
-                        </DropdownMenuItem>
+                    {/* Show Organizer Actions only in Organizer View */}
+                    {isOrganizerView && (
+                        <>
+                            <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
+                                <Link href="/dashboard" className="flex items-center w-full px-2">
+                                    <LayoutDashboard className="w-4 h-4 mr-3 opacity-70" />
+                                    <span className="text-sm font-medium italic tracking-tight">Dashboard</span>
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
+                                <Link href="/my-events" className="flex items-center w-full px-2">
+                                    <Building className="w-4 h-4 mr-3 opacity-70" />
+                                    <span className="text-sm font-medium italic tracking-tight">My Events</span>
+                                </Link>
+                            </DropdownMenuItem>
+                        </>
                     )}
 
                     <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">

@@ -16,19 +16,22 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import useAuthStore from "@/hooks/use-auth-store";
 
 export default function AdminUsersPage() {
+    const { token } = useAuthStore();
     const [search, setSearch] = useState("");
     const { data: users, isLoading } = useConvexQuery(api.admin.searchUsers, {
         query: search,
-        limit: 20
+        limit: 20,
+        token: token || undefined
     });
 
     const { mutate: toggleBan } = useConvexMutation(api.admin.toggleUserBan);
 
     const handleBanToggle = async (userId, currentStatus) => {
         const isBanned = currentStatus === "suspended";
-        await toggleBan({ userId, banned: !isBanned });
+        await toggleBan({ userId, banned: !isBanned, token });
     };
 
     return (
