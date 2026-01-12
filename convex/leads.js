@@ -193,3 +193,251 @@ export const updateStatus = mutation({
         return { success: true };
     },
 });
+
+/**
+ * Send an Offer (Contract) in chat - Supplier only
+ */
+export const sendOffer = mutation({
+    args: {
+        leadId: v.id("leads"),
+        token: v.optional(v.string()),
+        title: v.string(),
+        description: v.optional(v.string()),
+        price: v.number(),
+        validForDays: v.optional(v.number()), // How many days the offer is valid
+    },
+    handler: async (ctx, args) => {
+        // 1. Auth Check
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        if (!user) throw new Error("Please log in to send an offer.");
+
+        // 2. Get Lead
+        const lead = await ctx.db.get(args.leadId);
+        if (!lead) throw new Error("Conversation not found.");
+
+        // 3. Get Supplier and verify ownership
+        const supplier = await ctx.db.get(lead.supplierId);
+        if (!supplier) throw new Error("Supplier not found.");
+
+        if (supplier.userId !== user._id) {
+            throw new Error("Only the vendor can send offers.");
+        }
+
+        // 4. Ensure conversation exists
+        let conversationId = lead.conversationId;
+        if (!conversationId) {
+            conversationId = await ctx.db.insert("conversations", {
+                supplierId: lead.supplierId,
+                participants: [lead.userId, supplier.userId],
+                lastMessageAt: Date.now(),
+                createdAt: Date.now(),
+                status: "active",
+            });
+            await ctx.db.patch(args.leadId, { conversationId });
+        }
+
+        // 5. Calculate valid until date
+        const validDays = args.validForDays || 7;
+        const validUntil = Date.now() + validDays * 24 * 60 * 60 * 1000;
+
+        // 6. Insert Offer Message
+        const messageId = await ctx.db.insert("messages", {
+            conversationId,
+            senderId: user._id,
+            content: `Official Offer: ${args.title}`,
+            type: "offer",
+            metadata: {
+                offerTitle: args.title,
+                offerDescription: args.description || "",
+                offerAmount: args.price,
+                offerCurrency: "BDT",
+                offerStatus: "pending", // pending, accepted, declined, expired
+                validUntil,
+                createdAt: Date.now(),
+            },
+            readBy: [user._id],
+            leadId: args.leadId,
+            createdAt: Date.now(),
+        });
+
+        // 7. Update Lead status to quoted
+        await ctx.db.patch(args.leadId, {
+            status: "quoted",
+            lastActionAt: Date.now(),
+            updatedAt: Date.now(),
+            quote: {
+                amount: args.price,
+                currency: "BDT",
+                validUntil,
+                note: args.description,
+            },
+        });
+
+        // 8. Update Conversation timestamp
+        await ctx.db.patch(conversationId, {
+            lastMessageAt: Date.now(),
+            lastMessagePreview: `Offer: ${args.title}`,
+        });
+
+        return { messageId, success: true };
+    },
+});
+
+/**
+ * Accept an Offer - Client only
+ */
+export const acceptOffer = mutation({
+    args: {
+        messageId: v.id("messages"),
+        leadId: v.id("leads"),
+        token: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        // 1. Auth Check
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        if (!user) throw new Error("Please log in to accept offers.");
+
+        // 2. Get Lead
+        const lead = await ctx.db.get(args.leadId);
+        if (!lead) throw new Error("Conversation not found.");
+
+        // 3. Verify client ownership
+        if (lead.userId !== user._id) {
+            throw new Error("Only the client can accept this offer.");
+        }
+
+        // 4. Get the offer message
+        const message = await ctx.db.get(args.messageId);
+        if (!message) throw new Error("Offer not found.");
+
+        if (message.type !== "offer") {
+            throw new Error("This is not an offer message.");
+        }
+
+        // 5. Check if offer is still valid
+        const metadata = message.metadata;
+        if (metadata?.offerStatus !== "pending") {
+            throw new Error(`This offer has already been ${metadata?.offerStatus}.`);
+        }
+
+        if (metadata?.validUntil && metadata.validUntil < Date.now()) {
+            // Mark as expired
+            await ctx.db.patch(args.messageId, {
+                metadata: { ...metadata, offerStatus: "expired" },
+            });
+            throw new Error("This offer has expired.");
+        }
+
+        // 6. Update offer status to accepted
+        await ctx.db.patch(args.messageId, {
+            metadata: {
+                ...metadata,
+                offerStatus: "accepted",
+                acceptedAt: Date.now(),
+                acceptedBy: user._id,
+            },
+        });
+
+        // 7. Update Lead status to booked
+        await ctx.db.patch(args.leadId, {
+            status: "booked",
+            lastActionAt: Date.now(),
+            updatedAt: Date.now(),
+        });
+
+        // 8. Send a system message confirming acceptance
+        if (lead.conversationId) {
+            await ctx.db.insert("messages", {
+                conversationId: lead.conversationId,
+                senderId: user._id,
+                content: `✅ Offer "${metadata?.offerTitle}" has been accepted! Total: ৳${metadata?.offerAmount?.toLocaleString()}`,
+                type: "text",
+                metadata: {
+                    isSystemMessage: true,
+                    relatedOfferId: args.messageId,
+                },
+                readBy: [user._id],
+                createdAt: Date.now(),
+            });
+
+            await ctx.db.patch(lead.conversationId, {
+                lastMessageAt: Date.now(),
+                lastMessagePreview: "Offer accepted! 🎉",
+            });
+        }
+
+        return {
+            success: true,
+            message: "Offer accepted successfully!",
+            // In future: return paymentUrl for payment gateway redirect
+        };
+    },
+});
+
+/**
+ * Decline an Offer - Client only
+ */
+export const declineOffer = mutation({
+    args: {
+        messageId: v.id("messages"),
+        leadId: v.id("leads"),
+        token: v.optional(v.string()),
+        reason: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        // 1. Auth Check
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        if (!user) throw new Error("Please log in to decline offers.");
+
+        // 2. Get Lead and verify client ownership
+        const lead = await ctx.db.get(args.leadId);
+        if (!lead) throw new Error("Conversation not found.");
+
+        if (lead.userId !== user._id) {
+            throw new Error("Only the client can decline this offer.");
+        }
+
+        // 3. Get the offer message
+        const message = await ctx.db.get(args.messageId);
+        if (!message || message.type !== "offer") {
+            throw new Error("Offer not found.");
+        }
+
+        const metadata = message.metadata;
+        if (metadata?.offerStatus !== "pending") {
+            throw new Error(`This offer has already been ${metadata?.offerStatus}.`);
+        }
+
+        // 4. Update offer status to declined
+        await ctx.db.patch(args.messageId, {
+            metadata: {
+                ...metadata,
+                offerStatus: "declined",
+                declinedAt: Date.now(),
+                declinedBy: user._id,
+                declineReason: args.reason,
+            },
+        });
+
+        // 5. Send a message notifying the decline
+        if (lead.conversationId) {
+            await ctx.db.insert("messages", {
+                conversationId: lead.conversationId,
+                senderId: user._id,
+                content: args.reason
+                    ? `❌ Offer declined. Reason: ${args.reason}`
+                    : "❌ Offer has been declined.",
+                type: "text",
+                metadata: { isSystemMessage: true },
+                readBy: [user._id],
+                createdAt: Date.now(),
+            });
+
+            await ctx.db.patch(lead.conversationId, {
+                lastMessageAt: Date.now(),
+            });
+        }
+
+        return { success: true };
+    },
+});

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { Building, Crown, Plus, Ticket, Menu, X, ArrowRight } from "lucide-react";
+import { Building, Crown, Plus, Ticket, Menu, X, ArrowRight, Store } from "lucide-react";
 import { BarLoader } from "react-spinners";
 import { useStoreUser } from "@/hooks/use-store-user";
 import { useOnboarding } from "@/hooks/use-onboarding";
@@ -88,6 +88,15 @@ function HeaderContent() {
                 className="text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
               >
                 <Link href="/explore">Explore</Link>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all font-semibold"
+              >
+                <Link href="/marketplace">Marketplace</Link>
               </Button>
 
               <Button
@@ -272,6 +281,17 @@ function HeaderContent() {
                       Resources
                     </h2>
                     <div className="space-y-1">
+                      <Link
+                        href="/marketplace"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-amber-500/10 transition-all active:scale-[0.98] group"
+                      >
+                        <div className="w-9 h-9 bg-amber-500/10 rounded-lg flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                          <Store className="w-5 h-5 text-amber-500" strokeWidth={2} />
+                        </div>
+                        <span className="font-medium text-amber-500 flex-1">Marketplace</span>
+                        <ArrowRight className="w-4 h-4 text-amber-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                      </Link>
                       <Link
                         href="/contact"
                         onClick={() => setMobileMenuOpen(false)}

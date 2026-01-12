@@ -21,11 +21,15 @@ import {
     CheckCircle2,
     Clock,
     X,
+    FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { OfferBubble } from "@/components/chat/offer-bubble";
+import { CreateOfferModal } from "@/components/chat/create-offer-modal";
+import { toast } from "sonner";
 
 export default function ChatPage() {
     const params = useParams();
@@ -36,6 +40,10 @@ export default function ChatPage() {
     const [message, setMessage] = useState("");
     const [isSending, setIsSending] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
+    const [showOfferModal, setShowOfferModal] = useState(false);
+    const [isAcceptingOffer, setIsAcceptingOffer] = useState(false);
+    const [isDecliningOffer, setIsDecliningOffer] = useState(false);
+    const [activeOfferId, setActiveOfferId] = useState(null);
     const messagesEndRef = useRef(null);
 
     // Validate leadId
@@ -54,6 +62,9 @@ export default function ChatPage() {
 
     // Mutations
     const sendMessageMutation = useMutation(api.messages.sendMessage);
+    const sendOfferMutation = useMutation(api.leads.sendOffer);
+    const acceptOfferMutation = useMutation(api.leads.acceptOffer);
+    const declineOfferMutation = useMutation(api.leads.declineOffer);
 
     // Auto-scroll to bottom on new messages
     useEffect(() => {
@@ -77,6 +88,65 @@ export default function ChatPage() {
             console.error("Failed to send message:", error);
         } finally {
             setIsSending(false);
+        }
+    };
+
+    // Handle send offer
+    const handleSendOffer = async (values) => {
+        try {
+            await sendOfferMutation({
+                leadId,
+                token,
+                title: values.title,
+                description: values.description,
+                price: values.price,
+                validForDays: values.validForDays,
+            });
+            toast.success("Offer sent successfully!");
+        } catch (error) {
+            console.error("Failed to send offer:", error);
+            toast.error(error.message || "Failed to send offer");
+            throw error;
+        }
+    };
+
+    // Handle accept offer
+    const handleAcceptOffer = async (messageId) => {
+        setActiveOfferId(messageId);
+        setIsAcceptingOffer(true);
+        try {
+            await acceptOfferMutation({
+                messageId,
+                leadId,
+                token,
+            });
+            toast.success("Offer accepted! 🎉");
+        } catch (error) {
+            console.error("Failed to accept offer:", error);
+            toast.error(error.message || "Failed to accept offer");
+        } finally {
+            setIsAcceptingOffer(false);
+            setActiveOfferId(null);
+        }
+    };
+
+    // Handle decline offer
+    const handleDeclineOffer = async (messageId) => {
+        setActiveOfferId(messageId);
+        setIsDecliningOffer(true);
+        try {
+            await declineOfferMutation({
+                messageId,
+                leadId,
+                token,
+            });
+            toast.success("Offer declined");
+        } catch (error) {
+            console.error("Failed to decline offer:", error);
+            toast.error(error.message || "Failed to decline offer");
+        } finally {
+            setIsDecliningOffer(false);
+            setActiveOfferId(null);
         }
     };
 
@@ -239,52 +309,72 @@ export default function ChatPage() {
 
                         {/* Messages */}
                         <AnimatePresence>
-                            {messages.map((msg, index) => (
-                                <motion.div
-                                    key={msg._id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className={cn(
-                                        "flex items-end gap-2",
-                                        msg.isSelf ? "justify-end" : "justify-start"
-                                    )}
-                                >
-                                    {!msg.isSelf && (
-                                        <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0 mb-5">
-                                            <span className="text-xs font-bold text-zinc-400">
-                                                {msg.senderName?.charAt(0)}
-                                            </span>
-                                        </div>
-                                    )}
-                                    <div
+                            {messages.map((msg, index) => {
+                                // Render offer messages differently
+                                if (msg.type === "offer") {
+                                    return (
+                                        <OfferBubble
+                                            key={msg._id}
+                                            message={msg}
+                                            isClient={isClient}
+                                            isSupplier={!isClient}
+                                            leadId={leadId}
+                                            onAccept={handleAcceptOffer}
+                                            onDecline={handleDeclineOffer}
+                                            isAccepting={isAcceptingOffer && activeOfferId === msg._id}
+                                            isDeclining={isDecliningOffer && activeOfferId === msg._id}
+                                        />
+                                    );
+                                }
+
+                                // Regular text messages
+                                return (
+                                    <motion.div
+                                        key={msg._id}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
                                         className={cn(
-                                            "max-w-[70%] px-4 py-3 rounded-2xl",
-                                            msg.isSelf
-                                                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black rounded-br-md"
-                                                : "bg-zinc-800 text-foreground rounded-bl-md"
+                                            "flex items-end gap-2",
+                                            msg.isSelf ? "justify-end" : "justify-start"
                                         )}
                                     >
-                                        <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                                            {msg.content}
-                                        </p>
-                                        <p
+                                        {!msg.isSelf && (
+                                            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0 mb-5">
+                                                <span className="text-xs font-bold text-zinc-400">
+                                                    {msg.senderName?.charAt(0)}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <div
                                             className={cn(
-                                                "text-[10px] mt-1",
-                                                msg.isSelf ? "text-black/60" : "text-muted-foreground"
+                                                "max-w-[70%] px-4 py-3 rounded-2xl",
+                                                msg.isSelf
+                                                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black rounded-br-md"
+                                                    : "bg-zinc-800 text-foreground rounded-bl-md"
                                             )}
                                         >
-                                            {format(msg.createdAt, "h:mm a")}
-                                        </p>
-                                    </div>
-                                    {msg.isSelf && (
-                                        <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mb-5">
-                                            <span className="text-xs font-bold text-amber-500">
-                                                {user?.name?.charAt(0) || "Y"}
-                                            </span>
+                                            <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                                                {msg.content}
+                                            </p>
+                                            <p
+                                                className={cn(
+                                                    "text-[10px] mt-1",
+                                                    msg.isSelf ? "text-black/60" : "text-muted-foreground"
+                                                )}
+                                            >
+                                                {format(msg.createdAt, "h:mm a")}
+                                            </p>
                                         </div>
-                                    )}
-                                </motion.div>
-                            ))}
+                                        {msg.isSelf && (
+                                            <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mb-5">
+                                                <span className="text-xs font-bold text-amber-500">
+                                                    {user?.name?.charAt(0) || "Y"}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                );
+                            })}
                         </AnimatePresence>
                         <div ref={messagesEndRef} />
                     </div>
@@ -293,6 +383,18 @@ export default function ChatPage() {
                 {/* Message Input */}
                 <div className="p-4 border-t border-zinc-800/50 bg-zinc-900/30">
                     <form onSubmit={handleSend} className="flex items-center gap-3 max-w-3xl mx-auto">
+                        {/* Create Offer Button - Supplier Only */}
+                        {!isClient && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setShowOfferModal(true)}
+                                className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10 hover:border-amber-500/50"
+                            >
+                                <FileText className="w-4 h-4 mr-2" />
+                                Create Offer
+                            </Button>
+                        )}
                         <Input
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
@@ -313,6 +415,14 @@ export default function ChatPage() {
                         </Button>
                     </form>
                 </div>
+
+                {/* Create Offer Modal */}
+                <CreateOfferModal
+                    isOpen={showOfferModal}
+                    onClose={() => setShowOfferModal(false)}
+                    onSubmit={handleSendOffer}
+                    clientName={client?.name}
+                />
             </div>
 
             {/* ============== RIGHT SIDEBAR: Deal Details ============== */}
