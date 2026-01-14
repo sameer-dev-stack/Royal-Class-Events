@@ -3428,18 +3428,25 @@ export default defineSchema(
       .index("by_supplier_status", ["supplierId", "status"]),
 
     transactions: defineTable({
-      leadId: v.id("leads"),
-      payerId: v.id("users"),
-      payeeId: v.id("suppliers"),
+      leadId: v.optional(v.id("leads")),
+      payerId: v.optional(v.id("users")), // Keeping for backward compatibility
+      payeeId: v.optional(v.id("suppliers")),
+
+      // Event Payment Fields
+      eventId: v.optional(v.id("events")),
+      userId: v.optional(v.id("users")), // Payer/User
+
       amount: v.number(),
-      type: v.union(v.literal("escrow_in"), v.literal("payout")),
-      status: v.union(v.literal("held"), v.literal("released"), v.literal("refunded")),
+      type: v.string(), // escrow_in, payout, ticket_sale
+      status: v.string(), // held, released, refunded, success
       timestamp: v.number(),
       metadata: v.optional(v.any()),
     })
       .index("by_payer", ["payerId"])
       .index("by_payee", ["payeeId"])
-      .index("by_lead", ["leadId"]),
+      .index("by_lead", ["leadId"])
+      .index("by_event", ["eventId"])
+      .index("by_user", ["userId"]),
 
     reviews: defineTable({
       supplierId: v.id("suppliers"),
@@ -3497,4 +3504,25 @@ export default defineSchema(
       createdAt: v.number(),
     })
       .index("by_conversation", ["conversationId"]),
+
+    payouts: defineTable({
+      supplierId: v.id("users"),
+      amount: v.number(),
+      status: v.string(), // "pending", "completed", "rejected"
+      method: v.string(), // "bkash", "bank_transfer", etc.
+      requestedAt: v.number(),
+      processedAt: v.optional(v.number()),
+      transactionRef: v.optional(v.string()), // Reference from external payment
+      notes: v.optional(v.string())
+    })
+      .index("by_status", ["status"])
+      .index("by_supplier", ["supplierId"]),
+
+    audit_logs: defineTable({
+      adminId: v.id("users"),
+      action: v.string(), // e.g., "USER_STATUS_CHANGE", "EVENT_DELETE"
+      targetId: v.optional(v.string()),
+      details: v.any(),
+      timestamp: v.number()
+    }).index("by_timestamp", ["timestamp"]),
   }, { schemaValidation: false });

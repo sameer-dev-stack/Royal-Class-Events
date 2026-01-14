@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { api } from "./_generated/api";
+import { logAdminAction } from "./audit";
 
 // --- Helper for Auth Check ---
 async function getAuthenticatedUser(ctx, token) {
@@ -575,5 +576,160 @@ export const releaseEscrow = mutation({
                 vendorEarnings: vendorEarnings,
             }
         };
+    }
+});
+import { checkAdmin } from "./admin";
+
+export const getFinancials = query({
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+
+        const transactions = await ctx.db.query("transactions").order("desc").collect();
+
+        // Enrich with User and Event details
+        const enriched = await Promise.all(transactions.map(async (tx) => {
+            let payerName = "Guest";
+            let eventTitle = "Unknown";
+
+            if (tx.userId) {
+                const user = await ctx.db.get(tx.userId);
+                payerName = user?.name || user?.profile?.displayName || "Unknown User";
+            } else if (tx.metadata?.guestEmail) {
+                payerName = `Guest (${tx.metadata.guestEmail})`;
+            }
+
+            if (tx.eventId) {
+                const event = await ctx.db.get(tx.eventId);
+                eventTitle = event?.title?.en || "Unknown Event";
+            }
+
+            return {
+                ...tx,
+                payerName,
+                eventTitle
+            };
+        }));
+
+        return enriched;
+    }
+});
+
+export const getPendingPayouts = query({
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+
+        const payouts = await ctx.db
+            .query("transactions")
+            .filter((q) =>
+                q.and(
+                    q.eq(q.field("type"), "payout"),
+                    q.eq(q.field("status"), "pending")
+                )
+            )
+            .collect();
+
+        const enriched = await Promise.all(payouts.map(async (p) => {
+            let vendorName = "Unknown Vendor";
+            if (p.payeeId) {
+                const supplier = await ctx.db.get(p.payeeId);
+                vendorName = supplier?.name || "Unknown";
+            }
+            return { ...p, vendorName };
+        }));
+
+        return enriched;
+    }
+});
+
+export const approvePayout = mutation({
+    args: {
+        transactionId: v.id("transactions"),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+
+        const txn = await ctx.db.get(args.transactionId);
+        if (!txn) throw new Error("Transaction not found");
+
+        await ctx.db.patch(args.transactionId, {
+            status: "completed",
+            metadata: {
+                ...txn.metadata,
+                approvedAt: Date.now()
+            }
+        });
+
+        const admin = await checkAdmin(ctx, args.token);
+        await logAdminAction(ctx, admin._id, "TRANSACTION_PAYOUT_APPROVED", args.transactionId, {
+            amount: txn.amount
+        });
+
+        return { success: true };
+    }
+});
+
+// ==============================================
+// NEW VENDOR PAYOUT MANAGEMENT (User Requested)
+// ==============================================
+
+export const getPayouts = query({
+    args: {
+        status: v.optional(v.union(v.literal('pending'), v.literal('completed'), v.literal('rejected'))),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+
+        let payoutQuery = ctx.db.query("payouts");
+        if (args.status) {
+            payoutQuery = payoutQuery.withIndex("by_status", (q) => q.eq("status", args.status));
+        }
+
+        const payouts = await payoutQuery.order("desc").collect();
+
+        // Enrich with Vendor (Supplier) details
+        const enriched = await Promise.all(payouts.map(async (p) => {
+            const vendor = await ctx.db.get(p.supplierId);
+            return {
+                ...p,
+                vendorName: vendor?.name || vendor?.profile?.displayName || "Unknown Vendor",
+                vendorEmail: vendor?.email || vendor?.profile?.primaryEmail?.address || "N/A"
+            };
+        }));
+
+        return enriched;
+    }
+});
+
+export const processPayout = mutation({
+    args: {
+        payoutId: v.id("payouts"),
+        status: v.optional(v.string()), // Allow passing status if needed
+        transactionRef: v.optional(v.string()),
+        notes: v.optional(v.string()),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+
+        const payout = await ctx.db.get(args.payoutId);
+        if (!payout) throw new Error("Payout request not found");
+
+        await ctx.db.patch(args.payoutId, {
+            status: args.status || "completed",
+            transactionRef: args.transactionRef,
+            notes: args.notes,
+            processedAt: Date.now()
+        });
+
+        await logAdminAction(ctx, admin._id, "VENDOR_PAYOUT_PROCESSED", args.payoutId, {
+            status: args.status || "completed",
+            amount: payout.amount
+        });
+
+        return { success: true };
     }
 });

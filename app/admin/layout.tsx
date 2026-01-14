@@ -1,106 +1,138 @@
 "use client";
 
-import { useUserRoles } from "@/hooks/use-user-roles";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2, LayoutDashboard, Users, Calendar, DollarSign, ShieldCheck, LogOut } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import useAuthStore from "@/hooks/use-auth-store";
+import { useUserRoles } from "@/hooks/use-user-roles";
+import { useAdminStore } from "@/hooks/use-admin-store";
+import { Loader2, LayoutDashboard, Users, Calendar, DollarSign, LogOut, Lock, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
-export default function AdminLayout({ children }) {
-    const { isAdmin, isLoading, user } = useUserRoles();
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const { user, isOrganizer, isAdmin, isLoading } = useUserRoles();
+    const { logout } = useAuthStore();
+    const { isVerified, clearAdminSession } = useAdminStore();
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        if (!isLoading) {
-            console.log("Admin Layout Check:", { isAdmin, userRole: user?.role, userRoles: user?.roles });
-            if (!isAdmin) {
-                toast.error("Access Denied. Admins Only.");
-                router.push("/");
+        setIsMounted(true);
+    }, []);
+
+    // Auth Guard
+    useEffect(() => {
+        if (!isLoading && isMounted) {
+            if (pathname === "/admin/login") return;
+
+            if (!user) {
+                router.push("/sign-in?redirect=" + pathname);
+            } else if (!isAdmin) {
+                router.push("/dashboard");
+            } else if (!isVerified) {
+                // High Security Zone: Even if logged in, must be verified for Admin
+                router.push("/admin/login");
             }
         }
-    }, [isLoading, isAdmin, router, user]);
+    }, [user, isAdmin, isLoading, router, isMounted, isVerified, pathname]);
 
-    if (isLoading) {
+    if (!isMounted || isLoading) {
         return (
-            <div className="flex h-screen w-full items-center justify-center bg-background">
-                <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <div className="h-screen w-full flex items-center justify-center bg-zinc-950 text-white">
+                <Loader2 className="h-10 w-10 animate-spin text-amber-500" />
             </div>
         );
     }
 
-    if (!isAdmin) {
-        return null; // Will redirect via useEffect
+    const isLoginPage = pathname === "/admin/login";
+
+    // True Lock Screen: No sidebar if unverified or on login page
+    if (!isVerified || isLoginPage) {
+        return (
+            <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center p-4">
+                {children}
+            </div>
+        );
     }
 
+    // Safety fallback: If somehow reached here without being an admin, don't show anything
+    if (!isAdmin) return null;
+
     const navItems = [
-        { href: "/admin", label: "Overview", icon: LayoutDashboard },
-        { href: "/admin/users", label: "User Management", icon: Users },
-        { href: "/admin/events", label: "All Events", icon: Calendar },
-        { href: "/admin/finance", label: "Finance & Revenue", icon: DollarSign },
+        { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+        { name: "Users", href: "/admin/users", icon: Users },
+        { name: "Events", href: "/admin/events", icon: Calendar },
+        { name: "Finance", href: "/admin/finance", icon: DollarSign },
+        { name: "Audit Logs", href: "/admin/audit", icon: ShieldAlert },
     ];
 
     return (
-        <div className="flex min-h-screen bg-background text-foreground">
+        <div className="flex h-screen bg-zinc-950 text-white font-sans">
             {/* Sidebar */}
-            <aside
-                className={cn(
-                    "fixed left-0 top-0 z-40 h-screen w-64 border-r bg-card shadow-xl transition-transform duration-300 ease-in-out md:translate-x-0",
-                    !isSidebarOpen && "-translate-x-full"
-                )}
-            >
-                <div className="flex h-16 items-center justify-center border-b px-6">
-                    <div className="flex items-center gap-2">
-                        <ShieldCheck className="h-6 w-6 text-red-600" />
-                        <span className="text-lg font-bold tracking-tight">Admin Console</span>
-                    </div>
+            <aside className="w-64 border-r border-zinc-800 bg-zinc-900/50 hidden md:flex flex-col">
+                <div className="p-6">
+                    <h1 className="text-xl font-black tracking-tighter text-amber-500 uppercase">
+                        Admin Portal
+                    </h1>
                 </div>
 
-                <nav className="flex-1 space-y-1 px-3 py-4">
+                <nav className="flex-1 px-4 space-y-2">
                     {navItems.map((item) => {
-                        const Icon = item.icon;
                         const isActive = pathname === item.href;
                         return (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={cn(
-                                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all hover:text-primary",
-                                    isActive
-                                        ? "bg-primary/10 text-primary shadow-sm"
-                                        : "text-muted-foreground hover:bg-muted"
-                                )}
+                                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive
+                                    ? "bg-amber-500/10 text-amber-500"
+                                    : "text-zinc-400 hover:text-white hover:bg-zinc-800"
+                                    }`}
                             >
-                                <Icon className="h-5 w-5" />
-                                {item.label}
+                                <item.icon className="w-5 h-5" />
+                                {item.name}
                             </Link>
-                        );
+                        )
                     })}
                 </nav>
 
-                <div className="border-t p-4">
-                    <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
-                        <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
-                            {user?.name?.[0]?.toUpperCase() || "A"}
+                <div className="p-4 border-t border-zinc-800 space-y-2">
+                    <div className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-500">
+                        <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500 font-bold uppercase">
+                            {user?.name?.[0] || "A"}
                         </div>
-                        <div className="flex-1 overflow-hidden">
-                            <p className="truncate text-sm font-medium">{user?.name}</p>
-                            <p className="truncate text-xs text-muted-foreground">Super Admin</p>
+                        <div className="overflow-hidden flex-1">
+                            <p className="truncate font-medium text-white">{user?.name}</p>
+                            <p className="text-xs truncate">Verified Admin</p>
                         </div>
                     </div>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start text-zinc-500 hover:text-red-400 hover:bg-red-400/10 gap-3 px-4"
+                        onClick={() => {
+                            clearAdminSession();
+                            router.push("/admin/login");
+                        }}
+                    >
+                        <Lock className="w-4 h-4" />
+                        Lock Session
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start text-zinc-500 hover:text-white hover:bg-zinc-800 gap-3 px-4"
+                        onClick={() => logout()}
+                    >
+                        <LogOut className="w-4 h-4" />
+                        System Logout
+                    </Button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className={cn(
-                "flex-1 transition-all duration-300 md:ml-64",
-            )}>
-                <div className="container mx-auto p-8">
+            <main className="flex-1 overflow-y-auto">
+                <div className="h-full p-8">
                     {children}
                 </div>
             </main>

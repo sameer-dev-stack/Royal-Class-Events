@@ -81,7 +81,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex gap-3">
                     <Button asChild variant="outline" className="border-white/10 hover:bg-white/5 h-12 px-6 rounded-xl">
-                        <Link href="/scanner">
+                        <Link href="/organizer/scan">
                             <QrCode className="mr-2 h-5 w-5" /> Launch Scanner
                         </Link>
                     </Button>

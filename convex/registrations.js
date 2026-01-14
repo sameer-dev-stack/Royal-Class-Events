@@ -708,6 +708,22 @@ export const bookSeats = mutation({
       });
     }
 
+    // Log Transaction
+    await ctx.db.insert("transactions", {
+      eventId: args.eventId,
+      userId: userId, // Can be undefined for guest
+      payerId: userId, // Backward compatibility
+      amount: args.amount,
+      type: "ticket_sale",
+      status: "success",
+      timestamp: now,
+      metadata: {
+        bookingIds,
+        seatIds: args.seatIds,
+        guestEmail: args.guestEmail
+      }
+    });
+
     return { success: true, bookingIds };
   },
 });

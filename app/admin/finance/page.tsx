@@ -1,187 +1,160 @@
 "use client";
 
-import { useState } from "react";
-import { useConvexQuery } from "@/hooks/use-convex-query";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import useAuthStore from "@/hooks/use-auth-store";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { DollarSign, User, Calendar, Tag, Search, TrendingUp } from "lucide-react";
+import { format } from "date-fns";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Search, DollarSign, ArrowUpRight, ArrowDownRight, Download, CreditCard, History } from "lucide-react";
-import { format } from "date-fns";
-import useAuthStore from "@/hooks/use-auth-store";
-import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { OverviewChart } from "@/components/admin/overview-chart";
 
-export default function AdminFinancePage() {
+export default function FinancePage() {
     const { token } = useAuthStore();
-    const [search, setSearch] = useState("");
+    const transactions = useQuery(api.finance.getFinancials, { token: token || undefined });
+    const analyticsData = useQuery(api.admin.getAnalyticsData, { token: token || undefined });
+    const [searchTerm, setSearchTerm] = useState("");
 
-    // Fetch dashboard stats for the summary cards
-    const { data: stats } = useConvexQuery(api.admin.getDashboardStats, { token: token || undefined });
+    if (!transactions) return <div className="text-zinc-400 p-10 animate-pulse">Loading financials...</div>;
 
-    // Fetch detailed transaction history
-    const { data: transactions, isLoading } = useConvexQuery(api.admin.getFinanceData, {
-        limit: 50,
-        token: token || undefined
-    });
+    const totalRevenue = transactions.reduce((sum, tx) => sum + (tx.amount || 0), 0);
 
-    const renderSafeString = (val) => {
-        if (!val) return "";
-        if (typeof val === "string") return val;
-        if (typeof val === "object") {
-            return val.en || val.en_US || Object.values(val)[0] || "";
-        }
-        return String(val);
-    };
-
-    const filteredTransactions = transactions?.filter(tx =>
-        tx.userName.toLowerCase().includes(search.toLowerCase()) ||
-        renderSafeString(tx.eventTitle).toLowerCase().includes(search.toLowerCase()) ||
-        tx.registrationNumber?.toLowerCase().includes(search.toLowerCase())
-    ) || [];
-
-    if (isLoading) {
-        return (
-            <div className="flex h-[50vh] w-full items-center justify-center">
-                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-            </div>
-        );
-    }
+    const filteredTransactions = transactions.filter(tx =>
+        tx.payerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tx.eventTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tx.type?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Finance & Transactions</h1>
-                    <p className="text-muted-foreground mt-2">Monitor platform revenue and ticket sales history</p>
-                </div>
-                <Button variant="outline" className="gap-2">
-                    <Download className="w-4 h-4" />
-                    Export CSV
+        <div className="space-y-8 text-white max-w-7xl mx-auto">
+            <div className="flex items-center justify-between">
+                <h2 className="text-3xl font-bold tracking-tight">Financial Overview</h2>
+                <Button
+                    onClick={() => window.location.href = "/admin/finance/payouts"}
+                    className="bg-amber-600 hover:bg-amber-700 text-white"
+                >
+                    <DollarSign className="w-4 h-4 mr-2" />
+                    Manage Payouts
                 </Button>
             </div>
 
-            {/* Summary Cards */}
-            <div className="grid gap-6 md:grid-cols-3">
-                <Card className="bg-primary/5 border-primary/20">
+            {/* Stats */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="bg-zinc-900 border-zinc-800 text-white shadow-xl shadow-black/50 overflow-hidden relative group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <DollarSign className="w-12 h-12 text-green-500" />
+                    </div>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-                        <DollarSign className="h-4 w-4 text-primary" />
+                        <CardTitle className="text-sm font-medium text-zinc-400">Total Volume</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold">৳{stats?.totalRevenue?.toLocaleString() || 0}</div>
-                        <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                            <ArrowUpRight className="w-3 h-3 text-green-500" />
-                            +12.5% from last month
-                        </p>
+                        <div className="text-3xl font-bold text-green-500">৳{totalRevenue.toLocaleString()}</div>
+                        <p className="text-xs text-zinc-500 mt-1">Total revenue processed</p>
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="bg-zinc-900 border-zinc-800 text-white shadow-xl shadow-black/50 overflow-hidden relative group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <Tag className="w-12 h-12 text-blue-500" />
+                    </div>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Ticket Sales volume</CardTitle>
-                        <CreditCard className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium text-zinc-400">Transactions</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold">{transactions?.length || 0}</div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            Successful registrations processed
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Avg. Ticket Value</CardTitle>
-                        <History className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-3xl font-bold">
-                            ৳{transactions && transactions.length > 0
-                                ? Math.round(transactions.reduce((acc, tx) => acc + (tx.amountPaid || 0), 0) / transactions.length).toLocaleString()
-                                : 0}
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            Based on current sales data
-                        </p>
+                        <div className="text-3xl font-bold">{transactions.length}</div>
+                        <p className="text-xs text-zinc-500 mt-1">Successful payments</p>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Transactions Table */}
-            <Card className="border-border/50 bg-card/50 backdrop-blur-xl">
+            {/* Trends Chart */}
+            <Card className="bg-zinc-900 border-zinc-800 text-white shadow-xl shadow-black/50 overflow-hidden">
                 <CardHeader>
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div>
-                            <CardTitle>Recent Transactions</CardTitle>
-                            <CardDescription>A list of all ticket purchases across the platform.</CardDescription>
-                        </div>
-                        <div className="relative w-full md:w-72">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Search by name, event or ID..."
-                                className="pl-10 bg-background/50"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-                    </div>
+                    <CardTitle className="text-lg font-bold flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-amber-500" />
+                        Revenue & User Growth Trends
+                    </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="rounded-md border border-border/50 overflow-hidden overflow-x-auto">
-                        <div className="min-w-[900px]">
-                            {/* Header */}
-                            <div className="grid grid-cols-12 gap-4 p-4 bg-muted/50 text-sm font-medium text-muted-foreground border-b border-border/50">
-                                <div className="col-span-3">User</div>
-                                <div className="col-span-3">Event</div>
-                                <div className="col-span-2">Reg. ID</div>
-                                <div className="col-span-2">Date</div>
-                                <div className="col-span-1 text-right">Amount</div>
-                                <div className="col-span-1 text-center">Status</div>
-                            </div>
-
-                            {filteredTransactions.length === 0 ? (
-                                <div className="p-12 text-center text-muted-foreground">
-                                    No transaction records found.
-                                </div>
-                            ) : (
-                                filteredTransactions.map((tx) => (
-                                    <div key={tx._id} className="grid grid-cols-12 gap-4 p-4 items-center hover:bg-muted/30 transition-colors border-b border-border/50 last:border-0 group">
-                                        <div className="col-span-3">
-                                            <p className="font-medium text-foreground truncate">{tx.userName}</p>
-                                            <p className="text-xs text-muted-foreground truncate">{tx.userEmail}</p>
-                                        </div>
-                                        <div className="col-span-3">
-                                            <p className="text-sm font-medium truncate pr-4">{renderSafeString(tx.eventTitle)}</p>
-                                        </div>
-                                        <div className="col-span-2">
-                                            <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{tx.registrationNumber || tx._id.substring(0, 8)}</code>
-                                        </div>
-                                        <div className="col-span-2 text-sm text-muted-foreground">
-                                            {format(new Date(tx._creationTime || Date.now()), "MMM d, yyyy HH:mm")}
-                                        </div>
-                                        <div className="col-span-1 text-right font-bold text-foreground">
-                                            ৳{(tx.amountPaid || tx.unitPrice * tx.ticketQuantity || 0).toLocaleString()}
-                                        </div>
-                                        <div className="col-span-1 flex justify-center">
-                                            <Badge variant="outline" className={
-                                                tx.status?.current === 'confirmed'
-                                                    ? 'bg-green-500/10 text-green-500 border-green-500/20'
-                                                    : tx.status?.current === 'cancelled'
-                                                        ? 'bg-red-500/10 text-red-500 border-red-500/20'
-                                                        : 'bg-zinc-500/10 text-zinc-400 border-zinc-500/20'
-                                            }>
-                                                {tx.status?.current?.toUpperCase() || "PENDING"}
-                                            </Badge>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
+                    {!analyticsData ? (
+                        <div className="flex items-center justify-center h-[300px] text-zinc-500 animate-pulse">
+                            Loading analytics trends...
                         </div>
-                    </div>
+                    ) : (
+                        <OverviewChart data={analyticsData} />
+                    )}
                 </CardContent>
             </Card>
+
+            {/* Filter */}
+            <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                <Input
+                    placeholder="Search by user, event, or type..."
+                    className="bg-zinc-900 border-zinc-800 pl-10 h-11 text-white focus:ring-amber-500/50"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+
+            {/* Transactions Table */}
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden shadow-lg shadow-black/50 transition-all">
+                <Table>
+                    <TableHeader className="bg-zinc-900">
+                        <TableRow className="hover:bg-zinc-900 border-zinc-800">
+                            <TableHead className="text-zinc-400 h-12">Date</TableHead>
+                            <TableHead className="text-zinc-400">User</TableHead>
+                            <TableHead className="text-zinc-400">Event</TableHead>
+                            <TableHead className="text-zinc-400">Type</TableHead>
+                            <TableHead className="text-zinc-400 text-right">Amount</TableHead>
+                            <TableHead className="text-zinc-400 text-center">Status</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {filteredTransactions.map((tx) => (
+                            <TableRow key={tx._id} className="border-zinc-800 hover:bg-zinc-800/30 transition-colors group">
+                                <TableCell className="text-zinc-400 text-xs whitespace-nowrap py-4">
+                                    <div className="flex items-center gap-2">
+                                        <Calendar className="w-3 h-3 text-zinc-600" />
+                                        {tx.timestamp ? format(new Date(tx.timestamp), "MMM d, h:mm a") : "N/A"}
+                                    </div>
+                                </TableCell>
+                                <TableCell className="font-medium text-white">
+                                    <div className="flex items-center gap-2">
+                                        <User className="w-3 h-3 text-amber-500/50" />
+                                        {tx.payerName}
+                                    </div>
+                                </TableCell>
+                                <TableCell className="text-zinc-400 text-sm max-w-[200px] truncate">
+                                    {tx.eventTitle}
+                                </TableCell>
+                                <TableCell>
+                                    <Badge variant="outline" className="capitalize text-[10px] border-zinc-700 text-zinc-500 font-mono">
+                                        {tx.type}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell className="text-right font-bold text-white">
+                                    ৳{(tx.amount || 0).toLocaleString()}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    <Badge className="bg-green-500/20 text-green-500 hover:bg-green-500/20 border-green-500/30 capitalize text-[10px]">
+                                        {tx.status}
+                                    </Badge>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                {filteredTransactions.length === 0 && (
+                    <div className="p-20 text-center text-zinc-500">
+                        No transactions found matching your search.
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

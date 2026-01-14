@@ -13,7 +13,9 @@ export default function LayoutWrapper({ children }) {
     // Safe detection for full-screen tools
     const isFullscreenTool = React.useMemo(() => {
         if (!pathname) return false;
-        return pathname.includes("/seat-builder") || pathname.includes("/venue-builder");
+        return pathname.includes("/seat-builder") ||
+            pathname.includes("/venue-builder") ||
+            pathname.startsWith("/admin");
     }, [pathname]);
 
     return (

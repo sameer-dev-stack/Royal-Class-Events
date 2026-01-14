@@ -1,4 +1,5 @@
-import { query } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
+import { api } from "./_generated/api";
 import { v } from "convex/values";
 
 export const getTicketTiers = query({
@@ -55,5 +56,74 @@ export const getSoldSeats = query({
         }
 
         return [...new Set(allSoldSeats)]; // Unique IDs
+    },
+});
+export const validateEntry = mutation({
+    args: {
+        ticketId: v.string(),
+        eventId: v.id("events"),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        // 1. Resolve User & Permissions
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        if (!user) throw new Error("Unauthorized: Please login.");
+
+        const event = await ctx.db.get(args.eventId);
+        if (!event) throw new Error("Event not found.");
+
+        // Security: Only Owner or Admin can scan
+        const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin");
+        const isOwner = event.ownerId === user._id;
+
+        if (!isAdmin && !isOwner) {
+            throw new Error("Unauthorized: You do not own this event.");
+        }
+
+        // 2. Resolve Registration by Ticket ID (Registration Number)
+        const registration = await ctx.db
+            .query("registrations")
+            .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+            .filter((q) => q.eq(q.field("registrationNumber"), args.ticketId))
+            .first();
+
+        if (!registration) {
+            throw new Error("Invalid Ticket: No matching registration found for this event.");
+        }
+
+        // 3. Check for Duplicate Entry
+        if (registration.checkIn?.status === "checked_in") {
+            const entryTime = new Date(registration.checkIn.checkInTime).toLocaleTimeString();
+            throw new Error(`Already Used: This ticket was swiped at ${entryTime}.`);
+        }
+
+        // 4. Atomic Update: Mark as Checked In
+        const now = Date.now();
+        await ctx.db.patch(registration._id, {
+            checkIn: {
+                ...registration.checkIn,
+                status: "checked_in",
+                checkInTime: now,
+                checkedInBy: user._id,
+                checkInMethod: "qr_scanner"
+            },
+            status: {
+                ...registration.status,
+                current: "checked_in",
+                history: [
+                    ...(registration.status?.history || []),
+                    { status: "checked_in", changedAt: now, changedBy: user._id }
+                ],
+                lastUpdated: now
+            }
+        });
+
+        // 5. Return Success Info
+        return {
+            success: true,
+            attendee: registration.attendeeInfo?.primary?.verifiedName || "Guest",
+            seat: registration.metadata?.seatLabel || registration.metadata?.selectedSeatIds?.[0] || "General",
+            entryTime: now
+        };
     },
 });

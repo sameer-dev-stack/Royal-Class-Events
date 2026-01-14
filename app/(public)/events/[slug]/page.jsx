@@ -72,7 +72,7 @@ export default function EventDetailPage() {
     setIsBookingModalOpen(true);
   };
 
-  if (!event) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-6 py-12 space-y-8">
         <Skeleton className="w-full h-[400px] rounded-3xl" />
@@ -84,6 +84,18 @@ export default function EventDetailPage() {
           </div>
           <Skeleton className="h-[300px] w-full rounded-2xl" />
         </div>
+      </div>
+    );
+  }
+
+  if (!event) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-white space-y-4">
+        <h1 className="text-4xl font-bold">Event Not Found 😕</h1>
+        <p className="text-zinc-400">The event you are looking for does not exist or has been removed.</p>
+        <Button onClick={() => router.push('/explore')} variant="outline" className="text-white border-white/20">
+          Explore Events
+        </Button>
       </div>
     );
   }

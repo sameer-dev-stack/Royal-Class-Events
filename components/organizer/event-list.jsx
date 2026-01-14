@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, Map, ExternalLink } from "lucide-react";
+import { Edit, Trash2, Map, ExternalLink, QrCode } from "lucide-react";
 import Link from "next/link";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -59,6 +59,11 @@ export default function EventList({ events, onDelete }) {
                                         <Button variant="ghost" size="icon" asChild title="Manage Event">
                                             <Link href={`/events/${event.slug}/manage`}>
                                                 <Edit className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                                            </Link>
+                                        </Button>
+                                        <Button variant="ghost" size="icon" asChild title="Scan Tickets">
+                                            <Link href={`/organizer/scan?eventId=${event._id}`}>
+                                                <QrCode className="w-4 h-4 text-amber-500" />
                                             </Link>
                                         </Button>
                                         {/* Add seat map link if applicable */}
