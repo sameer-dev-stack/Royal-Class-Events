@@ -22,6 +22,7 @@ import {
     Clock,
     X,
     FileText,
+    Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +30,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { OfferBubble } from "@/components/chat/offer-bubble";
 import { CreateOfferModal } from "@/components/chat/create-offer-modal";
+import { PaymentModal } from "@/components/chat/payment-modal";
+import ReviewModal from "@/components/marketplace/review-modal";
 import { toast } from "sonner";
 
 export default function ChatPage() {
@@ -44,6 +47,9 @@ export default function ChatPage() {
     const [isAcceptingOffer, setIsAcceptingOffer] = useState(false);
     const [isDecliningOffer, setIsDecliningOffer] = useState(false);
     const [activeOfferId, setActiveOfferId] = useState(null);
+    const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [selectedOffer, setSelectedOffer] = useState(null);
+    const [isReviewOpen, setIsReviewOpen] = useState(false);
     const messagesEndRef = useRef(null);
 
     // Validate leadId
@@ -65,6 +71,7 @@ export default function ChatPage() {
     const sendOfferMutation = useMutation(api.leads.sendOffer);
     const acceptOfferMutation = useMutation(api.leads.acceptOffer);
     const declineOfferMutation = useMutation(api.leads.declineOffer);
+    const processPaymentMutation = useMutation(api.leads.processPayment);
 
     // Auto-scroll to bottom on new messages
     useEffect(() => {
@@ -110,23 +117,40 @@ export default function ChatPage() {
         }
     };
 
-    // Handle accept offer
+    // Handle accept offer - NOW OPENS PAYMENT MODAL
     const handleAcceptOffer = async (messageId) => {
-        setActiveOfferId(messageId);
+        const targetMessage = thread?.messages.find(m => m._id === messageId);
+        if (!targetMessage) return;
+
+        setSelectedOffer({
+            id: messageId,
+            title: targetMessage.metadata?.offerTitle || "Services",
+            amount: targetMessage.metadata?.offerAmount || 0
+        });
+        setIsPaymentModalOpen(true);
+    };
+
+    // Handle process payment
+    const handleConfirmPayment = async () => {
+        if (!selectedOffer) return;
+
+        setActiveOfferId(selectedOffer.id);
         setIsAcceptingOffer(true);
         try {
-            await acceptOfferMutation({
-                messageId,
+            await processPaymentMutation({
+                messageId: selectedOffer.id,
                 leadId,
+                amount: selectedOffer.amount,
                 token,
             });
-            toast.success("Offer accepted! 🎉");
+            // Result is handled by system messages in thread
         } catch (error) {
-            console.error("Failed to accept offer:", error);
-            toast.error(error.message || "Failed to accept offer");
+            console.error("Payment failed:", error);
+            throw error; // Let PaymentModal handle the error toast
         } finally {
             setIsAcceptingOffer(false);
             setActiveOfferId(null);
+            setSelectedOffer(null);
         }
     };
 
@@ -177,7 +201,7 @@ export default function ChatPage() {
         );
     }
 
-    const { lead, supplier, client, messages, isClient, currentUserId } = thread;
+    const { lead, supplier, client, messages, isClient } = thread;
     const otherParty = isClient ? supplier : client;
 
     const formatPrice = (amount) => {
@@ -416,13 +440,33 @@ export default function ChatPage() {
                     </form>
                 </div>
 
-                {/* Create Offer Modal */}
+                {/* Modals */}
                 <CreateOfferModal
                     isOpen={showOfferModal}
                     onClose={() => setShowOfferModal(false)}
                     onSubmit={handleSendOffer}
                     clientName={client?.name}
                 />
+
+                {selectedOffer && (
+                    <PaymentModal
+                        isOpen={isPaymentModalOpen}
+                        onClose={() => setIsPaymentModalOpen(false)}
+                        amount={selectedOffer.amount}
+                        offerTitle={selectedOffer.title}
+                        onConfirm={handleConfirmPayment}
+                    />
+                )}
+
+                {/* Review Modal */}
+                {isClient && supplier && (
+                    <ReviewModal
+                        open={isReviewOpen}
+                        onOpenChange={setIsReviewOpen}
+                        supplierId={supplier._id}
+                        supplierName={supplier.name}
+                    />
+                )}
             </div>
 
             {/* ============== RIGHT SIDEBAR: Deal Details ============== */}
@@ -536,7 +580,7 @@ export default function ChatPage() {
                         </div>
 
                         {/* Quick Actions */}
-                        {!isClient && (
+                        {!isClient ? (
                             <div className="space-y-3">
                                 <h4 className="text-sm font-semibold text-foreground">Quick Actions</h4>
                                 <Button
@@ -554,6 +598,20 @@ export default function ChatPage() {
                                     Mark as Booked
                                 </Button>
                             </div>
+                        ) : (
+                            /* Client Actions */
+                            (lead.status === "booked" || lead.status === "completed") && (
+                                <div className="space-y-3">
+                                    <h4 className="text-sm font-semibold text-foreground">Actions</h4>
+                                    <Button
+                                        onClick={() => setIsReviewOpen(true)}
+                                        className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
+                                    >
+                                        <Star className="w-4 h-4 mr-2 fill-current" />
+                                        Leave a Review
+                                    </Button>
+                                </div>
+                            )
                         )}
                     </div>
                 </ScrollArea>

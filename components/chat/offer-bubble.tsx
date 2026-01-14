@@ -9,6 +9,7 @@ import {
     Clock,
     Loader2,
     AlertTriangle,
+    ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -22,11 +23,12 @@ interface OfferBubbleProps {
             offerDescription?: string;
             offerAmount: number;
             offerCurrency: string;
-            offerStatus: "pending" | "accepted" | "declined" | "expired";
+            offerStatus: "pending" | "accepted" | "declined" | "expired" | "paid";
             validUntil: number;
             createdAt: number;
             acceptedAt?: number;
             declinedAt?: number;
+            paidAt?: number;
         };
         createdAt: number;
         isSelf: boolean;
@@ -64,6 +66,7 @@ export function OfferBubble({
     const isPending = offerStatus === "pending" && !isExpired;
     const isAccepted = offerStatus === "accepted";
     const isDeclined = offerStatus === "declined";
+    const isPaid = offerStatus === "paid";
 
     const formatPrice = (amount: number) => {
         return new Intl.NumberFormat("en-BD", {
@@ -74,6 +77,15 @@ export function OfferBubble({
     };
 
     const getStatusConfig = () => {
+        if (isPaid) {
+            return {
+                icon: ShieldCheck,
+                text: "Paid & Secured",
+                color: "text-amber-500",
+                bgColor: "bg-amber-500/10",
+                borderColor: "border-amber-500/30",
+            };
+        }
         if (isExpired) {
             return {
                 icon: AlertTriangle,

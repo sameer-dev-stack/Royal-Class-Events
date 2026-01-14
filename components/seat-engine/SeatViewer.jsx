@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useCallback, useState } from "react";
 import { Stage, Layer, Rect, Circle, Group, Text, Line, Image as KonvaImage } from "react-konva";
 import useBookingStore from "@/hooks/use-booking-store";
-import { calculateArcPosition } from "@/utils/geometry";
+import { calculateArcPosition, getRectTableSeats } from "@/utils/geometry";
 
 /**
  * Royal Seat Viewer
@@ -151,6 +151,44 @@ const ZoneRenderer = ({ element, categories = [], soldSeatIds = [], scale = 1 })
                     <Circle x={width / 2} y={height / 2} radius={radius} fill={tableColor} stroke="#451a03" strokeWidth={2} />
                     {chairs}
                     <Text text={`${capacity}`} width={width} height={height} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={radius / 2} opacity={0.6} listening={false} />
+                </Group>
+            );
+        }
+
+        // --- RECT_TABLE Rendering ---
+        if (assetConfig?.type === 'RECT_TABLE' || element.assetType === 'RECT_TABLE') {
+            const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
+            const tableColor = element.fill || assetConfig?.color || "#78350f";
+            const chairs = [];
+            const chairRadius = 6; // Matching builder
+
+            const seatPositions = getRectTableSeats(width, height, capacity, 5, chairRadius);
+
+            seatPositions.forEach((pos, i) => {
+                chairs.push(
+                    <Circle
+                        key={`rect-chair-${i}`}
+                        x={pos.x} y={pos.y}
+                        radius={chairRadius}
+                        fill="white"
+                        stroke="gray"
+                        strokeWidth={1}
+                        listening={false}
+                    />
+                );
+            });
+
+            return (
+                <Group x={element.x} y={element.y} rotation={element.rotation || 0}>
+                    <Rect
+                        width={width} height={height}
+                        fill={tableColor}
+                        stroke="#451a03"
+                        strokeWidth={2}
+                        cornerRadius={8}
+                    />
+                    {chairs}
+                    <Text text={`${capacity}`} width={width} height={height} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={20} opacity={0.6} listening={false} />
                 </Group>
             );
         }

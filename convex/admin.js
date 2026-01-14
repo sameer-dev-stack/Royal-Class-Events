@@ -253,3 +253,71 @@ export const getFinanceData = query({
         return enriched;
     }
 });
+
+// --- Merchant Ops: Supplier Metrics ---
+export const getMerchantMetrics = query({
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+
+        // 1. Get all active suppliers
+        const suppliers = await ctx.db
+            .query("suppliers")
+            .withIndex("by_status", (q) => q.eq("status", "active"))
+            .collect();
+
+        // 2. Enrich each supplier with metrics
+        const enriched = await Promise.all(
+            suppliers.map(async (supplier) => {
+                // Get transactions for this supplier (assuming payeeId field)
+                const transactions = await ctx.db
+                    .query("transactions")
+                    .filter((q) => q.eq(q.field("payeeId"), supplier._id))
+                    .collect();
+
+                const totalSales = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+                const commission = Math.round(totalSales * 0.10); // 10% commission
+
+                // Get active leads count
+                const leads = await ctx.db
+                    .query("leads")
+                    .filter((q) =>
+                        q.and(
+                            q.eq(q.field("supplierId"), supplier._id),
+                            q.neq(q.field("status"), "booked"),
+                            q.neq(q.field("status"), "closed")
+                        )
+                    )
+                    .collect();
+
+                const activeLeads = leads.length;
+
+                // Get services count
+                const services = await ctx.db
+                    .query("services")
+                    .withIndex("by_supplier", (q) => q.eq("supplierId", supplier._id))
+                    .filter((q) => q.eq(q.field("active"), true))
+                    .collect();
+
+                return {
+                    _id: supplier._id,
+                    name: supplier.name,
+                    slug: supplier.slug,
+                    category: supplier.categories?.[0] || "General",
+                    location: supplier.location?.city || "Unknown",
+                    rating: supplier.rating || 0,
+                    verified: supplier.verified || false,
+                    totalSales,
+                    commission,
+                    activeLeads,
+                    serviceCount: services.length,
+                    status: supplier.status,
+                    createdAt: supplier.createdAt,
+                };
+            })
+        );
+
+        // Sort by total sales (highest first)
+        return enriched.sort((a, b) => b.totalSales - a.totalSales);
+    }
+});

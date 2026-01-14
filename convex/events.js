@@ -370,6 +370,19 @@ export const getEventBySlug = query({
   },
 });
 
+// ALIAS: Required by many frontend files
+export const getEvent = query({
+  args: {
+    id: v.optional(v.union(v.id("events"), v.string())),
+    eventId: v.optional(v.union(v.id("events"), v.string()))
+  },
+  handler: async (ctx, args) => {
+    const id = args.id || args.eventId;
+    if (!id) return null;
+    return await getById(ctx, { id });
+  }
+});
+
 export const getById = query({
   args: { id: v.union(v.id("events"), v.string()) },
   handler: async (ctx, args) => {
@@ -587,16 +600,33 @@ export const saveVenueLayout = mutation({
     return { success: true };
   },
 });
-export const by_start_date = query({
+export const getPublicEvents = query({
   args: {},
   handler: async (ctx) => {
-    const list = await ctx.db
+    const events = await ctx.db
       .query("events")
       .withIndex("by_dates")
       .order("asc")
       .collect();
-    return list;
+
+    // Filter for published events and ensure they aren't in the past
+    // We handle legacy data by checking if status.current exists and equals "published"
+    const publicEvents = events.filter((e) => {
+      const isPublished = (e.status?.current === "published") || (e.status === "published") || (e.status === "active");
+      const isNotPast = (e.timeConfiguration?.startDateTime || e.startDate || 0) > Date.now() - (24 * 60 * 60 * 1000); // Allow same day
+      return isPublished && isNotPast;
+    });
+
+    // DEBUG FALLBACK: If no published events found, return all events to avoid "Coming Soon" during dev
+    if (publicEvents.length === 0 && events.length > 0) {
+      console.log("No published events found, returning raw list for debugging.");
+      return events.slice(0, 10);
+    }
+
+    return publicEvents;
   },
 });
+
+export const by_start_date = getPublicEvents;
 
 export const getOrganizerEvents = getMyEvents;

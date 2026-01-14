@@ -90,19 +90,55 @@ export default function SupplierJoinPage() {
         if (step > 1) setStep(step - 1);
     };
 
-    // Separate Submit Function
-    const triggerSubmit = async () => {
-        console.log("🚀 Triggering Submit...");
+    // Dedicated Handler for Final Submission
+    const handleFinalSubmit = async () => {
+        console.log("👑 Final Submission Initiated...");
 
+        // 1. Auth Check
         if (!token) {
-            console.error("❌ No Token Found!");
-            toast.error("Please log in to join.");
+            console.error("❌ Session Error: No Token Found");
+            toast.error("Your session has expired. Please log in again.");
+            return;
+        }
+
+        // 2. Manual Validation (Detached from UI state)
+        if (formData.categories.length === 0) {
+            toast.error("Please select at least one service category.");
+            setStep(1);
+            return;
+        }
+
+        if (!formData.name.trim()) {
+            toast.error("Business Name is required.");
+            setStep(2);
+            return;
+        }
+
+        if (!formData.phone.trim()) {
+            toast.error("Contact phone number is required.");
+            setStep(2);
+            return;
+        }
+
+        if (!formData.city.trim()) {
+            toast.error("City is required.");
+            setStep(3);
+            return;
+        }
+
+        if (!formData.address.trim()) {
+            toast.error("Full address is required.");
+            setStep(3);
             return;
         }
 
         setLoading(true);
         try {
-            console.log("📦 Payload:", formData);
+            console.log("📦 Onboarding Payload:", {
+                token,
+                business: formData.name,
+                categories: formData.categories
+            });
 
             const slug = formData.slug || formData.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
 
@@ -126,15 +162,16 @@ export default function SupplierJoinPage() {
             });
 
             toast.success("Welcome to the Royal Marketplace! 👑");
-            // Small delay for toast
+
+            // Redirect after success
             setTimeout(() => {
                 window.location.href = "/supplier/dashboard";
-            }, 1000);
+            }, 1200);
 
         } catch (error) {
-            console.error("❌ Onboarding Error:", error);
-            toast.error(error.message || "Failed to join.");
-            setLoading(false); // Only stop loading on error
+            console.error("❌ Onboarding Mutation Failed:", error);
+            toast.error(error.message || "Failed to complete setup. Please try again.");
+            setLoading(false);
         }
     };
 
@@ -352,10 +389,10 @@ export default function SupplierJoinPage() {
                             </Button>
                         ) : (
                             <Button
-                                type="button" // CHANGED from submit to button to force onClick
-                                onClick={triggerSubmit} // Direct Handler
-                                disabled={!isStepValid() || loading}
-                                className="bg-amber-500 hover:bg-amber-600 text-black px-8 font-bold"
+                                type="button"
+                                onClick={handleFinalSubmit}
+                                disabled={loading}
+                                className="bg-amber-500 hover:bg-amber-600 text-black px-8 font-bold shadow-lg shadow-amber-500/10 active:scale-95 transition-all"
                             >
                                 {loading ? (
                                     <Loader2 className="w-4 h-4 animate-spin mr-2" />

@@ -6,7 +6,12 @@ import { ConvexHttpClient } from "convex/browser";
 import { api } from "./convex/_generated/api";
 
 // Initialize Convex Client for server-side auth calls
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
+const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL;
+const convex = convexUrl ? new ConvexHttpClient(convexUrl) : null;
+
+if (!convexUrl) {
+    console.warn("NEXT_PUBLIC_CONVEX_URL is not defined in auth.js. Server-side Convex calls will fail.");
+}
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
     ...authConfig,
@@ -21,6 +26,11 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
                     const { email, password } = parsedCredentials.data;
 
                     try {
+                        if (!convex) {
+                            console.error("Convex Client not initialized");
+                            return null;
+                        }
+
                         // Call the unified login mutation in Convex
                         const result = await convex.mutation(api.users.login, {
                             email,

@@ -53,7 +53,7 @@ function HeaderContent() {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
+          "fixed top-0 left-0 right-0 z-[100] transition-all duration-300 border-b",
           scrolled || mobileMenuOpen
             ? "bg-background/80 backdrop-blur-xl border-border py-3"
             : "bg-transparent border-transparent py-5"
@@ -85,7 +85,12 @@ function HeaderContent() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
+                className={cn(
+                  "transition-all",
+                  pathname?.startsWith("/explore")
+                    ? "text-amber-500 font-semibold bg-amber-500/10"
+                    : "text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10"
+                )}
               >
                 <Link href="/explore">Explore</Link>
               </Button>
@@ -94,7 +99,12 @@ function HeaderContent() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all font-semibold"
+                className={cn(
+                  "transition-all",
+                  pathname?.startsWith("/marketplace")
+                    ? "text-amber-500 font-semibold bg-amber-500/10"
+                    : "text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10"
+                )}
               >
                 <Link href="/marketplace">Marketplace</Link>
               </Button>
@@ -103,7 +113,12 @@ function HeaderContent() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
+                className={cn(
+                  "transition-all",
+                  pathname === "/about"
+                    ? "text-amber-500 font-semibold bg-amber-500/10"
+                    : "text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10"
+                )}
               >
                 <Link href="/about">About</Link>
               </Button>
@@ -112,13 +127,18 @@ function HeaderContent() {
                 variant="ghost"
                 size="sm"
                 asChild
-                className="text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10 transition-all"
+                className={cn(
+                  "transition-all",
+                  pathname === "/contact"
+                    ? "text-amber-500 font-semibold bg-amber-500/10"
+                    : "text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10"
+                )}
               >
                 <Link href="/contact">Contact</Link>
               </Button>
             </div>
 
-            <ModeToggle />
+            <ModeToggle aria-label="Toggle theme" />
 
             <div className="flex items-center gap-2">
               {isAuthenticated ? (
@@ -156,7 +176,7 @@ function HeaderContent() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden text-foreground hover:bg-foreground/10"
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X /> : <Menu />}
@@ -174,7 +194,7 @@ function HeaderContent() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="fixed inset-0 top-[60px] bg-black/40 backdrop-blur-sm z-[54] lg:hidden"
+                className="fixed inset-0 top-[60px] bg-black/40 backdrop-blur-sm z-[104] lg:hidden"
                 onClick={() => setMobileMenuOpen(false)}
               />
 
@@ -183,7 +203,7 @@ function HeaderContent() {
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                className="fixed right-0 top-[60px] bottom-0 w-[85vw] max-w-sm bg-background/95 backdrop-blur-xl border-l border-border z-[55] lg:hidden overflow-y-auto shadow-2xl"
+                className="fixed right-0 top-[60px] bottom-0 w-[85vw] max-w-sm bg-background/95 backdrop-blur-xl border-l border-border z-[105] lg:hidden overflow-y-auto shadow-2xl"
               >
                 <div className="h-full flex flex-col p-6">
 
@@ -284,13 +304,33 @@ function HeaderContent() {
                       <Link
                         href="/marketplace"
                         onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-amber-500/10 transition-all active:scale-[0.98] group"
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-3 rounded-xl transition-all active:scale-[0.98] group",
+                          pathname?.startsWith("/marketplace")
+                            ? "bg-amber-500/10"
+                            : "hover:bg-amber-500/10"
+                        )}
                       >
-                        <div className="w-9 h-9 bg-amber-500/10 rounded-lg flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                        <div className={cn(
+                          "w-9 h-9 rounded-lg flex items-center justify-center transition-colors",
+                          pathname?.startsWith("/marketplace")
+                            ? "bg-amber-500/20"
+                            : "bg-amber-500/10 group-hover:bg-amber-500/20"
+                        )}>
                           <Store className="w-5 h-5 text-amber-500" strokeWidth={2} />
                         </div>
-                        <span className="font-medium text-amber-500 flex-1">Marketplace</span>
-                        <ArrowRight className="w-4 h-4 text-amber-500 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                        <span className={cn(
+                          "font-medium flex-1",
+                          pathname?.startsWith("/marketplace")
+                            ? "text-amber-500"
+                            : "text-foreground group-hover:text-amber-500 transition-colors"
+                        )}>Marketplace</span>
+                        <ArrowRight className={cn(
+                          "w-4 h-4 text-amber-500 transition-all",
+                          pathname?.startsWith("/marketplace")
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100 group-hover:translate-x-1"
+                        )} />
                       </Link>
                       <Link
                         href="/contact"

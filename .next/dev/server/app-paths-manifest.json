@@ -1,15 +1,21 @@
 {
   "/(auth)/sign-in/page": "app/(auth)/sign-in/page.js",
-  "/(dashboard)/messages/[id]/page": "app/(dashboard)/messages/[id]/page.js",
+  "/(auth)/sign-up/page": "app/(auth)/sign-up/page.js",
+  "/(main)/create-event/page": "app/(main)/create-event/page.js",
+  "/(main)/my-events/[eventId]/analytics/page": "app/(main)/my-events/[eventId]/analytics/page.js",
+  "/(main)/my-events/[eventId]/page": "app/(main)/my-events/[eventId]/page.js",
+  "/(main)/my-events/page": "app/(main)/my-events/page.js",
+  "/(main)/my-tickets/page": "app/(main)/my-tickets/page.js",
+  "/(organizer)/seat-builder/page": "app/(organizer)/seat-builder/page.js",
+  "/(public)/about/page": "app/(public)/about/page.js",
+  "/(public)/contact/page": "app/(public)/contact/page.js",
+  "/(public)/events/[slug]/page": "app/(public)/events/[slug]/page.js",
   "/(public)/explore/page": "app/(public)/explore/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/marketplace/page": "app/marketplace/page.js",
-  "/marketplace/vendor/[id]/page": "app/marketplace/vendor/[id]/page.js",
   "/page": "app/page.js",
-  "/supplier/calendar/page": "app/supplier/calendar/page.js",
   "/supplier/dashboard/page": "app/supplier/dashboard/page.js",
-  "/supplier/profile/page": "app/supplier/profile/page.js",
-  "/supplier/services/page": "app/supplier/services/page.js",
-  "/supplier/settings/page": "app/supplier/settings/page.js"
+  "/supplier/join/page": "app/supplier/join/page.js"
 }

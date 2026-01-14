@@ -14,6 +14,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "merry-dalmatian-951.convex.cloud",
       },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
     ],
   },
 

@@ -11,7 +11,11 @@ const useAuthStore = create(
       viewMode: "attendee",
 
       login: (userData, token) => {
-        Cookies.set("auth-token", token, { expires: 30 }); // 30 days
+        Cookies.set("auth-token", token, {
+          expires: 30,
+          secure: true,
+          sameSite: 'strict'
+        }); // 30 days
         const role = userData.role;
         // Default to organizer view if they have permissions
         const initialViewMode = (role === "organizer" || role === "admin") ? "organizer" : "attendee";

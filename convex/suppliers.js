@@ -154,11 +154,17 @@ export const getProfile = query({
         // 4. Enrich reviews with user names (privacy-safe)
         const enrichedReviews = await Promise.all(
             reviews.map(async (review) => {
-                const reviewer = await ctx.db.get(review.userId);
+                let reviewer = null;
+                try {
+                    if (review.userId) reviewer = await ctx.db.get(review.userId);
+                } catch (e) { }
+
                 return {
                     ...review,
-                    reviewerName: reviewer?.name || "Anonymous",
-                    reviewerImage: reviewer?.image || null,
+                    reviewerName: reviewer?.profile?.displayName ||
+                        reviewer?.profile?.legalFirstName ||
+                        "Anonymous",
+                    reviewerImage: reviewer?.profile?.avatarUrl || null,
                 };
             })
         );
@@ -264,6 +270,50 @@ export const searchSuppliers = query({
 
         // Limit results
         return result.slice(0, args.limit || 50);
+    },
+});
+
+// Public: Get Featured Suppliers for Landing Page
+export const getFeaturedSuppliers = query({
+    args: { limit: v.optional(v.number()) },
+    handler: async (ctx, args) => {
+        // 1. Get featured suppliers directly if 'isFeatured' exists
+        // Since we don't have isFeatured in schema yet, we use rating > 4.5 and reviewCount > 0
+        const featured = await ctx.db
+            .query("suppliers")
+            .withIndex("by_status", (q) => q.eq("status", "active"))
+            .filter((q) => q.gt(q.field("rating"), 4.0))
+            .order("desc")
+            .take(args.limit || 8);
+
+        // 2. Enrich with services for starting price
+        const enriched = await Promise.all(
+            featured.map(async (supplier) => {
+                const services = await ctx.db
+                    .query("services")
+                    .withIndex("by_supplier", (q) => q.eq("supplierId", supplier._id))
+                    .filter((q) => q.eq(q.field("active"), true))
+                    .collect();
+
+                const startingPrice = services.length > 0
+                    ? Math.min(...services.map((s) => s.price))
+                    : null;
+
+                // Image placeholder logic if needed
+                const images = services
+                    .map(s => s.images?.[0]) // assuming service has images
+                    .filter(Boolean)
+                    .slice(0, 3); // Take top 3 service images for carousel
+
+                return {
+                    ...supplier,
+                    startingPrice,
+                    serviceImages: images
+                };
+            })
+        );
+
+        return enriched.sort((a, b) => b.rating - a.rating);
     },
 });
 
@@ -441,7 +491,52 @@ export const updateAvailability = mutation({
     },
 });
 
-// Authenticated: Update Supplier Profile
+// Authenticated: Update Supplier Settings (Profile + Payments)
+export const updateSettings = mutation({
+    args: {
+        token: v.optional(v.string()),
+        name: v.optional(v.string()),
+        description: v.optional(v.string()),
+        categories: v.optional(v.array(v.string())),
+        coverUrl: v.optional(v.string()), // Added cover image support
+        contact: v.optional(v.object({
+            email: v.string(),
+            phone: v.optional(v.string()),
+            website: v.optional(v.string()),
+            instagram: v.optional(v.string()),
+            facebook: v.optional(v.string()),
+        })),
+        paymentInfo: v.optional(v.object({
+            method: v.string(), // "bKash" | "Bank"
+            accountNumber: v.string(),
+            accountHolder: v.string(),
+            bankName: v.optional(v.string()),
+            branchName: v.optional(v.string()),
+        })),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        if (!user) throw new Error("Authentication required.");
+
+        const supplier = await ctx.db
+            .query("suppliers")
+            .withIndex("by_user", (q) => q.eq("userId", user._id))
+            .first();
+
+        if (!supplier) throw new Error("Supplier profile not found.");
+
+        const { token, ...updateData } = args;
+
+        await ctx.db.patch(supplier._id, {
+            ...updateData,
+            updatedAt: Date.now(),
+        });
+
+        return { success: true };
+    },
+});
+
+// Authenticated: Update Supplier Profile (Legacy, kept for backward compat if needed)
 export const updateProfile = mutation({
     args: {
         token: v.optional(v.string()),
@@ -598,5 +693,189 @@ export const deleteService = mutation({
         await ctx.db.delete(args.serviceId);
 
         return { success: true };
+    },
+});
+
+// ==============================================
+// REVIEWS SYSTEM
+// ==============================================
+
+/**
+ * Get Reviews for a Supplier
+ */
+export const getSupplierReviews = query({
+    args: {
+        supplierId: v.id("suppliers"),
+        limit: v.optional(v.number()),
+    },
+    handler: async (ctx, args) => {
+        const reviews = await ctx.db
+            .query("reviews")
+            .filter((q) => q.eq(q.field("supplierId"), args.supplierId))
+            .order("desc")
+            .take(args.limit || 20);
+
+        // Enrich with reviewer info
+        const enriched = await Promise.all(
+            reviews.map(async (review) => {
+                let reviewer = null;
+                try {
+                    if (review.userId) reviewer = await ctx.db.get(review.userId);
+                } catch (e) { }
+
+                return {
+                    ...review,
+                    reviewerName: reviewer?.profile?.displayName ||
+                        reviewer?.profile?.legalFirstName ||
+                        "Anonymous",
+                    reviewerAvatar: reviewer?.profile?.avatarUrl || null,
+                };
+            })
+        );
+
+        return enriched;
+    },
+});
+
+/**
+ * Check if user can review this supplier (completed booking, no prior review)
+ */
+export const canReviewSupplier = query({
+    args: {
+        token: v.optional(v.string()),
+        supplierId: v.id("suppliers"),
+    },
+    handler: async (ctx, args) => {
+        // 1. Get current user
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        if (!user) return { canReview: false, reason: "Not authenticated" };
+
+        // 2. Check for completed lead/booking
+        const completedLead = await ctx.db
+            .query("leads")
+            .filter((q) =>
+                q.and(
+                    q.eq(q.field("userId"), user._id),
+                    q.eq(q.field("supplierId"), args.supplierId),
+                    q.or(
+                        q.eq(q.field("status"), "booked"),
+                        q.eq(q.field("status"), "completed")
+                    )
+                )
+            )
+            .first();
+
+        if (!completedLead) {
+            return { canReview: false, reason: "No completed booking found" };
+        }
+
+        // 3. Check for existing review
+        const existingReview = await ctx.db
+            .query("reviews")
+            .filter((q) =>
+                q.and(
+                    q.eq(q.field("userId"), user._id),
+                    q.eq(q.field("supplierId"), args.supplierId)
+                )
+            )
+            .first();
+
+        if (existingReview) {
+            return { canReview: false, reason: "Already reviewed", reviewId: existingReview._id };
+        }
+
+        return { canReview: true, leadId: completedLead._id };
+    },
+});
+
+/**
+ * Submit a Review for a Supplier
+ */
+export const submitReview = mutation({
+    args: {
+        token: v.optional(v.string()),
+        supplierId: v.id("suppliers"),
+        leadId: v.optional(v.id("leads")),
+        rating: v.number(), // 1-5
+        comment: v.string(),
+    },
+    handler: async (ctx, args) => {
+        // 1. Verify User
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        if (!user) throw new Error("Please log in to submit a review.");
+
+        // 2. Validate rating
+        if (args.rating < 1 || args.rating > 5) {
+            throw new Error("Rating must be between 1 and 5.");
+        }
+
+        // 3. Verify supplier exists
+        const supplier = await ctx.db.get(args.supplierId);
+        if (!supplier) throw new Error("Supplier not found.");
+
+        // 4. Check for completed booking
+        const completedLead = await ctx.db
+            .query("leads")
+            .filter((q) =>
+                q.and(
+                    q.eq(q.field("userId"), user._id),
+                    q.eq(q.field("supplierId"), args.supplierId),
+                    q.or(
+                        q.eq(q.field("status"), "booked"),
+                        q.eq(q.field("status"), "completed")
+                    )
+                )
+            )
+            .first();
+
+        if (!completedLead) {
+            throw new Error("You can only review vendors you have booked.");
+        }
+
+        // 5. Check for duplicate review
+        const existingReview = await ctx.db
+            .query("reviews")
+            .filter((q) =>
+                q.and(
+                    q.eq(q.field("userId"), user._id),
+                    q.eq(q.field("supplierId"), args.supplierId)
+                )
+            )
+            .first();
+
+        if (existingReview) {
+            throw new Error("You have already reviewed this vendor.");
+        }
+
+        const now = Date.now();
+
+        // 6. Insert Review
+        const reviewId = await ctx.db.insert("reviews", {
+            userId: user._id,
+            supplierId: args.supplierId,
+            leadId: completedLead._id,
+            rating: args.rating,
+            comment: args.comment,
+            status: "published", // Could be "pending" for moderation
+            createdAt: now,
+        });
+
+        // 7. Update Supplier Rating (Average)
+        const currentRating = supplier.rating || 0;
+        const currentCount = supplier.reviewCount || 0;
+        const newCount = currentCount + 1;
+        const newRating = ((currentRating * currentCount) + args.rating) / newCount;
+
+        await ctx.db.patch(args.supplierId, {
+            rating: Math.round(newRating * 10) / 10, // Round to 1 decimal
+            reviewCount: newCount,
+            updatedAt: now,
+        });
+
+        return {
+            success: true,
+            reviewId,
+            message: "Thank you for your review!"
+        };
     },
 });

@@ -1,191 +1,214 @@
 "use client";
 
-import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Search, MapPin, Filter } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import MarketplaceHero from "@/components/marketplace/marketplace-hero";
+import SupplierCard from "@/components/marketplace/supplier-card";
+import { Loader2, ArrowRight, Sparkles, SearchX } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-const CATEGORIES = ["Venue", "Catering", "Photography", "Decor", "Makeup", "Music"];
-const CITIES = ["Dhaka", "Chittagong", "Sylhet"];
+// Premium Cyberpunk/Luxury Category Images
+const CATEGORY_IMAGES = {
+    "Venue": "https://images.unsplash.com/photo-1514302240736-b1fee59858eb?q=80&w=800&auto=format&fit=crop", // Dark Neon Bar/Venue
+    "Catering": "https://images.unsplash.com/photo-1555243348-1d24dd80800b?q=80&w=800&auto=format&fit=crop", // Fancy Plating with mood lighting
+    "Tech & AV": "https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80&w=800&auto=format&fit=crop", // Concert Lights/Mixer
+    "Security": "https://images.unsplash.com/photo-1628113426868-bb8d234a9747?q=80&w=800&auto=format&fit=crop", // Professional Guard/Suit
+    "Logistics": "https://images.unsplash.com/photo-1494412574643-35d324698427?q=80&w=800&auto=format&fit=crop", // Dark Fleet/Transport
+    "Photography": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop", // Camera lens with neon reflection
+    "Decor": "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?q=80&w=800&auto=format&fit=crop", // Atmospheric lighting
+    "Entertainment": "https://images.unsplash.com/photo-1493225255756-d95298119351?q=80&w=800&auto=format&fit=crop", // DJ/Crowd
+};
+
+// Default categories for fallback
+const DEFAULT_CATEGORIES = ["Venue", "Catering", "Tech & AV", "Security", "Logistics", "Photography", "Decor", "Entertainment"];
 
 export default function MarketplacePage() {
-    const [search, setSearch] = useState("");
-    const [selectedCity, setSelectedCity] = useState("");
-    const [selectedCategory, setSelectedCategory] = useState("");
-    const [priceRange, setPriceRange] = useState([0, 500000]);
+    const searchParams = useSearchParams();
 
-    const suppliers = useQuery(api.suppliers.searchSuppliers, {
-        query: search || undefined,
-        city: selectedCity || undefined,
-        category: selectedCategory || undefined,
-        minPrice: priceRange[0],
-        maxPrice: priceRange[1],
-    });
+    // Search Filters
+    const category = searchParams.get("category");
+    const city = searchParams.get("city");
+    const query = searchParams.get("query");
+    const isSearching = !!(category || city || query);
+
+    // Queries
+    const featuredSuppliers = useQuery(api.suppliers.getFeaturedSuppliers, { limit: 6 });
+    const searchResults = useQuery(api.suppliers.searchSuppliers, isSearching ? {
+        category: category !== "all" ? category : undefined,
+        city: city || undefined,
+        query: query || undefined,
+        limit: 50
+    } : "skip");
+
+    const dbCategories = useQuery(api.suppliers.getCategories);
+    const cities = useQuery(api.suppliers.getCities) || ["Dhaka", "Chittagong"];
+
+    // Merge DB categories with default categories
+    const categories = dbCategories?.length > 0 ? dbCategories : DEFAULT_CATEGORIES;
 
     return (
-        <div className="min-h-screen bg-zinc-950 pt-24 pb-12 px-4 md:px-8">
-            {/* Header */}
-            <div className="max-w-7xl mx-auto mb-8">
-                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                    Find the Best <span className="text-amber-500">Event Vendors</span>
-                </h1>
-                <p className="text-zinc-400">Discover trusted professionals for your big day.</p>
-            </div>
+        <div className="min-h-screen bg-zinc-950 text-white selection:bg-amber-500/30">
+            {/* 1. Hero Section */}
+            <MarketplaceHero categories={categories} cities={cities} />
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
-                {/* Filters Sidebar */}
-                <div className="hidden lg:block space-y-8 p-6 bg-zinc-900/50 border border-zinc-800 rounded-xl h-fit sticky top-24">
-                    <div>
-                        <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                            <Filter className="w-4 h-4 text-amber-500" /> Filters
-                        </h3>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-20 animate-fade-in-up">
 
-                        {/* Search */}
-                        <div className="relative mb-6">
-                            <Search className="absolute left-3 top-2.5 h-4 w-4 text-zinc-500" />
-                            <Input
-                                placeholder="Search vendors..."
-                                className="pl-9 bg-zinc-950 border-zinc-800 focus:ring-amber-500"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-
-                        {/* Categories */}
-                        <div className="mb-6">
-                            <label className="text-sm text-zinc-400 mb-2 block">Category</label>
-                            <div className="space-y-2">
-                                {CATEGORIES.map(cat => (
-                                    <div key={cat} className="flex items-center space-x-2">
-                                        <Checkbox
-                                            id={cat}
-                                            checked={selectedCategory === cat}
-                                            onCheckedChange={() => setSelectedCategory(selectedCategory === cat ? "" : cat)}
-                                            className="border-zinc-700 data-[state=checked]:bg-amber-500 data-[state=checked]:text-black"
-                                        />
-                                        <label htmlFor={cat} className="text-sm text-zinc-300 cursor-pointer">{cat}</label>
-                                    </div>
-                                ))}
+                {/* SEARCH RESULTS VIEW */}
+                {isSearching ? (
+                    <section>
+                        <div className="flex justify-between items-end mb-10">
+                            <div>
+                                <span className="text-amber-500 font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
+                                    <Sparkles className="w-3 h-3" /> Search Results
+                                </span>
+                                <h2 className="text-3xl md:text-4xl font-bold text-white">
+                                    {searchResults?.length || 0} Vendors Found
+                                </h2>
+                                <div className="flex gap-2 mt-2 text-sm text-zinc-400">
+                                    {category && category !== "all" && <span className="bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">Category: {category}</span>}
+                                    {city && <span className="bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">City: {city}</span>}
+                                    {query && <span className="bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">"{query}"</span>}
+                                    <Link href="/marketplace" className="text-amber-500 hover:text-amber-400 underline ml-2 self-center">
+                                        Clear Filters
+                                    </Link>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Cities */}
-                        <div className="mb-6">
-                            <label className="text-sm text-zinc-400 mb-2 block">City</label>
-                            <div className="flex flex-wrap gap-2">
-                                {CITIES.map(city => (
-                                    <Button
-                                        key={city}
-                                        variant={selectedCity === city ? "default" : "outline"}
-                                        size="sm"
-                                        onClick={() => setSelectedCity(selectedCity === city ? "" : city)}
-                                        className={selectedCity === city
-                                            ? "bg-amber-500 text-black hover:bg-amber-600"
-                                            : "bg-transparent border-zinc-700 text-zinc-300 hover:bg-zinc-800"
-                                        }
+                        {searchResults === undefined ? (
+                            <div className="flex justify-center py-20">
+                                <Loader2 className="w-12 h-12 animate-spin text-amber-500" />
+                            </div>
+                        ) : searchResults.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-zinc-800 rounded-3xl bg-zinc-900/30">
+                                <SearchX className="w-16 h-16 text-zinc-700 mb-4" />
+                                <h3 className="text-xl font-bold text-zinc-300">No matches found</h3>
+                                <p className="text-zinc-500 max-w-sm mt-2">
+                                    Try adjusting your search terms or filters. We're constantly onboarding new elite vendors.
+                                </p>
+                                <Link
+                                    href="/marketplace"
+                                    className="mt-6 px-6 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-full font-bold transition-colors"
+                                >
+                                    Browse All
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {searchResults.map((supplier) => (
+                                    <div key={supplier._id} className="h-[400px]">
+                                        <SupplierCard supplier={supplier} />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </section>
+                ) : (
+                    /* LANDING VIEW (Categories + Featured) */
+                    <>
+                        {/* 2. Visual Categories */}
+                        <section>
+                            <div className="flex justify-between items-end mb-10">
+                                <div>
+                                    <span className="text-amber-500 font-bold tracking-widest uppercase text-xs mb-2 block">Curated Collections</span>
+                                    <h2 className="text-3xl md:text-4xl font-bold text-white">
+                                        Service Categories
+                                    </h2>
+                                </div>
+                                <Link href="/marketplace/categories" className="group text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm uppercase tracking-wider">
+                                    View All <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                            </div>
+
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                                {categories.slice(0, 6).map((cat) => (
+                                    <Link
+                                        href={`/marketplace?category=${cat}`}
+                                        key={cat}
+                                        className="group relative h-64 rounded-2xl overflow-hidden border border-white/5 hover:border-amber-500/50 transition-colors"
                                     >
-                                        {city}
-                                    </Button>
-                                ))}
-                            </div>
-                        </div>
+                                        <Image
+                                            src={CATEGORY_IMAGES[cat] || `https://placehold.co/400x600?text=${encodeURIComponent(cat)}`}
+                                            alt={cat}
+                                            fill
+                                            className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:saturate-150"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent group-hover:from-amber-950/80 transition-colors duration-500" />
 
-                        {/* Price */}
-                        <div>
-                            <label className="text-sm text-zinc-400 mb-4 block">
-                                Starting Price: ৳{priceRange[0].toLocaleString()} - ৳{priceRange[1].toLocaleString()}+
-                            </label>
-                            <Slider
-                                defaultValue={[0, 500000]}
-                                max={1000000}
-                                step={5000}
-                                value={priceRange}
-                                onValueChange={setPriceRange}
-                                className="py-4"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Vendor Grid */}
-                <div className="lg:col-span-3">
-                    {suppliers === undefined ? (
-                        <div className="flex items-center justify-center py-20">
-                            <div className="w-8 h-8 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
-                        </div>
-                    ) : suppliers.length === 0 ? (
-                        <div className="text-center py-20 bg-zinc-900/30 rounded-xl border border-zinc-800 border-dashed">
-                            <p className="text-zinc-500">No vendors found matching your criteria.</p>
-                            <Button
-                                variant="link"
-                                className="text-amber-500"
-                                onClick={() => { setSelectedCategory(""); setSelectedCity(""); setSearch(""); }}
-                            >
-                                Clear Filters
-                            </Button>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                            {suppliers.map((vendor) => (
-                                <Link href={`/marketplace/vendor/${vendor._id}`} key={vendor._id} className="group block bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-amber-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-amber-500/10">
-                                    {/* Image */}
-                                    <div className="h-48 relative overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
-                                        {vendor.coverUrl || vendor.logoUrl ? (
-                                            <Image
-                                                src={vendor.coverUrl || vendor.logoUrl}
-                                                alt={vendor.name}
-                                                fill
-                                                className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full bg-gradient-to-br from-zinc-800 to-zinc-900 flex items-center justify-center">
-                                                <span className="text-4xl font-bold text-zinc-700">{vendor.name?.charAt(0)}</span>
-                                            </div>
-                                        )}
-                                        <div className="absolute top-3 right-3 z-20 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-xs font-bold text-amber-500 border border-amber-500/20">
-                                            ★ {vendor.rating > 0 ? vendor.rating.toFixed(1) : "New"}
-                                        </div>
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="p-5">
-                                        <div className="text-xs text-amber-500 font-medium mb-1 uppercase tracking-wider">
-                                            {vendor.categories?.[0] || "Vendor"}
-                                        </div>
-                                        <h3 className="text-lg font-bold text-white mb-2 group-hover:text-amber-500 transition-colors">
-                                            {vendor.name}
-                                        </h3>
-                                        <div className="flex items-center text-zinc-400 text-sm mb-4">
-                                            <MapPin className="w-3.5 h-3.5 mr-1" />
-                                            {vendor.location?.city || "Bangladesh"}, {vendor.location?.country || "BD"}
-                                        </div>
-
-                                        <div className="border-t border-zinc-800 pt-4 flex justify-between items-center">
-                                            <div>
-                                                <p className="text-xs text-zinc-500">Starts from</p>
-                                                <p className="text-white font-bold">
-                                                    {vendor.startingPrice
-                                                        ? `৳ ${vendor.startingPrice.toLocaleString()}`
-                                                        : "Contact"}
-                                                </p>
-                                            </div>
-                                            <span className="text-xs text-zinc-500 border border-zinc-700 px-2 py-1 rounded bg-zinc-800 group-hover:bg-amber-500 group-hover:text-black group-hover:border-amber-500 transition-colors">
-                                                View Profile
+                                        <div className="absolute bottom-0 inset-x-0 p-4">
+                                            <span className="block w-8 h-0.5 bg-amber-500 mb-2 transform origin-left group-hover:scale-x-150 transition-transform duration-300" />
+                                            <span className="font-bold text-lg text-white group-hover:text-amber-200 transition-colors">
+                                                {cat}
                                             </span>
                                         </div>
-                                    </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* 3. Featured Vendors */}
+                        <section>
+                            <div className="flex justify-between items-end mb-10">
+                                <div>
+                                    <span className="text-amber-500 font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
+                                        <Sparkles className="w-3 h-3" /> Top Rated
+                                    </span>
+                                    <h2 className="text-3xl md:text-4xl font-bold text-white">
+                                        Featured Vendors
+                                    </h2>
+                                </div>
+                                <Link href="/marketplace?sort=rating" className="group text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm uppercase tracking-wider">
+                                    Explore Elite <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </Link>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                            </div>
+
+                            {featuredSuppliers === undefined ? (
+                                <div className="flex justify-center py-12">
+                                    <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {featuredSuppliers.map((supplier) => (
+                                        <div key={supplier._id} className="h-[400px]">
+                                            <SupplierCard supplier={supplier} />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </section>
+
+                        {/* 4. Promotional Section */}
+                        <section className="relative rounded-3xl overflow-hidden border border-white/10">
+                            <div className="absolute inset-0">
+                                <Image
+                                    src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop"
+                                    alt="Event Inspiration"
+                                    fill
+                                    className="object-cover opacity-40"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/80 to-transparent" />
+                            </div>
+
+                            <div className="relative p-8 md:p-16 max-w-2xl">
+                                <span className="inline-block px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-6 border border-amber-500/20">
+                                    Enterprise Ready
+                                </span>
+                                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+                                    Planning a Corporate <br />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-600">Mega-Event?</span>
+                                </h2>
+                                <p className="text-zinc-400 text-lg mb-8 leading-relaxed">
+                                    Get dedicated support, custom billing, and priority vendor access for large-scale productions.
+                                </p>
+                                <Link href="/contact" className="inline-flex h-12 items-center justify-center rounded-full bg-white text-black px-8 font-bold hover:bg-zinc-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                                    Contact Sales
+                                </Link>
+                            </div>
+                        </section>
+                    </>
+                )}
             </div>
         </div>
     );

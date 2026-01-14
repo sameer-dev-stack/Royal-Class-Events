@@ -50,3 +50,47 @@ export const generateArcSeats = ({
 
     return seats;
 };
+
+/**
+ * Generates seat positions around a rectangular table perimeter
+ * @param {number} width Table width
+ * @param {number} height Table height
+ * @param {number} capacity Number of seats
+ * @param {number} padding Gap between table edge and seat edge
+ * @param {number} seatRadius Radius of the seat circle
+ */
+export const getRectTableSeats = (width, height, capacity, padding = 5, seatRadius = 6) => {
+    const seats = [];
+    if (capacity <= 0) return seats;
+
+    const offset = seatRadius + padding;
+    const perimeter = 2 * (width + height);
+    const step = perimeter / capacity;
+
+    for (let i = 0; i < capacity; i++) {
+        const d = i * step + (step / 2); // Center of the segment
+        let x, y;
+
+        if (d < width) {
+            // Top side
+            x = d;
+            y = -offset;
+        } else if (d < width + height) {
+            // Right side
+            x = width + offset;
+            y = d - width;
+        } else if (d < 2 * width + height) {
+            // Bottom side
+            x = width - (d - (width + height));
+            y = height + offset;
+        } else {
+            // Left side
+            x = -offset;
+            y = height - (d - (2 * width + height));
+        }
+
+        seats.push({ x, y, id: `rect-seat-${i}` });
+    }
+
+    return seats;
+};

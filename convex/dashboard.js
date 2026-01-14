@@ -86,3 +86,25 @@ export const getEventDashboard = query({
     };
   },
 });
+// ALIAS: Required for dashboard delete functionality
+export const deleteEvent = mutation({
+  args: {
+    eventId: v.id("events"),
+    token: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) throw new Error("Not logged in");
+
+    const event = await ctx.db.get(args.eventId);
+
+    const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+
+    if (!event || (event.ownerId !== user._id && !isAdmin)) {
+      throw new Error("Unauthorized");
+    }
+
+    await ctx.db.delete(args.eventId);
+    return { success: true };
+  },
+});

@@ -83,13 +83,12 @@ export default function EventCard({
           )}
           onClick={onClick}
         >
-          <div className="relative h-48 overflow-hidden">
+          <div className="relative aspect-video overflow-hidden">
             <Image
               src={displayImage}
               alt={eventTitle}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-              width={500}
-              height={192}
+              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+              fill
               priority
             />
 
@@ -108,7 +107,7 @@ export default function EventCard({
               <Badge variant="outline" className="mb-2 text-amber-500 border-amber-500/30 bg-amber-500/5">
                 {getCategoryIcon(eventCategory)} <span className="ml-1">{getCategoryLabel(eventCategory)}</span>
               </Badge>
-              <h3 className="font-semibold text-lg line-clamp-2 leading-tight group-hover:text-amber-500 transition-colors">
+              <h3 className="font-bold text-lg line-clamp-1 leading-tight group-hover:text-amber-500 transition-colors">
                 {eventTitle}
               </h3>
             </div>

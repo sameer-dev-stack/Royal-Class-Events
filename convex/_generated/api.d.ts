@@ -24,6 +24,7 @@ import type * as events from "../events.js";
 import type * as events_seating from "../events_seating.js";
 import type * as explore from "../explore.js";
 import type * as files from "../files.js";
+import type * as finance from "../finance.js";
 import type * as force_sync from "../force_sync.js";
 import type * as intelligence from "../intelligence.js";
 import type * as leads from "../leads.js";
@@ -74,6 +75,7 @@ declare const fullApi: ApiFromModules<{
   events_seating: typeof events_seating;
   explore: typeof explore;
   files: typeof files;
+  finance: typeof finance;
   force_sync: typeof force_sync;
   intelligence: typeof intelligence;
   leads: typeof leads;

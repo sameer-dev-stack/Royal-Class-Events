@@ -97,7 +97,7 @@ export const ASSET_LIBRARY = [
     },
     {
         type: 'TABLE',
-        label: 'VIP Table',
+        label: 'Table',
         icon: Utensils,
         width: 120,
         height: 120,
@@ -105,5 +105,16 @@ export const ASSET_LIBRARY = [
         description: "Professional table with dynamic seating",
         defaultCapacity: 6,
         maxCapacity: 20
+    },
+    {
+        type: 'RECT_TABLE',
+        label: 'Dining Table (6)',
+        icon: LayoutGrid,
+        width: 120,
+        height: 80,
+        color: '#78350f',
+        description: "Rectangular table with perimeter seating",
+        defaultCapacity: 6,
+        maxCapacity: 12
     }
 ];

@@ -169,18 +169,24 @@
 @layer utilities {
   .text-gradient {
     @apply bg-gradient-to-r from-amber-300 via-amber-500 to-amber-600 bg-clip-text text-transparent;
+    -webkit-bg-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .text-gradient-gold {
     @apply bg-gradient-to-b from-[#F7E08B] via-[#D4AF37] to-[#8C7326] bg-clip-text text-transparent;
+    -webkit-bg-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .bg-glass {
     @apply bg-background/60 backdrop-blur-md border border-border/50;
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .card-premium {
     @apply bg-card/80 backdrop-blur-sm border-white/5 hover:border-amber-500/30 transition-all duration-300;
+    -webkit-backdrop-filter: blur(8px);
   }
 }
 

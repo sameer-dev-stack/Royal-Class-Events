@@ -106,16 +106,15 @@ export default function CreateEventPage() {
       capacity: 50,
       themeColor: "#d97706",
       category: "",
-      country: "",
+      country: "BD",
       state: "",
-      city: "",
+      city: "Dhaka",
       startTime: "",
       endTime: "",
-      venueType: "existing",
+      venueType: "manual",
     },
   });
 
-  const venueType = watch("venueType");
   const { data: templates } = useConvexQuery(api.venueDesigns.listTemplates, { token });
   const { data: myDesigns } = useConvexQuery(api.venueDesigns.listMyDesigns, { token });
 
@@ -135,6 +134,21 @@ export default function CreateEventPage() {
 
   const availableCities = useMemo(() => {
     if (!selectedCountry) return [];
+
+    // Custom curated list for Bangladesh
+    if (selectedCountry === "BD") {
+      return [
+        { name: "Dhaka" },
+        { name: "Chittagong" },
+        { name: "Sylhet" },
+        { name: "Cox's Bazar" },
+        { name: "Rajshahi" },
+        { name: "Khulna" },
+        { name: "Barisal" },
+        { name: "Rangpur" }
+      ];
+    }
+
     const cities = !selectedState
       ? City.getCitiesOfCountry(selectedCountry)
       : City.getCitiesOfState(selectedCountry, selectedState);
@@ -260,17 +274,6 @@ export default function CreateEventPage() {
         return;
       }
 
-      let finalVenueDesignId = data.venueType !== "manual" ? data.venueDesignId : undefined;
-
-      // Handle Brand-New Custom Venue
-      if (data.venueType === "custom") {
-        const newDesignId = await createVenueDesign({
-          name: `${data.title} - Custom Venue`,
-          baseArchetype: "blank"
-        });
-        finalVenueDesignId = newDesignId;
-      }
-
       await createEvent({
         title: data.title,
         description: data.description,
@@ -290,7 +293,7 @@ export default function CreateEventPage() {
         ticketPrice: data.ticketPrice || undefined,
         coverImage: data.coverImage || undefined,
         themeColor: data.themeColor,
-        venueDesignId: finalVenueDesignId,
+        venueDesignId: undefined, // Venue design is handled later from dashboard
         hasPro,
         token,
       });
@@ -553,7 +556,7 @@ export default function CreateEventPage() {
 
           <div className="space-y-3">
             <Label className="text-muted-foreground">Location</Label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Controller
                 control={control}
                 name="country"
@@ -562,18 +565,6 @@ export default function CreateEventPage() {
                     <SelectTrigger className="w-full bg-background border-input text-foreground"><SelectValue placeholder="Country" /></SelectTrigger>
                     <SelectContent className="bg-popover border-border text-popover-foreground max-h-[300px]">
                       {countries.map((c, idx) => (<SelectItem key={`${c.isoCode}-${idx}`} value={c.isoCode}>{c.name}</SelectItem>))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              <Controller
-                control={control}
-                name="state"
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={(val) => { field.onChange(val); setValue("city", ""); }} disabled={!selectedCountry || availableStates.length === 0}>
-                    <SelectTrigger className="w-full bg-background border-input text-foreground disabled:opacity-50"><SelectValue placeholder="State/Region" /></SelectTrigger>
-                    <SelectContent className="bg-popover border-border text-popover-foreground max-h-[300px]">
-                      {availableStates.map((s, idx) => (<SelectItem key={`${s.isoCode}-${idx}`} value={s.isoCode}>{s.name}</SelectItem>))}
                     </SelectContent>
                   </Select>
                 )}
@@ -592,7 +583,7 @@ export default function CreateEventPage() {
               />
             </div>
             {errors.city && <p className="text-sm text-red-500">{errors.city.message}</p>}
-            <Input {...register("venue")} placeholder="Venue link (Google Maps)" className="bg-background border-input text-foreground placeholder:text-muted-foreground" />
+            <Input {...register("venue")} placeholder="Venue Name / Google Maps Link" className="bg-background border-input text-foreground placeholder:text-muted-foreground" />
             <Input {...register("address")} placeholder="Full address" className="bg-background border-input text-foreground placeholder:text-muted-foreground" />
           </div>
 
@@ -602,113 +593,29 @@ export default function CreateEventPage() {
             {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
           </div>
 
-          <div className="space-y-3">
-            <Label className="text-muted-foreground">Tickets</Label>
-            <div className="flex items-center gap-6 text-foreground">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" value="free" {...register("ticketType")} className="accent-amber-500 w-4 h-4" /> Free
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" value="paid" {...register("ticketType")} className="accent-amber-500 w-4 h-4" /> Paid
-              </label>
-            </div>
-            {ticketType === "paid" && (
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">৳</span>
-                <Input type="number" placeholder="Price" {...register("ticketPrice", { valueAsNumber: true })} className="pl-8 bg-background border-input text-foreground" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <Label className="text-muted-foreground">Tickets</Label>
+              <div className="flex items-center gap-6 text-foreground">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" value="free" {...register("ticketType")} className="accent-amber-500 w-4 h-4" /> Free
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" value="paid" {...register("ticketType")} className="accent-amber-500 w-4 h-4" /> Paid
+                </label>
               </div>
-            )}
-          </div>
-
-          <div className="space-y-4 pt-6 border-t border-border">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-500" />
-              <Label className="text-lg font-bold">Venue & Seating</Label>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {[
-                { id: "existing", label: "Existing Venue", icon: "🏛️" },
-                { id: "template", label: "Use Template", icon: "📋" },
-                { id: "manual", label: "Simple Map", icon: "✏️" },
-                { id: "custom", label: "Custom Venue", icon: "✨" },
-              ].map((type) => (
-                <div
-                  key={type.id}
-                  onClick={() => setValue("venueType", type.id)}
-                  className={`cursor-pointer p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 text-center ${venueType === type.id
-                    ? "border-amber-500 bg-amber-500/10 text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.2)]"
-                    : "border-border bg-card hover:border-border/80"
-                    }`}
-                >
-                  <span className="text-2xl">{type.icon}</span>
-                  <span className="text-xs font-bold leading-tight">{type.label}</span>
+              {ticketType === "paid" && (
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">৳</span>
+                  <Input type="number" placeholder="Price" {...register("ticketPrice", { valueAsNumber: true })} className="pl-8 bg-background border-input text-foreground" />
                 </div>
-              ))}
+              )}
             </div>
 
-            {venueType === "existing" && (
-              <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                <Label className="text-muted-foreground">Select Venue</Label>
-                <Controller
-                  control={control}
-                  name="venueDesignId"
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="bg-background border-input text-foreground">
-                        <SelectValue placeholder="Chose a venue..." />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover border-border text-popover-foreground">
-                        {myDesigns?.length === 0 && <div className="p-4 text-sm text-center opacity-50">No designs found. Create one first or use a template.</div>}
-                        {myDesigns?.map(d => (
-                          <SelectItem key={d._id} value={d._id}>{d.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-            )}
-
-            {venueType === "template" && (
-              <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                <Label className="text-muted-foreground">Select Template</Label>
-                <Controller
-                  control={control}
-                  name="venueDesignId"
-                  render={({ field }) => (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="bg-background border-input text-foreground">
-                        <SelectValue placeholder="Chose a template..." />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover border-border text-popover-foreground">
-                        {templates?.length === 0 && <div className="p-4 text-sm text-center opacity-50">No templates available.</div>}
-                        {templates?.map(t => (
-                          <SelectItem key={t._id} value={t._id}>{t.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
-            )}
-
-            {venueType === "manual" && (
-              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs text-amber-500/80 italic animate-in fade-in slide-in-from-top-2">
-                You can upload a 2D floor plan and draw zones after publishing the event.
-              </div>
-            )}
-
-            {venueType === "custom" && (
-              <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20 text-xs text-amber-500/80 italic animate-in fade-in slide-in-from-top-2">
-                A new venue design will be created for this event. You'll be redirected to the Venue Designer after publishing.
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-muted-foreground">Capacity</Label>
-            <Input type="number" {...register("capacity", { valueAsNumber: true })} placeholder="100" className="bg-background border-input text-foreground" />
+            <div className="space-y-2">
+              <Label className="text-muted-foreground">Capacity</Label>
+              <Input type="number" {...register("capacity", { valueAsNumber: true })} placeholder="100" className="bg-background border-input text-foreground" />
+            </div>
           </div>
 
           <AIIntelligencePanel
@@ -733,7 +640,8 @@ export default function CreateEventPage() {
             setShowImagePicker(false);
           }}
         />
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }

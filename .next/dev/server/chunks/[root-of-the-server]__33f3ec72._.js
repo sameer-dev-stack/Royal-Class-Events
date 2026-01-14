@@ -164,7 +164,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$
 ;
 ;
 // Initialize Convex Client for server-side auth calls
-const convex = new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$browser$2f$http_client$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ConvexHttpClient"](("TURBOPACK compile-time value", "https://merry-dalmatian-951.convex.cloud"));
+const convexUrl = ("TURBOPACK compile-time value", "https://merry-dalmatian-951.convex.cloud");
+const convex = ("TURBOPACK compile-time truthy", 1) ? new __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$browser$2f$http_client$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["ConvexHttpClient"](convexUrl) : "TURBOPACK unreachable";
+if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+;
 const { auth, signIn, signOut, handlers } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2d$auth$2f$index$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__$3c$locals$3e$__["default"])({
     ...__TURBOPACK__imported__module__$5b$project$5d2f$auth$2e$config$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["authConfig"],
     providers: [
@@ -177,6 +180,10 @@ const { auth, signIn, signOut, handlers } = (0, __TURBOPACK__imported__module__$
                 if (parsedCredentials.success) {
                     const { email, password } = parsedCredentials.data;
                     try {
+                        if (!convex) {
+                            console.error("Convex Client not initialized");
+                            return null;
+                        }
                         // Call the unified login mutation in Convex
                         const result = await convex.mutation(__TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["api"].users.login, {
                             email,

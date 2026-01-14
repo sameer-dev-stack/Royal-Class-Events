@@ -4,7 +4,8 @@ import React, { useRef, useEffect, useCallback, useState } from "react";
 import { Stage, Layer, Rect, Circle, Group, Transformer, Text, Line, Image as KonvaImage } from "react-konva";
 import useSeatEngine, { TOOL_TYPES, SEAT_NAMING } from "@/hooks/use-seat-engine";
 import useSeatHotkeys from "@/hooks/use-seat-hotkeys";
-import { calculateArcPosition } from "@/utils/geometry";
+import { calculateArcPosition, getRectTableSeats } from "@/utils/geometry";
+import { ASSET_LIBRARY } from "@/constants/seat-engine-assets";
 
 /**
  * Royal Seat Engine - Canvas Stage Component
@@ -180,20 +181,18 @@ function MultiTransformer({ selectedIds }) {
     );
 }
 
-// Visual Asset Element
-function AssetElement({ element, isSelected, onSelect, onChange }) {
+// Visual Asset Element (FIXED: Complies with Golden Rule #2)
+function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
     const shapeRef = useRef(null);
 
-    // We use assetType to render specific graphics
+    // Asset rendering logic (No changes here, kept for context)
     const renderAssetGraphic = () => {
         const { assetConfig, width, height } = element;
-        // Prioritize element.fill (user's manual color choice) over default asset color
         const color = element.fill || assetConfig?.color || "#555";
 
-        // Table specific rendering
+        // Table specific rendering (Circular)
         if (assetConfig?.type === 'TABLE' || element.assetType === 'TABLE') {
             const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
-            // Prioritize element.fill (user's manual color choice) over default asset color
             const tableColor = element.fill || assetConfig?.color || "#78350f";
             const chairs = [];
             const radius = Math.min(width, height) / 2;
@@ -208,7 +207,7 @@ function AssetElement({ element, isSelected, onSelect, onChange }) {
                         key={`chair-${i}`}
                         x={x} y={y}
                         radius={chairRadius}
-                        fill="#3f3f46" // Zinc-700
+                        fill="#3f3f46"
                         stroke={tableColor}
                         strokeWidth={1}
                         listening={false}
@@ -218,177 +217,172 @@ function AssetElement({ element, isSelected, onSelect, onChange }) {
 
             return (
                 <Group>
-                    {/* Shadow for depth */}
-                    <Circle
-                        x={width / 2 + 2} y={height / 2 + 2}
-                        radius={radius}
-                        fill="black"
-                        opacity={0.2}
-                        listening={false}
-                    />
-                    {/* Main Table */}
-                    <Circle
-                        x={width / 2} y={height / 2}
-                        radius={radius}
-                        fill={tableColor}
-                        stroke="#451a03"
-                        strokeWidth={2}
-                        shadowBlur={5}
-                        shadowOpacity={0.5}
-                    />
-                    {/* Inner detail (Wood ring) */}
-                    <Circle
-                        x={width / 2} y={height / 2}
-                        radius={radius * 0.85}
-                        stroke="#451a03"
-                        strokeWidth={1}
-                        opacity={0.3}
-                        listening={false}
-                    />
-                    {/* Center point */}
-                    <Circle
-                        x={width / 2} y={height / 2}
-                        radius={2}
-                        fill="#451a03"
-                        opacity={0.5}
-                        listening={false}
-                    />
-                    {/* Chairs */}
+                    <Circle x={width / 2 + 2} y={height / 2 + 2} radius={radius} fill="black" opacity={0.2} listening={false} />
+                    <Circle x={width / 2} y={height / 2} radius={radius} fill={tableColor} stroke="#451a03" strokeWidth={2} shadowBlur={5} shadowOpacity={0.5} />
+                    <Circle x={width / 2} y={height / 2} radius={radius * 0.85} stroke="#451a03" strokeWidth={1} opacity={0.3} listening={false} />
                     {chairs}
-                    {/* Capacity label */}
-                    <Text
-                        text={`${capacity}`}
-                        width={width} height={height}
-                        align="center" verticalAlign="middle"
-                        fill="white" fontStyle="bold" fontSize={radius / 2}
-                        opacity={0.9}
-                        listening={false}
-                    />
+                    <Text text={`${capacity}`} width={width} height={height} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={radius / 2} opacity={0.9} listening={false} />
                 </Group>
             );
         }
 
+        // Rectangular table rendering
+        if (assetConfig?.type === 'RECT_TABLE' || element.assetType === 'RECT_TABLE') {
+            const chairRadius = 6;
+            const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
+            const tableColor = element.fill || assetConfig?.color || "#78350f";
+            const w = width || 120;
+            const h = height || 80;
+            const chairs = [];
+
+            const seatPositions = getRectTableSeats(w, h, capacity, 5, chairRadius);
+            seatPositions.forEach((pos, i) => {
+                chairs.push(
+                    <Circle
+                        key={`rect-chair-${i}`}
+                        x={pos.x} y={pos.y}
+                        radius={chairRadius}
+                        fill="white"
+                        stroke="gray"
+                        strokeWidth={1}
+                        listening={false}
+                    />
+                );
+            });
+
+            return (
+                <Group listening={true} onClick={onSelect} onTap={onSelect}>
+                    <Rect x={2} y={2} width={w} height={h} fill="black" opacity={0.2} cornerRadius={8} listening={false} />
+                    <Rect width={w} height={h} fill={tableColor} stroke="#451a03" strokeWidth={2} cornerRadius={8} shadowBlur={5} shadowOpacity={0.5} />
+                    <Rect x={10} y={10} width={w - 20} height={h - 20} stroke="#451a03" strokeWidth={1} opacity={0.3} cornerRadius={4} listening={false} />
+                    {chairs}
+                    <Text text={`${capacity}`} width={w} height={h} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={24} opacity={0.9} listening={false} />
+                </Group>
+            );
+        }
+
+        // Default Asset Graphic
         return (
             <Group>
-                <Rect
-                    width={width}
-                    height={height}
-                    fill={`${color}40`} // Low opacity fill
-                    stroke={color}
-                    strokeWidth={2}
-                    cornerRadius={4}
-                    dash={element.type === "PILLAR" ? undefined : [5, 2]}
-                />
-
-                {/* Diagonal crosses for Stacks/Tech */}
+                <Rect width={width} height={height} fill={`${color}40`} stroke={color} strokeWidth={2} cornerRadius={4} dash={element.type === "PILLAR" ? undefined : [5, 2]} />
                 {(assetConfig?.type === "STAGE" || assetConfig?.type === "CONSOLE") && (
                     <>
                         <Line points={[0, 0, width, height]} stroke={color} strokeWidth={1} opacity={0.3} />
                         <Line points={[width, 0, 0, height]} stroke={color} strokeWidth={1} opacity={0.3} />
                     </>
                 )}
-
-                {/* Text Label */}
-                <Text
-                    text={element.name || assetConfig?.label || "ASSET"}
-                    width={width}
-                    height={height}
-                    align="center"
-                    verticalAlign="middle"
-                    fill="#fff"
-                    fontStyle="bold"
-                    fontSize={Math.max(10, Math.min(width, height) / 5)}
-                    padding={5}
-                />
+                <Text text={element.name || assetConfig?.label || "ASSET"} width={width} height={height} align="center" verticalAlign="middle" fill="#fff" fontStyle="bold" fontSize={Math.max(10, Math.min(width, height) / 5)} padding={5} />
             </Group>
         );
     };
 
-    // Removed individual transformer logic in favor of MultiTransformer
-
     return (
-        <>
-            <Group
-                id={element.id}
-                name="element-group"
-                ref={shapeRef}
-                x={element.x} y={element.y}
-                width={element.width} height={element.height}
-                rotation={element.rotation || 0}
-                draggable
-                onClick={onSelect} onTap={onSelect}
-                onDragStart={(e) => {
-                    // Seamless drag: if not selected, select it first
-                    if (!isSelected) {
-                        useSeatEngine.getState().setSelectedIds([element.id]);
+        <Group
+            id={element.id}
+            name="element-group"
+            ref={shapeRef}
+            x={element.x} y={element.y}
+            width={element.width} height={element.height}
+            rotation={element.rotation || 0}
+            draggable={draggable}
+            onMouseEnter={(e) => {
+                if (draggable) e.target.getStage().container().style.cursor = 'move';
+            }}
+            onMouseLeave={(e) => {
+                e.target.getStage().container().style.cursor = 'default';
+            }}
+            onClick={onSelect} onTap={onSelect}
+
+            // --- GOLDEN RULE IMPLEMENTATION START ---
+            onDragStart={(e) => {
+                console.log("Drag Start:", element.id, "Type:", element.type || element.assetType);
+                // 1. Ensure selection
+                if (!isSelected) {
+                    useSeatEngine.getState().setSelectedIds([element.id]);
+                }
+                const stage = e.target.getStage();
+                const currentSelectedIds = useSeatEngine.getState().selectedIds;
+
+                // 2. Identify all nodes to move
+                const targetIds = currentSelectedIds.includes(element.id)
+                    ? currentSelectedIds
+                    : [element.id];
+
+                const allElements = useSeatEngine.getState().elements;
+
+                // 3. Snapshot initial positions (The "Anchor" State)
+                stage._draggedNodes = allElements
+                    .filter(el => targetIds.includes(el.id))
+                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
+
+                // 4. Record where the primary node started (Relative to parent)
+                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
+            }}
+
+            onDragMove={(e) => {
+                e.evt.preventDefault();
+                const stage = e.target.getStage();
+                if (!stage._dragStartPos) return;
+
+                // 5. Calculate Delta based on Node position (NOT Pointer)
+                const dx = e.target.x() - stage._dragStartPos.x;
+                const dy = e.target.y() - stage._dragStartPos.y;
+
+                console.log("Dragging:", element.id, "Delta:", { dx: dx.toFixed(2), dy: dy.toFixed(2) }, "Moving Nodes:", stage._draggedNodes?.length);
+
+                // 6. Move siblings manually. DO NOT move self (Konva does it).
+                stage.find('.element-group').forEach(node => {
+                    if (node === e.target) return; // Skip the active drag node
+                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
+                    if (stored) {
+                        node.position({ x: stored.x + dx, y: stored.y + dy });
                     }
-                    // Store initial positions for all selected elements
-                    const stage = e.target.getStage();
-                    const currentSelectedIds = useSeatEngine.getState().selectedIds;
-                    const allElements = useSeatEngine.getState().elements;
+                });
+            }}
 
-                    // Include the current element if it wasn't selected before
-                    const targetIds = currentSelectedIds.includes(element.id)
-                        ? currentSelectedIds
-                        : [element.id];
+            onDragEnd={(e) => {
+                const stage = e.target.getStage();
+                if (!stage._dragStartPos) {
+                    // Fallback for click without drag
+                    onChange({ x: e.target.x(), y: e.target.y() });
+                    return;
+                }
 
-                    stage._draggedNodes = allElements
-                        .filter(el => targetIds.includes(el.id))
-                        .map(el => ({ id: el.id, x: el.x, y: el.y }));
-                    stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
-                }}
-                onDragMove={(e) => {
-                    const stage = e.target.getStage();
-                    if (!stage._dragStartPos) return;
+                const dx = e.target.x() - stage._dragStartPos.x;
+                const dy = e.target.y() - stage._dragStartPos.y;
 
-                    const dx = e.target.x() - stage._dragStartPos.x;
-                    const dy = e.target.y() - stage._dragStartPos.y;
+                console.log("Drag End:", element.id, "Final Delta:", { dx: dx.toFixed(2), dy: dy.toFixed(2) });
 
-                    // Visual update for other selected elements
-                    stage.find('.element-group').forEach(node => {
-                        if (node === e.target) return;
-                        const stored = stage._draggedNodes?.find(d => d.id === node.id());
-                        if (stored) {
-                            node.position({ x: stored.x + dx, y: stored.y + dy });
-                        }
-                    });
-                }}
-                onDragEnd={(e) => {
-                    const stage = e.target.getStage();
-                    if (!stage._dragStartPos) {
-                        onChange({ x: e.target.x(), y: e.target.y() });
-                        return;
-                    }
+                // 7. Commit to Store ONCE
+                stage._draggedNodes?.forEach(d => {
+                    useSeatEngine.getState().updateElement(d.id, { x: d.x + dx, y: d.y + dy });
+                });
 
-                    const dx = e.target.x() - stage._dragStartPos.x;
-                    const dy = e.target.y() - stage._dragStartPos.y;
+                // Cleanup
+                delete stage._draggedNodes;
+                delete stage._dragStartPos;
+            }}
+            // --- GOLDEN RULE IMPLEMENTATION END ---
 
-                    // Update all dragged elements in store
-                    stage._draggedNodes?.forEach(d => {
-                        useSeatEngine.getState().updateElement(d.id, { x: d.x + dx, y: d.y + dy });
-                    });
-                    delete stage._draggedNodes;
-                    delete stage._dragStartPos;
-                }}
-                onTransformEnd={() => {
-                    const node = shapeRef.current;
-                    onChange({
-                        x: node.x(), y: node.y(),
-                        width: Math.max(20, node.width() * node.scaleX()),
-                        height: Math.max(20, node.height() * node.scaleY()),
-                        rotation: node.rotation()
-                    });
-                    node.scaleX(1); node.scaleY(1);
-                }}
-            >
-                {renderAssetGraphic()}
-            </Group>
-        </>
+            onTransformEnd={() => {
+                const node = shapeRef.current;
+                onChange({
+                    x: node.x(), y: node.y(),
+                    width: Math.max(20, node.width() * node.scaleX()),
+                    height: Math.max(20, node.height() * node.scaleY()),
+                    rotation: node.rotation()
+                });
+                node.scaleX(1); node.scaleY(1);
+            }}
+        >
+            {renderAssetGraphic()}
+        </Group>
     );
 }
 
 // Zone component with LOD
-function ZoneElement({ element, isSelected, onSelect, onChange, scale }) {
+// Zone component with LOD
+function ZoneElement({ element, isSelected, onSelect, onChange, scale, draggable }) {
     const groupRef = useRef(null);
 
     // Removed individual transformer logic
@@ -407,9 +401,20 @@ function ZoneElement({ element, isSelected, onSelect, onChange, scale }) {
                 x={element.x} y={element.y}
                 width={element.width} height={element.height}
                 rotation={element.rotation || 0}
-                draggable
+                draggable={draggable}
+                onMouseEnter={(e) => {
+                    if (draggable) {
+                        const stage = e.target.getStage();
+                        stage.container().style.cursor = 'move';
+                    }
+                }}
+                onMouseLeave={(e) => {
+                    const stage = e.target.getStage();
+                    stage.container().style.cursor = 'default';
+                }}
                 onClick={onSelect} onTap={onSelect}
                 onDragStart={(e) => {
+                    console.log("Zone Drag Start:", element.id);
                     // Seamless drag: if not selected, select it first
                     if (!isSelected) {
                         useSeatEngine.getState().setSelectedIds([element.id]);
@@ -427,10 +432,14 @@ function ZoneElement({ element, isSelected, onSelect, onChange, scale }) {
                     stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
                 }}
                 onDragMove={(e) => {
+                    e.evt.preventDefault();
                     const stage = e.target.getStage();
                     if (!stage._dragStartPos) return;
                     const dx = e.target.x() - stage._dragStartPos.x;
                     const dy = e.target.y() - stage._dragStartPos.y;
+
+                    console.log("Zone Dragging:", element.id, "Delta:", { dx: dx.toFixed(2), dy: dy.toFixed(2) });
+
                     stage.find('.element-group').forEach(node => {
                         if (node === e.target) return;
                         const stored = stage._draggedNodes?.find(d => d.id === node.id());
@@ -445,6 +454,9 @@ function ZoneElement({ element, isSelected, onSelect, onChange, scale }) {
                     }
                     const dx = e.target.x() - stage._dragStartPos.x;
                     const dy = e.target.y() - stage._dragStartPos.y;
+
+                    console.log("Zone Drag End:", element.id, "Final Delta:", { dx: dx.toFixed(2), dy: dy.toFixed(2) });
+
                     stage._draggedNodes?.forEach(d => {
                         useSeatEngine.getState().updateElement(d.id, { x: d.x + dx, y: d.y + dy });
                     });
@@ -494,15 +506,28 @@ function ZoneElement({ element, isSelected, onSelect, onChange, scale }) {
 }
 
 // Circle element
-function CircleElement({ element, isSelected, onSelect, onChange }) {
+function CircleElement({ element, isSelected, onSelect, onChange, draggable }) {
     const shapeRef = useRef(null);
     const fillColor = element.fill || ZONE_FILL_DEFAULT;
     return (
         <Group
             id={element.id}
             name="element-group"
-            ref={shapeRef} x={element.x} y={element.y} draggable onClick={onSelect}
+            ref={shapeRef} x={element.x} y={element.y}
+            draggable={draggable}
+            onMouseEnter={(e) => {
+                if (draggable) {
+                    const stage = e.target.getStage();
+                    stage.container().style.cursor = 'move';
+                }
+            }}
+            onMouseLeave={(e) => {
+                const stage = e.target.getStage();
+                stage.container().style.cursor = 'default';
+            }}
+            onClick={onSelect}
             onDragStart={(e) => {
+                console.log("Circle Drag Start:", element.id);
                 if (!isSelected) {
                     useSeatEngine.getState().setSelectedIds([element.id]);
                 }
@@ -518,10 +543,14 @@ function CircleElement({ element, isSelected, onSelect, onChange }) {
                 stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
             }}
             onDragMove={(e) => {
+                e.evt.preventDefault();
                 const stage = e.target.getStage();
                 if (!stage._dragStartPos) return;
                 const dx = e.target.x() - stage._dragStartPos.x;
                 const dy = e.target.y() - stage._dragStartPos.y;
+
+                console.log("Circle Dragging:", element.id, "Delta:", { dx: dx.toFixed(2), dy: dy.toFixed(2) });
+
                 stage.find('.element-group').forEach(node => {
                     if (node === e.target) return;
                     const stored = stage._draggedNodes?.find(d => d.id === node.id());
@@ -536,6 +565,9 @@ function CircleElement({ element, isSelected, onSelect, onChange }) {
                 }
                 const dx = e.target.x() - stage._dragStartPos.x;
                 const dy = e.target.y() - stage._dragStartPos.y;
+
+                console.log("Circle Drag End:", element.id, "Final Delta:", { dx: dx.toFixed(2), dy: dy.toFixed(2) });
+
                 stage._draggedNodes?.forEach(d => {
                     useSeatEngine.getState().updateElement(d.id, { x: d.x + dx, y: d.y + dy });
                 });
@@ -554,15 +586,28 @@ function CircleElement({ element, isSelected, onSelect, onChange }) {
     );
 }
 
-function PolygonElement({ element, isSelected, onSelect, onChange }) {
+function PolygonElement({ element, isSelected, onSelect, onChange, draggable }) {
     const shapeRef = useRef(null);
     const fillColor = element.fill || ZONE_FILL_DEFAULT;
     return (
         <Group
             id={element.id}
             name="element-group"
-            ref={shapeRef} x={element.x} y={element.y} draggable onClick={onSelect}
+            ref={shapeRef} x={element.x} y={element.y}
+            draggable={draggable}
+            onMouseEnter={(e) => {
+                if (draggable) {
+                    const stage = e.target.getStage();
+                    stage.container().style.cursor = 'move';
+                }
+            }}
+            onMouseLeave={(e) => {
+                const stage = e.target.getStage();
+                stage.container().style.cursor = 'default';
+            }}
+            onClick={onSelect}
             onDragStart={(e) => {
+                console.log("Polygon Drag Start:", element.id);
                 if (!isSelected) {
                     useSeatEngine.getState().setSelectedIds([element.id]);
                 }
@@ -578,10 +623,14 @@ function PolygonElement({ element, isSelected, onSelect, onChange }) {
                 stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
             }}
             onDragMove={(e) => {
+                e.evt.preventDefault();
                 const stage = e.target.getStage();
                 if (!stage._dragStartPos) return;
                 const dx = e.target.x() - stage._dragStartPos.x;
                 const dy = e.target.y() - stage._dragStartPos.y;
+
+                console.log("Polygon Dragging:", element.id, "Delta:", { dx: dx.toFixed(2), dy: dy.toFixed(2) });
+
                 stage.find('.element-group').forEach(node => {
                     if (node === e.target) return;
                     const stored = stage._draggedNodes?.find(d => d.id === node.id());
@@ -596,6 +645,9 @@ function PolygonElement({ element, isSelected, onSelect, onChange }) {
                 }
                 const dx = e.target.x() - stage._dragStartPos.x;
                 const dy = e.target.y() - stage._dragStartPos.y;
+
+                console.log("Polygon Drag End:", element.id, "Final Delta:", { dx: dx.toFixed(2), dy: dy.toFixed(2) });
+
                 stage._draggedNodes?.forEach(d => {
                     useSeatEngine.getState().updateElement(d.id, { x: d.x + dx, y: d.y + dy });
                 });
@@ -785,40 +837,63 @@ export default function CanvasStage() {
         }
         setPolyPoints(prev => [...prev, pos.x, pos.y]);
     };
-
     const handleDrop = (e) => {
         e.preventDefault();
+        const stage = stageRef.current;
+        if (!stage) return;
 
-        // Try to parse dropped asset data
+        // 1. Get the Asset Data from drag data
         const assetJson = e.dataTransfer.getData("asset");
         if (!assetJson) return;
 
         try {
             const asset = JSON.parse(assetJson);
-            const stage = stageRef.current;
-            stage.setPointersPositions(e);
 
-            // Get pointer position relative to stage (account for pan/zoom)
-            const transform = stage.getAbsoluteTransform().copy();
-            transform.invert();
-            const pos = transform.point(stage.getPointerPosition());
+            // 2. THE VIDEO MATH (Absolute screen -> container relative)
+            // rect.left accounts for Sidebar width implicitly
+            const containerRect = containerRef.current.getBoundingClientRect();
+
+            const pointerX = e.clientX - containerRect.left;
+            const pointerY = e.clientY - containerRect.top;
+
+            // 3. Convert to Virtual World (subtracting stage positions)
+            const stageX = stage.x();
+            const stageY = stage.y();
+            const stageScale = stage.scaleX();
+
+            const finalX = (pointerX - stageX) / stageScale;
+            const finalY = (pointerY - stageY) / stageScale;
+
+            // --- 🔍 DEBUG LOGS (Copy these results) ---
+            console.log("%c--- DEBUG DROP DATA ---", "color: #bada55; font-size: 14px; font-weight: bold;");
+            console.log("1. Mouse (Global):", { x: e.clientX, y: e.clientY });
+            console.log("2. Sidebar Offset (Rect Left):", containerRect.left);
+            console.log("3. Stage Props:", { x: stageX, y: stageY, scale: stageScale });
+            console.log("4. Calc Final:", { finalX, finalY });
+            console.log("-------------------------");
+            // ------------------------------------------
+
+            // 4. Add Element (centering drop)
+            const assetW = asset.width || 100;
+            const assetH = asset.height || 100;
 
             addElement({
                 type: TOOL_TYPES.ASSET,
-                x: pos.x,
-                y: pos.y,
-                width: asset.width,
-                height: asset.height,
+                x: finalX - assetW / 2,
+                y: finalY - assetH / 2,
+                width: assetW,
+                height: assetH,
                 rotation: 0,
-                name: asset.label,
-                assetConfig: asset // Store full asset metadata
+                name: asset.label || "Asset",
+                assetType: asset.type, // explicitly set assetType
+                assetConfig: asset
             });
 
-            // Switch to Select tool to avoid confusion
+            // Switch to Select tool
             if (setTool) setTool(TOOL_TYPES.SELECT);
             else useSeatEngine.getState().setTool(TOOL_TYPES.SELECT);
         } catch (err) {
-            console.error("Failed to drop asset:", err);
+            console.error("Drop refinement failed:", err);
         }
     };
 
@@ -828,6 +903,7 @@ export default function CanvasStage() {
             className="relative w-full h-full bg-zinc-950 overflow-hidden"
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
+            style={{ touchAction: 'none' }}
         >
             {/* Grid */}
             <div style={{
@@ -867,14 +943,16 @@ export default function CanvasStage() {
                             }
                         };
 
+                        const isDraggable = tool === TOOL_TYPES.SELECT;
+
                         if (el.type === TOOL_TYPES.RECTANGLE || el.type === TOOL_TYPES.CURVE)
-                            return <ZoneElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} scale={stageConfig.scale} />;
+                            return <ZoneElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} scale={stageConfig.scale} draggable={isDraggable} />;
                         if (el.type === TOOL_TYPES.CIRCLE)
-                            return <CircleElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} />;
+                            return <CircleElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} draggable={isDraggable} />;
                         if (el.type === TOOL_TYPES.POLYGON)
-                            return <PolygonElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} />;
+                            return <PolygonElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} draggable={isDraggable} />;
                         if (el.type === TOOL_TYPES.IMAGE || el.type === TOOL_TYPES.ASSET)
-                            return <AssetElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} />;
+                            return <AssetElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} draggable={isDraggable} />;
                         return null;
                     })}
 

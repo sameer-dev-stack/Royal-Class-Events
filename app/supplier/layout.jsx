@@ -15,7 +15,6 @@ import {
     Store,
     ChevronRight,
     Sparkles,
-    Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +22,7 @@ const sidebarLinks = [
     { href: "/supplier/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/messages", label: "Leads & Messages", icon: MessageSquare },
     { href: "/supplier/calendar", label: "Calendar", icon: Calendar },
-    { href: "/supplier/services", label: "Services", icon: Briefcase },
+    { href: "/supplier/services", label: "Services", icon: Sparkles }, // Added Services
     { href: "/supplier/profile", label: "My Profile", icon: User },
     { href: "/supplier/settings", label: "Settings", icon: Settings },
 ];
@@ -42,12 +41,15 @@ export default function SupplierLayout({ children }) {
         token ? { token } : "skip"
     );
 
-    // Wait for hydration
-    if (!isMounted) {
-        return null;
+    // 1. Wait for Hydration
+    if (!isMounted) return null;
+
+    // 2. Allow Public Access to Join Page (CRITICAL FIX)
+    if (pathname === "/supplier/join") {
+        return <>{children}</>;
     }
 
-    // Not authenticated
+    // 3. Auth Check (For other pages)
     if (!isAuthenticated) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
@@ -66,7 +68,7 @@ export default function SupplierLayout({ children }) {
         );
     }
 
-    // Not a supplier
+    // 4. Not a Supplier Check
     if (supplier === null) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
@@ -88,10 +90,11 @@ export default function SupplierLayout({ children }) {
         );
     }
 
+    // 5. Render Dashboard Layout (Sidebar + Content)
     return (
         <div className="min-h-screen bg-zinc-950 flex">
             {/* Sidebar */}
-            <aside className="hidden lg:flex w-64 flex-col border-r border-zinc-800/50 bg-zinc-900/30">
+            <aside className="hidden lg:flex w-64 flex-col border-r border-zinc-800/50 bg-zinc-900/30 fixed h-full left-0 top-0 pt-20 z-40">
                 {/* Header */}
                 <div className="p-6 border-b border-zinc-800/50">
                     <div className="flex items-center gap-3">
@@ -146,7 +149,7 @@ export default function SupplierLayout({ children }) {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 min-w-0">{children}</main>
+            <main className="flex-1 min-w-0 lg:pl-64 pt-20 p-6">{children}</main>
         </div>
     );
 }

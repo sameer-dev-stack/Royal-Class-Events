@@ -441,3 +441,163 @@ export const declineOffer = mutation({
         return { success: true };
     },
 });
+
+/**
+ * Process simulated payment for an offer
+ * Splits payment: 10% Platform Commission, 90% Vendor Earnings
+ */
+export const processPayment = mutation({
+    args: {
+        leadId: v.id("leads"),
+        messageId: v.id("messages"),
+        amount: v.number(),
+        token: v.optional(v.string()),
+    },
+    handler: async (ctx, args) => {
+        const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+        if (!user) throw new Error("Unauthorized");
+
+        const lead = await ctx.db.get(args.leadId);
+        if (!lead) throw new Error("Lead not found");
+
+        if (lead.userId !== user._id) {
+            throw new Error("Only the client can pay for this offer.");
+        }
+
+        const message = await ctx.db.get(args.messageId);
+        if (!message || message.type !== "offer") {
+            throw new Error("Offer not found.");
+        }
+
+        if (message.metadata?.offerStatus !== "pending" && message.metadata?.offerStatus !== "accepted") {
+            if (message.metadata?.offerStatus === "paid") {
+                throw new Error("Offer already paid.");
+            }
+        }
+
+        // Get supplier for balance update
+        const supplier = await ctx.db.get(lead.supplierId);
+        if (!supplier) throw new Error("Supplier not found.");
+
+        const now = Date.now();
+
+        // ========== COMMISSION SPLIT LOGIC ==========
+        const COMMISSION_RATE = 0.10; // 10%
+        const totalAmount = args.amount;
+        const commissionAmount = Math.round(totalAmount * COMMISSION_RATE);
+        const vendorEarnings = totalAmount - commissionAmount;
+        // ============================================
+
+        // 1. Update Message Metadata to 'paid'
+        await ctx.db.patch(args.messageId, {
+            metadata: {
+                ...message.metadata,
+                offerStatus: "paid",
+                paidAt: now,
+                paidAmount: totalAmount,
+                commissionDeducted: commissionAmount,
+                vendorReceived: vendorEarnings,
+            }
+        });
+
+        // 2. Update Lead status to 'booked'
+        await ctx.db.patch(args.leadId, {
+            status: "booked",
+            updatedAt: now,
+            lastActionAt: now,
+        });
+
+        // 3. Create Transaction: Full Payment (Escrow In)
+        await ctx.db.insert("transactions", {
+            leadId: args.leadId,
+            payerId: user._id,
+            payeeId: lead.supplierId,
+            amount: totalAmount,
+            type: "escrow_in",
+            status: "completed",
+            timestamp: now,
+            metadata: {
+                messageId: args.messageId,
+                note: `Payment for offer: ${message.metadata?.offerTitle}`,
+            },
+        });
+
+        // 4. Create Transaction: Platform Commission (10%)
+        await ctx.db.insert("transactions", {
+            leadId: args.leadId,
+            payerId: lead.supplierId, // Deducted from vendor
+            payeeId: null, // Platform
+            amount: commissionAmount,
+            type: "commission",
+            status: "completed",
+            timestamp: now,
+            metadata: {
+                rate: COMMISSION_RATE,
+                sourceTransaction: args.messageId,
+            },
+        });
+
+        // 5. Create Transaction: Vendor Credit (90%)
+        await ctx.db.insert("transactions", {
+            leadId: args.leadId,
+            payerId: user._id,
+            payeeId: lead.supplierId,
+            amount: vendorEarnings,
+            type: "vendor_credit",
+            status: "completed",
+            timestamp: now,
+            metadata: {
+                afterCommission: true,
+                commissionDeducted: commissionAmount,
+            },
+        });
+
+        // 6. ========== UPDATE VENDOR BALANCE ==========
+        const currentBalance = supplier.walletBalance || 0;
+        const currentTotalEarnings = supplier.totalEarnings || 0;
+
+        await ctx.db.patch(lead.supplierId, {
+            walletBalance: currentBalance + vendorEarnings,
+            totalEarnings: currentTotalEarnings + vendorEarnings,
+            updatedAt: now,
+        });
+        // =============================================
+
+        // 7. Insert System Message
+        if (lead.conversationId) {
+            await ctx.db.insert("messages", {
+                conversationId: lead.conversationId,
+                senderId: user._id,
+                content: `✅ Payment Successful!\n💰 Total: ৳${totalAmount.toLocaleString()}\n📊 Platform Fee (10%): ৳${commissionAmount.toLocaleString()}\n💵 Vendor Receives: ৳${vendorEarnings.toLocaleString()}`,
+                type: "text",
+                metadata: {
+                    isSystemMessage: true,
+                    paymentConfirmation: true,
+                    relatedOfferId: args.messageId,
+                    breakdown: {
+                        total: totalAmount,
+                        commission: commissionAmount,
+                        vendorEarnings: vendorEarnings,
+                    }
+                },
+                readBy: [user._id],
+                createdAt: now,
+            });
+
+            // Update conversation preview
+            await ctx.db.patch(lead.conversationId, {
+                lastMessageAt: now,
+                lastMessagePreview: `Booking confirmed ✅ Vendor received ৳${vendorEarnings.toLocaleString()}`,
+            });
+        }
+
+        return {
+            success: true,
+            breakdown: {
+                total: totalAmount,
+                commission: commissionAmount,
+                vendorEarnings: vendorEarnings,
+            }
+        };
+    },
+});

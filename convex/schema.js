@@ -3427,6 +3427,20 @@ export default defineSchema(
       .index("by_status", ["status"])
       .index("by_supplier_status", ["supplierId", "status"]),
 
+    transactions: defineTable({
+      leadId: v.id("leads"),
+      payerId: v.id("users"),
+      payeeId: v.id("suppliers"),
+      amount: v.number(),
+      type: v.union(v.literal("escrow_in"), v.literal("payout")),
+      status: v.union(v.literal("held"), v.literal("released"), v.literal("refunded")),
+      timestamp: v.number(),
+      metadata: v.optional(v.any()),
+    })
+      .index("by_payer", ["payerId"])
+      .index("by_payee", ["payeeId"])
+      .index("by_lead", ["leadId"]),
+
     reviews: defineTable({
       supplierId: v.id("suppliers"),
       userId: v.id("users"),

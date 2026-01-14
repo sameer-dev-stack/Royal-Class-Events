@@ -12,8 +12,8 @@ import { useRouter } from "next/navigation";
 
 export default function EventList() {
   const router = useRouter();
-  // 1. Fetch all active events from database
-  const events = useQuery(api.events.by_start_date);
+  // 1. Fetch only public, published events from database
+  const events = useQuery(api.events.getPublicEvents);
 
   // 2. Loading State
   if (!events) {
@@ -67,7 +67,7 @@ export default function EventList() {
 
             return (
               <Link
-                href={`/explore/${category.id}`}
+                href={`/explore?category=${category.id}`}
                 key={category.id}
                 className="group relative overflow-hidden rounded-xl bg-card border border-border p-6 hover:border-amber-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(245,158,11,0.1)]"
               >
@@ -111,13 +111,16 @@ export default function EventList() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-border rounded-3xl bg-muted/30">
-            <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
-              <CalendarX className="w-8 h-8 text-gray-600" />
+          <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-border/10 rounded-[2.5rem] bg-card/20 backdrop-blur-sm">
+            <div className="w-20 h-20 bg-amber-500/5 rounded-3xl flex items-center justify-center mb-6 border border-amber-500/10">
+              <CalendarX className="w-10 h-10 text-amber-500/20" />
             </div>
-            <p className="text-gray-400">No upcoming events scheduled yet.</p>
-            <Link href="/create-event" className="text-amber-500 hover:underline mt-2 inline-block font-medium">
-              Host the first event
+            <h3 className="text-2xl font-bold text-foreground mb-2">Exclusives Coming Soon</h3>
+            <p className="text-muted-foreground font-light max-w-xs mx-auto">
+              Our curators are finalizing the next set of premium experiences. Stay tuned.
+            </p>
+            <Link href="/create-event" className="text-amber-500 hover:underline mt-6 inline-block font-bold text-sm tracking-tight">
+              Host your own event
             </Link>
           </div>
         )}

@@ -42,6 +42,7 @@ interface BookingModalProps {
 export default function BookingModal({ open, onOpenChange, eventId, eventTitle, eventLayout }: BookingModalProps) {
     const { cartItems } = useBookingStore();
     const [isMobileCheckoutOpen, setIsMobileCheckoutOpen] = useState(false);
+    const [mapEnabled, setMapEnabled] = useState(false);
 
     // Fetch live data for sold seats
     const { data: soldSeatIds } = useConvexQuery(
@@ -65,6 +66,7 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
                     <Button
                         variant="ghost"
                         size="icon"
+                        aria-label="Close booking modal"
                         onClick={() => onOpenChange(false)}
                         className="text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full h-8 w-8"
                     >
@@ -77,10 +79,28 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
                     {/* Seat Map Area */}
                     <div className="flex-1 relative bg-zinc-950 overflow-hidden">
                         {eventLayout ? (
-                            <SeatViewer
-                                initialData={eventLayout}
-                                soldSeatIds={soldSeatIds || []}
-                            />
+                            <div className="w-full h-full relative">
+                                <SeatViewer
+                                    initialData={eventLayout}
+                                    soldSeatIds={soldSeatIds || []}
+                                />
+
+                                {/* Map Scroll Shield (Mobile Friction) */}
+                                {!mapEnabled && (
+                                    <div
+                                        onClick={() => setMapEnabled(true)}
+                                        className="absolute inset-0 z-20 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center lg:hidden cursor-pointer group"
+                                    >
+                                        <div className="bg-amber-500 text-black px-6 py-3 rounded-full font-bold shadow-2xl transform transition-transform group-active:scale-95 flex items-center gap-2">
+                                            <MapPin className="w-5 h-5" />
+                                            Tap to Explore Map
+                                        </div>
+                                        <p className="mt-4 text-white/60 text-xs font-medium uppercase tracking-widest">
+                                            Prevents accidental scrolling while navigating
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
                         ) : (
                             <div className="flex items-center justify-center h-full p-4">
                                 <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 max-w-sm text-center space-y-4 shadow-lg">
@@ -112,15 +132,28 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
                     </div>
                 </div>
 
-                {/* Mobile Cart Button */}
-                <div className="lg:hidden shrink-0 p-3 border-t border-zinc-800 bg-zinc-900">
+                {/* Mobile Cart Button - Fixed to Bottom with Safe Area Support */}
+                <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-4 border-t border-zinc-800 bg-zinc-900 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] pb-[calc(1rem+env(safe-area-inset-bottom))]">
                     <Button
                         onClick={() => setIsMobileCheckoutOpen(true)}
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 rounded-lg"
+                        className="w-full h-14 bg-amber-500 hover:bg-amber-600 text-black font-black text-lg rounded-2xl shadow-xl active:scale-[0.98] transition-all"
                     >
-                        {cartItems.length > 0 ? `View Cart (${cartItems.length})` : "View Cart"}
+                        {cartItems.length > 0 ? (
+                            <div className="flex items-center justify-between w-full px-4">
+                                <div className="flex items-center gap-2">
+                                    <span className="bg-black/20 px-2 py-0.5 rounded text-sm">{cartItems.length}</span>
+                                    <span>View Cart</span>
+                                </div>
+                                <span className="font-mono">
+                                    ৳{cartItems.reduce((acc, item) => acc + (item.price || 0), 0)}
+                                </span>
+                            </div>
+                        ) : "View Cart"}
                     </Button>
                 </div>
+
+                {/* Vertical Spacer for Fixed Button (Mobile Only) */}
+                <div className="lg:hidden h-24 shrink-0" />
 
                 {/* Mobile Checkout Sheet */}
                 <Sheet open={isMobileCheckoutOpen} onOpenChange={setIsMobileCheckoutOpen}>
