@@ -1,4 +1,1 @@
-{
-  "/(organizer)/seat-builder/page": "app/(organizer)/seat-builder/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
-}
+{}
