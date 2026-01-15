@@ -29,6 +29,7 @@ function HeaderContent() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { isAuthenticated, user } = useAuthStore();
   const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } = useOnboarding();
@@ -65,16 +66,24 @@ function HeaderContent() {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 right-0 z-[100] transition-all duration-300 border-b",
-          scrolled
-            ? "bg-background/80 backdrop-blur-xl border-border py-3 shadow-lg shadow-black/5"
+          "fixed top-0 left-0 right-0 transition-all duration-300 border-b",
+          // Lowered z-index to z-40 so Sheet (z-50) can overlap
+          "z-40",
+          scrolled || isMenuOpen
+            ? "bg-background/95 backdrop-blur-xl border-border py-3 shadow-lg shadow-black/5"
             : "bg-transparent border-transparent py-5"
         )}
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
 
           {/* ROYAL CLASS LOGO */}
-          <Link href="/" className="flex items-center gap-2 group relative z-[60] flex-shrink-0">
+          <Link
+            href="/"
+            className={cn(
+              "flex items-center gap-2 group relative z-[60] flex-shrink-0 transition-opacity duration-300",
+              isMenuOpen ? "opacity-0 invisible lg:opacity-100 lg:visible" : "opacity-100 visible"
+            )}
+          >
             <div className="bg-amber-500/10 p-2 rounded-full border border-amber-500/20 group-hover:bg-amber-500/20 transition-colors">
               <Crown className="w-5 h-5 text-amber-500" />
             </div>
@@ -112,77 +121,91 @@ function HeaderContent() {
             </div>
 
             <div className="flex items-center gap-1.5 md:gap-3">
-              <ModeToggle aria-label="Toggle theme" className="hidden sm:flex" />
+              <div className={cn(
+                "flex items-center gap-1.5 md:gap-3 transition-opacity duration-300",
+                isMenuOpen ? "opacity-0 invisible lg:opacity-100 lg:visible" : "opacity-100 visible"
+              )}>
+                <ModeToggle aria-label="Toggle theme" className="hidden sm:flex" />
 
-              {isAuthenticated ? (
-                <>
-                  {/* Create Event Button (Gold) */}
-                  <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all h-9">
-                    <Link href={(isOrganizer || isAdmin) ? "/create-event" : "/account/profile"}>
-                      {isAttendee ? <ArrowRight className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                      <span className="hidden xl:inline">
-                        {isAttendee ? "Become an Organizer" : "Create Event"}
-                      </span>
-                    </Link>
-                  </Button>
+                {isAuthenticated ? (
+                  <>
+                    {/* Create Event Button (Gold) */}
+                    <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all h-9">
+                      <Link href={(isOrganizer || isAdmin) ? "/create-event" : "/account/profile"}>
+                        {isAttendee ? <ArrowRight className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                        <span className="hidden xl:inline">
+                          {isAttendee ? "Become an Organizer" : "Create Event"}
+                        </span>
+                      </Link>
+                    </Button>
 
-                  {/* Notification Bell */}
-                  <NotificationBell />
+                    {/* Notification Bell */}
+                    <NotificationBell />
 
-                  {/* User Button */}
-                  <UserButton />
-                </>
-              ) : (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    asChild
-                    className="hidden sm:flex text-muted-foreground hover:text-amber-400"
-                  >
-                    <Link href="/sign-up">Get Started</Link>
-                  </Button>
-                  <Button size="sm" asChild className="bg-amber-500 hover:bg-amber-600 text-black font-semibold h-9">
-                    <Link href="/sign-in">Sign In</Link>
-                  </Button>
-                </>
-              )}
+                    {/* User Button */}
+                    <UserButton />
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      className="hidden sm:flex text-muted-foreground hover:text-amber-400"
+                    >
+                      <Link href="/sign-up">Get Started</Link>
+                    </Button>
+                    <Button size="sm" asChild className="bg-amber-500 hover:bg-amber-600 text-black font-semibold h-9">
+                      <Link href="/sign-in">Sign In</Link>
+                    </Button>
+                  </>
+                )}
+              </div>
 
               {/* Mobile Hamburger Menu */}
-              <Sheet>
+              <Sheet onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="lg:hidden h-9 w-9 text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10 border border-transparent hover:border-amber-500/20"
+                    className={cn(
+                      "lg:hidden h-9 w-9 text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10 border border-transparent hover:border-amber-500/20 transition-all",
+                      isMenuOpen && "text-amber-500 bg-amber-500/10 rotate-90"
+                    )}
                   >
-                    <Menu className="w-5 h-5" />
+                    {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] bg-background/95 backdrop-blur-xl border-border p-0">
+                <SheetContent side="right" className="w-full sm:w-[350px] bg-zinc-950 border-white/5 p-0 z-[100]">
                   <div className="flex flex-col h-full">
                     {/* Brand in Menu */}
-                    <div className="p-6 border-b border-border/50">
-                      <div className="flex items-center gap-2">
-                        <Crown className="w-6 h-6 text-amber-500" />
-                        <span className="text-xl font-bold tracking-tighter italic">Royal-Class</span>
+                    <div className="p-8 border-b border-white/5 bg-zinc-900/20">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-amber-500/20 p-2.5 rounded-2xl border border-amber-500/20">
+                          <Crown className="w-6 h-6 text-amber-500" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-xl font-black tracking-tighter italic text-white leading-none">Royal-Class</span>
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-500 mt-1">Event Empire</span>
+                        </div>
                       </div>
                     </div>
 
                     {/* Navigation Links */}
-                    <div className="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
-                      <div className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 px-4 mb-4">
-                        Main Navigation
+                    <div className="flex-1 py-8 px-6 space-y-2 overflow-y-auto">
+                      <div className="text-[10px] font-black uppercase tracking-[0.25em] text-zinc-600 px-4 mb-6">
+                        Navigation Hub
                       </div>
                       {navLinks.map((link) => (
                         <Link
                           key={link.href}
                           href={link.href}
+                          onClick={() => setIsMenuOpen(false)}
                           className={cn(
-                            "flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-bold uppercase italic tracking-wider transition-all",
+                            "flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-black uppercase italic tracking-widest transition-all",
                             pathname?.startsWith(link.href)
-                              ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-                              : "text-zinc-400 hover:text-white hover:bg-zinc-800/50"
+                              ? "bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+                              : "text-zinc-500 hover:text-white hover:bg-white/5"
                           )}
                         >
                           {link.name}
@@ -191,24 +214,26 @@ function HeaderContent() {
 
                       {/* Attendee Promo in Menu */}
                       {isAuthenticated && isAttendee && (
-                        <div className="mt-8 px-4 py-6 bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 rounded-2xl space-y-4">
-                          <div className="flex items-center gap-2 text-amber-500 font-black italic text-xs uppercase tracking-widest">
+                        <div className="mt-12 p-6 bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 rounded-[2rem] space-y-4 relative overflow-hidden group">
+                          <div className="absolute -top-4 -right-4 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-colors" />
+                          <div className="flex items-center gap-2 text-amber-500 font-black italic text-[11px] uppercase tracking-[0.2em] relative z-10">
                             <Store className="w-4 h-4" />
-                            Launch Your Empire
+                            Launch Empire
                           </div>
-                          <p className="text-[11px] text-zinc-400 font-medium">
-                            Upgrade to an Organizer account to start hosting events and managing ticket sales.
+                          <p className="text-xs text-zinc-400 font-medium leading-relaxed relative z-10">
+                            Stop attending, start hosting. Upgrade to an Organizer account and claim your throne.
                           </p>
-                          <Button asChild className="w-full bg-amber-500 hover:bg-amber-600 text-black font-black uppercase text-[10px] tracking-widest h-10">
-                            <Link href="/account/profile">Become an Organizer</Link>
+                          <Button asChild className="w-full bg-white hover:bg-amber-500 hover:text-black text-black font-black uppercase text-[10px] tracking-widest h-11 rounded-xl transition-all relative z-10">
+                            <Link href="/account/profile" onClick={() => setIsMenuOpen(false)}>Become an Organizer</Link>
                           </Button>
                         </div>
                       )}
                     </div>
 
                     {/* Footer in Menu */}
-                    <div className="p-6 border-t border-border/50 bg-zinc-900/30">
-                      <ModeToggle className="w-full justify-start gap-4 h-12" />
+                    <div className="p-8 border-t border-white/5 bg-zinc-900/50 flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Settings</span>
+                      <ModeToggle className="bg-white/5 border-none hover:bg-white/10" />
                     </div>
                   </div>
                 </SheetContent>

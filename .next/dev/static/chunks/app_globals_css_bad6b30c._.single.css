@@ -781,6 +781,10 @@
     right: calc(var(--spacing) * -3);
   }
 
+  .-right-4 {
+    right: calc(var(--spacing) * -4);
+  }
+
   .-right-6 {
     right: calc(var(--spacing) * -6);
   }
@@ -5203,6 +5207,10 @@
     padding: calc(var(--spacing) * 2);
   }
 
+  .p-2\.5 {
+    padding: calc(var(--spacing) * 2.5);
+  }
+
   .p-3 {
     padding: calc(var(--spacing) * 3);
   }
@@ -5697,6 +5705,11 @@
   .tracking-\[0\.3em\] {
     --tw-tracking: .3em;
     letter-spacing: .3em;
+  }
+
+  .tracking-\[0\.25em\] {
+    --tw-tracking: .25em;
+    letter-spacing: .25em;
   }
 
   .tracking-tight {
@@ -6426,6 +6439,11 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
+  .shadow-\[0_0_20px_rgba\(245\,158\,11\,0\.3\)\] {
+    --tw-shadow: 0 0 20px var(--tw-shadow-color, #f59e0b4d);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
   .shadow-\[0_0_20px_rgba\(255\,255\,255\,0\.2\)\] {
     --tw-shadow: 0 0 20px var(--tw-shadow-color, #fff3);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -6764,6 +6782,11 @@
 
   .blur {
     --tw-blur: blur(8px);
+    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
+  }
+
+  .blur-2xl {
+    --tw-blur: blur(var(--blur-2xl));
     filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
   }
 
@@ -9358,6 +9381,12 @@
   }
 
   @media (min-width: 40rem) {
+    .sm\:w-\[350px\] {
+      width: 350px;
+    }
+  }
+
+  @media (min-width: 40rem) {
     .sm\:w-auto {
       width: auto;
     }
@@ -9976,6 +10005,12 @@
   }
 
   @media (min-width: 64rem) {
+    .lg\:visible {
+      visibility: visible;
+    }
+  }
+
+  @media (min-width: 64rem) {
     .lg\:static {
       position: static;
     }
@@ -10202,6 +10237,12 @@
     .lg\:text-8xl {
       font-size: var(--text-8xl);
       line-height: var(--tw-leading, var(--text-8xl--line-height));
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .lg\:opacity-100 {
+      opacity: 1;
     }
   }
 

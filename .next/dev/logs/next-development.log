@@ -2576,3 +2576,613 @@ Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allow
        please check the style of container, or the props width(100%) and height(100%),
        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
        height and width.
+[01:46:41.392] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:46:41.392] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:46:52.960] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:46:52.961] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:46:52.961] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:46:52.961] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:46:58.494] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:47:02.150] Browser LOG     %c[CONVEX Q(events:getPublicEvents)] [LOG] color:rgb(0, 145, 255) 'No published events found, returning raw list for debugging.'
+[01:47:02.150] Browser LOG     AuthProvider: Syncing Convex data to Zustand Store. Role: admin
+[01:47:02.150] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:02.150] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:02.150] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:02.150] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:02.150] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:47:02.150] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:47:02.150] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:47:02.150] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:47:42.023] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:42.023] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:42.188] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:42.188] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:43.244] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:43.244] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:43.244] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:43.244] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:43.814] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:43.814] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:43.814] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:43.814] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:45.891] Browser WARN    Image with src "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:47:46.595] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:47:46.595] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:47:46.595] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:47:46.595] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:47:47.841] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:47.841] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:47.841] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:47.841] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:51.834] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:51.834] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:47:58.028] Server  ERROR   ⨯ "upstream image response timed out for" "https://images.unsplash.com/photo-1555243348-1d24dd80800b?q=80&w=800&auto=format&fit=crop"
+[01:48:02.961] Server  ERROR   ⨯ "upstream image response timed out for" "https://images.unsplash.com/photo-1514302240736-b1fee59858eb?q=80&w=800&auto=format&fit=crop"
+[01:48:02.964] Server  ERROR   ⨯ "upstream image response timed out for" "https://images.unsplash.com/photo-1628113426868-bb8d234a9747?q=80&w=800&auto=format&fit=crop"
+[01:48:02.966] Server  ERROR   ⨯ "upstream image response timed out for" "https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80&w=800&auto=format&fit=crop"
+[01:48:02.968] Server  ERROR   ⨯ "upstream image response timed out for" "https://images.unsplash.com/photo-1494412574643-35d324698427?q=80&w=800&auto=format&fit=crop"
+[01:48:03.032] Server  LOG     ✓ Finished filesystem cache database compaction in 16.6s
+[01:48:04.220] Server  ERROR   ⨯ The requested resource "https://placehold.co/400x600?text=Cinematography" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:48:04.223] Server  ERROR   ⨯ The requested resource "https://placehold.co/400x600?text=Attire" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:48:04.231] Server  ERROR   ⨯ The requested resource "https://placehold.co/400x600?text=Makeup" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:48:04.237] Server  ERROR   ⨯ The requested resource "https://placehold.co/400x600?text=Music" has type "image/svg+xml" but dangerouslyAllowSVG is disabled. Consider adding the "unoptimized" property to the <Image>.
+[01:48:04.776] Server  LOG     ✓ Finished writing to filesystem cache in 15.0s
+[01:48:04.975] Browser WARN    Image with src "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?q=80&w=800&auto=format&fit=crop" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:48:07.736] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:07.736] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:07.736] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:07.736] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:07.736] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:07.736] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:16.598] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:16.598] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:18.351] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:18.351] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:20.672] Server  LOG     ✓ Finished filesystem cache database compaction in 15.9s
+[01:48:25.772] Server  LOG     ✓ Compiled in 885ms
+[01:48:25.978] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:25.978] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:26.975] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:26.975] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:26.976] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:26.976] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.326] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:32.326] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:32.326] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.326] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.326] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:32.326] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:32.326] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.326] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.982] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.982] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.982] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.982] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.983] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.983] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.983] Browser ERROR   ./components/header.jsx:268:7
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |       ^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:32.983] Browser ERROR   ./components/header.jsx:268:8
+Parsing ecmascript source code failed
+  266 |   )
+  267 | }
+> 268 |       </nav >
+      |        ^^^^^^
+  269 |
+  270 |   <OnboardingModal
+  271 |     isOpen={showOnboarding}
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./components/header.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Client Component Browser]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+
+  Client Component SSR:
+    ./components/header.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Client Component SSR]
+    ./components/layout-wrapper.jsx [Server Component]
+    ./app/layout.js [Server Component]
+[01:48:39.053] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:39.053] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:39.053] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:39.053] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:39.157] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:39.157] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:42.645] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:42.645] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:42.645] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:42.645] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:47.099] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:48:47.224] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:47.224] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:47.224] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:47.224] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:47.705] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:48:50.497] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[01:48:51.146] Browser LOG     AuthProvider: Syncing Convex data to Zustand Store. Role: admin
+[01:48:51.146] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:51.146] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:51.146] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:51.146] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:51.269] Browser WARN    Image with src "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:48:53.971] Browser LOG     AuthProvider: Syncing Convex data to Zustand Store. Role: admin
+[01:48:53.971] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:53.971] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:53.971] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:53.971] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:54.080] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:54.080] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:54.080] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:48:54.080] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:48:54.080] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:48:54.080] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:48:54.963] Browser LOG     %c[CONVEX Q(events:getPublicEvents)] [LOG] color:rgb(0, 145, 255) 'No published events found, returning raw list for debugging.'
+[01:48:54.963] Browser LOG     AuthProvider: Syncing Convex data to Zustand Store. Role: admin
+[01:48:54.963] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:54.963] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:54.963] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:54.963] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:54.963] Browser WARN    Image with src "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[01:48:54.964] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[01:48:54.964] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[01:48:57.366] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:57.366] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:58.484] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:58.484] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:48:58.484] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:48:58.484] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:48:58.484] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:48:58.484] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:49:01.564] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:49:01.564] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:49:02.998] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:49:02.998] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:49:02.998] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:49:02.998] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:49:04.620] Browser LOG     %c[CONVEX Q(events:getPublicEvents)] [LOG] color:rgb(0, 145, 255) 'No published events found, returning raw list for debugging.'
+[01:49:06.683] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:49:06.683] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[01:49:06.683] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:49:06.683] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[01:49:06.683] Browser ERROR   `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+[01:49:06.683] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
