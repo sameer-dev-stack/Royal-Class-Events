@@ -212,6 +212,8 @@ const __TURBOPACK__default__export__ = fontData;
 __turbopack_context__.s([
     "default",
     ()=>RootLayout,
+    "dynamic",
+    ()=>dynamic,
     "metadata",
     ()=>metadata
 ]);
@@ -223,6 +225,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$auth$2f$auth$2
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$auth$2f$session$2d$provider$2e$jsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/auth/session-provider.jsx [app-rsc] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$next$5d2f$internal$2f$font$2f$google$2f$outfit_21940f47$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[next]/internal/font/google/outfit_21940f47.js [app-rsc] (ecmascript)");
 ;
+const dynamic = "force-dynamic";
 ;
 ;
 ;
@@ -253,37 +256,37 @@ function RootLayout({ children }) {
                                 children: children
                             }, void 0, false, {
                                 fileName: "[project]/app/layout.js",
-                                lineNumber: 32,
+                                lineNumber: 33,
                                 columnNumber: 17
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/layout.js",
-                            lineNumber: 31,
+                            lineNumber: 32,
                             columnNumber: 15
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/layout.js",
-                        lineNumber: 30,
+                        lineNumber: 31,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/layout.js",
-                    lineNumber: 29,
+                    lineNumber: 30,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/layout.js",
-                lineNumber: 23,
+                lineNumber: 24,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/layout.js",
-            lineNumber: 19,
+            lineNumber: 20,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/layout.js",
-        lineNumber: 18,
+        lineNumber: 19,
         columnNumber: 5
     }, this);
 }
