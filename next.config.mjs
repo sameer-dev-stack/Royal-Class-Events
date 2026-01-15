@@ -11,6 +11,7 @@ const nextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
+  productionBrowserSourceMaps: false,
   images: {
     remotePatterns: [
       {

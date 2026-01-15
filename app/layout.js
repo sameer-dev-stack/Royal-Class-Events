@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import LayoutWrapper from "@/components/layout-wrapper";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
