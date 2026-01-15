@@ -3,6 +3,9 @@
     "[project]/app/admin/audit/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
+    "[project]/app/admin/finance/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
     "[project]/app/admin/login/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
@@ -10,6 +13,9 @@
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
     "[project]/app/admin/settings/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/organizer/scan/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
     "[project]/app/page": [

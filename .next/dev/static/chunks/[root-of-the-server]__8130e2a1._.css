@@ -1876,6 +1876,10 @@
     width: 200px;
   }
 
+  .w-\[300px\] {
+    width: 300px;
+  }
+
   .w-\[400px\] {
     width: 400px;
   }
@@ -6397,6 +6401,11 @@
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 
+  .shadow-\[0_0_15px_rgba\(245\,158\,11\,0\.2\)\] {
+    --tw-shadow: 0 0 15px var(--tw-shadow-color, #f59e0b33);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
   .shadow-\[0_0_15px_rgba\(245\,158\,11\,0\.3\)\] {
     --tw-shadow: 0 0 15px var(--tw-shadow-color, #f59e0b4d);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -6584,6 +6593,16 @@
   @supports (color: color-mix(in lab, red, red)) {
     .shadow-black {
       --tw-shadow-color: color-mix(in oklab, var(--color-black) var(--tw-shadow-alpha), transparent);
+    }
+  }
+
+  .shadow-black\/5 {
+    --tw-shadow-color: #0000000d;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .shadow-black\/5 {
+      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-black) 5%, transparent) var(--tw-shadow-alpha), transparent);
     }
   }
 
@@ -8478,6 +8497,13 @@
   }
 
   @media (hover: hover) {
+    .hover\:shadow-\[0_0_25px_rgba\(245\,158\,11\,0\.4\)\]:hover {
+      --tw-shadow: 0 0 25px var(--tw-shadow-color, #f59e0b66);
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+  }
+
+  @media (hover: hover) {
     .hover\:shadow-\[0_0_25px_rgba\(245\,158\,11\,0\.5\)\]:hover {
       --tw-shadow: 0 0 25px var(--tw-shadow-color, #f59e0b80);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -9751,6 +9777,12 @@
   }
 
   @media (min-width: 48rem) {
+    .md\:gap-3 {
+      gap: calc(var(--spacing) * 3);
+    }
+  }
+
+  @media (min-width: 48rem) {
     .md\:gap-4 {
       gap: calc(var(--spacing) * 4);
     }
@@ -10170,6 +10202,12 @@
     .lg\:text-8xl {
       font-size: var(--text-8xl);
       line-height: var(--tw-leading, var(--text-8xl--line-height));
+    }
+  }
+
+  @media (min-width: 80rem) {
+    .xl\:inline {
+      display: inline;
     }
   }
 

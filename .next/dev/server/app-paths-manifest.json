@@ -1,8 +1,10 @@
 {
   "/admin/audit/page": "app/admin/audit/page.js",
+  "/admin/finance/page": "app/admin/finance/page.js",
   "/admin/login/page": "app/admin/login/page.js",
   "/admin/page": "app/admin/page.js",
   "/admin/settings/page": "app/admin/settings/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/organizer/scan/page": "app/organizer/scan/page.js",
   "/page": "app/page.js"
 }
