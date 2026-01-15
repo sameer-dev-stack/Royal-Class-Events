@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import useAuthStore from "@/hooks/use-auth-store";
 import { toast } from "sonner";
 import "@mezh-hq/react-seat-toolkit/styles";
-import "../../../../../../seat-toolkit-theme.css";
+import "@/app/seat-toolkit-theme.css";
 
 // Dynamic import to avoid SSR issues
 const SeatToolkit = dynamic(() => import("@mezh-hq/react-seat-toolkit"), {
