@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { api } from "./_generated/api";
+import { getSystemSettings } from "./utils";
 
 /**
  * Create a new Lead (RFQ) from client to supplier
@@ -482,9 +483,11 @@ export const processPayment = mutation({
         const now = Date.now();
 
         // ========== COMMISSION SPLIT LOGIC ==========
-        const COMMISSION_RATE = 0.10; // 10%
+        const systemSettings = await getSystemSettings(ctx);
+        const commissionRate = systemSettings.commission_rate;
+        const commissionRateDecimal = commissionRate / 100;
         const totalAmount = args.amount;
-        const commissionAmount = Math.round(totalAmount * COMMISSION_RATE);
+        const commissionAmount = Math.round(totalAmount * commissionRateDecimal);
         const vendorEarnings = totalAmount - commissionAmount;
         // ============================================
 
@@ -532,7 +535,7 @@ export const processPayment = mutation({
             status: "completed",
             timestamp: now,
             metadata: {
-                rate: COMMISSION_RATE,
+                rate: commissionRate,
                 sourceTransaction: args.messageId,
             },
         });

@@ -12,7 +12,7 @@
   "static/chunks/node_modules_framer-motion_dist_es_247c3ff9._.js",
   "static/chunks/node_modules_@radix-ui_b6fcf1a8._.js",
   "static/chunks/node_modules_@floating-ui_1b6e7b6d._.js",
-  "static/chunks/node_modules_22a41f50._.js",
+  "static/chunks/node_modules_06a4ac6b._.js",
   "static/chunks/[root-of-the-server]__8130e2a1._.css"
 ],
     source: "dynamic"

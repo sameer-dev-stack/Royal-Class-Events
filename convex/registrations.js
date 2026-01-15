@@ -608,6 +608,15 @@ export const bookSeats = mutation({
       confirmedBookings.flatMap((reg) => reg.metadata?.selectedSeatIds || [])
     );
 
+    // Fetch dynamic commission rate
+    const commissionSetting = await ctx.db
+      .query("system_settings")
+      .withIndex("by_key", (q) => q.eq("key", "commission_rate"))
+      .unique();
+    const commissionRate = commissionSetting?.value || 10;
+    const platformFee = (args.amount * commissionRate) / 100;
+    const netAmount = args.amount - platformFee;
+
     // B. Validate Availability
     // Check if any of the requested seats are in the sold list
     const unavailable = args.seatIds.filter(seat => allSoldSeats.has(seat));
@@ -664,7 +673,8 @@ export const bookSeats = mutation({
         financials: {
           totalAmount: args.amount / args.seatIds.length,
           currency: "BDT",
-          amountPaid: args.amount / args.seatIds.length
+          amountPaid: args.amount / args.seatIds.length,
+          serviceFee: platformFee / args.seatIds.length
         },
         source: { source: "web", registrationCompleted: now },
         audit: { createdAt: now, updatedAt: now, version: 1 }
@@ -720,7 +730,10 @@ export const bookSeats = mutation({
       metadata: {
         bookingIds,
         seatIds: args.seatIds,
-        guestEmail: args.guestEmail
+        guestEmail: args.guestEmail,
+        platformFee,
+        commissionRate,
+        netAmount
       }
     });
 

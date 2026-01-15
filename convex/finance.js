@@ -34,9 +34,22 @@ async function getAuthenticatedUser(ctx, token) {
     return user;
 }
 
-// Commission Rate (10%)
-const COMMISSION_RATE = 0.10;
-const MIN_WITHDRAWAL_AMOUNT = 500; // BDT minimum
+// MIN_WITHDRAWAL_AMOUNT (BDT minimum)
+const MIN_WITHDRAWAL_AMOUNT = 500;
+
+/**
+ * Helper to fetch system settings
+ */
+async function getSystemSettings(ctx) {
+    const settings = await ctx.db.query("system_settings").collect();
+    return settings.reduce((acc, curr) => ({
+        ...acc,
+        [curr.key]: curr.value
+    }), {
+        commission_rate: 10, // Defaults
+        maintenance_mode: false
+    });
+}
 
 // ==============================================
 // VENDOR FINANCE QUERIES
@@ -89,6 +102,8 @@ export const getVendorFinanceStats = query({
             .order("desc")
             .take(10);
 
+        const systemSettings = await getSystemSettings(ctx);
+
         return {
             isSupplier: true,
             supplierId: supplier._id,
@@ -98,7 +113,7 @@ export const getVendorFinanceStats = query({
             totalEarnings,
             canWithdraw: walletBalance >= MIN_WITHDRAWAL_AMOUNT,
             minWithdrawal: MIN_WITHDRAWAL_AMOUNT,
-            commissionRate: COMMISSION_RATE * 100, // As percentage
+            commissionRate: systemSettings.commission_rate, // As percentage
             transactions,
             withdrawals,
         };
@@ -404,13 +419,15 @@ export const getPlatformFinanceSummary = query({
 
         const pendingPayoutAmount = pendingPayouts.reduce((sum, w) => sum + w.amount, 0);
 
+        const systemSettings = await getSystemSettings(ctx);
+
         return {
             totalGMV,
             totalCommission,
             totalPayouts,
             pendingPayoutAmount,
             pendingPayoutCount: pendingPayouts.length,
-            commissionRate: COMMISSION_RATE * 100,
+            commissionRate: systemSettings.commission_rate,
         };
     }
 });
@@ -499,9 +516,12 @@ export const releaseEscrow = mutation({
         const supplier = await ctx.db.get(txn.payeeId);
         if (!supplier) throw new Error("Supplier not found.");
 
+        const systemSettings = await getSystemSettings(ctx);
+        const commissionRateDecimal = systemSettings.commission_rate / 100;
+
         const now = Date.now();
         const totalAmount = txn.amount;
-        const commissionAmount = Math.round(totalAmount * COMMISSION_RATE);
+        const commissionAmount = Math.round(totalAmount * commissionRateDecimal);
         const vendorEarnings = totalAmount - commissionAmount;
 
         // 1. Mark original escrow as released
