@@ -1,20 +1,4 @@
 {
-  "/(auth)/sign-in/page": "app/(auth)/sign-in/page.js",
-  "/(auth)/sign-up/attendee/page": "app/(auth)/sign-up/attendee/page.js",
-  "/(auth)/sign-up/page": "app/(auth)/sign-up/page.js",
-  "/(main)/my-events/[eventId]/page": "app/(main)/my-events/[eventId]/page.js",
-  "/(main)/my-events/page": "app/(main)/my-events/page.js",
   "/(organizer)/seat-builder/page": "app/(organizer)/seat-builder/page.js",
-  "/(public)/explore/page": "app/(public)/explore/page.js",
-  "/account/profile/page": "app/account/profile/page.js",
-  "/admin/audit/page": "app/admin/audit/page.js",
-  "/admin/finance/page": "app/admin/finance/page.js",
-  "/admin/login/page": "app/admin/login/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/admin/settings/page": "app/admin/settings/page.js",
-  "/admin/users/page": "app/admin/users/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/marketplace/page": "app/marketplace/page.js",
-  "/organizer/scan/page": "app/organizer/scan/page.js",
-  "/page": "app/page.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
 }

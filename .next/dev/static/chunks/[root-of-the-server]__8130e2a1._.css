@@ -1880,10 +1880,6 @@
     width: 200px;
   }
 
-  .w-\[300px\] {
-    width: 300px;
-  }
-
   .w-\[400px\] {
     width: 400px;
   }
@@ -3533,16 +3529,6 @@
   @supports (color: color-mix(in lab, red, red)) {
     .bg-background\/50 {
       background-color: color-mix(in oklab, var(--background) 50%, transparent);
-    }
-  }
-
-  .bg-background\/80 {
-    background-color: var(--background);
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .bg-background\/80 {
-      background-color: color-mix(in oklab, var(--background) 80%, transparent);
     }
   }
 
@@ -8527,13 +8513,6 @@
   }
 
   @media (hover: hover) {
-    .hover\:shadow-\[0_0_25px_rgba\(245\,158\,11\,0\.5\)\]:hover {
-      --tw-shadow: 0 0 25px var(--tw-shadow-color, #f59e0b80);
-      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    }
-  }
-
-  @media (hover: hover) {
     .hover\:shadow-\[0_0_30px_-5px_rgba\(245\,158\,11\,0\.3\)\]:hover {
       --tw-shadow: 0 0 30px -5px var(--tw-shadow-color, #f59e0b4d);
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -9613,12 +9592,6 @@
   @media (min-width: 48rem) {
     .md\:hidden {
       display: none;
-    }
-  }
-
-  @media (min-width: 48rem) {
-    .md\:inline {
-      display: inline;
     }
   }
 
