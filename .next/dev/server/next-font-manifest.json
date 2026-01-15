@@ -1,6 +1,27 @@
 {
   "app": {
+    "[project]/app/(auth)/sign-in/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/(auth)/sign-up/attendee/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/(auth)/sign-up/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/(main)/my-events/[eventId]/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/(main)/my-events/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/(organizer)/seat-builder/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
     "[project]/app/(public)/explore/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/account/profile/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
     "[project]/app/admin/audit/page": [
@@ -16,6 +37,9 @@
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
     "[project]/app/admin/settings/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/admin/users/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
     "[project]/app/marketplace/page": [

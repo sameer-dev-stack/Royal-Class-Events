@@ -45,7 +45,23 @@ export default function useSeatHotkeys() {
                 return;
             }
 
-            // 3. Nudging
+            // 3. Undo/Redo
+            if (ctrl && key === "Z") {
+                if (shift) {
+                    useSeatEngine.temporal.getState().redo();
+                } else {
+                    useSeatEngine.temporal.getState().undo();
+                }
+                e.preventDefault();
+                return;
+            }
+            if (ctrl && key === "Y") {
+                useSeatEngine.temporal.getState().redo();
+                e.preventDefault();
+                return;
+            }
+
+            // 4. Nudging
             const nudgeStep = shift ? 10 : 2;
             if (e.key === "ArrowLeft") {
                 nudgeElements(-nudgeStep, 0);

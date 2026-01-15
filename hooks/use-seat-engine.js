@@ -1,10 +1,11 @@
 "use client";
 
 import { create } from "zustand";
+import { temporal } from "zundo";
 
 /**
  * Royal Seat Engine - Zustand Store
- * Phase 13: Architectural Asset Library
+ * Phase 14: Undo/Redo (Temporal state management)
  *
  * Manages canvas state, tools, elements, selection, and seat configuration.
  */
@@ -43,7 +44,7 @@ const DEFAULT_SEAT_CONFIG = {
     capacity: 0,      // For Tables (0-20)
 };
 
-const useSeatEngine = create((set, get) => ({
+const useSeatEngine = create(temporal((set, get) => ({
     // Stage configuration for Konva
     stageConfig: {
         width: 0,
@@ -331,6 +332,6 @@ const useSeatEngine = create((set, get) => ({
             elements: [],
             selectedIds: [],
         }),
-}));
+})));
 
 export default useSeatEngine;

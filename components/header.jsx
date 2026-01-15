@@ -23,6 +23,7 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  SheetTitle,
 } from "@/components/ui/sheet";
 
 function HeaderContent() {
@@ -177,6 +178,7 @@ function HeaderContent() {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="right" className="w-full sm:w-[350px] bg-zinc-950 border-white/5 p-0 z-[100]">
+                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                   <div className="flex flex-col h-full">
                     {/* Brand in Menu */}
                     <div className="p-8 border-b border-white/5 bg-zinc-900/20">
@@ -228,12 +230,6 @@ function HeaderContent() {
                           </Button>
                         </div>
                       )}
-                    </div>
-
-                    {/* Footer in Menu */}
-                    <div className="p-8 border-t border-white/5 bg-zinc-900/50 flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Settings</span>
-                      <ModeToggle className="bg-white/5 border-none hover:bg-white/10" />
                     </div>
                   </div>
                 </SheetContent>

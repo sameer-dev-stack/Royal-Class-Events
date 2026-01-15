@@ -22,8 +22,9 @@ const ZONE_FILL_DEFAULT = "#D4AF37";
 const ZONE_OPACITY = 0.15;
 const LOD_OPACITY = 0.8; // High opacity for zoomed out blocks
 const SEAT_FILL_DEFAULT = "#52525b"; // Fallback zinc
-const GHOST_OPACITY = 0.5;
 const SNAP_RADIUS = 15;
+const SNAP_SIZE = 20;
+const GHOST_OPACITY = 0.5;
 
 // Zone padding
 const ZONE_PADDING = 10;
@@ -181,100 +182,101 @@ function MultiTransformer({ selectedIds }) {
     );
 }
 
-// Visual Asset Element (FIXED: Complies with Golden Rule #2)
-function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
-    const shapeRef = useRef(null);
+// Visual Asset Element
+// Visual Asset Graphic Component (Extracted for reuse in Ghost Preview)
+const AssetGraphic = ({ element, width, height }) => {
+    const { assetConfig } = element;
+    const color = element.fill || assetConfig?.color || "#555";
 
-    // Asset rendering logic (No changes here, kept for context)
-    const renderAssetGraphic = () => {
-        const { assetConfig, width, height } = element;
-        const color = element.fill || assetConfig?.color || "#555";
+    // Table specific rendering (Circular)
+    if (assetConfig?.type === 'TABLE' || element.assetType === 'TABLE') {
+        const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
+        const tableColor = element.fill || assetConfig?.color || "#78350f";
+        const chairs = [];
+        const radius = Math.min(width, height) / 2;
+        const chairRadius = radius / 4;
 
-        // Table specific rendering (Circular)
-        if (assetConfig?.type === 'TABLE' || element.assetType === 'TABLE') {
-            const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
-            const tableColor = element.fill || assetConfig?.color || "#78350f";
-            const chairs = [];
-            const radius = Math.min(width, height) / 2;
-            const chairRadius = radius / 4;
-
-            for (let i = 0; i < capacity; i++) {
-                const angle = (i / capacity) * 2 * Math.PI;
-                const x = width / 2 + Math.cos(angle) * (radius + chairRadius / 2);
-                const y = height / 2 + Math.sin(angle) * (radius + chairRadius / 2);
-                chairs.push(
-                    <Circle
-                        key={`chair-${i}`}
-                        x={x} y={y}
-                        radius={chairRadius}
-                        fill="#3f3f46"
-                        stroke={tableColor}
-                        strokeWidth={1}
-                        listening={false}
-                    />
-                );
-            }
-
-            return (
-                <Group>
-                    <Circle x={width / 2 + 2} y={height / 2 + 2} radius={radius} fill="black" opacity={0.2} listening={false} />
-                    <Circle x={width / 2} y={height / 2} radius={radius} fill={tableColor} stroke="#451a03" strokeWidth={2} shadowBlur={5} shadowOpacity={0.5} />
-                    <Circle x={width / 2} y={height / 2} radius={radius * 0.85} stroke="#451a03" strokeWidth={1} opacity={0.3} listening={false} />
-                    {chairs}
-                    <Text text={`${capacity}`} width={width} height={height} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={radius / 2} opacity={0.9} listening={false} />
-                </Group>
+        for (let i = 0; i < capacity; i++) {
+            const angle = (i / capacity) * 2 * Math.PI;
+            const x = width / 2 + Math.cos(angle) * (radius + chairRadius / 2);
+            const y = height / 2 + Math.sin(angle) * (radius + chairRadius / 2);
+            chairs.push(
+                <Circle
+                    key={`chair-${i}`}
+                    x={x} y={y}
+                    radius={chairRadius}
+                    fill="#3f3f46"
+                    stroke={tableColor}
+                    strokeWidth={1}
+                    listening={false}
+                />
             );
         }
 
-        // Rectangular table rendering
-        if (assetConfig?.type === 'RECT_TABLE' || element.assetType === 'RECT_TABLE') {
-            const chairRadius = 6;
-            const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
-            const tableColor = element.fill || assetConfig?.color || "#78350f";
-            const w = width || 120;
-            const h = height || 80;
-            const chairs = [];
-
-            const seatPositions = getRectTableSeats(w, h, capacity, 5, chairRadius);
-            seatPositions.forEach((pos, i) => {
-                chairs.push(
-                    <Circle
-                        key={`rect-chair-${i}`}
-                        x={pos.x} y={pos.y}
-                        radius={chairRadius}
-                        fill="white"
-                        stroke="gray"
-                        strokeWidth={1}
-                        listening={false}
-                    />
-                );
-            });
-
-            return (
-                <Group listening={true} onClick={onSelect} onTap={onSelect}>
-                    <Rect x={2} y={2} width={w} height={h} fill="black" opacity={0.2} cornerRadius={8} listening={false} />
-                    <Rect width={w} height={h} fill={tableColor} stroke="#451a03" strokeWidth={2} cornerRadius={8} shadowBlur={5} shadowOpacity={0.5} />
-                    <Rect x={10} y={10} width={w - 20} height={h - 20} stroke="#451a03" strokeWidth={1} opacity={0.3} cornerRadius={4} listening={false} />
-                    {chairs}
-                    <Text text={`${capacity}`} width={w} height={h} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={24} opacity={0.9} listening={false} />
-                </Group>
-            );
-        }
-
-        // Default Asset Graphic
         return (
             <Group>
-                <Rect width={width} height={height} fill={`${color}40`} stroke={color} strokeWidth={2} cornerRadius={4} dash={element.type === "PILLAR" ? undefined : [5, 2]} />
-                {(assetConfig?.type === "STAGE" || assetConfig?.type === "CONSOLE") && (
-                    <>
-                        <Line points={[0, 0, width, height]} stroke={color} strokeWidth={1} opacity={0.3} />
-                        <Line points={[width, 0, 0, height]} stroke={color} strokeWidth={1} opacity={0.3} />
-                    </>
-                )}
-                <Text text={element.name || assetConfig?.label || "ASSET"} width={width} height={height} align="center" verticalAlign="middle" fill="#fff" fontStyle="bold" fontSize={Math.max(10, Math.min(width, height) / 5)} padding={5} />
+                <Circle x={width / 2 + 2} y={height / 2 + 2} radius={radius} fill="black" opacity={0.2} listening={false} />
+                <Circle x={width / 2} y={height / 2} radius={radius} fill={tableColor} stroke="#451a03" strokeWidth={2} shadowBlur={5} shadowOpacity={0.5} />
+                <Circle x={width / 2} y={height / 2} radius={radius * 0.85} stroke="#451a03" strokeWidth={1} opacity={0.3} listening={false} />
+                {chairs}
+                <Text text={`${capacity}`} width={width} height={height} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={radius / 2} opacity={0.9} listening={false} />
             </Group>
         );
-    };
+    }
+
+    // Rectangular table rendering
+    if (assetConfig?.type === 'RECT_TABLE' || element.assetType === 'RECT_TABLE') {
+        const chairRadius = 6;
+        const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
+        const tableColor = element.fill || assetConfig?.color || "#78350f";
+        const w = width || 120;
+        const h = height || 80;
+        const chairs = [];
+
+        const seatPositions = getRectTableSeats(w, h, capacity, 5, chairRadius);
+        seatPositions.forEach((pos, i) => {
+            chairs.push(
+                <Circle
+                    key={`rect-chair-${i}`}
+                    x={pos.x} y={pos.y}
+                    radius={chairRadius}
+                    fill="white"
+                    stroke="gray"
+                    strokeWidth={1}
+                    listening={false}
+                />
+            );
+        });
+
+        return (
+            <Group listening={true}>
+                <Rect x={2} y={2} width={w} height={h} fill="black" opacity={0.2} cornerRadius={8} listening={false} />
+                <Rect width={w} height={h} fill={tableColor} stroke="#451a03" strokeWidth={2} cornerRadius={8} shadowBlur={5} shadowOpacity={0.5} />
+                <Rect x={10} y={10} width={w - 20} height={h - 20} stroke="#451a03" strokeWidth={1} opacity={0.3} cornerRadius={4} listening={false} />
+                {chairs}
+                <Text text={`${capacity}`} width={w} height={h} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={24} opacity={0.9} listening={false} />
+            </Group>
+        );
+    }
+
+    // Default Asset Graphic
+    return (
+        <Group>
+            <Rect width={width} height={height} fill={`${color}40`} stroke={color} strokeWidth={2} cornerRadius={4} dash={element.type === "PILLAR" ? undefined : [5, 2]} />
+            {(assetConfig?.type === "STAGE" || assetConfig?.type === "CONSOLE") && (
+                <>
+                    <Line points={[0, 0, width, height]} stroke={color} strokeWidth={1} opacity={0.3} />
+                    <Line points={[width, 0, 0, height]} stroke={color} strokeWidth={1} opacity={0.3} />
+                </>
+            )}
+            <Text text={element.name || assetConfig?.label || "ASSET"} width={width} height={height} align="center" verticalAlign="middle" fill="#fff" fontStyle="bold" fontSize={Math.max(10, Math.min(width, height) / 5)} padding={5} />
+        </Group>
+    );
+};
+
+// Visual Asset Element
+function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
+    const shapeRef = useRef(null);
 
     return (
         <Group
@@ -375,7 +377,7 @@ function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
                 node.scaleX(1); node.scaleY(1);
             }}
         >
-            {renderAssetGraphic()}
+            <AssetGraphic element={element} width={element.width} height={element.height} />
         </Group>
     );
 }
@@ -689,6 +691,18 @@ export default function CanvasStage() {
     const [polyPoints, setPolyPoints] = useState([]);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
+    // Ghost Preview State
+    const [draggingAsset, setDraggingAsset] = useState(null);
+    const [ghostPos, setGhostPos] = useState({ x: 0, y: 0 });
+
+    // Debugging Overlay State
+    const [debugStats, setDebugStats] = useState({
+        rawX: 0, rawY: 0,
+        virtX: 0, virtY: 0,
+        stageX: 0, stageY: 0,
+        zoom: 1
+    });
+
     useEffect(() => {
         const updateSize = () => {
             if (!containerRef.current) return;
@@ -756,10 +770,27 @@ export default function CanvasStage() {
         });
     };
 
-    const handleMouseMove = () => {
-        const pos = getRelativePos();
+    const handleMouseMove = (e) => {
+        const stage = stageRef.current;
+        if (!stage) return;
+
+        // 1. Get raw pointer position
+        const pointer = stage.getPointerPosition();
+        if (!pointer) return;
+
+        // 2. Get relative (virtual) position
+        const pos = stage.getRelativePointerPosition();
         if (!pos) return;
+
         setMousePos(pos);
+
+        // 3. Update Debug Stats
+        setDebugStats({
+            rawX: pointer.x, rawY: pointer.y,
+            virtX: pos.x, virtY: pos.y,
+            stageX: stage.x(), stageY: stage.y(),
+            zoom: stage.scaleX()
+        });
 
         if (isSelecting) {
             setSelectionBox(prev => ({ ...prev, x2: pos.x, y2: pos.y }));
@@ -840,52 +871,43 @@ export default function CanvasStage() {
     const handleDrop = (e) => {
         e.preventDefault();
         const stage = stageRef.current;
-        if (!stage) return;
+        if (!stage || !containerRef.current) return;
 
-        // 1. Get the Asset Data from drag data
+        // 1. Get exact position of the Canvas on screen (Handles Sidebar offset)
+        const stageRect = containerRef.current.getBoundingClientRect();
+
+        // 2. Calculate Pointer relative to the Canvas DIV
+        const pointerX = e.clientX - stageRect.left;
+        const pointerY = e.clientY - stageRect.top;
+
+        // 3. Convert to Virtual Coordinates (Account for Zoom/Pan)
+        const finalX = (pointerX - stage.x()) / stage.scaleX();
+        const finalY = (pointerY - stage.y()) / stage.scaleY();
+
+        // 4. Register Asset Data
         const assetJson = e.dataTransfer.getData("asset");
         if (!assetJson) return;
 
         try {
             const asset = JSON.parse(assetJson);
 
-            // 2. THE VIDEO MATH (Absolute screen -> container relative)
-            // rect.left accounts for Sidebar width implicitly
-            const containerRect = containerRef.current.getBoundingClientRect();
+            // 5. Apply Snap (n8n Style)
+            const snappedX = Math.round(finalX / SNAP_SIZE) * SNAP_SIZE;
+            const snappedY = Math.round(finalY / SNAP_SIZE) * SNAP_SIZE;
 
-            const pointerX = e.clientX - containerRect.left;
-            const pointerY = e.clientY - containerRect.top;
-
-            // 3. Convert to Virtual World (subtracting stage positions)
-            const stageX = stage.x();
-            const stageY = stage.y();
-            const stageScale = stage.scaleX();
-
-            const finalX = (pointerX - stageX) / stageScale;
-            const finalY = (pointerY - stageY) / stageScale;
-
-            // --- 🔍 DEBUG LOGS (Copy these results) ---
-            console.log("%c--- DEBUG DROP DATA ---", "color: #bada55; font-size: 14px; font-weight: bold;");
-            console.log("1. Mouse (Global):", { x: e.clientX, y: e.clientY });
-            console.log("2. Sidebar Offset (Rect Left):", containerRect.left);
-            console.log("3. Stage Props:", { x: stageX, y: stageY, scale: stageScale });
-            console.log("4. Calc Final:", { finalX, finalY });
-            console.log("-------------------------");
-            // ------------------------------------------
-
-            // 4. Add Element (centering drop)
+            // 6. Add Element
             const assetW = asset.width || 100;
             const assetH = asset.height || 100;
 
             addElement({
                 type: TOOL_TYPES.ASSET,
-                x: finalX - assetW / 2,
-                y: finalY - assetH / 2,
+                x: snappedX,
+                y: snappedY,
                 width: assetW,
                 height: assetH,
                 rotation: 0,
                 name: asset.label || "Asset",
-                assetType: asset.type, // explicitly set assetType
+                assetType: asset.type,
                 assetConfig: asset
             });
 
@@ -894,14 +916,53 @@ export default function CanvasStage() {
             else useSeatEngine.getState().setTool(TOOL_TYPES.SELECT);
         } catch (err) {
             console.error("Drop refinement failed:", err);
+        } finally {
+            setDraggingAsset(null);
         }
+    };
+
+    const handleDragEnter = (e) => {
+        const assetJson = e.dataTransfer.getData("asset");
+        if (assetJson) {
+            try {
+                setDraggingAsset(JSON.parse(assetJson));
+            } catch (err) {
+                console.error("DragEnter parse failed:", err);
+            }
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        const stage = stageRef.current;
+        if (!stage || !containerRef.current) return;
+
+        // 1. Sync Ghost using same math as handleDrop
+        const stageRect = containerRef.current.getBoundingClientRect();
+        const pointerX = e.clientX - stageRect.left;
+        const pointerY = e.clientY - stageRect.top;
+
+        const virtX = (pointerX - stage.x()) / stage.scaleX();
+        const virtY = (pointerY - stage.y()) / stage.scaleY();
+
+        // 2. Apply Snap to Ghost Preview
+        const snappedX = Math.round(virtX / SNAP_SIZE) * SNAP_SIZE;
+        const snappedY = Math.round(virtY / SNAP_SIZE) * SNAP_SIZE;
+
+        setGhostPos({ x: snappedX, y: snappedY });
+    };
+
+    const handleDragLeave = () => {
+        setDraggingAsset(null);
     };
 
     return (
         <div
             ref={containerRef}
             className="relative w-full h-full bg-zinc-950 overflow-hidden"
-            onDragOver={(e) => e.preventDefault()}
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
             onDrop={handleDrop}
             style={{ touchAction: 'none' }}
         >
@@ -956,6 +1017,26 @@ export default function CanvasStage() {
                         return null;
                     })}
 
+                    {/* Ghost Asset Preview */}
+                    {draggingAsset && (
+                        <Group
+                            x={ghostPos.x}
+                            y={ghostPos.y}
+                            opacity={0.5}
+                            listening={false}
+                        >
+                            <AssetGraphic
+                                element={{
+                                    assetConfig: draggingAsset,
+                                    assetType: draggingAsset.type,
+                                    fill: draggingAsset.color
+                                }}
+                                width={draggingAsset.width || 100}
+                                height={draggingAsset.height || 100}
+                            />
+                        </Group>
+                    )}
+
                     {/* Multi-Select Transformer */}
                     <MultiTransformer selectedIds={selectedIds} />
 
@@ -987,6 +1068,40 @@ export default function CanvasStage() {
                 </Layer>
             </Stage>
             <div className="absolute bottom-4 left-4 text-[10px] text-zinc-600 font-mono">SCALE: {Math.round(stageConfig.scale * 100)}% | LOD: {stageConfig.scale < LOD_THRESHOLD ? "LOW" : "HIGH"}</div>
+
+            {/* LIVE COORDINATE DEBUGGER UI */}
+            <div className="absolute top-4 right-4 bg-zinc-900/90 border border-white/10 p-4 rounded-xl shadow-2xl backdrop-blur-md pointer-events-none z-50 font-mono text-[10px] space-y-2 min-w-[200px]">
+                <div className="flex items-center gap-2 border-b border-white/5 pb-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                    <span className="text-amber-500 font-bold uppercase tracking-widest">Live Dev Debugger</span>
+                </div>
+
+                <div className="space-y-1">
+                    <div className="flex justify-between text-zinc-500">
+                        <span>MOUSE RAW (SCREEN)</span>
+                        <span className="text-white">[{Math.round(debugStats.rawX)}, {Math.round(debugStats.rawY)}]</span>
+                    </div>
+                    <div className="flex justify-between text-zinc-500">
+                        <span>MOUSE VIRT (CANVAS)</span>
+                        <span className="text-amber-400 font-bold">[{Math.round(debugStats.virtX)}, {Math.round(debugStats.virtY)}]</span>
+                    </div>
+                </div>
+
+                <div className="pt-2 border-t border-white/5 space-y-1">
+                    <div className="flex justify-between text-zinc-500">
+                        <span>STAGE PAN</span>
+                        <span className="text-white">[{Math.round(debugStats.stageX)}, {Math.round(debugStats.stageY)}]</span>
+                    </div>
+                    <div className="flex justify-between text-zinc-500">
+                        <span>ZOOM LEVEL</span>
+                        <span className="text-white">{(debugStats.zoom * 100).toFixed(0)}%</span>
+                    </div>
+                </div>
+
+                <div className="pt-2 border-t border-white/5 text-[9px] text-zinc-600 text-center italic">
+                    Industry Standard Konva Sync Active
+                </div>
+            </div>
         </div>
     );
 }
