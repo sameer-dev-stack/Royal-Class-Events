@@ -14,6 +14,7 @@ import { ModeToggle } from "./mode-toggle";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import UserButton from "./auth/user-button";
+import { NotificationBell } from "./layout/notification-bell";
 import useAuthStore from "@/hooks/use-auth-store";
 
 import { usePathname } from "next/navigation";
@@ -152,6 +153,9 @@ function HeaderContent() {
                       </Link>
                     </Button>
                   )}
+
+                  {/* Notification Bell */}
+                  <NotificationBell />
 
                   {/* User Button */}
                   <UserButton />

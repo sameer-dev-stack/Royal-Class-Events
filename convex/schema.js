@@ -3525,4 +3525,21 @@ export default defineSchema(
       details: v.any(),
       timestamp: v.number()
     }).index("by_timestamp", ["timestamp"]),
+
+    notifications: defineTable({
+      userId: v.id("users"),
+      title: v.string(),
+      message: v.string(),
+      link: v.optional(v.string()),
+      type: v.string(), // "order", "payout", "system", "alert"
+      isRead: v.boolean(),
+      timestamp: v.number()
+    })
+      .index("by_user", ["userId", "isRead"])
+      .index("by_user_latest", ["userId", "timestamp"]),
+
+    system_settings: defineTable({
+      key: v.string(), // e.g. 'commission_rate', 'maintenance_mode'
+      value: v.any()
+    }).index("by_key", ["key"]),
   }, { schemaValidation: false });

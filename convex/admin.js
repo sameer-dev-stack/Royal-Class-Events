@@ -1,6 +1,6 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { logAdminAction } from "./audit";
 
 // --- Helper for Auth Check ---
@@ -279,4 +279,87 @@ export const getAnalyticsData = query({
 });
 
 
+// --- System Settings ---
+export const getSettings = query({
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+        const settings = await ctx.db.query("system_settings").collect();
 
+        // Transform list into object
+        return settings.reduce((acc, curr) => ({
+            ...acc,
+            [curr.key]: curr.value
+        }), {
+            commission_rate: 10, // Default fallbacks
+            maintenance_mode: false
+        });
+    }
+});
+
+export const updateSetting = mutation({
+    args: {
+        key: v.string(),
+        value: v.any(),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        const admin = await checkAdmin(ctx, args.token);
+
+        const existing = await ctx.db
+            .query("system_settings")
+            .withIndex("by_key", (q) => q.eq("key", args.key))
+            .unique();
+
+        if (existing) {
+            await ctx.db.patch(existing._id, { value: args.value });
+        } else {
+            await ctx.db.insert("system_settings", { key: args.key, value: args.value });
+        }
+
+        await logAdminAction(ctx, admin._id, "SYSTEM_SETTING_CHANGE", args.key, {
+            newValue: args.value
+        });
+
+        return { success: true };
+    }
+});
+
+// --- Broadcasting ---
+export const broadcastMessage = mutation({
+    args: {
+        title: v.string(),
+        message: v.string(),
+        targetRole: v.string(), // "all", "organizer", "attendee", "admin"
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        const admin = await checkAdmin(ctx, args.token);
+
+        let usersQuery = ctx.db.query("users");
+        if (args.targetRole !== "all") {
+            usersQuery = usersQuery.filter((q) => q.eq(q.field("role"), args.targetRole));
+        }
+
+        const users = await usersQuery.collect();
+
+        // Dispatch notifications to all target users
+        for (const user of users) {
+            await ctx.runMutation(internal.notifications.send, {
+                userId: user._id,
+                title: args.title,
+                message: args.message,
+                type: "system",
+                link: "/notifications"
+            });
+        }
+
+        await logAdminAction(ctx, admin._id, "BROADCAST_SEND", "SYSTEM", {
+            title: args.title,
+            target: args.targetRole,
+            count: users.length
+        });
+
+        return { success: true, count: users.length };
+    }
+});

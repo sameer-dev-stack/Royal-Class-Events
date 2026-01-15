@@ -6,7 +6,7 @@ import Link from "next/link";
 import useAuthStore from "@/hooks/use-auth-store";
 import { useUserRoles } from "@/hooks/use-user-roles";
 import { useAdminStore } from "@/hooks/use-admin-store";
-import { Loader2, LayoutDashboard, Users, Calendar, DollarSign, LogOut, Lock, ShieldAlert } from "lucide-react";
+import { Loader2, LayoutDashboard, Users, Calendar, DollarSign, LogOut, Lock, ShieldAlert, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -65,6 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: "Events", href: "/admin/events", icon: Calendar },
         { name: "Finance", href: "/admin/finance", icon: DollarSign },
         { name: "Audit Logs", href: "/admin/audit", icon: ShieldAlert },
+        { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
     return (

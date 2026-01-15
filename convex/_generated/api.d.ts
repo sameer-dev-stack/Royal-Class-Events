@@ -31,6 +31,7 @@ import type * as intelligence from "../intelligence.js";
 import type * as leads from "../leads.js";
 import type * as list_ids from "../list_ids.js";
 import type * as messages from "../messages.js";
+import type * as notifications from "../notifications.js";
 import type * as patch from "../patch.js";
 import type * as pricing from "../pricing.js";
 import type * as registrations from "../registrations.js";
@@ -83,6 +84,7 @@ declare const fullApi: ApiFromModules<{
   leads: typeof leads;
   list_ids: typeof list_ids;
   messages: typeof messages;
+  notifications: typeof notifications;
   patch: typeof patch;
   pricing: typeof pricing;
   registrations: typeof registrations;
