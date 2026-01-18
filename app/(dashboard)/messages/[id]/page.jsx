@@ -177,7 +177,7 @@ export default function ChatPage() {
     // Loading state
     if (thread === undefined) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
                     <p className="text-muted-foreground">Loading conversation...</p>
@@ -189,7 +189,7 @@ export default function ChatPage() {
     // Error state
     if (!thread || !isValidId) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="text-center space-y-4">
                     <h1 className="text-2xl font-bold text-foreground">Conversation Not Found</h1>
                     <p className="text-muted-foreground">This conversation doesn't exist or you don't have access.</p>
@@ -214,10 +214,10 @@ export default function ChatPage() {
     };
 
     return (
-        <div className="h-screen bg-zinc-950 flex overflow-hidden">
+        <div className="h-screen bg-background flex overflow-hidden">
             {/* ============== LEFT SIDEBAR: Conversation List ============== */}
-            <div className="hidden lg:flex w-80 flex-col border-r border-zinc-800/50 bg-zinc-900/30">
-                <div className="p-4 border-b border-zinc-800/50">
+            <div className="hidden lg:flex w-80 flex-col border-r border-border bg-card/30">
+                <div className="p-4 border-b border-border">
                     <h2 className="text-lg font-bold text-foreground">Messages</h2>
                 </div>
                 <ScrollArea className="flex-1">
@@ -230,10 +230,10 @@ export default function ChatPage() {
                                     "flex items-center gap-3 p-3 rounded-xl transition-colors",
                                     conv.leadId === leadId
                                         ? "bg-amber-500/10 border border-amber-500/30"
-                                        : "hover:bg-zinc-800/50"
+                                        : "hover:bg-muted"
                                 )}
                             >
-                                <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
                                     {conv.otherParty?.image ? (
                                         <Image
                                             src={conv.otherParty.image}
@@ -243,7 +243,7 @@ export default function ChatPage() {
                                             className="rounded-full"
                                         />
                                     ) : (
-                                        <span className="text-sm font-bold text-zinc-400">
+                                        <span className="text-sm font-bold text-muted-foreground">
                                             {conv.otherParty?.name?.charAt(0)}
                                         </span>
                                     )}
@@ -252,7 +252,7 @@ export default function ChatPage() {
                                     <div className="flex items-center justify-between">
                                         <span className={cn(
                                             "font-medium truncate",
-                                            conv.leadId === leadId ? "text-amber-400" : "text-foreground"
+                                            conv.leadId === leadId ? "text-amber-600 dark:text-amber-400" : "text-foreground"
                                         )}>
                                             {conv.otherParty?.name}
                                         </span>
@@ -278,7 +278,7 @@ export default function ChatPage() {
             {/* ============== CENTER: Chat Window ============== */}
             <div className="flex-1 flex flex-col min-w-0">
                 {/* Chat Header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 bg-zinc-900/50 backdrop-blur-sm">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/50 backdrop-blur-sm">
                     <div className="flex items-center gap-3">
                         <Button
                             variant="ghost"
@@ -288,7 +288,7 @@ export default function ChatPage() {
                         >
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
-                        <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden">
+                        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                             {otherParty?.logoUrl || otherParty?.image ? (
                                 <Image
                                     src={otherParty.logoUrl || otherParty.image}
@@ -298,7 +298,7 @@ export default function ChatPage() {
                                     className="rounded-full"
                                 />
                             ) : (
-                                <span className="text-sm font-bold text-zinc-400">
+                                <span className="text-sm font-bold text-muted-foreground">
                                     {otherParty?.name?.charAt(0)}
                                 </span>
                             )}
@@ -325,7 +325,7 @@ export default function ChatPage() {
                     <div className="space-y-4 max-w-3xl mx-auto">
                         {/* Lead Info Card */}
                         <div className="text-center py-4">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800/50 rounded-full text-xs text-muted-foreground">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-full text-xs text-muted-foreground">
                                 <Calendar className="w-3 h-3" />
                                 Lead created {format(lead.createdAt, "MMM d, yyyy")}
                             </div>
@@ -363,8 +363,8 @@ export default function ChatPage() {
                                         )}
                                     >
                                         {!msg.isSelf && (
-                                            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0 mb-5">
-                                                <span className="text-xs font-bold text-zinc-400">
+                                            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0 mb-5">
+                                                <span className="text-xs font-bold text-muted-foreground">
                                                     {msg.senderName?.charAt(0)}
                                                 </span>
                                             </div>
@@ -374,7 +374,7 @@ export default function ChatPage() {
                                                 "max-w-[70%] px-4 py-3 rounded-2xl",
                                                 msg.isSelf
                                                     ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black rounded-br-md"
-                                                    : "bg-zinc-800 text-foreground rounded-bl-md"
+                                                    : "bg-muted text-foreground rounded-bl-md"
                                             )}
                                         >
                                             <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -405,7 +405,7 @@ export default function ChatPage() {
                 </ScrollArea>
 
                 {/* Message Input */}
-                <div className="p-4 border-t border-zinc-800/50 bg-zinc-900/30">
+                <div className="p-4 border-t border-border bg-card/30">
                     <form onSubmit={handleSend} className="flex items-center gap-3 max-w-3xl mx-auto">
                         {/* Create Offer Button - Supplier Only */}
                         {!isClient && (
@@ -423,7 +423,7 @@ export default function ChatPage() {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Type your message..."
-                            className="flex-1 bg-zinc-800/50 border-zinc-700 focus:border-amber-500/50 text-foreground"
+                            className="flex-1 bg-muted/50 border-input focus:border-amber-500/50 text-foreground"
                             disabled={isSending}
                         />
                         <Button
@@ -472,13 +472,13 @@ export default function ChatPage() {
             {/* ============== RIGHT SIDEBAR: Deal Details ============== */}
             <div
                 className={cn(
-                    "w-80 border-l border-zinc-800/50 bg-zinc-900/30 flex-col",
+                    "w-80 border-l border-border bg-card/30 flex-col",
                     "hidden lg:flex",
-                    showDetails && "fixed inset-0 z-50 flex lg:static lg:z-auto bg-zinc-950"
+                    showDetails && "fixed inset-0 z-50 flex lg:static lg:z-auto bg-background"
                 )}
             >
                 {/* Mobile Close Button */}
-                <div className="lg:hidden flex items-center justify-between p-4 border-b border-zinc-800/50">
+                <div className="lg:hidden flex items-center justify-between p-4 border-b border-border">
                     <h3 className="font-bold text-foreground">Deal Details</h3>
                     <Button variant="ghost" size="icon" onClick={() => setShowDetails(false)}>
                         <X className="w-5 h-5" />
@@ -492,11 +492,11 @@ export default function ChatPage() {
                             <span className="text-sm text-muted-foreground">Status</span>
                             <span className={cn(
                                 "px-3 py-1 rounded-full text-xs font-bold uppercase",
-                                lead.status === "new" && "bg-blue-500/20 text-blue-400",
-                                lead.status === "contacted" && "bg-amber-500/20 text-amber-400",
-                                lead.status === "quoted" && "bg-purple-500/20 text-purple-400",
-                                lead.status === "booked" && "bg-green-500/20 text-green-400",
-                                lead.status === "declined" && "bg-red-500/20 text-red-400"
+                                lead.status === "new" && "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
+                                lead.status === "contacted" && "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400",
+                                lead.status === "quoted" && "bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400",
+                                lead.status === "booked" && "bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400",
+                                lead.status === "declined" && "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400"
                             )}>
                                 {lead.status}
                             </span>
@@ -507,7 +507,7 @@ export default function ChatPage() {
                             <h4 className="text-sm font-semibold text-foreground">Event Details</h4>
 
                             <div className="space-y-3">
-                                <div className="flex items-center gap-3 p-3 bg-zinc-800/50 rounded-xl">
+                                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
                                     <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
                                         <Calendar className="w-5 h-5 text-amber-500" />
                                     </div>
@@ -521,7 +521,7 @@ export default function ChatPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3 p-3 bg-zinc-800/50 rounded-xl">
+                                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
                                     <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
                                         <Users className="w-5 h-5 text-amber-500" />
                                     </div>
@@ -533,7 +533,7 @@ export default function ChatPage() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3 p-3 bg-zinc-800/50 rounded-xl">
+                                <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
                                     <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
                                         <DollarSign className="w-5 h-5 text-amber-500" />
                                     </div>
@@ -552,8 +552,8 @@ export default function ChatPage() {
                             <h4 className="text-sm font-semibold text-foreground">
                                 {isClient ? "Vendor" : "Client"}
                             </h4>
-                            <div className="flex items-center gap-3 p-3 bg-zinc-800/50 rounded-xl">
-                                <div className="w-12 h-12 rounded-full bg-zinc-700 flex items-center justify-center overflow-hidden">
+                            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
+                                <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center overflow-hidden">
                                     {(otherParty?.logoUrl || otherParty?.image) ? (
                                         <Image
                                             src={otherParty.logoUrl || otherParty.image}
@@ -563,7 +563,7 @@ export default function ChatPage() {
                                             className="rounded-full"
                                         />
                                     ) : (
-                                        <span className="text-lg font-bold text-zinc-400">
+                                        <span className="text-lg font-bold text-muted-foreground">
                                             {otherParty?.name?.charAt(0)}
                                         </span>
                                     )}

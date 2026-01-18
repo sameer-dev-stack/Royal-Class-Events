@@ -31,14 +31,15 @@ export default function MarketplaceHero({ categories, cities }) {
     };
 
     return (
-        <div className="relative w-full h-[600px] flex items-center justify-center overflow-hidden">
+        <div className="relative w-full h-[600px] flex items-center justify-center overflow-hidden rounded-3xl">
             {/* Background Image with Cinematic Dark Overlay */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0 transform hover:scale-105 transition-transform duration-[30s]"
                 style={{ backgroundImage: `url(${HERO_IMAGE})` }}
             />
             {/* Gradient Mesh Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/60 to-zinc-950 z-10" />
+            {/* Gradient Mesh Overlay - Theme Aware */}
+            <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/60 to-zinc-950 z-10 dark:from-zinc-950/80 dark:to-zinc-950 from-black/60 to-background" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent z-10" />
 
             {/* Content */}
@@ -56,7 +57,7 @@ export default function MarketplaceHero({ categories, cities }) {
                     </p>
 
                     {/* Floating Glass Search Bar */}
-                    <div className="group relative bg-zinc-900/40 backdrop-blur-xl border border-white/10 p-2 rounded-full shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:shadow-[0_0_40px_-5px_rgba(245,158,11,0.15)] transition-all duration-500 flex flex-col md:flex-row items-center gap-2 max-w-4xl mx-auto">
+                    <div className="group relative bg-card/60 dark:bg-zinc-900/40 backdrop-blur-xl border border-border/50 dark:border-white/10 p-2 rounded-full shadow-[0_8px_32px_0_rgba(0,0,0,0.36)] hover:shadow-[0_0_40px_-5px_rgba(245,158,11,0.15)] transition-all duration-500 flex flex-col md:flex-row items-center gap-2 max-w-4xl mx-auto">
 
                         {/* Search Query Input */}
                         <div className="w-full md:w-[30%] relative border-b md:border-b-0 md:border-r border-white/10">
@@ -65,7 +66,7 @@ export default function MarketplaceHero({ categories, cities }) {
                             </div>
                             <Input
                                 placeholder="What are you looking for?"
-                                className="h-12 bg-transparent border-0 text-white placeholder:text-zinc-500 pl-10 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                className="h-12 bg-transparent border-0 text-white placeholder:text-zinc-400 pl-10 focus-visible:ring-0 focus-visible:ring-offset-0"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -77,7 +78,7 @@ export default function MarketplaceHero({ categories, cities }) {
                                 <SelectTrigger className="h-12 bg-transparent border-0 text-zinc-200 focus:ring-0 focus:ring-offset-0 px-4">
                                     <SelectValue placeholder="Service Type" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-200">
+                                <SelectContent className="bg-popover border-border text-popover-foreground">
                                     <SelectItem value="all">All Services</SelectItem>
                                     {categories.map(c => (
                                         <SelectItem key={c} value={c}>{c}</SelectItem>
@@ -95,7 +96,7 @@ export default function MarketplaceHero({ categories, cities }) {
                                         <SelectValue placeholder="City" />
                                     </div>
                                 </SelectTrigger>
-                                <SelectContent className="bg-zinc-900 border-zinc-800 text-zinc-200">
+                                <SelectContent className="bg-popover border-border text-popover-foreground">
                                     {cities.map(c => (
                                         <SelectItem key={c} value={c}>{c}</SelectItem>
                                     ))}

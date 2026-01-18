@@ -50,14 +50,14 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center sm:justify-start">
               <Button size="xl" asChild className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all transform hover:-translate-y-1">
-                <Link href="/explore">
+                <Link href="/explore" suppressHydrationWarning>
                   Explore Events
                 </Link>
               </Button>
 
               {mounted && !isAuthenticated && (
                 <Button variant="ghost" size="xl" asChild className="hidden sm:flex h-14 px-8 rounded-full text-foreground hover:bg-foreground/10 group cursor-pointer">
-                  <Link href="/sign-in">
+                  <Link href="/sign-in" suppressHydrationWarning>
                     Sign In
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -145,7 +145,7 @@ export default function LandingPage() {
                       Browse exclusive events, secure your tickets, and manage your premium passes in one place.
                     </p>
                   </div>
-                  <Link href="/explore?role=attendee" className="block">
+                  <Link href="/explore?role=attendee" className="block" suppressHydrationWarning>
                     <Button variant="outline" className="w-full h-12 rounded-xl hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-all font-bold gap-2">
                       Browse <ArrowRight className="w-4 h-4" />
                     </Button>
@@ -166,7 +166,7 @@ export default function LandingPage() {
                       Create luxury events, manage guest lists, and track real-time analytics with your host dashboard.
                     </p>
                   </div>
-                  <Link href="/create-event?role=organizer" className="block">
+                  <Link href="/create-event?role=organizer" className="block" suppressHydrationWarning>
                     <Button className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold shadow-lg shadow-amber-900/20 transition-all transform group-hover:-translate-y-1">
                       Start Hosting <ArrowRight className="w-4 h-4" />
                     </Button>

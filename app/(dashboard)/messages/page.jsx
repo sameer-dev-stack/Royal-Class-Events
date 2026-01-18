@@ -34,7 +34,7 @@ export default function MessagesPage() {
     // Initial loading or server render
     if (!mounted) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
                     <p className="text-muted-foreground">Loading...</p>
@@ -46,7 +46,7 @@ export default function MessagesPage() {
     // Not authenticated
     if (!isAuthenticated) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
+            <div className="min-h-screen bg-background flex items-center justify-center p-6">
                 <div className="text-center space-y-4">
                     <div className="w-16 h-16 mx-auto bg-amber-500/10 rounded-2xl flex items-center justify-center">
                         <MessageSquare className="w-8 h-8 text-amber-500" />
@@ -66,7 +66,7 @@ export default function MessagesPage() {
     // Loading
     if (conversations === undefined) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
                     <p className="text-muted-foreground">Loading your messages...</p>
@@ -76,9 +76,9 @@ export default function MessagesPage() {
     }
 
     return (
-        <div className="min-h-screen bg-zinc-950">
+        <div className="min-h-screen bg-background">
             {/* Header */}
-            <div className="border-b border-zinc-800/50 bg-zinc-900/30">
+            <div className="border-b border-border bg-card/50">
                 <div className="max-w-4xl mx-auto px-6 py-8">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center">
@@ -102,8 +102,8 @@ export default function MessagesPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center py-16 space-y-4"
                     >
-                        <div className="w-20 h-20 mx-auto bg-zinc-800/50 rounded-2xl flex items-center justify-center">
-                            <Inbox className="w-10 h-10 text-zinc-600" />
+                        <div className="w-20 h-20 mx-auto bg-muted rounded-2xl flex items-center justify-center">
+                            <Inbox className="w-10 h-10 text-muted-foreground" />
                         </div>
                         <h2 className="text-xl font-semibold text-foreground">No messages yet</h2>
                         <p className="text-muted-foreground max-w-md mx-auto">
@@ -127,10 +127,10 @@ export default function MessagesPage() {
                             >
                                 <Link
                                     href={`/messages/${conv.leadId}`}
-                                    className="flex items-center gap-4 p-4 rounded-xl bg-zinc-900/50 border border-zinc-800/50 hover:border-amber-500/30 hover:bg-zinc-800/50 transition-all group"
+                                    className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-amber-500/50 hover:bg-muted/50 transition-all group shadow-sm hover:shadow-md"
                                 >
                                     {/* Avatar */}
-                                    <div className="w-14 h-14 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                    <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
                                         {conv.otherParty?.image ? (
                                             <Image
                                                 src={conv.otherParty.image}
@@ -140,7 +140,7 @@ export default function MessagesPage() {
                                                 className="rounded-xl"
                                             />
                                         ) : (
-                                            <span className="text-lg font-bold text-zinc-400">
+                                            <span className="text-lg font-bold text-muted-foreground">
                                                 {conv.otherParty?.name?.charAt(0)}
                                             </span>
                                         )}
@@ -149,7 +149,7 @@ export default function MessagesPage() {
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between mb-1">
-                                            <h3 className="font-semibold text-foreground truncate group-hover:text-amber-400 transition-colors">
+                                            <h3 className="font-semibold text-foreground truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
                                                 {conv.otherParty?.name}
                                             </h3>
                                             <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
@@ -162,10 +162,10 @@ export default function MessagesPage() {
                                         <div className="flex items-center gap-3">
                                             <span className={cn(
                                                 "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase",
-                                                conv.status === "new" && "bg-blue-500/20 text-blue-400",
-                                                conv.status === "contacted" && "bg-amber-500/20 text-amber-400",
-                                                conv.status === "quoted" && "bg-purple-500/20 text-purple-400",
-                                                conv.status === "booked" && "bg-green-500/20 text-green-400"
+                                                conv.status === "new" && "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
+                                                conv.status === "contacted" && "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400",
+                                                conv.status === "quoted" && "bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400",
+                                                conv.status === "booked" && "bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400"
                                             )}>
                                                 {conv.status}
                                             </span>
@@ -182,7 +182,7 @@ export default function MessagesPage() {
                                     </div>
 
                                     {/* Arrow */}
-                                    <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-amber-500 transition-colors flex-shrink-0" />
+                                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-amber-500 transition-colors flex-shrink-0" />
                                 </Link>
                             </motion.div>
                         ))}

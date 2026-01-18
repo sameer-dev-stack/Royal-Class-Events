@@ -52,9 +52,9 @@ export default function SupplierLayout({ children }) {
     // 3. Auth Check (For other pages)
     if (!isAuthenticated) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
+            <div className="min-h-screen bg-background flex items-center justify-center p-6">
                 <div className="text-center space-y-4">
-                    <Store className="w-16 h-16 mx-auto text-amber-500/50" />
+                    <Store className="w-16 h-16 mx-auto text-amber-500" />
                     <h1 className="text-2xl font-bold text-foreground">Vendor Area</h1>
                     <p className="text-muted-foreground">Please sign in to access your vendor dashboard.</p>
                     <Link
@@ -71,9 +71,9 @@ export default function SupplierLayout({ children }) {
     // 4. Not a Supplier Check
     if (supplier === null) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
+            <div className="min-h-screen bg-background flex items-center justify-center p-6">
                 <div className="text-center space-y-4 max-w-md">
-                    <Store className="w-16 h-16 mx-auto text-amber-500/50" />
+                    <Store className="w-16 h-16 mx-auto text-amber-500" />
                     <h1 className="text-2xl font-bold text-foreground">Become a Vendor</h1>
                     <p className="text-muted-foreground">
                         You're not registered as a vendor yet. Join our marketplace to showcase your services.
@@ -90,13 +90,12 @@ export default function SupplierLayout({ children }) {
         );
     }
 
-    // 5. Render Dashboard Layout (Sidebar + Content)
     return (
-        <div className="min-h-screen bg-zinc-950 flex">
+        <div className="min-h-screen bg-background flex">
             {/* Sidebar */}
-            <aside className="hidden lg:flex w-64 flex-col border-r border-zinc-800/50 bg-zinc-900/30 fixed h-full left-0 top-0 pt-20 z-40">
+            <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-card/10 fixed h-full left-0 top-0 pt-20 z-40">
                 {/* Header */}
-                <div className="p-6 border-b border-zinc-800/50">
+                <div className="p-6 border-b border-border">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center">
                             <Store className="w-5 h-5 text-amber-500" />
@@ -124,8 +123,8 @@ export default function SupplierLayout({ children }) {
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
                                     isActive
-                                        ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
-                                        : "text-zinc-400 hover:text-foreground hover:bg-zinc-800/50"
+                                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                 )}
                             >
                                 <Icon className="w-5 h-5" />
@@ -137,10 +136,10 @@ export default function SupplierLayout({ children }) {
                 </nav>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-zinc-800/50">
+                <div className="p-4 border-t border-border">
                     <Link
                         href={`/marketplace/vendor/${supplier?._id}`}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-zinc-400 hover:text-amber-400 hover:bg-zinc-800/50 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-amber-600 dark:hover:text-amber-400 hover:bg-muted/50 transition-colors"
                     >
                         <Store className="w-5 h-5" />
                         View Public Profile

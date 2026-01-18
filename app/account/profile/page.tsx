@@ -131,7 +131,7 @@ export default function ProfileSettingsPage() {
     return (
         <div className="max-w-3xl space-y-10">
             {/* Profile Header Card */}
-            <section className="relative overflow-hidden p-8 rounded-[2.5rem] bg-zinc-900 border border-white/5 space-y-8 group">
+            <section className="relative overflow-hidden p-8 rounded-3xl bg-card border border-border space-y-8 group shadow-sm">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2" />
 
                 <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
@@ -141,17 +141,17 @@ export default function ProfileSettingsPage() {
                             isOrganizer ? "from-amber-500/20 to-white/10" : "from-blue-500/20 to-white/10"
                         )} />
                         <Avatar className={cn(
-                            "w-32 h-32 border-4 bg-zinc-800 shadow-2xl relative transition-all duration-500",
+                            "w-32 h-32 border-4 bg-muted shadow-2xl relative transition-all duration-500",
                             borderColor
                         )}>
                             <AvatarImage src={user?.image} />
                             <AvatarFallback className={cn(
-                                "bg-zinc-800 text-3xl font-black transition-colors",
+                                "bg-muted text-3xl font-black transition-colors",
                                 isOrganizer ? "text-amber-500" : "text-blue-500"
                             )}>{initials}</AvatarFallback>
                         </Avatar>
                         <button className={cn(
-                            "absolute bottom-0 right-0 w-10 h-10 text-black rounded-xl border-4 border-zinc-900 flex items-center justify-center hover:scale-110 transition-transform",
+                            "absolute bottom-0 right-0 w-10 h-10 text-primary-foreground rounded-xl border-4 border-card flex items-center justify-center hover:scale-110 transition-transform",
                             isOrganizer ? "bg-amber-500" : "bg-blue-500"
                         )}>
                             <Camera className="w-4 h-4" />
@@ -159,7 +159,7 @@ export default function ProfileSettingsPage() {
                     </div>
 
                     <div className="text-center md:text-left space-y-2">
-                        <h2 className="text-3xl font-black italic tracking-tight">{user?.name}</h2>
+                        <h2 className="text-3xl font-black italic tracking-tight text-foreground">{user?.name}</h2>
                         <div className="flex flex-wrap justify-center md:justify-start gap-2">
                             <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
                                 <Crown className="w-3 h-3" />
@@ -175,7 +175,7 @@ export default function ProfileSettingsPage() {
             </section>
 
             {/* Profile Form */}
-            <Card className="p-8 md:p-10 rounded-[2.5rem] bg-zinc-900/50 border border-white/5 shadow-2xl">
+            <Card className="p-8 md:p-10 rounded-3xl bg-card border border-border shadow-md">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                     <div className="space-y-6">
                         <div className="grid md:grid-cols-2 gap-6">
@@ -185,7 +185,7 @@ export default function ProfileSettingsPage() {
                                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-amber-500 transition-colors" />
                                     <Input
                                         {...register("name")}
-                                        className="h-14 pl-12 rounded-2xl bg-zinc-950 border-white/5 focus:border-amber-500/50 transition-all font-medium"
+                                        className="h-14 pl-12 rounded-2xl bg-background border-border focus:border-amber-500/50 transition-all font-medium text-foreground"
                                         placeholder="Enter your name"
                                     />
                                     {errors.name && <p className="text-xs text-red-500 mt-1 ml-1">{errors.name.message}</p>}
@@ -199,7 +199,7 @@ export default function ProfileSettingsPage() {
                                     <Input
                                         value={user?.email || ""}
                                         disabled
-                                        className="h-14 pl-12 rounded-2xl bg-black border-white/5 cursor-not-allowed font-medium"
+                                        className="h-14 pl-12 rounded-2xl bg-muted border-border cursor-not-allowed font-medium text-muted-foreground"
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2">
                                         <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -213,7 +213,7 @@ export default function ProfileSettingsPage() {
                             <label className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Bio / Narrative</label>
                             <Textarea
                                 {...register("bio")}
-                                className="min-h-[120px] rounded-2xl bg-zinc-950 border-white/5 focus:border-amber-500/50 transition-all resize-none p-4 font-medium"
+                                className="min-h-[120px] rounded-2xl bg-background border-border focus:border-amber-500/50 transition-all resize-none p-4 font-medium text-foreground"
                                 placeholder="Tell the Royal community about yourself..."
                             />
                             {errors.bio && <p className="text-xs text-red-500 mt-1 ml-1">{errors.bio.message}</p>}
@@ -241,7 +241,7 @@ export default function ProfileSettingsPage() {
             {role !== "organizer" && (
                 <motion.section
                     whileHover={{ scale: 1.01 }}
-                    className="relative overflow-hidden p-8 md:p-12 rounded-[3rem] bg-gradient-to-br from-amber-500/20 via-zinc-900 to-zinc-900 border border-amber-500/20 shadow-3xl group"
+                    className="relative overflow-hidden p-8 md:p-12 rounded-3xl bg-gradient-to-br from-amber-500/10 via-card to-card border border-amber-500/20 shadow-lg group"
                 >
                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
                         <Crown className="w-32 h-32 text-amber-500" />
@@ -249,7 +249,7 @@ export default function ProfileSettingsPage() {
 
                     <div className="relative z-10 space-y-6">
                         <div className="space-y-4 max-w-lg">
-                            <h3 className="text-3xl font-black italic tracking-tighter leading-none">
+                            <h3 className="text-3xl font-black italic tracking-tighter leading-none text-foreground">
                                 Host Your Own <br />
                                 <span className="text-amber-500 uppercase">Experiences.</span>
                             </h3>
@@ -262,7 +262,7 @@ export default function ProfileSettingsPage() {
                         <Button
                             onClick={handleUpgrade}
                             disabled={isUpgrading}
-                            className="h-14 px-8 rounded-2xl bg-white text-black hover:bg-amber-500 font-bold uppercase tracking-widest text-xs gap-3 shadow-2xl transition-all"
+                            className="h-14 px-8 rounded-2xl bg-foreground text-background hover:bg-amber-500 hover:text-white font-bold uppercase tracking-widest text-xs gap-3 shadow-2xl transition-all"
                         >
                             {isUpgrading ? "Upgrading..." : "Switch to Organizer"}
                             <ChevronRight className="w-4 h-4" />

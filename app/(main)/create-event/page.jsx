@@ -334,7 +334,6 @@ export default function CreateEventPage() {
     const city = watch("city");
     const capacity = watch("capacity");
     const ticketType = watch("ticketType");
-    const ticketPrice = watch("ticketPrice");
 
     if (!category || !country || !city || !capacity || !startDate) {
       toast.error("Please fill in Category, Location (Country & City), Capacity, and Start Date first");
@@ -345,8 +344,7 @@ export default function CreateEventPage() {
     setAiPrediction(null);
 
     try {
-      // Call demand prediction
-      const demandResponse = await fetch('/api/intelligence/predict-demand', {
+      const response = await fetch('/api/intelligence/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -358,83 +356,26 @@ export default function CreateEventPage() {
         }),
       });
 
-      const demandData = await demandResponse.json();
+      const result = await response.json();
 
-      if (!demandData.success) {
-        throw new Error(demandData.error || 'Failed to get prediction');
-      }
-
-      const demandScore = demandData.data.demand_score;
-      const confidence = demandData.data.confidence;
-
-      // Call price suggestion if paid event
-      let priceSuggestion = null;
-      if (ticketType === 'paid') {
-        const priceResponse = await fetch('/api/intelligence/suggest-price', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            category,
-            location: city,
-            demand_score: demandScore,
-            capacity,
-          }),
-        });
-
-        const priceData = await priceResponse.json();
-        if (priceData.success) {
-          priceSuggestion = {
-            suggested: priceData.data.suggested_price,
-            min: priceData.data.min_price,
-            max: priceData.data.max_price,
-            reasoning: priceData.data.reasoning,
-          };
-        }
-      }
-
-      // Call revenue forecast if paid event and price is set
-      let revenueForecast = null;
-      if (ticketType === 'paid' && (ticketPrice || priceSuggestion)) {
-        const price = ticketPrice || priceSuggestion?.suggested || 500;
-        const revenueResponse = await fetch('/api/intelligence/forecast-revenue', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            demand_score: demandScore,
-            capacity,
-            ticket_price: price,
-            ticket_type: ticketType,
-          }),
-        });
-
-        const revenueData = await revenueResponse.json();
-        if (revenueData.success) {
-          revenueForecast = {
-            expected: revenueData.data.expected_revenue,
-            min: revenueData.data.min_revenue,
-            max: revenueData.data.max_revenue,
-            sales: revenueData.data.expected_sales,
-          };
-        }
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to get analysis');
       }
 
       setAiPrediction({
         success: true,
-        demandScore,
-        confidence,
-        suggestedPrice: priceSuggestion,
-        expectedRevenue: revenueForecast,
+        ...result.data,
       });
 
-      toast.success(`AI Analysis Complete! Demand Score: ${demandScore}/100`);
+      toast.success(`AI Analysis Complete! Demand Score: ${result.data.demandScore}/100`);
 
     } catch (error) {
-      console.error('AI prediction error:', error);
+      console.error('AI analysis error:', error);
       setAiPrediction({
         success: false,
         error: error.message,
       });
-      toast.error(error.message || 'Failed to get AI prediction');
+      toast.error(error.message || 'Failed to get AI analysis');
     } finally {
       setIsCheckingAI(false);
     }
@@ -444,6 +385,53 @@ export default function CreateEventPage() {
     setValue("ticketPrice", price);
     setValue("ticketType", "paid");
     toast.success(`Price set to ৳${price}`);
+  };
+
+  const handleSaveAndBuild = async () => {
+    const title = watch("title");
+    const startDate = watch("startDate");
+    const seatingMode = watch("seatingMode");
+
+    if (!title || !startDate) {
+      toast.error("Please provide at least a Title and Start Date to save a draft.");
+      return;
+    }
+
+    try {
+      const draftStart = startDate.getTime();
+      // Default to 2 hours duration for draft
+      const draftEnd = draftStart + (2 * 60 * 60 * 1000);
+
+      const eventId = await createEvent({
+        title: title,
+        description: watch("description") || "Draft Event Description",
+        category: watch("category") || "music", // Default category
+        tags: ["draft"],
+        startDate: draftStart,
+        endDate: draftEnd,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        locationType: watch("locationType") || "physical",
+        venue: watch("venue"),
+        address: watch("address"),
+        city: watch("city") || "Dhaka",
+        state: watch("state"),
+        country: watch("country") || "Bangladesh",
+        capacity: watch("capacity") || 100,
+        ticketType: watch("ticketType") || "free",
+        ticketPrice: watch("ticketPrice"),
+        themeColor: watch("themeColor") || "#d97706",
+        seatingMode: "RESERVED", // Explicitly set for this flow
+        token,
+        hasPro,
+      });
+
+      toast.success("Draft saved! Opening Seat Builder...");
+      // Redirect to seat builder with the new event ID
+      router.push(`/seat-builder?eventId=${eventId}`);
+    } catch (error) {
+      console.error("Failed to save draft:", error);
+      toast.error("Failed to save draft. Please ensure you are logged in as an Organizer.");
+    }
   };
 
   return (
@@ -643,6 +631,25 @@ export default function CreateEventPage() {
                 )}
               />
             </div>
+
+            {watch("seatingMode") === "RESERVED" && (
+              <div className="mt-4 p-4 border border-amber-500/30 bg-amber-500/10 rounded-xl animate-in fade-in slide-in-from-top-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="text-amber-500 font-bold">Venue Layout Required</h4>
+                    <p className="text-xs text-zinc-400">You need to design the seating map before publishing.</p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={handleSaveAndBuild}
+                    disabled={isCreating}
+                    className="bg-amber-500 text-black hover:bg-amber-600 font-bold"
+                  >
+                    {isCreating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Save & Open Builder 🏗️"}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           <AIIntelligencePanel

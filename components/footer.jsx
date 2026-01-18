@@ -34,11 +34,11 @@ export default function Footer() {
 
           {/* Socials */}
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors"><Facebook className="w-5 h-5" /></Link>
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors"><Twitter className="w-5 h-5" /></Link>
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors"><Instagram className="w-5 h-5" /></Link>
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors"><Youtube className="w-5 h-5" /></Link>
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors"><Linkedin className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Facebook className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Twitter className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Instagram className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Youtube className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Linkedin className="w-5 h-5" /></Link>
           </div>
 
           {/* Copyright */}

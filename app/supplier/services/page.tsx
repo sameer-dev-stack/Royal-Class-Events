@@ -98,7 +98,7 @@ export default function SupplierServicesPage() {
             {/* Header Area */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-1">
-                    <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight flex items-center gap-3">
+                    <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight flex items-center gap-3">
                         <Package className="w-10 h-10 text-amber-500" />
                         Offerings & Packages
                     </h1>
@@ -126,7 +126,7 @@ export default function SupplierServicesPage() {
                             exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
                             layout
                         >
-                            <Card className="bg-zinc-900/40 border-zinc-800/60 rounded-[2.5rem] overflow-hidden hover:border-amber-500/30 transition-all group h-full flex flex-col backdrop-blur-md shadow-2xl relative">
+                            <Card className="bg-card/40 border-border rounded-3xl overflow-hidden hover:border-amber-500/30 transition-all group h-full flex flex-col backdrop-blur-md shadow-2xl relative">
                                 <CardContent className="p-8 flex flex-col h-full z-10">
                                     {/* Card Header Actions */}
                                     <div className="flex justify-between items-start mb-6">
@@ -135,8 +135,8 @@ export default function SupplierServicesPage() {
                                             className={cn(
                                                 "rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest border-2",
                                                 service.active
-                                                    ? "border-amber-500/20 text-amber-500 bg-amber-500/5"
-                                                    : "border-zinc-800 text-zinc-500 bg-zinc-950/50"
+                                                    ? "border-amber-500/20 text-amber-600 dark:text-amber-500 bg-amber-500/5"
+                                                    : "border-border text-muted-foreground bg-muted/50"
                                             )}
                                         >
                                             {service.active ? (
@@ -154,11 +154,11 @@ export default function SupplierServicesPage() {
 
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" className="h-10 w-10 p-0 rounded-xl hover:bg-zinc-800/50 text-zinc-500 hover:text-white">
+                                                <Button variant="ghost" className="h-10 w-10 p-0 rounded-xl hover:bg-muted/50 text-muted-foreground hover:text-foreground">
                                                     <MoreVertical className="w-5 h-5" />
                                                 </Button>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end" className="bg-zinc-950 border-zinc-800 text-white rounded-2xl p-2 min-w-[160px] shadow-2xl">
+                                            <DropdownMenuContent align="end" className="bg-card border-border text-foreground rounded-2xl p-2 min-w-[160px] shadow-2xl">
                                                 <DropdownMenuItem onClick={() => handleEdit(service)} className="hover:bg-zinc-900 cursor-pointer rounded-xl h-12 gap-3 focus:bg-zinc-900">
                                                     <Pencil className="w-4 h-4 text-amber-500" />
                                                     <span className="font-bold">Edit Details</span>
@@ -173,10 +173,10 @@ export default function SupplierServicesPage() {
 
                                     {/* Main Content */}
                                     <div className="space-y-4 mb-8">
-                                        <h3 className="text-2xl font-black text-white group-hover:text-amber-500 transition-colors leading-tight">
+                                        <h3 className="text-2xl font-black text-foreground group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors leading-tight">
                                             {service.name}
                                         </h3>
-                                        <p className="text-zinc-500 text-sm line-clamp-3 leading-relaxed font-medium">
+                                        <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed font-medium">
                                             {service.description}
                                         </p>
                                     </div>
@@ -185,13 +185,13 @@ export default function SupplierServicesPage() {
                                     {service.features && service.features.length > 0 && (
                                         <div className="space-y-3 mb-8">
                                             {service.features.slice(0, 3).map((feat: string, i: number) => (
-                                                <div key={i} className="flex items-center gap-3 text-xs font-bold text-zinc-400">
+                                                <div key={i} className="flex items-center gap-3 text-xs font-bold text-muted-foreground">
                                                     <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
                                                     {feat}
                                                 </div>
                                             ))}
                                             {service.features.length > 3 && (
-                                                <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest pl-6">
+                                                <p className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-widest pl-6">
                                                     + {service.features.length - 3} more features
                                                 </p>
                                             )}
@@ -199,12 +199,12 @@ export default function SupplierServicesPage() {
                                     )}
 
                                     {/* Pricing Footer */}
-                                    <div className="mt-auto pt-6 flex items-end justify-between border-t border-zinc-800/30">
+                                    <div className="mt-auto pt-6 flex items-end justify-between border-t border-border/30">
                                         <div className="flex flex-col">
-                                            <span className="text-[10px] text-zinc-600 uppercase font-black tracking-[0.2em] mb-1">Starting Investment</span>
+                                            <span className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-1">Starting Investment</span>
                                             <div className="flex items-baseline gap-1.5">
-                                                <span className="text-xs font-bold text-amber-500/60 uppercase">{service.currency}</span>
-                                                <span className="text-3xl font-black text-white">
+                                                <span className="text-xs font-bold text-amber-600 dark:text-amber-500/60 uppercase">{service.currency}</span>
+                                                <span className="text-3xl font-black text-foreground">
                                                     {service.price.toLocaleString()}
                                                 </span>
                                             </div>
@@ -212,7 +212,7 @@ export default function SupplierServicesPage() {
                                         <Button
                                             variant="ghost"
                                             onClick={() => handleEdit(service)}
-                                            className="h-12 w-12 rounded-2xl bg-zinc-800/30 hover:bg-amber-500 hover:text-black transition-all"
+                                            className="h-12 w-12 rounded-2xl bg-muted/40 hover:bg-amber-500 hover:text-black transition-all"
                                         >
                                             <Pencil className="w-5 h-5" />
                                         </Button>
@@ -233,11 +233,11 @@ export default function SupplierServicesPage() {
                         animate={{ opacity: 1 }}
                         className="col-span-full py-24 text-center"
                     >
-                        <div className="w-24 h-24 bg-zinc-900/50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border-2 border-dashed border-zinc-800 group hover:border-amber-500/50 transition-all">
-                            <Briefcase className="w-10 h-10 text-zinc-700 group-hover:text-amber-500/50" />
+                        <div className="w-24 h-24 bg-card rounded-3xl flex items-center justify-center mx-auto mb-8 border-2 border-dashed border-border group hover:border-amber-500/50 transition-all">
+                            <Briefcase className="w-10 h-10 text-muted-foreground/40 group-hover:text-amber-500/50" />
                         </div>
-                        <h3 className="text-2xl font-black text-white">No Services Defined</h3>
-                        <p className="text-zinc-500 mt-3 max-w-sm mx-auto font-medium">
+                        <h3 className="text-2xl font-black text-foreground">No Services Defined</h3>
+                        <p className="text-muted-foreground mt-3 max-w-sm mx-auto font-medium">
                             Your marketplace storefront is currently empty. Add your packages to start receiving high-quality leads.
                         </p>
                         <Button

@@ -14,89 +14,74 @@ export async function POST(req) {
       );
     }
 
-    // DEV_FALLBACK: If no API key, return mock response in development
-    if (!process.env.GEMINI_API_KEY) {
-      const isDev = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_DEV_AUTH === "true";
-      if (isDev) {
-        console.log("Using DEV_FALLBACK for chat API");
-        return NextResponse.json({
-          role: "assistant",
-          content: "Welcome to Royal Class Events! I am your AI concierge. Currently, I am operating in development mode with mock responses. How can I assist you with our elite experiences today?"
-        });
-      }
+    let model;
+    try {
+      model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    } catch (e) {
+      model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-    // Construct the chat history with a system instruction
-    const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: [{
-            text: `You are the AI Concierge for "Royal Class Events", a premium event management platform. 
-          
-          Your name is "Royal Assistant".
-          Your tone should be professional, polite, and helpful (like a high-end hotel concierge).
-
-          Key Platform Features to know:
-          - We host exclusive events (Galas, Tech Meetups, VIP Parties).
-          - Organizers can use AI to generate event details.
-          - We have a "Demand Prediction" feature for organizers.
-          - Users can buy tickets (Free/Paid) and get QR codes.
-          - We have an "Explore" page to find events.
-
-          If asked about technical support, direct them to contact support@royalclassevents.com.
-          If asked to create an event, guide them to the "Create Event" page.
-          Do not make up specific event details unless they are in the context of the conversation.
-          
-          Keep responses concise (under 3 sentences when possible) unless explaining a complex feature.` }],
-        },
-        {
-          role: "model",
-          parts: [{ text: "Understood. I am the Royal Assistant, ready to assist our esteemed guests and organizers with the utmost professionalism." }],
-        },
-        // ... previous messages would ideally be mapped here, but for this simple version we'll just append the last user message to the new prompt or rely on the client sending full context if we were building a full history engine. 
-        // For a simple stateless endpoint, we often just pass the last prompt with context. 
-        // However, Gemini's `startChat` maintains history if we keep the object alive. Since this is a serverless function, we need to reconstruct history from the request if we want multi-turn.
-      ],
-    });
-
-    // For this implementation, we will feed the conversation history from the client into the chat session
-    // filtering out the system message we just added manually to avoid duplication if the client sends it,
-    // though typically the client just sends user/model pairs.
-
-    // Valid roles for Gemini are 'user' and 'model'.
     const validHistory = messages.slice(0, -1).map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.content }]
     }));
 
-    // Start a new chat with the history provided by the client
     const chatSession = model.startChat({
       history: [
         {
           role: "user",
-          parts: [{ text: `System Instruction: You are the AI Concierge for "Royal Class Events". Be helpful, polite, and brief.` }],
+          parts: [{
+            text: `You are the AI Concierge for "Royal Class Events", a premium event management platform. 
+          Your name is "Royal Assistant".
+          Your tone should be professional, polite, and helpful (like a high-end hotel concierge).
+          Keep responses concise (max 2-3 sentences).` }],
         },
         {
           role: "model",
-          parts: [{ text: "I am ready to assist." }],
+          parts: [{ text: "I am ready to assist our esteemed guests with the utmost professionalism." }],
         },
         ...validHistory
       ],
     });
 
     const lastMessage = messages[messages.length - 1];
-    const result = await chatSession.sendMessage(lastMessage.content);
-    const response = await result.response;
-    const text = response.text();
+    let text;
+    try {
+      const result = await chatSession.sendMessage(lastMessage.content);
+      const response = await result.response;
+      text = response.text();
+    } catch (apiError) {
+      console.error("Gemini Primary Model Error in Chat, attempting fallback:", apiError);
+
+      const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const fallbackSession = fallbackModel.startChat({
+        history: [
+          { role: "user", parts: [{ text: "System Instruction: You are the Royal Assistant for Royal Class Events. Be brief and polite." }] },
+          { role: "model", parts: [{ text: "Understood." }] },
+          ...validHistory
+        ],
+      });
+      const result = await fallbackSession.sendMessage(lastMessage.content);
+      const response = await result.response;
+      text = response.text();
+    }
 
     return NextResponse.json({ role: "assistant", content: text });
   } catch (error) {
     console.error("Error in chat API:", error);
+
+    // DEV_FALLBACK: If Gemini quota is exceeded or other errors occur in development
+    const isDev = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_DEV_AUTH === "true";
+    if (isDev) {
+      console.log("Using DEV_FALLBACK for Chat API");
+      return NextResponse.json({
+        role: "assistant",
+        content: "I am currently performing some maintenance on my royal records, but I can still assist you! How can I help with your elite event planning today?"
+      });
+    }
+
     return NextResponse.json(
-      { error: "Failed to generate response" },
+      { error: "Concierge service currently at capacity. Please try again shortly." },
       { status: 500 }
     );
   }

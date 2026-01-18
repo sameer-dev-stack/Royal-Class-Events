@@ -73,12 +73,12 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[500px] bg-zinc-950 border-zinc-800 text-white">
+            <DialogContent className="sm:max-w-[500px] bg-background border-border text-foreground">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-bold text-amber-500">
                         Contact {supplierName}
                     </DialogTitle>
-                    <DialogDescription className="text-zinc-400">
+                    <DialogDescription className="text-muted-foreground">
                         Fill in your event details to get a custom quote.
                     </DialogDescription>
                 </DialogHeader>
@@ -86,13 +86,13 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
                 <form onSubmit={handleSubmit} className="space-y-4 py-2">
                     {/* Date Picker */}
                     <div className="space-y-2">
-                        <Label className="text-zinc-300">Event Date</Label>
+                        <Label className="text-foreground">Event Date</Label>
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Button
                                     variant="outline"
                                     className={cn(
-                                        "w-full justify-start text-left font-normal bg-zinc-900 border-zinc-700 hover:bg-zinc-800",
+                                        "w-full justify-start text-left font-normal bg-card border-input hover:bg-muted text-foreground",
                                         !date && "text-muted-foreground"
                                     )}
                                 >
@@ -100,14 +100,14 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
                                     {date ? format(date, "PPP") : <span>Pick a date</span>}
                                 </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0 bg-zinc-900 border-zinc-700">
+                            <PopoverContent className="w-auto p-0 bg-background border-border">
                                 <Calendar
                                     mode="single"
                                     selected={date}
                                     onSelect={setDate}
                                     initialFocus
                                     disabled={(d) => d < new Date()}
-                                    className="text-white"
+                                    className="text-foreground"
                                 />
                             </PopoverContent>
                         </Popover>
@@ -115,25 +115,25 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label className="text-zinc-300">Guests</Label>
+                            <Label className="text-foreground">Guests</Label>
                             <Input
                                 type="number"
                                 placeholder="e.g. 500"
                                 value={guests}
                                 onChange={(e) => setGuests(e.target.value)}
-                                className="bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
+                                className="bg-card border-input text-foreground placeholder:text-muted-foreground"
                                 required
                                 min="1"
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-zinc-300">Budget (BDT)</Label>
+                            <Label className="text-foreground">Budget (BDT)</Label>
                             <Input
                                 type="number"
                                 placeholder="e.g. 50000"
                                 value={budget}
                                 onChange={(e) => setBudget(e.target.value)}
-                                className="bg-zinc-900 border-zinc-700 text-white placeholder:text-zinc-500"
+                                className="bg-card border-input text-foreground placeholder:text-muted-foreground"
                                 required
                                 min="0"
                             />
@@ -141,12 +141,12 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="text-zinc-300">Message</Label>
+                        <Label className="text-foreground">Message</Label>
                         <textarea
                             placeholder={`Hi ${supplierName}, I love your work! Is this date available?`}
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="w-full h-32 px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-md text-white placeholder:text-zinc-500 resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                            className="w-full h-32 px-3 py-2 bg-card border border-input rounded-md text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
                             required
                             minLength={10}
                         />

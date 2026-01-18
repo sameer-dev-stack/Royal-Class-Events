@@ -6,20 +6,20 @@ import { MapPin, Star, Heart, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function SupplierCard({ supplier }) {
-    const { _id, name, rating, reviewCount, location, startingPrice, coverUrl, categories, serviceImages } = supplier;
+    const { _id, name, rating, reviewCount, location, startingPrice, coverUrl, categories, serviceImages, views } = supplier;
     const displayImage = coverUrl || serviceImages?.[0] || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2098&auto=format&fit=crop";
 
     return (
         <Link href={`/marketplace/vendor/${_id}`} className="group block h-full">
-            <div className="relative h-full bg-zinc-900/40 backdrop-blur-md rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)] hover:-translate-y-1 flex flex-col group border border-white/5 hover:border-amber-500/30">
+            <div className="relative h-full bg-card/60 backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)] hover:-translate-y-1 flex flex-col group border border-border hover:border-amber-500/30">
 
                 {/* Image Section */}
-                <div className="relative h-56 overflow-hidden">
+                <div className="relative h-56 overflow-hidden rounded-3xl">
                     <Image
                         src={displayImage}
                         alt={name}
                         fill
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110 group-hover:saturate-110"
+                        className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-110 group-hover:saturate-150"
                     />
 
                     {/* Dark Gradient Overlay */}
@@ -37,6 +37,12 @@ export default function SupplierCard({ supplier }) {
                             <Badge variant="secondary" className="bg-amber-500/20 text-amber-400 border border-amber-500/20 backdrop-blur-md">
                                 New Arrival
                             </Badge>
+                        )}
+                        {/* Demand Badge */}
+                        {((rating >= 4.5) || (views > 50)) && (
+                            <div className="bg-rose-500/90 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm shadow-lg flex items-center gap-1">
+                                {rating >= 4.8 ? "🏆 Top Rated" : "🔥 High Demand"}
+                            </div>
                         )}
                     </div>
 
@@ -59,29 +65,29 @@ export default function SupplierCard({ supplier }) {
                 {/* Content Section */}
                 <div className="p-5 flex flex-col flex-grow relative">
                     {/* Glow element */}
-                    <div className="absolute -top-10 left-0 right-0 h-10 bg-gradient-to-t from-zinc-900/40 to-transparent pointer-events-none" />
+                    <div className="absolute -top-10 left-0 right-0 h-10 bg-gradient-to-t from-background/40 to-transparent pointer-events-none" />
 
-                    <div className="flex items-center text-sm text-zinc-400 mt-1 mb-4">
-                        <MapPin className="w-3.5 h-3.5 mr-1.5 text-zinc-500" />
+                    <div className="flex items-center text-sm text-muted-foreground mt-1 mb-4">
+                        <MapPin className="w-3.5 h-3.5 mr-1.5 text-muted-foreground" />
                         <span className="truncate">
                             {location?.city || "Dhaka"}, {location?.country || "Bangladesh"}
                         </span>
                     </div>
 
-                    <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+                    <div className="mt-auto pt-4 border-t border-border flex items-center justify-between">
                         <div className="flex flex-col">
-                            <span className="text-[10px] uppercase tracking-wider text-zinc-500">Starting from</span>
-                            <span className="text-lg font-bold text-zinc-200">
+                            <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Starting from</span>
+                            <span className="text-lg font-bold text-foreground">
                                 {startingPrice ? `৳ ${startingPrice.toLocaleString()}` : "Custom Pricing"}
                             </span>
                         </div>
 
-                        <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-black transition-all duration-300">
-                            <ArrowUpRight className="w-4 h-4" />
+                        <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-black transition-all duration-300">
+                            <ArrowUpRight className="w-4 h-4 text-foreground group-hover:text-black" />
                         </div>
                     </div>
                 </div>
             </div>
-        </Link>
+        </Link >
     );
 }

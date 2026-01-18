@@ -36,8 +36,8 @@ const ContactInfoItem = ({ icon: Icon, title, content, subContent }) => (
             <Icon className="w-5 h-5" />
         </div>
         <div className="space-y-1">
-            <h4 className="font-bold text-white uppercase text-[10px] tracking-widest opacity-50">{title}</h4>
-            <p className="text-xl font-bold">{content}</p>
+            <h4 className="font-bold text-muted-foreground uppercase text-[10px] tracking-widest">{title}</h4>
+            <p className="text-xl font-bold text-foreground">{content}</p>
             <p className="text-sm text-muted-foreground font-light">{subContent}</p>
         </div>
     </div>
@@ -62,7 +62,7 @@ export default function ContactPage() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-white pb-32">
+        <div className="min-h-screen bg-background text-foreground pb-32">
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto text-center relative z-10">
@@ -113,11 +113,11 @@ export default function ContactPage() {
                             />
                         </div>
 
-                        <div className="space-y-6 pt-10 border-t border-white/5">
+                        <div className="space-y-6 pt-10 border-t border-border">
                             <h4 className="font-bold uppercase text-[10px] tracking-[0.3em] opacity-50">Global Network</h4>
                             <div className="flex gap-4">
                                 {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
-                                    <button key={i} className="w-12 h-12 rounded-full bg-zinc-900 border border-white/5 flex items-center justify-center text-muted-foreground hover:text-amber-500 hover:border-amber-500/50 transition-all">
+                                    <button key={i} className="w-12 h-12 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-amber-500 hover:border-amber-500/50 transition-all">
                                         <Icon className="w-5 h-5" />
                                     </button>
                                 ))}
@@ -130,9 +130,9 @@ export default function ContactPage() {
                         initial={{ opacity: 0, x: 30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="relative p-1 bg-gradient-to-br from-amber-500/20 to-transparent rounded-[2.5rem]"
+                        className="relative p-1 bg-gradient-to-br from-amber-500/20 to-transparent rounded-3xl"
                     >
-                        <div className="bg-zinc-900 p-8 md:p-12 rounded-[2.3rem] shadow-2xl space-y-8">
+                        <div className="bg-card p-8 md:p-12 rounded-3xl shadow-2xl space-y-8 border border-border">
                             <div className="space-y-2">
                                 <h3 className="text-3xl font-black italic">Send a Dispatch</h3>
                                 <p className="text-muted-foreground font-light">Complete the form below to initiate communication.</p>
@@ -146,7 +146,7 @@ export default function ContactPage() {
                                             {...register("name")}
                                             placeholder="e.g. Alexander Thorne"
                                             className={cn(
-                                                "h-14 bg-zinc-950 border-white/5 rounded-2xl focus:ring-amber-500/50",
+                                                "h-14 bg-background border-border rounded-2xl focus:ring-amber-500/50",
                                                 errors.name && "border-red-500/50"
                                             )}
                                         />
@@ -158,7 +158,7 @@ export default function ContactPage() {
                                             {...register("email")}
                                             placeholder="e.g. alex@company.com"
                                             className={cn(
-                                                "h-14 bg-zinc-950 border-white/5 rounded-2xl focus:ring-amber-500/50",
+                                                "h-14 bg-background border-border rounded-2xl focus:ring-amber-500/50",
                                                 errors.email && "border-red-500/50"
                                             )}
                                         />
@@ -172,7 +172,7 @@ export default function ContactPage() {
                                         {...register("subject")}
                                         placeholder="What is this regarding?"
                                         className={cn(
-                                            "h-14 bg-zinc-950 border-white/5 rounded-2xl focus:ring-amber-500/50",
+                                            "h-14 bg-background border-border rounded-2xl focus:ring-amber-500/50",
                                             errors.subject && "border-red-500/50"
                                         )}
                                     />
@@ -185,7 +185,7 @@ export default function ContactPage() {
                                         {...register("message")}
                                         placeholder="Describe your requirements in detail..."
                                         className={cn(
-                                            "min-h-[160px] bg-zinc-950 border-white/5 rounded-3xl focus:ring-amber-500/50 pt-4",
+                                            "min-h-[160px] bg-background border-border rounded-3xl focus:ring-amber-500/50 pt-4",
                                             errors.message && "border-red-500/50"
                                         )}
                                     />
@@ -214,7 +214,7 @@ export default function ContactPage() {
             {/* Global Presence Map Placeholder */}
             <section className="py-32 px-6">
                 <div className="max-w-7xl mx-auto">
-                    <div className="relative h-[400px] w-full bg-zinc-900 border border-white/5 rounded-[3rem] overflow-hidden">
+                    <div className="relative h-[400px] w-full bg-card border border-border rounded-3xl overflow-hidden">
                         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
                         <div className="absolute inset-0 flex items-center justify-center">
                             <div className="text-center space-y-4">

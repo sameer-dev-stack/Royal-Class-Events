@@ -88,26 +88,34 @@ export default function AIIntelligencePanel({
                 <div className="relative">
                     <div className="flex items-end justify-between mb-2">
                         <div>
-                            <div className={`text-5xl font-bold bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
+                            <div className={`text-5xl font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
                                 {demandScore}
                             </div>
-                            <div className="text-sm text-white/60">out of 100</div>
+                            <div className="text-sm text-white/60 font-medium">out of 100</div>
                         </div>
                         <div className="text-right">
-                            <div className={`font-semibold bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent`}>
+                            <div className={`font-black bg-gradient-to-r ${scoreColor} bg-clip-text text-transparent uppercase tracking-wider`}>
                                 {scoreLabel}
                             </div>
-                            <div className="text-xs text-white/50 mt-1">Success Probability</div>
+                            <div className="text-xs text-white/50 mt-1 font-medium">Success Probability</div>
                         </div>
                     </div>
 
                     {/* Progress Bar */}
-                    <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden border border-white/5 mb-4">
                         <div
-                            className={`h-full bg-gradient-to-r ${scoreColor} transition-all duration-500`}
+                            className={`h-full bg-gradient-to-r ${scoreColor} transition-all duration-700 ease-out`}
                             style={{ width: `${demandScore}%` }}
                         />
                     </div>
+
+                    {prediction.reasoning && (
+                        <div className="mt-4 p-4 bg-white/5 rounded-2xl border border-white/5">
+                            <p className="text-sm text-white/80 leading-relaxed font-light">
+                                {prediction.reasoning}
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -133,9 +141,11 @@ export default function AIIntelligencePanel({
                         </div>
 
                         {suggestedPrice.reasoning && (
-                            <p className="text-sm text-white/70 leading-relaxed">
-                                {suggestedPrice.reasoning}
-                            </p>
+                            <div className="p-3 bg-yellow-500/10 rounded-xl border border-yellow-500/10">
+                                <p className="text-xs text-yellow-200/80 leading-relaxed italic">
+                                    "{suggestedPrice.reasoning}"
+                                </p>
+                            </div>
                         )}
 
                         <Button

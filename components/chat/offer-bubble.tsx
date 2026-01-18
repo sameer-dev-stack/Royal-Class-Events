@@ -138,7 +138,7 @@ export function OfferBubble({
                 className={cn(
                     "w-full max-w-md rounded-2xl border-2 overflow-hidden shadow-xl",
                     statusConfig.borderColor,
-                    "bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800"
+                    "bg-card text-card-foreground"
                 )}
             >
                 {/* Header */}
@@ -152,7 +152,7 @@ export function OfferBubble({
                                 <p className="text-xs font-bold uppercase tracking-widest text-amber-500">
                                     Official Offer
                                 </p>
-                                <p className="text-xs text-zinc-500">
+                                <p className="text-xs text-muted-foreground">
                                     {format(createdAt, "MMM d, yyyy • h:mm a")}
                                 </p>
                             </div>
@@ -173,11 +173,11 @@ export function OfferBubble({
                 {/* Content */}
                 <div className="p-5 space-y-4">
                     <div>
-                        <h4 className="text-lg font-bold text-white">
+                        <h4 className="text-lg font-bold text-card-foreground">
                             {offerTitle}
                         </h4>
                         {offerDescription && (
-                            <p className="text-sm text-zinc-400 mt-1 leading-relaxed">
+                            <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                                 {offerDescription}
                             </p>
                         )}
@@ -185,16 +185,16 @@ export function OfferBubble({
 
                     {/* Price */}
                     <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-white">
+                        <span className="text-3xl font-black text-card-foreground">
                             {formatPrice(offerAmount)}
                         </span>
                     </div>
 
                     {/* Validity */}
                     {isPending && (
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs text-muted-foreground">
                             Valid until{" "}
-                            <span className="text-zinc-300 font-medium">
+                            <span className="text-foreground font-medium">
                                 {format(validUntil, "MMM d, yyyy")}
                             </span>{" "}
                             ({formatDistanceToNow(validUntil, { addSuffix: true })})
@@ -204,13 +204,13 @@ export function OfferBubble({
 
                 {/* Actions - Only show for client when pending */}
                 {isClient && isPending && (
-                    <div className="border-t border-zinc-800 p-4 flex gap-3">
+                    <div className="border-t border-border p-4 flex gap-3">
                         <Button
                             onClick={() => onDecline(message._id)}
                             disabled={isDeclining || isAccepting}
                             variant="outline"
                             size="default"
-                            className="flex-1 h-12 rounded-xl border-zinc-700 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400"
+                            className="flex-1 h-12 rounded-xl border-input hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-500"
                         >
                             {isDeclining ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -226,7 +226,7 @@ export function OfferBubble({
                             disabled={isAccepting || isDeclining}
                             variant="default"
                             size="default"
-                            className="flex-1 h-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-black font-bold shadow-lg shadow-green-500/20"
+                            className="flex-1 h-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold shadow-lg shadow-green-500/20"
                         >
                             {isAccepting ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -242,8 +242,8 @@ export function OfferBubble({
 
                 {/* Supplier View - Read Only */}
                 {isSupplier && isPending && (
-                    <div className="border-t border-zinc-800 p-4">
-                        <div className="flex items-center justify-center gap-2 text-sm text-zinc-500">
+                    <div className="border-t border-border p-4">
+                        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                             <Clock className="w-4 h-4" />
                             Waiting for client response...
                         </div>

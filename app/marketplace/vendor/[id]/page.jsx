@@ -42,7 +42,7 @@ export default function VendorProfilePage() {
     // Loading State
     if (profile === undefined) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
                     <p className="text-muted-foreground">Loading vendor profile...</p>
@@ -54,7 +54,7 @@ export default function VendorProfilePage() {
     // Not Found State (or invalid ID)
     if (profile === null || !isValidId) {
         return (
-            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+            <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="text-center space-y-4">
                     <h1 className="text-4xl font-bold text-foreground">Vendor Not Found</h1>
                     <p className="text-muted-foreground">
@@ -96,9 +96,9 @@ export default function VendorProfilePage() {
 
     return (
         <>
-            <div className="min-h-screen bg-zinc-950">
+            <div className="min-h-screen bg-background text-foreground">
                 {/* ============== HERO SECTION ============== */}
-                <section className="relative h-[400px] md:h-[500px] overflow-hidden">
+                <section className="relative h-[400px] md:h-[500px] overflow-hidden rounded-3xl mx-4 md:mx-6 lg:mx-12 mt-6 shadow-2xl">
                     {/* Cover Image */}
                     <div className="absolute inset-0">
                         {coverUrl ? (
@@ -142,7 +142,7 @@ export default function VendorProfilePage() {
                                     )}
                                 </div>
                                 {verified && (
-                                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center border-2 border-zinc-950">
+                                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center border-2 border-background">
                                         <CheckCircle2 className="w-4 h-4 text-black" />
                                     </div>
                                 )}
@@ -179,7 +179,7 @@ export default function VendorProfilePage() {
                                     {categories?.slice(0, 4).map((cat) => (
                                         <span
                                             key={cat}
-                                            className="px-3 py-1 bg-zinc-800/50 text-zinc-300 text-xs font-medium rounded-full border border-zinc-700/50"
+                                            className="px-3 py-1 bg-secondary text-secondary-foreground text-xs font-medium rounded-full border border-border"
                                         >
                                             {cat}
                                         </span>
@@ -205,7 +205,7 @@ export default function VendorProfilePage() {
                                     <Sparkles className="w-5 h-5 text-amber-500" />
                                     About
                                 </h2>
-                                <p className="text-zinc-400 leading-relaxed whitespace-pre-line">
+                                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                                     {description || "No description provided yet."}
                                 </p>
                             </motion.div>
@@ -301,7 +301,7 @@ export default function VendorProfilePage() {
                                         {reviews.map((review) => (
                                             <div
                                                 key={review._id}
-                                                className="p-5 bg-zinc-900/50 rounded-xl border border-zinc-800/50"
+                                                className="p-5 bg-card/50 rounded-xl border border-border"
                                             >
                                                 <div className="flex items-start gap-4">
                                                     <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0">
@@ -364,10 +364,10 @@ export default function VendorProfilePage() {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.2 }}
-                                className="p-6 bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-zinc-800/50 shadow-2xl"
+                                className="p-6 bg-card/80 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl"
                             >
                                 {/* Starting Price */}
-                                <div className="mb-6 pb-6 border-b border-zinc-800/50">
+                                <div className="mb-6 pb-6 border-b border-border/50">
                                     <p className="text-sm text-muted-foreground mb-1">Starting from</p>
                                     <p className="text-3xl font-black text-amber-500">
                                         {formatPrice(startingPrice)}
@@ -379,18 +379,18 @@ export default function VendorProfilePage() {
                                     {contact?.email && (
                                         <a
                                             href={`mailto:${contact.email}`}
-                                            className="flex items-center gap-3 text-zinc-300 hover:text-amber-400 transition-colors"
+                                            className="flex items-center gap-3 text-muted-foreground hover:text-amber-500 transition-colors"
                                         >
-                                            <Mail className="w-5 h-5 text-zinc-500" />
+                                            <Mail className="w-5 h-5 text-muted-foreground" />
                                             <span className="text-sm truncate">{contact.email}</span>
                                         </a>
                                     )}
                                     {contact?.phone && (
                                         <a
                                             href={`tel:${contact.phone}`}
-                                            className="flex items-center gap-3 text-zinc-300 hover:text-amber-400 transition-colors"
+                                            className="flex items-center gap-3 text-muted-foreground hover:text-amber-500 transition-colors"
                                         >
-                                            <Phone className="w-5 h-5 text-zinc-500" />
+                                            <Phone className="w-5 h-5 text-muted-foreground" />
                                             <span className="text-sm">{contact.phone}</span>
                                         </a>
                                     )}
@@ -399,9 +399,9 @@ export default function VendorProfilePage() {
                                             href={contact.website}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-3 text-zinc-300 hover:text-amber-400 transition-colors"
+                                            className="flex items-center gap-3 text-muted-foreground hover:text-amber-500 transition-colors"
                                         >
-                                            <Globe className="w-5 h-5 text-zinc-500" />
+                                            <Globe className="w-5 h-5 text-muted-foreground" />
                                             <span className="text-sm truncate">{contact.website}</span>
                                         </a>
                                     )}
@@ -410,9 +410,9 @@ export default function VendorProfilePage() {
                                             href={`https://instagram.com/${contact.instagram}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-3 text-zinc-300 hover:text-amber-400 transition-colors"
+                                            className="flex items-center gap-3 text-muted-foreground hover:text-amber-500 transition-colors"
                                         >
-                                            <Instagram className="w-5 h-5 text-zinc-500" />
+                                            <Instagram className="w-5 h-5 text-muted-foreground" />
                                             <span className="text-sm">@{contact.instagram}</span>
                                         </a>
                                     )}

@@ -67,13 +67,13 @@ export default function ChatBot() {
           onClick={() => setIsOpen(!isOpen)}
           size="icon"
           className={cn(
-            "h-14 w-14 rounded-full shadow-lg transition-all duration-300",
+            "h-16 w-16 rounded-full shadow-2xl transition-all duration-300",
             isOpen
               ? "bg-destructive hover:bg-destructive/90 rotate-90"
-              : "bg-amber-600 hover:bg-amber-700 hover:scale-110 shadow-[0_0_20px_rgba(217,119,6,0.5)]"
+              : "bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 hover:scale-110 shadow-[0_0_30px_rgba(217,119,6,0.5)]"
           )}
         >
-          {isOpen ? <X className="h-6 w-6 text-white" /> : <MessageSquare className="h-6 w-6 text-white" />}
+          {isOpen ? <X className="h-7 w-7 text-white" /> : <MessageSquare className="h-7 w-7 text-white" />}
         </Button>
       </motion.div>
 
@@ -85,7 +85,7 @@ export default function ChatBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-50 w-[90vw] md:w-[380px] h-[500px] max-h-[70vh] flex flex-col rounded-2xl border border-amber-500/30 bg-background/95 backdrop-blur-md shadow-2xl overflow-hidden"
+            className="fixed bottom-28 right-6 z-50 w-[90vw] md:w-[400px] h-[550px] max-h-[75vh] flex flex-col rounded-3xl border border-amber-500/30 bg-background/95 backdrop-blur-md shadow-2xl overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center gap-3 p-4 border-b border-border bg-gradient-to-r from-amber-600/20 to-transparent">
@@ -129,10 +129,10 @@ export default function ChatBot() {
                     </div>
                     <div
                       className={cn(
-                        "rounded-2xl px-4 py-2 text-sm shadow-sm",
+                        "rounded-[1.4rem] px-4 py-3 text-sm shadow-sm leading-relaxed",
                         msg.role === "user"
-                          ? "bg-primary text-primary-foreground rounded-tr-none"
-                          : "bg-muted text-muted-foreground rounded-tl-none border border-border"
+                          ? "bg-amber-600 text-white rounded-tr-none"
+                          : "bg-muted/50 text-foreground rounded-tl-none border border-border"
                       )}
                     >
                       {msg.content}
@@ -147,7 +147,7 @@ export default function ChatBot() {
                     <div className="h-8 w-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center shrink-0">
                       <Bot className="h-4 w-4" />
                     </div>
-                    <div className="bg-muted rounded-2xl rounded-tl-none px-4 py-3 flex items-center gap-1">
+                    <div className="bg-muted/50 rounded-[1.4rem] rounded-tl-none px-4 py-4 flex items-center gap-1.5 border border-border">
                       <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                       <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
                       <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce"></span>
@@ -164,16 +164,16 @@ export default function ChatBot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask anything..."
-                  className="pr-12 bg-background border-input focus-visible:ring-amber-500 rounded-xl"
+                  className="h-12 pr-12 bg-background border-input focus-visible:ring-amber-500 rounded-2xl"
                   disabled={isLoading}
                 />
                 <Button
                   type="submit"
                   size="icon"
                   disabled={!input.trim() || isLoading}
-                  className="absolute right-1 h-8 w-8 rounded-lg bg-amber-600 hover:bg-amber-700 text-white"
+                  className="absolute right-1.5 h-9 w-9 rounded-xl bg-amber-600 hover:bg-amber-700 text-white shadow-lg"
                 >
-                  {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                 </Button>
               </div>
               <div className="text-center mt-2">

@@ -115,7 +115,7 @@ export default function SupplierProfilePage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">Public Profile</h1>
+                    <h1 className="text-3xl font-bold text-foreground tracking-tight">Public Profile</h1>
                     <p className="text-muted-foreground mt-1 text-lg">
                         Customize how your business appears to potential clients.
                     </p>
@@ -139,8 +139,8 @@ export default function SupplierProfilePage() {
             </div>
 
             <Tabs defaultValue="basic" className="space-y-6">
-                <TabsList className="bg-zinc-900/50 border border-zinc-800 p-1 rounded-2xl h-14 w-full md:w-auto grid grid-cols-3 md:flex gap-2">
-                    <TabsTrigger value="basic" className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold h-11 px-6">
+                <TabsList className="bg-muted/50 border border-border p-1 rounded-2xl h-14 w-full md:w-auto grid grid-cols-3 md:flex gap-2">
+                    <TabsTrigger value="basic" className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold h-11 px-6 transition-all">
                         Business Details
                     </TabsTrigger>
                     <TabsTrigger value="contact" className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold h-11 px-6">
@@ -152,8 +152,8 @@ export default function SupplierProfilePage() {
                 </TabsList>
 
                 <TabsContent value="basic">
-                    <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
-                        <CardHeader className="border-b border-zinc-800/50">
+                    <Card className="bg-card/50 border-border rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
+                        <CardHeader className="border-b border-border/50">
                             <CardTitle className="flex items-center gap-2">
                                 <User className="w-5 h-5 text-amber-500" />
                                 Brand Identity
@@ -161,27 +161,27 @@ export default function SupplierProfilePage() {
                         </CardHeader>
                         <CardContent className="p-8 space-y-8">
                             <div className="space-y-2">
-                                <Label className="text-zinc-400">Business Display Name</Label>
+                                <Label className="text-muted-foreground font-bold">Business Display Name</Label>
                                 <Input
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    className="bg-zinc-950 border-zinc-800 h-12 rounded-xl focus:ring-amber-500"
+                                    className="bg-background border-border h-12 rounded-xl focus:ring-amber-500"
                                     placeholder="e.g. Royal Cinematic Productions"
                                 />
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-zinc-400">About the Business</Label>
+                                <Label className="text-muted-foreground font-bold">About the Business</Label>
                                 <Textarea
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                    className="bg-zinc-950 border-zinc-800 min-h-[150px] rounded-xl focus:ring-amber-500"
+                                    className="bg-background border-border min-h-[150px] rounded-xl focus:ring-amber-500"
                                     placeholder="Describe your services, experience, and what makes you unique..."
                                 />
                             </div>
 
                             <div className="space-y-4">
-                                <Label className="text-zinc-400 font-bold block">Service Categories</Label>
+                                <Label className="text-muted-foreground font-bold block">Service Categories</Label>
                                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                                     {CATEGORIES.map(cat => (
                                         <button
@@ -192,7 +192,7 @@ export default function SupplierProfilePage() {
                                                 "px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-200 active:scale-95",
                                                 formData.categories.includes(cat)
                                                     ? "bg-amber-500 text-black border-amber-500 shadow-lg shadow-amber-500/10"
-                                                    : "bg-zinc-800/50 text-zinc-500 border-zinc-700 hover:border-zinc-500 hover:text-zinc-300"
+                                                    : "bg-muted/50 text-muted-foreground border-border hover:border-amber-500/30 hover:text-foreground"
                                             )}
                                         >
                                             {cat}
@@ -205,8 +205,8 @@ export default function SupplierProfilePage() {
                 </TabsContent>
 
                 <TabsContent value="contact">
-                    <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
-                        <CardHeader className="border-b border-zinc-800/50">
+                    <Card className="bg-card/50 border-border rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
+                        <CardHeader className="border-b border-border/50">
                             <CardTitle className="flex items-center gap-2">
                                 <Mail className="w-5 h-5 text-amber-500" />
                                 Channels
@@ -215,7 +215,7 @@ export default function SupplierProfilePage() {
                         <CardContent className="p-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <Label className="text-zinc-400 flex items-center gap-2">
+                                    <Label className="text-muted-foreground flex items-center gap-2 font-bold">
                                         <Mail className="w-4 h-4" />
                                         Public Email
                                     </Label>
@@ -223,7 +223,7 @@ export default function SupplierProfilePage() {
                                         type="email"
                                         value={formData.email}
                                         onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        className="bg-zinc-950 border-zinc-800 h-12 rounded-xl"
+                                        className="bg-background border-border h-12 rounded-xl"
                                         placeholder="business@example.com"
                                     />
                                 </div>
@@ -269,8 +269,8 @@ export default function SupplierProfilePage() {
                 </TabsContent>
 
                 <TabsContent value="location">
-                    <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
-                        <CardHeader className="border-b border-zinc-800/50">
+                    <Card className="bg-card/50 border-border rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
+                        <CardHeader className="border-b border-border/50">
                             <CardTitle className="flex items-center gap-2">
                                 <MapPin className="w-5 h-5 text-amber-500" />
                                 Physical Presence
@@ -279,30 +279,30 @@ export default function SupplierProfilePage() {
                         <CardContent className="p-8 space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <Label className="text-zinc-400">Primary City</Label>
+                                    <Label className="text-muted-foreground font-bold">Primary City</Label>
                                     <Input
                                         value={formData.city}
                                         onChange={e => setFormData({ ...formData, city: e.target.value })}
-                                        className="bg-zinc-950 border-zinc-800 h-12 rounded-xl"
+                                        className="bg-background border-border h-12 rounded-xl"
                                         placeholder="e.g. Dhaka"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-zinc-400">Country</Label>
+                                    <Label className="text-muted-foreground font-bold">Country</Label>
                                     <Input
                                         disabled
                                         value="Bangladesh"
-                                        className="bg-zinc-950 border-zinc-800 h-12 rounded-xl text-zinc-600"
+                                        className="bg-background border-border h-12 rounded-xl text-muted-foreground/60"
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <Label className="text-zinc-400">Full Business Address</Label>
+                                <Label className="text-muted-foreground font-bold">Full Business Address</Label>
                                 <Textarea
                                     value={formData.address}
                                     onChange={e => setFormData({ ...formData, address: e.target.value })}
-                                    className="bg-zinc-950 border-zinc-800 min-h-[100px] rounded-xl focus:ring-amber-500"
+                                    className="bg-background border-border min-h-[100px] rounded-xl focus:ring-amber-500"
                                     placeholder="Street address, building, floor..."
                                 />
                                 <p className="text-[10px] text-zinc-600 uppercase font-bold tracking-widest mt-2">

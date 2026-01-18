@@ -37,11 +37,10 @@ export default function SupplierDashboardPage() {
         );
     }
 
-    // 2. Non-Supplier State
     if (!data?.isSupplier) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <div className="text-center space-y-4 max-w-md mx-auto p-8 rounded-3xl bg-zinc-900/50 border border-zinc-800">
+                <div className="text-center space-y-4 max-w-md mx-auto p-8 rounded-3xl bg-card border border-border">
                     <Search className="w-12 h-12 mx-auto text-amber-500/50" />
                     <h2 className="text-xl font-bold text-foreground">Access Denied</h2>
                     <p className="text-muted-foreground">{data?.message || "You must be a registered vendor to access this dashboard."}</p>
@@ -92,7 +91,7 @@ export default function SupplierDashboardPage() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">Overview</h1>
+                    <h1 className="text-3xl font-bold text-foreground tracking-tight">Overview</h1>
                     <p className="text-muted-foreground mt-1 text-lg">
                         Manage your incoming leads and track performance.
                     </p>
@@ -107,7 +106,7 @@ export default function SupplierDashboardPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="bg-zinc-900/50 border border-zinc-800 p-8 rounded-3xl relative overflow-hidden group hover:border-amber-500/30 transition-colors"
+                        className="bg-card border border-border p-8 rounded-3xl relative overflow-hidden group hover:border-amber-500/30 transition-colors"
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl -z-10 group-hover:bg-amber-500/10 transition-colors" />
 
@@ -119,10 +118,10 @@ export default function SupplierDashboardPage() {
                         </div>
 
                         <div className="space-y-1">
-                            <p className="text-4xl font-bold text-white tracking-tight leading-none">
+                            <p className="text-4xl font-bold text-foreground tracking-tight leading-none">
                                 {card.value}
                             </p>
-                            <p className="text-zinc-400 font-medium text-sm uppercase tracking-wider">
+                            <p className="text-muted-foreground font-medium text-sm uppercase tracking-wider">
                                 {card.title}
                             </p>
                         </div>
@@ -133,21 +132,21 @@ export default function SupplierDashboardPage() {
             {/* Recent Leads */}
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-white">Recent Leads</h2>
-                    <Button asChild variant="ghost" className="text-amber-500 hover:text-amber-400 hover:bg-amber-500/5">
+                    <h2 className="text-xl font-bold text-foreground">Recent Leads</h2>
+                    <Button asChild variant="ghost" className="text-amber-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/5">
                         <Link href="/messages">View All Messages</Link>
                     </Button>
                 </div>
 
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-3xl overflow-hidden backdrop-blur-sm shadow-xl">
+                <div className="bg-card border border-border rounded-3xl overflow-hidden backdrop-blur-sm shadow-xl">
                     {recentLeads.length === 0 ? (
                         <div className="p-16 text-center space-y-6">
                             <div className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto">
                                 <MessageSquare className="w-10 h-10 text-amber-500/50" />
                             </div>
                             <div className="space-y-2">
-                                <h3 className="text-xl font-bold text-white">Waiting for leads...</h3>
-                                <p className="text-zinc-400 max-w-sm mx-auto">
+                                <h3 className="text-xl font-bold text-foreground">Waiting for leads...</h3>
+                                <p className="text-muted-foreground max-w-sm mx-auto">
                                     Your business is visible to planners, but you haven't received any inquiries yet.
                                 </p>
                             </div>
@@ -162,7 +161,7 @@ export default function SupplierDashboardPage() {
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
-                                    <tr className="border-b border-zinc-800 text-zinc-500 text-xs font-bold uppercase tracking-widest">
+                                    <tr className="border-b border-border text-muted-foreground text-xs font-bold uppercase tracking-widest">
                                         <th className="px-8 py-6">Client</th>
                                         <th className="px-6 py-6 font-bold">Event Date</th>
                                         <th className="px-6 py-6 font-bold">Budget</th>
@@ -170,22 +169,22 @@ export default function SupplierDashboardPage() {
                                         <th className="px-8 py-6 text-right font-bold tracking-widest leading-none">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-zinc-800/30">
+                                <tbody className="divide-y divide-border/20">
                                     {recentLeads.map((lead) => (
-                                        <tr key={lead._id} className="group hover:bg-zinc-800/20 transition-colors">
+                                        <tr key={lead._id} className="group hover:bg-muted/10 transition-colors">
                                             <td className="px-8 py-5">
-                                                <div className="font-semibold text-white">{lead.clientName}</div>
-                                                <div className="text-xs text-zinc-500 mt-1">Inquiry received</div>
+                                                <div className="font-semibold text-foreground">{lead.clientName}</div>
+                                                <div className="text-xs text-muted-foreground mt-1">Inquiry received</div>
                                             </td>
                                             <td className="px-6 py-5">
-                                                <div className="flex items-center gap-2 text-zinc-300">
-                                                    <Calendar className="w-4 h-4 text-zinc-500" />
+                                                <div className="flex items-center gap-2 text-foreground/80">
+                                                    <Calendar className="w-4 h-4 text-muted-foreground" />
                                                     {lead.eventDate ? format(new Date(lead.eventDate), "MMM d, yyyy") : "—"}
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-5 text-zinc-300 font-medium">
+                                            <td className="px-6 py-5 text-foreground/80 font-medium">
                                                 <div className="flex items-center gap-1">
-                                                    <DollarSign className="w-4 h-4 text-zinc-600" />
+                                                    <DollarSign className="w-4 h-4 text-muted-foreground" />
                                                     {lead.budget ? lead.budget.toLocaleString() : "—"}
                                                 </div>
                                             </td>
@@ -198,7 +197,7 @@ export default function SupplierDashboardPage() {
                                                 </span>
                                             </td>
                                             <td className="px-8 py-5 text-right">
-                                                <Button asChild size="sm" variant="ghost" className="h-9 w-9 p-0 hover:bg-amber-500/10 hover:text-amber-500 transition-all rounded-xl border border-zinc-800 hover:border-amber-500/30">
+                                                <Button asChild size="sm" variant="ghost" className="h-9 w-9 p-0 hover:bg-amber-500/10 hover:text-amber-500 transition-all rounded-xl border border-border hover:border-amber-500/30">
                                                     <Link href={`/messages/${lead._id}`}>
                                                         <ArrowUpRight className="w-4 h-4" />
                                                     </Link>

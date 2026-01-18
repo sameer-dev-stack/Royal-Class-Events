@@ -53,7 +53,7 @@ export default function MarketplacePage() {
     const categories = dbCategories?.length > 0 ? dbCategories : DEFAULT_CATEGORIES;
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-white selection:bg-amber-500/30">
+        <div className="min-h-screen bg-background text-foreground selection:bg-amber-500/30">
             {/* 1. Hero Section */}
             <MarketplaceHero categories={categories} cities={cities} />
 
@@ -67,7 +67,7 @@ export default function MarketplacePage() {
                                 <span className="text-amber-500 font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
                                     <Sparkles className="w-3 h-3" /> Search Results
                                 </span>
-                                <h2 className="text-3xl md:text-4xl font-bold text-white">
+                                <h2 className="text-3xl md:text-4xl font-bold text-foreground">
                                     {searchResults?.length || 0} Vendors Found
                                 </h2>
                                 <div className="flex gap-2 mt-2 text-sm text-zinc-400">
@@ -86,9 +86,9 @@ export default function MarketplacePage() {
                                 <Loader2 className="w-12 h-12 animate-spin text-amber-500" />
                             </div>
                         ) : searchResults.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-zinc-800 rounded-3xl bg-zinc-900/30">
-                                <SearchX className="w-16 h-16 text-zinc-700 mb-4" />
-                                <h3 className="text-xl font-bold text-zinc-300">No matches found</h3>
+                            <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-border rounded-3xl bg-muted/30">
+                                <SearchX className="w-16 h-16 text-muted-foreground mb-4" />
+                                <h3 className="text-xl font-bold text-foreground">No matches found</h3>
                                 <p className="text-zinc-500 max-w-sm mt-2">
                                     Try adjusting your search terms or filters. We're constantly onboarding new elite vendors.
                                 </p>
@@ -100,7 +100,7 @@ export default function MarketplacePage() {
                                 </Link>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {searchResults.map((supplier) => (
                                     <div key={supplier._id} className="h-[400px]">
                                         <SupplierCard supplier={supplier} />
@@ -117,11 +117,11 @@ export default function MarketplacePage() {
                             <div className="flex justify-between items-end mb-10">
                                 <div>
                                     <span className="text-amber-500 font-bold tracking-widest uppercase text-xs mb-2 block">Curated Collections</span>
-                                    <h2 className="text-3xl md:text-4xl font-bold text-white">
+                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground">
                                         Service Categories
                                     </h2>
                                 </div>
-                                <Link href="/marketplace/categories" className="group text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm uppercase tracking-wider">
+                                <Link href="/marketplace/categories" className="group text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 text-sm uppercase tracking-wider">
                                     View All <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
@@ -137,7 +137,7 @@ export default function MarketplacePage() {
                                             src={CATEGORY_IMAGES[cat] || `https://placehold.co/400x600?text=${encodeURIComponent(cat)}`}
                                             alt={cat}
                                             fill
-                                            className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:saturate-150"
+                                            className="object-cover object-top transition-transform duration-700 group-hover:scale-110 group-hover:saturate-150"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent group-hover:from-amber-950/80 transition-colors duration-500" />
 
@@ -159,11 +159,11 @@ export default function MarketplacePage() {
                                     <span className="text-amber-500 font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
                                         <Sparkles className="w-3 h-3" /> Top Rated
                                     </span>
-                                    <h2 className="text-3xl md:text-4xl font-bold text-white">
+                                    <h2 className="text-3xl md:text-4xl font-bold text-foreground">
                                         Featured Vendors
                                     </h2>
                                 </div>
-                                <Link href="/marketplace?sort=rating" className="group text-zinc-400 hover:text-white transition-colors flex items-center gap-2 text-sm uppercase tracking-wider">
+                                <Link href="/marketplace?sort=rating" className="group text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2 text-sm uppercase tracking-wider">
                                     Explore Elite <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
@@ -173,7 +173,7 @@ export default function MarketplacePage() {
                                     <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {featuredSuppliers.map((supplier) => (
                                         <div key={supplier._id} className="h-[400px]">
                                             <SupplierCard supplier={supplier} />

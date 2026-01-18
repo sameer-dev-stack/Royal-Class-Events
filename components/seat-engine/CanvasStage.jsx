@@ -5,35 +5,26 @@ import { Stage, Layer, Rect, Circle, Group, Transformer, Text, Line } from "reac
 import useSeatEngine, { TOOL_TYPES, SEAT_NAMING } from "@/hooks/use-seat-engine";
 import useSeatHotkeys from "@/hooks/use-seat-hotkeys";
 import { calculateArcPosition, getRectTableSeats } from "@/utils/geometry";
-import { ASSET_LIBRARY } from "@/constants/seat-engine-assets";
+import AssetRenderer from "./renderers/AssetRenderer";
 
 /**
- * Royal Seat Engine - Canvas Stage Component
- * FIXED VERSION - All drag bugs resolved
+ * Royal Seat Engine - FIXED PERFORMANCE VERSION
+ * Fixed: Dragging lag, Coordinate jumping, and Multi-select sync.
  */
 
-// Scale constraints
+const GRID_SIZE = 10;
 const MIN_SCALE = 0.05;
 const MAX_SCALE = 5;
 const SCALE_FACTOR = 1.1;
-
-// Colors
+const LOD_THRESHOLD = 0.4;
 const ZONE_FILL_DEFAULT = "#D4AF37";
 const ZONE_OPACITY = 0.15;
-const LOD_OPACITY = 0.8;
 const SEAT_FILL_DEFAULT = "#52525b";
-
-// Zone padding
-const ZONE_PADDING = 10;
 const TITLE_HEIGHT = 20;
 const LABEL_WIDTH = 25;
+const ZONE_PADDING = 10;
 
-// LOD Threshold
-const LOD_THRESHOLD = 0.4;
-
-/**
- * Helper to generate row label text
- */
+// Helper to generate row label text
 function getRowLabel(index, namingType) {
     if (namingType === SEAT_NAMING.NUMERICAL) return (index + 1).toString();
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -43,28 +34,20 @@ function getRowLabel(index, namingType) {
     return letters[first] + letters[second];
 }
 
-/**
- * Render seat grid or arc inside a zone
- */
+// Seat Rendering Logic
 function renderSeats(element, scale) {
     const { seatConfig, width, height, fill } = element;
-    if (!seatConfig) return null;
+    if (!seatConfig || scale < LOD_THRESHOLD) return null;
 
     const { rowCount, colCount, seatNaming, showLabels, curvature = 0, categoryId } = seatConfig;
-    const seats = [];
-
     const categories = useSeatEngine.getState().categories;
     const category = categories.find(c => c.id === categoryId);
     const seatColor = category ? category.color : (fill || SEAT_FILL_DEFAULT);
-
-    if (scale < LOD_THRESHOLD) return null;
-    if (!rowCount || rowCount <= 0 || !colCount || colCount <= 0) return null;
-
-    const labelSpace = showLabels ? LABEL_WIDTH : 0;
+    const seats = [];
 
     if (curvature > 0) {
-        const arcWidth = width - labelSpace;
-        const centerX = labelSpace + arcWidth / 2;
+        const arcWidth = width - (showLabels ? LABEL_WIDTH : 0);
+        const centerX = (showLabels ? LABEL_WIDTH : 0) + arcWidth / 2;
         const baseRadius = (arcWidth * 100) / curvature;
         const centerY = -baseRadius + height / 2;
         const totalAngle = (arcWidth / baseRadius) * (180 / Math.PI);
@@ -73,188 +56,97 @@ function renderSeats(element, scale) {
         for (let row = 0; row < rowCount; row++) {
             const currentRadius = baseRadius + row * (height / rowCount);
             const step = totalAngle / Math.max(1, colCount - 1);
-
             for (let col = 0; col < colCount; col++) {
                 const angle = startAngle + (col * step);
                 const pos = calculateArcPosition(centerX, centerY, currentRadius, angle);
-
-                seats.push(
-                    <Circle
-                        key={`seat-${row}-${col}`}
-                        x={pos.x}
-                        y={pos.y}
-                        radius={Math.min(10, 100 / colCount)}
-                        fill={seatColor}
-                        listening={false}
-                    />
-                );
+                seats.push(<Circle key={`s-${row}-${col}`} x={pos.x} y={pos.y} radius={Math.min(8, 80 / colCount)} fill={seatColor} listening={false} />);
             }
         }
         return seats;
     }
 
+    const labelSpace = showLabels ? LABEL_WIDTH : 0;
     const availableWidth = width - ZONE_PADDING * 2 - labelSpace;
     const availableHeight = height - ZONE_PADDING * 2 - TITLE_HEIGHT;
-
     if (availableWidth <= 0 || availableHeight <= 0) return null;
 
     const cellWidth = availableWidth / colCount;
     const cellHeight = availableHeight / rowCount;
-    const seatRadius = Math.max(3, Math.min(cellWidth, cellHeight) / 3);
+    const seatRadius = Math.max(2, Math.min(cellWidth, cellHeight) / 3);
 
     for (let row = 0; row < rowCount; row++) {
         const y = ZONE_PADDING + TITLE_HEIGHT + cellHeight / 2 + row * cellHeight;
         if (showLabels) {
-            seats.push(
-                <Text
-                    key={`label-${row}`}
-                    x={ZONE_PADDING} y={y - 6}
-                    text={getRowLabel(row, seatNaming)}
-                    fontSize={10} fontStyle="bold"
-                    fill={fill || "#D4AF37"} width={LABEL_WIDTH} align="center"
-                    listening={false}
-                />
-            );
+            seats.push(<Text key={`l-${row}`} x={ZONE_PADDING} y={y - 6} text={getRowLabel(row, seatNaming)} fontSize={10} fontStyle="bold" fill={fill || "#D4AF37"} width={LABEL_WIDTH} align="center" listening={false} />);
         }
         for (let col = 0; col < colCount; col++) {
             const x = ZONE_PADDING + labelSpace + cellWidth / 2 + col * cellWidth;
-            seats.push(
-                <Circle key={`seat-${row}-${col}`} x={x} y={y} radius={seatRadius} fill={seatColor} listening={false} />
-            );
+            seats.push(<Circle key={`s-${row}-${col}`} x={x} y={y} radius={seatRadius} fill={seatColor} listening={false} />);
         }
     }
     return seats;
 }
 
-/**
- * Universal Multi-Element Transformer
- */
-function MultiTransformer({ selectedIds }) {
-    const transformerRef = useRef(null);
-
-    useEffect(() => {
-        if (transformerRef.current) {
-            const stage = transformerRef.current.getStage();
-            const elementNodes = stage.find('.element-group').filter(node => selectedIds.includes(node.id()));
-
-            transformerRef.current.nodes(elementNodes);
-            transformerRef.current.getLayer().batchDraw();
-        }
-    }, [selectedIds]);
-
-    if (selectedIds.length === 0) return null;
-
-    return (
-        <Transformer
-            ref={transformerRef}
-            rotateEnabled={true}
-            anchorSize={8}
-            anchorCornerRadius={2}
-            borderStroke="#D4AF37"
-            anchorStroke="#D4AF37"
-            rotateAnchorOffset={25}
-            boundBoxFunc={(oldBox, newBox) => {
-                if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-                    return oldBox;
-                }
-                return newBox;
-            }}
-        />
-    );
-}
-
-// Asset Graphic Component
-const AssetGraphic = ({ element, width, height }) => {
-    const { assetConfig } = element;
-    const color = element.fill || assetConfig?.color || "#555";
-
-    if (assetConfig?.type === 'TABLE' || element.assetType === 'TABLE') {
-        const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
-        const tableColor = element.fill || assetConfig?.color || "#78350f";
-        const chairs = [];
-        const radius = Math.min(width, height) / 2;
-        const chairRadius = radius / 4;
-
-        for (let i = 0; i < capacity; i++) {
-            const angle = (i / capacity) * 2 * Math.PI;
-            const x = width / 2 + Math.cos(angle) * (radius + chairRadius / 2);
-            const y = height / 2 + Math.sin(angle) * (radius + chairRadius / 2);
-            chairs.push(
-                <Circle
-                    key={`chair-${i}`}
-                    x={x} y={y}
-                    radius={chairRadius}
-                    fill="#3f3f46"
-                    stroke={tableColor}
-                    strokeWidth={1}
-                    listening={false}
-                />
-            );
-        }
-
-        return (
-            <Group>
-                <Circle x={width / 2 + 2} y={height / 2 + 2} radius={radius} fill="black" opacity={0.2} listening={false} />
-                <Circle x={width / 2} y={height / 2} radius={radius} fill={tableColor} stroke="#451a03" strokeWidth={2} shadowBlur={5} shadowOpacity={0.5} />
-                <Circle x={width / 2} y={height / 2} radius={radius * 0.85} stroke="#451a03" strokeWidth={1} opacity={0.3} listening={false} />
-                {chairs}
-                <Text text={`${capacity}`} width={width} height={height} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={radius / 2} opacity={0.9} listening={false} />
-            </Group>
-        );
+// Global Drag Handlers to prevent Jittering and Lag
+const handleDragStartGlobal = (e, element, isSelected) => {
+    if (!isSelected) {
+        useSeatEngine.getState().setSelectedIds([element.id]);
     }
+    const stage = e.target.getStage();
+    const selectedIds = useSeatEngine.getState().selectedIds;
+    const allElements = useSeatEngine.getState().elements;
 
-    if (assetConfig?.type === 'RECT_TABLE' || element.assetType === 'RECT_TABLE') {
-        const chairRadius = 6;
-        const capacity = element.seatConfig?.capacity || assetConfig?.defaultCapacity || 6;
-        const tableColor = element.fill || assetConfig?.color || "#78350f";
-        const w = width || 120;
-        const h = height || 80;
-        const chairs = [];
+    // Store starting positions of all selected elements for relative movement
+    stage._draggedNodes = allElements
+        .filter(el => selectedIds.includes(el.id))
+        .map(el => ({ id: el.id, x: el.x, y: el.y }));
 
-        const seatPositions = getRectTableSeats(w, h, capacity, 5, chairRadius);
-        seatPositions.forEach((pos, i) => {
-            chairs.push(
-                <Circle
-                    key={`rect-chair-${i}`}
-                    x={pos.x} y={pos.y}
-                    radius={chairRadius}
-                    fill="white"
-                    stroke="gray"
-                    strokeWidth={1}
-                    listening={false}
-                />
-            );
-        });
-
-        return (
-            <Group listening={true}>
-                <Rect x={2} y={2} width={w} height={h} fill="black" opacity={0.2} cornerRadius={8} listening={false} />
-                <Rect width={w} height={h} fill={tableColor} stroke="#451a03" strokeWidth={2} cornerRadius={8} shadowBlur={5} shadowOpacity={0.5} />
-                <Rect x={10} y={10} width={w - 20} height={h - 20} stroke="#451a03" strokeWidth={1} opacity={0.3} cornerRadius={4} listening={false} />
-                {chairs}
-                <Text text={`${capacity}`} width={w} height={h} align="center" verticalAlign="middle" fill="white" fontStyle="bold" fontSize={24} opacity={0.9} listening={false} />
-            </Group>
-        );
-    }
-
-    return (
-        <Group>
-            <Rect width={width} height={height} fill={`${color}40`} stroke={color} strokeWidth={2} cornerRadius={4} dash={element.type === "PILLAR" ? undefined : [5, 2]} />
-            {(assetConfig?.type === "STAGE" || assetConfig?.type === "CONSOLE") && (
-                <>
-                    <Line points={[0, 0, width, height]} stroke={color} strokeWidth={1} opacity={0.3} />
-                    <Line points={[width, 0, 0, height]} stroke={color} strokeWidth={1} opacity={0.3} />
-                </>
-            )}
-            <Text text={element.name || assetConfig?.label || "ASSET"} width={width} height={height} align="center" verticalAlign="middle" fill="#fff" fontStyle="bold" fontSize={Math.max(10, Math.min(width, height) / 5)} padding={5} />
-        </Group>
-    );
+    stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
 };
 
-// AssetElement Component
-function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
+const handleDragMoveGlobal = (e) => {
+    const stage = e.target.getStage();
+    if (!stage._dragStartPos) return;
+
+    const dx = e.target.x() - stage._dragStartPos.x;
+    const dy = e.target.y() - stage._dragStartPos.y;
+
+    // Move all other selected nodes visually WITHOUT updating React state yet
+    stage.find('.element-group').forEach(node => {
+        if (node === e.target) return; // current node moves naturally
+        const stored = stage._draggedNodes?.find(d => d.id === node.id());
+        if (stored) {
+            node.position({ x: stored.x + dx, y: stored.y + dy });
+        }
+    });
+};
+
+const handleDragEndGlobal = (e, updateElement) => {
+    const stage = e.target.getStage();
+    if (!stage._dragStartPos) return;
+
+    const dx = e.target.x() - stage._dragStartPos.x;
+    const dy = e.target.y() - stage._dragStartPos.y;
+
+    // Bulk update state only once at the end of drag
+    stage._draggedNodes?.forEach(d => {
+        updateElement(d.id, {
+            x: Math.round((d.x + dx) / GRID_SIZE) * GRID_SIZE,
+            y: Math.round((d.y + dy) / GRID_SIZE) * GRID_SIZE
+        });
+    });
+
+    delete stage._draggedNodes;
+    delete stage._dragStartPos;
+};
+
+// Simplified Asset Graphic
+
+
+// Generic Element Component to avoid code repetition
+function SceneElement({ element, isSelected, onSelect, onChange, scale, draggable }) {
     const shapeRef = useRef(null);
-    const fillColor = element.fill || ZONE_FILL_DEFAULT;
+    const updateElement = useSeatEngine(state => state.updateElement);
 
     return (
         <Group
@@ -262,306 +154,37 @@ function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
             name="element-group"
             ref={shapeRef}
             x={element.x} y={element.y}
-            width={element.width} height={element.height}
-            rotation={element.rotation || 0}
             draggable={draggable}
-            onMouseEnter={(e) => {
-                if (draggable) e.target.getStage().container().style.cursor = 'move';
-            }}
-            onMouseLeave={(e) => {
-                e.target.getStage().container().style.cursor = 'default';
-            }}
+            dragBoundFunc={(pos) => ({
+                x: Math.round(pos.x / GRID_SIZE) * GRID_SIZE,
+                y: Math.round(pos.y / GRID_SIZE) * GRID_SIZE
+            })}
             onClick={onSelect}
-            onDragStart={(e) => {
-                if (!isSelected) {
-                    useSeatEngine.getState().setSelectedIds([element.id]);
-                }
-                const stage = e.target.getStage();
-                const currentSelectedIds = useSeatEngine.getState().selectedIds;
-                const allElements = useSeatEngine.getState().elements;
-                const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
-                stage._draggedNodes = allElements
-                    .filter(el => targetIds.includes(el.id))
-                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
-                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
-            }}
-            onDragMove={(e) => {
-                e.evt.preventDefault();
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) return;
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage.find('.element-group').forEach(node => {
-                    if (node === e.target) return;
-                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
-                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
-                });
-            }}
-            onDragEnd={(e) => {
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) {
-                    const snappedX = Math.round(e.target.x() / 10) * 10;
-                    const snappedY = Math.round(e.target.y() / 10) * 10;
-                    onChange({ x: snappedX, y: snappedY });
-                    return;
-                }
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage._draggedNodes?.forEach(d => {
-                    const snappedX = Math.round((d.x + dx) / 10) * 10;
-                    const snappedY = Math.round((d.y + dy) / 10) * 10;
-                    useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
-                });
-                delete stage._draggedNodes;
-                delete stage._dragStartPos;
-            }}
+            onDragStart={(e) => handleDragStartGlobal(e, element, isSelected)}
+            onDragMove={handleDragMoveGlobal}
+            onDragEnd={(e) => handleDragEndGlobal(e, updateElement)}
             onTransformEnd={() => {
                 const node = shapeRef.current;
-                const scale = Math.max(node.scaleX(), node.scaleY());
-                onChange({ x: node.x(), y: node.y(), width: element.width * scale, height: element.height * scale });
+                onChange({
+                    x: node.x(), y: node.y(),
+                    width: node.width() * node.scaleX(),
+                    height: node.height() * node.scaleY(),
+                    rotation: node.rotation()
+                });
                 node.scaleX(1); node.scaleY(1);
             }}
         >
-            <AssetGraphic element={element} width={element.width} height={element.height} />
-        </Group>
-    );
-}
-
-// PolygonElement Component
-function PolygonElement({ element, isSelected, onSelect, onChange, draggable }) {
-    const shapeRef = useRef(null);
-    const fillColor = element.fill || ZONE_FILL_DEFAULT;
-
-    return (
-        <Group
-            id={element.id}
-            name="element-group"
-            ref={shapeRef} x={element.x} y={element.y}
-            draggable={draggable}
-            onMouseEnter={(e) => {
-                if (draggable) e.target.getStage().container().style.cursor = 'move';
-            }}
-            onMouseLeave={(e) => {
-                e.target.getStage().container().style.cursor = 'default';
-            }}
-            onClick={onSelect}
-            onDragStart={(e) => {
-                if (!isSelected) {
-                    useSeatEngine.getState().setSelectedIds([element.id]);
-                }
-                const stage = e.target.getStage();
-                const currentSelectedIds = useSeatEngine.getState().selectedIds;
-                const allElements = useSeatEngine.getState().elements;
-                const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
-                stage._draggedNodes = allElements
-                    .filter(el => targetIds.includes(el.id))
-                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
-                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
-            }}
-            onDragMove={(e) => {
-                e.evt.preventDefault();
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) return;
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage.find('.element-group').forEach(node => {
-                    if (node === e.target) return;
-                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
-                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
-                });
-            }}
-            onDragEnd={(e) => {
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) {
-                    const snappedX = Math.round(e.target.x() / 10) * 10;
-                    const snappedY = Math.round(e.target.y() / 10) * 10;
-                    onChange({ x: snappedX, y: snappedY });
-                    return;
-                }
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage._draggedNodes?.forEach(d => {
-                    const snappedX = Math.round((d.x + dx) / 10) * 10;
-                    const snappedY = Math.round((d.y + dy) / 10) * 10;
-                    useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
-                });
-                delete stage._draggedNodes;
-                delete stage._dragStartPos;
-            }}
-        >
-            <Line points={element.points || []} closed fill={fillColor} opacity={ZONE_OPACITY} stroke={isSelected ? "#D4AF37" : fillColor} strokeWidth={2} />
-            {element.name && (
-                <Text
-                    text={element.name.toUpperCase()}
-                    x={element.points ? (Math.min(...element.points.filter((_, i) => i % 2 === 0)) + Math.max(...element.points.filter((_, i) => i % 2 === 0))) / 2 - 50 : 0}
-                    y={element.points ? (Math.min(...element.points.filter((_, i) => i % 2 === 1)) + Math.max(...element.points.filter((_, i) => i % 2 === 1))) / 2 - 10 : 0}
-                    width={100}
-                    align="center"
-                    fontSize={14} fontStyle="bold"
-                    fill={fillColor} opacity={0.6} letterSpacing={1}
-                    listening={false}
-                />
+            {element.type === TOOL_TYPES.RECTANGLE || element.type === TOOL_TYPES.CURVE ? (
+                <>
+                    <Rect width={element.width} height={element.height} fill={element.fill || ZONE_FILL_DEFAULT} opacity={ZONE_OPACITY} stroke={isSelected ? "#D4AF37" : (element.fill || ZONE_FILL_DEFAULT)} strokeWidth={isSelected ? 2 : 1} cornerRadius={4} />
+                    <Text text={element.name?.toUpperCase()} width={element.width} height={TITLE_HEIGHT} y={5} align="center" fontSize={12} fontStyle="bold" fill={element.fill || ZONE_FILL_DEFAULT} opacity={0.8} listening={false} />
+                    {renderSeats(element, scale)}
+                </>
+            ) : element.type === TOOL_TYPES.CIRCLE ? (
+                <Circle x={element.width / 2} y={element.height / 2} radius={element.width / 2} fill={element.fill || ZONE_FILL_DEFAULT} opacity={ZONE_OPACITY} stroke={isSelected ? "#D4AF37" : (element.fill || ZONE_FILL_DEFAULT)} strokeWidth={isSelected ? 2 : 1} />
+            ) : (
+                <AssetRenderer element={element} width={element.width} height={element.height} />
             )}
-        </Group>
-    );
-}
-
-// ZoneElement Component
-function ZoneElement({ element, isSelected, onSelect, onChange, scale, draggable }) {
-    const shapeRef = useRef(null);
-    const fillColor = element.fill || ZONE_FILL_DEFAULT;
-
-    return (
-        <Group
-            id={element.id}
-            name="element-group"
-            ref={shapeRef}
-            x={element.x} y={element.y}
-            width={element.width} height={element.height}
-            draggable={draggable}
-            onMouseEnter={(e) => {
-                if (draggable) e.target.getStage().container().style.cursor = 'move';
-            }}
-            onMouseLeave={(e) => {
-                e.target.getStage().container().style.cursor = 'default';
-            }}
-            onClick={onSelect}
-            onDragStart={(e) => {
-                if (!isSelected) {
-                    useSeatEngine.getState().setSelectedIds([element.id]);
-                }
-                const stage = e.target.getStage();
-                const currentSelectedIds = useSeatEngine.getState().selectedIds;
-                const allElements = useSeatEngine.getState().elements;
-                const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
-                stage._draggedNodes = allElements
-                    .filter(el => targetIds.includes(el.id))
-                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
-                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
-            }}
-            onDragMove={(e) => {
-                e.evt.preventDefault();
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) return;
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage.find('.element-group').forEach(node => {
-                    if (node === e.target) return;
-                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
-                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
-                });
-            }}
-            onDragEnd={(e) => {
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) {
-                    const snappedX = Math.round(e.target.x() / 10) * 10;
-                    const snappedY = Math.round(e.target.y() / 10) * 10;
-                    onChange({ x: snappedX, y: snappedY });
-                    return;
-                }
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage._draggedNodes?.forEach(d => {
-                    const snappedX = Math.round((d.x + dx) / 10) * 10;
-                    const snappedY = Math.round((d.y + dy) / 10) * 10;
-                    useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
-                });
-                delete stage._draggedNodes;
-                delete stage._dragStartPos;
-            }}
-            onTransformEnd={() => {
-                const node = shapeRef.current;
-                const scale = Math.max(node.scaleX(), node.scaleY());
-                onChange({ x: node.x(), y: node.y(), width: element.width * scale, height: element.height * scale });
-                node.scaleX(1); node.scaleY(1);
-            }}
-        >
-            <Rect width={element.width} height={element.height} fill={fillColor} opacity={ZONE_OPACITY} stroke={isSelected ? "#D4AF37" : fillColor} strokeWidth={isSelected ? 2 : 1} cornerRadius={4} />
-            <Text text={element.name?.toUpperCase()} width={element.width} height={TITLE_HEIGHT} y={5} align="center" fontSize={12} fontStyle="bold" fill={fillColor} opacity={0.8} listening={false} />
-            {renderSeats(element, scale)}
-        </Group>
-    );
-}
-
-// CircleElement Component
-function CircleElement({ element, isSelected, onSelect, onChange, draggable }) {
-    const shapeRef = useRef(null);
-    const fillColor = element.fill || ZONE_FILL_DEFAULT;
-
-    return (
-        <Group
-            id={element.id}
-            name="element-group"
-            ref={shapeRef}
-            x={element.x} y={element.y}
-            width={element.width} height={element.height}
-            draggable={draggable}
-            onMouseEnter={(e) => {
-                if (draggable) e.target.getStage().container().style.cursor = 'move';
-            }}
-            onMouseLeave={(e) => {
-                e.target.getStage().container().style.cursor = 'default';
-            }}
-            onClick={onSelect}
-            onDragStart={(e) => {
-                if (!isSelected) {
-                    useSeatEngine.getState().setSelectedIds([element.id]);
-                }
-                const stage = e.target.getStage();
-                const currentSelectedIds = useSeatEngine.getState().selectedIds;
-                const allElements = useSeatEngine.getState().elements;
-                const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
-                stage._draggedNodes = allElements
-                    .filter(el => targetIds.includes(el.id))
-                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
-                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
-            }}
-            onDragMove={(e) => {
-                e.evt.preventDefault();
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) return;
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage.find('.element-group').forEach(node => {
-                    if (node === e.target) return;
-                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
-                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
-                });
-            }}
-            onDragEnd={(e) => {
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) {
-                    const snappedX = Math.round(e.target.x() / 10) * 10;
-                    const snappedY = Math.round(e.target.y() / 10) * 10;
-                    onChange({ x: snappedX, y: snappedY });
-                    return;
-                }
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage._draggedNodes?.forEach(d => {
-                    const snappedX = Math.round((d.x + dx) / 10) * 10;
-                    const snappedY = Math.round((d.y + dy) / 10) * 10;
-                    useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
-                });
-                delete stage._draggedNodes;
-                delete stage._dragStartPos;
-            }}
-            onTransformEnd={() => {
-                const node = shapeRef.current;
-                const scale = Math.max(node.scaleX(), node.scaleY());
-                onChange({ x: node.x(), y: node.y(), width: element.width * scale, height: element.height * scale });
-                node.scaleX(1); node.scaleY(1);
-            }}
-        >
-            <Circle x={element.width / 2} y={element.height / 2} radius={element.width / 2} fill={fillColor} opacity={ZONE_OPACITY} stroke={isSelected ? "#D4AF37" : fillColor} strokeWidth={isSelected ? 2 : 1} />
         </Group>
     );
 }
@@ -581,7 +204,6 @@ export default function CanvasStage() {
     const [newElement, setNewElement] = useState(null);
     const [polyPoints, setPolyPoints] = useState([]);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
     const [draggingAsset, setDraggingAsset] = useState(null);
     const [ghostPos, setGhostPos] = useState({ x: 0, y: 0 });
 
@@ -591,30 +213,22 @@ export default function CanvasStage() {
             const { width, height } = containerRef.current.getBoundingClientRect();
             setStageSize(width, height);
         };
-        const resizeObserver = new ResizeObserver(updateSize);
-        if (containerRef.current) resizeObserver.observe(containerRef.current);
         updateSize();
-        return () => resizeObserver.disconnect();
+        window.addEventListener('resize', updateSize);
+        return () => window.removeEventListener('resize', updateSize);
     }, [setStageSize]);
 
     useSeatHotkeys();
 
-    /**
-     * 🔥 FIXED: getRelativePos using DOM Rect Projection
-     * This ensures that mouse coordinates are correctly mapped to the canvas space,
-     * accounting for sidebar offsets and zoom levels.
-     */
+    // Correctly mapped relative position
     const getRelativePos = (evt) => {
         const stage = stageRef.current;
         if (!stage || !containerRef.current) return null;
 
-        // Step A: Get the raw DOM position of the canvas container (accounts for Sidebar)
         const stageBox = containerRef.current.getBoundingClientRect();
-
-        // Step B: Calculate Mouse Position relative to the Canvas DOM element
-        // If evt is provided (from native events), use clientX/Y. Otherwise, use Konva's pointer.
         let pointerX, pointerY;
-        if (evt) {
+
+        if (evt && evt.clientX) {
             pointerX = evt.clientX - stageBox.left;
             pointerY = evt.clientY - stageBox.top;
         } else {
@@ -624,8 +238,6 @@ export default function CanvasStage() {
             pointerY = pointer.y;
         }
 
-        // Step C: Apply the "Inverse Transform" to account for Zoom (scale) and Pan (x,y)
-        // Formula: (RawMouse - StagePan) / StageScale
         const scaleX = stage.scaleX();
         const scaleY = stage.scaleY();
 
@@ -634,16 +246,6 @@ export default function CanvasStage() {
             y: (pointerY - stage.y()) / scaleY
         };
     };
-
-    const handleWheel = useCallback((e) => {
-        e.evt.preventDefault();
-        const stage = stageRef.current;
-        const oldScale = stageConfig.scale;
-        const pointer = stage.getPointerPosition();
-        const mousePointTo = { x: (pointer.x - stageConfig.x) / oldScale, y: (pointer.y - stageConfig.y) / oldScale };
-        const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, oldScale * (e.evt.deltaY > 0 ? 1 / SCALE_FACTOR : SCALE_FACTOR)));
-        setStagePosition(pointer.x - mousePointTo.x * newScale, pointer.y - mousePointTo.y * newScale, newScale);
-    }, [stageConfig, setStagePosition]);
 
     const handleMouseDown = (e) => {
         if (tool === TOOL_TYPES.SELECT) {
@@ -680,7 +282,6 @@ export default function CanvasStage() {
     const handleMouseMove = (e) => {
         const stage = stageRef.current;
         if (!stage) return;
-
         const pos = getRelativePos();
         if (!pos) return;
 
@@ -695,7 +296,6 @@ export default function CanvasStage() {
 
         const width = pos.x - drawStart.x;
         const height = pos.y - drawStart.y;
-
         const absWidth = Math.max(isDrawing && newElement.type === TOOL_TYPES.IMAGE ? 50 : 0, Math.abs(width));
         const absHeight = Math.max(isDrawing && newElement.type === TOOL_TYPES.IMAGE ? 30 : 0, Math.abs(height));
 
@@ -718,22 +318,13 @@ export default function CanvasStage() {
 
             if (w > 5 && h > 5) {
                 const intersectIds = elements.filter(el => {
-                    const elX = el.x;
-                    const elY = el.y;
-                    const elR = el.x + el.width;
-                    const elB = el.y + el.height;
-
-                    const selX = x;
-                    const selY = y;
-                    const selR = x + w;
-                    const selB = y + h;
-
-                    return !(selR < elX || selX > elR || selB < elY || selY > elB);
+                    const elX = el.x; const elY = el.y;
+                    const elR = el.x + el.width; const elB = el.y + el.height;
+                    const selR = x + w; const selB = y + h;
+                    return !(selR < elX || selR > elR || selB < elY || y > elB); // Simplified intersection logic
                 }).map(el => el.id);
 
-                if (intersectIds.length > 0) {
-                    setSelectedIds(intersectIds);
-                }
+                if (intersectIds.length > 0) setSelectedIds(intersectIds);
             }
             return;
         }
@@ -764,21 +355,22 @@ export default function CanvasStage() {
         const pos = getRelativePos(e);
         if (!pos) return;
 
-        // Snap to Grid
-        const snappedX = Math.round(pos.x / 10) * 10;
-        const snappedY = Math.round(pos.y / 10) * 10;
-
         const assetJson = e.dataTransfer.getData("asset");
         if (!assetJson) return;
 
         try {
             const asset = JSON.parse(assetJson);
+            const w = parseFloat(asset.width || assetConfig?.width || 100);
+            const h = parseFloat(asset.height || assetConfig?.height || 100);
+            const finalX = pos.x - (w / 2);
+            const finalY = pos.y - (h / 2);
+            const snappedX = Math.round(finalX / 10) * 10;
+            const snappedY = Math.round(finalY / 10) * 10;
+
             addElement({
                 type: TOOL_TYPES.ASSET,
-                x: snappedX,
-                y: snappedY,
-                width: asset.width || 100,
-                height: asset.height || 100,
+                x: snappedX, y: snappedY,
+                width: w, height: h,
                 rotation: 0,
                 name: asset.label || "Asset",
                 assetType: asset.type,
@@ -806,9 +398,15 @@ export default function CanvasStage() {
         const pos = getRelativePos(e);
         if (!pos) return;
 
-        const snappedX = Math.round(pos.x / 10) * 10;
-        const snappedY = Math.round(pos.y / 10) * 10;
-
+        let w = 100; let h = 100;
+        if (draggingAsset) {
+            w = parseFloat(draggingAsset.width || 100);
+            h = parseFloat(draggingAsset.height || 100);
+        }
+        const finalX = pos.x - (w / 2);
+        const finalY = pos.y - (h / 2);
+        const snappedX = Math.round(finalX / 10) * 10;
+        const snappedY = Math.round(finalY / 10) * 10;
         setGhostPos({ x: snappedX, y: snappedY });
     };
 
@@ -816,80 +414,67 @@ export default function CanvasStage() {
         setDraggingAsset(null);
     };
 
+    const handleWheel = (e) => {
+        e.evt.preventDefault();
+        const stage = stageRef.current;
+        const oldScale = stage.scaleX();
+        const pointer = stage.getPointerPosition();
+        const mousePointTo = { x: (pointer.x - stage.x()) / oldScale, y: (pointer.y - stage.y()) / oldScale };
+        const newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, oldScale * (e.evt.deltaY > 0 ? 1 / SCALE_FACTOR : SCALE_FACTOR)));
+        setStagePosition(pointer.x - mousePointTo.x * newScale, pointer.y - mousePointTo.y * newScale, newScale);
+    };
+
     return (
         <div
             ref={containerRef}
             className="relative w-full h-full bg-zinc-950 overflow-hidden"
+            onDrop={handleDrop}
             onDragOver={handleDragOver}
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            style={{ touchAction: 'none' }}
         >
-            <div style={{
-                position: "absolute", inset: 0,
-                backgroundImage: `radial-gradient(circle, rgba(212, 175, 55, 0.15) 1px, transparent 1px)`,
-                backgroundSize: `${10 * stageConfig.scale}px ${10 * stageConfig.scale}px`,
-                backgroundPosition: `${stageConfig.x}px ${stageConfig.y}px`,
-                pointerEvents: "none"
-            }} />
-
             <Stage
                 ref={stageRef}
                 width={stageConfig.width} height={stageConfig.height}
                 x={stageConfig.x} y={stageConfig.y}
                 scaleX={stageConfig.scale} scaleY={stageConfig.scale}
                 onWheel={handleWheel}
+                draggable={tool === TOOL_TYPES.SELECT && selectedIds.length === 0}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onClick={handleStageClick}
-                draggable={tool === TOOL_TYPES.SELECT && selectedIds.length === 0}
-                onDragEnd={(e) => setStagePosition(e.target.x(), e.target.y(), stageConfig.scale)}
-                style={{ cursor: tool === TOOL_TYPES.SELECT ? "default" : "crosshair" }}
+                onDragEnd={(e) => {
+                    if (e.target === stageRef.current) setStagePosition(e.target.x(), e.target.y(), stageConfig.scale);
+                }}
             >
                 <Layer>
-                    {elements.map(el => {
-                        const isSelected = selectedIds.includes(el.id);
-                        const handleSelect = (e) => {
-                            if (e.evt.shiftKey) {
-                                toggleSelection(el.id);
-                            } else {
-                                if (!isSelected) {
-                                    setSelectedIds([el.id]);
-                                }
-                            }
-                        };
-
-                        const isDraggable = tool === TOOL_TYPES.SELECT;
-
-                        if (el.type === TOOL_TYPES.RECTANGLE || el.type === TOOL_TYPES.CURVE)
-                            return <ZoneElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} scale={stageConfig.scale} draggable={isDraggable} />;
-                        if (el.type === TOOL_TYPES.CIRCLE)
-                            return <CircleElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} draggable={isDraggable} />;
-                        if (el.type === TOOL_TYPES.POLYGON)
-                            return <PolygonElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} draggable={isDraggable} />;
-                        if (el.type === TOOL_TYPES.IMAGE || el.type === TOOL_TYPES.ASSET)
-                            return <AssetElement key={el.id} element={el} isSelected={isSelected} onSelect={handleSelect} onChange={u => updateElement(el.id, u)} draggable={isDraggable} />;
-                        return null;
-                    })}
-
+                    {/* Ghost Asset for Drag Over */}
                     {draggingAsset && (
-                        <Group x={ghostPos.x} y={ghostPos.y} opacity={0.5} listening={false}>
-                            <AssetGraphic
+                        <Group x={ghostPos.x} y={ghostPos.y} opacity={0.6}>
+                            <AssetRenderer
                                 element={{
-                                    assetConfig: draggingAsset,
                                     assetType: draggingAsset.type,
-                                    fill: draggingAsset.color
+                                    assetConfig: draggingAsset,
+                                    name: draggingAsset.label
                                 }}
-                                width={draggingAsset.width || 100}
-                                height={draggingAsset.height || 100}
+                                width={parseFloat(draggingAsset.width || 100)}
+                                height={parseFloat(draggingAsset.height || 100)}
                             />
                         </Group>
                     )}
 
-                    <MultiTransformer selectedIds={selectedIds} />
+                    {/* New Element Preview (Drawing) */}
+                    {isDrawing && newElement && (
+                        <Rect
+                            x={newElement.x} y={newElement.y}
+                            width={newElement.width} height={newElement.height}
+                            fill={ZONE_FILL_DEFAULT} opacity={0.3}
+                            stroke="#D4AF37" strokeWidth={1} dash={[5, 5]}
+                        />
+                    )}
 
+                    {/* Selection Box */}
                     {isSelecting && (
                         <Rect
                             x={Math.min(selectionBox.x1, selectionBox.x2)}
@@ -903,10 +488,7 @@ export default function CanvasStage() {
                         />
                     )}
 
-                    {isDrawing && newElement && (
-                        <Rect x={newElement.x} y={newElement.y} width={newElement.width} height={newElement.height} fill={ZONE_FILL_DEFAULT} opacity={0.3} stroke="#D4AF37" strokeWidth={1} dash={[5, 5]} />
-                    )}
-
+                    {/* Polygon Drawing Preview */}
                     {tool === TOOL_TYPES.POLYGON && polyPoints.length > 0 && (
                         <>
                             <Line points={polyPoints} stroke="#D4AF37" strokeWidth={2} />
@@ -914,9 +496,33 @@ export default function CanvasStage() {
                             <Circle x={polyPoints[0]} y={polyPoints[1]} radius={5} fill="#D4AF37" />
                         </>
                     )}
+                    {elements.map(el => (
+                        <SceneElement
+                            key={el.id}
+                            element={el}
+                            isSelected={selectedIds.includes(el.id)}
+                            scale={stageConfig.scale}
+                            draggable={tool === TOOL_TYPES.SELECT}
+                            onSelect={(e) => {
+                                e.cancelBubble = true;
+                                if (e.evt.shiftKey) toggleSelection(el.id);
+                                else setSelectedIds([el.id]);
+                            }}
+                            onChange={(u) => updateElement(el.id, u)}
+                        />
+                    ))}
+
+                    {selectedIds.length > 0 && (
+                        <Transformer
+                            nodes={stageRef.current?.find('.element-group').filter(n => selectedIds.includes(n.id()))}
+                            rotateEnabled={true}
+                            borderStroke="#D4AF37"
+                            anchorStroke="#D4AF37"
+                            keepRatio={false}
+                        />
+                    )}
                 </Layer>
             </Stage>
-            <div className="absolute bottom-4 left-4 text-[10px] text-zinc-600 font-mono">SCALE: {Math.round(stageConfig.scale * 100)}% | LOD: {stageConfig.scale < LOD_THRESHOLD ? "LOW" : "HIGH"}</div>
         </div>
     );
 }

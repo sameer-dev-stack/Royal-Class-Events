@@ -23,7 +23,7 @@ const fadeIn = {
 const TeamMember = ({ name, role, image }) => (
     <motion.div
         whileHover={{ y: -10 }}
-        className="group relative overflow-hidden rounded-3xl bg-zinc-900/50 border border-white/5 p-4 text-center"
+        className="group relative overflow-hidden rounded-3xl bg-card/50 border border-border p-4 text-center"
     >
         <div className="relative w-full aspect-square mb-6 rounded-2xl overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
             <Image
@@ -33,14 +33,14 @@ const TeamMember = ({ name, role, image }) => (
                 className="object-cover"
             />
         </div>
-        <h3 className="text-xl font-bold text-white mb-1">{name}</h3>
+        <h3 className="text-xl font-bold text-foreground mb-1">{name}</h3>
         <p className="text-amber-500 text-xs font-bold uppercase tracking-widest">{role}</p>
     </motion.div>
 );
 
 export default function AboutPage() {
     return (
-        <div className="min-h-screen bg-zinc-950 text-white pb-20">
+        <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto text-center relative z-10">
@@ -64,7 +64,7 @@ export default function AboutPage() {
             </section>
 
             {/* Our Story / Timeline Section */}
-            <section className="py-24 px-6 bg-zinc-900/20">
+            <section className="py-24 px-6 bg-card/20 mx-4 md:mx-6 lg:mx-8 rounded-3xl border border-border">
                 <div className="max-w-7xl mx-auto">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
                         <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
-                            className="relative aspect-video rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl"
+                            className="relative aspect-video rounded-3xl overflow-hidden border border-border shadow-2xl"
                         >
                             <Image
                                 src="/hero_image.jpeg"
@@ -113,7 +113,7 @@ export default function AboutPage() {
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            className="p-10 rounded-[2.5rem] bg-zinc-900/50 border border-white/5 space-y-6"
+                            className="p-10 rounded-3xl bg-card/50 border border-border space-y-6"
                         >
                             <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
                                 <Target className="w-8 h-8" />
@@ -130,7 +130,7 @@ export default function AboutPage() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.2 }}
-                            className="p-10 rounded-[2.5rem] bg-amber-500/5 border border-amber-500/10 space-y-6"
+                            className="p-10 rounded-3xl bg-amber-500/5 border border-amber-500/10 space-y-6"
                         >
                             <div className="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center text-amber-500">
                                 <Eye className="w-8 h-8" />
@@ -146,7 +146,7 @@ export default function AboutPage() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-20 border-y border-white/5">
+            <section className="py-20 border-y border-border">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                         {[
@@ -156,7 +156,7 @@ export default function AboutPage() {
                             { label: "Award Wins", val: "18", icon: Award },
                         ].map((stat, i) => (
                             <div key={i} className="space-y-2">
-                                <p className="text-3xl md:text-5xl font-black text-white">{stat.val}</p>
+                                <p className="text-3xl md:text-5xl font-black text-foreground">{stat.val}</p>
                                 <p className="text-amber-500/70 text-xs font-bold uppercase tracking-widest">{stat.label}</p>
                             </div>
                         ))}
