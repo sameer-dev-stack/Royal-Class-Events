@@ -344,7 +344,7 @@ export const checkInAttendee = mutation({
     if (!regDoc) throw new Error("Invalid QR");
 
     const event = await ctx.db.get(regDoc.eventId);
-    const isAdmin = user?.roles?.some(r => r.key === "admin");
+    const isAdmin = user?.role === "admin" || user?.roles?.some(r => r.key === "admin");
     const isOwner = event.userId === user?._id;
 
     // DEV_AUTH_BYPASS

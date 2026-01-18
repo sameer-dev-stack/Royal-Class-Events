@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 
 import UnsplashImagePicker from "@/components/unsplash-image-picker";
 import AIEventCreator from "./_components/ai-event-creator";
@@ -63,6 +64,7 @@ const eventSchema = z.object({
   themeColor: z.string().default("#d97706"),
   venueType: z.enum(["manual", "existing", "template", "custom"]).default("manual"),
   venueDesignId: z.string().optional(),
+  seatingMode: z.enum(["GENERAL", "RESERVED"]).default("GENERAL"),
 });
 
 export default function CreateEventPage() {
@@ -112,6 +114,7 @@ export default function CreateEventPage() {
       startTime: "",
       endTime: "",
       venueType: "manual",
+      seatingMode: "GENERAL",
     },
   });
 
@@ -294,6 +297,7 @@ export default function CreateEventPage() {
         coverImage: data.coverImage || undefined,
         themeColor: data.themeColor,
         venueDesignId: undefined, // Venue design is handled later from dashboard
+        seatingMode: data.seatingMode,
         hasPro,
         token,
       });
@@ -615,6 +619,29 @@ export default function CreateEventPage() {
             <div className="space-y-2">
               <Label className="text-muted-foreground">Capacity</Label>
               <Input type="number" {...register("capacity", { valueAsNumber: true })} placeholder="100" className="bg-background border-input text-foreground" />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Label className="text-muted-foreground">Seating Mode</Label>
+            <div className="bg-muted/30 p-4 rounded-xl border border-border flex items-center justify-between gap-4">
+              <div className="space-y-0.5">
+                <Label className="text-base font-bold text-foreground">Enable Reserved Seat Map</Label>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Turn on for stadium/theater style seating. Turn off for standing/open events.
+                </p>
+              </div>
+              <Controller
+                control={control}
+                name="seatingMode"
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value === "RESERVED"}
+                    onCheckedChange={(checked) => field.onChange(checked ? "RESERVED" : "GENERAL")}
+                    className="data-[state=checked]:bg-amber-500"
+                  />
+                )}
+              />
             </div>
           </div>
 

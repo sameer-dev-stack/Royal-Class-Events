@@ -9,34 +9,48 @@ import {
     Bell,
     ChevronRight,
     Settings,
-    ArrowLeft
+    ArrowLeft,
+    Crown
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-
-const navItems = [
-    {
-        title: "Profile",
-        href: "/account/profile",
-        icon: User,
-        description: "Personal details and bio"
-    },
-    {
-        title: "Security",
-        href: "/account/security",
-        icon: ShieldCheck,
-        description: "Password and authentication"
-    },
-    {
-        title: "Notifications",
-        href: "/account/notifications",
-        icon: Bell,
-        description: "Manage alerts and emails"
-    }
-];
+import useAuthStore from "@/hooks/use-auth-store";
 
 export default function AccountLayout({ children }) {
     const pathname = usePathname();
+    const { user } = useAuthStore();
+
+    const baseNavItems = [
+        {
+            title: "Profile",
+            href: "/account/profile",
+            icon: User,
+            description: "Personal details and bio"
+        },
+        {
+            title: "Security",
+            href: "/account/security",
+            icon: ShieldCheck,
+            description: "Password and authentication"
+        },
+        {
+            title: "Notifications",
+            href: "/account/notifications",
+            icon: Bell,
+            description: "Manage alerts and emails"
+        }
+    ];
+
+    const navItems = [...baseNavItems];
+
+    if (user?.role === "attendee") {
+        navItems.push({
+            title: "Become an Organizer",
+            href: "/account/organizer-request",
+            icon: Crown,
+            description: "Host your own events"
+        });
+    }
 
     return (
         <div className="min-h-screen bg-background pt-24 pb-20 px-4 md:px-8">

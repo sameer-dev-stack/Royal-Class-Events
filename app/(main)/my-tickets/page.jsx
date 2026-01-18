@@ -67,7 +67,7 @@ export default function MyTicketsPage() {
 
   // Fetch user's registrations
   const { data: registrations, isLoading } = useConvexQuery(
-    api.registrations.getMyRegistrations,
+    api.tickets.getMyTickets,
     { token: token ?? undefined }
   );
 
@@ -128,13 +128,15 @@ export default function MyTicketsPage() {
   const activeRegistrations = filteredRegistrations?.filter(reg => {
     const status = typeof reg.status === "string" ? reg.status : reg.status?.current;
     const endDate = new Date(reg.event?.timeConfiguration?.endDateTime || reg.event?.timeConfiguration?.startDateTime);
+    // Active if confirmed AND not in the past
     return status === 'confirmed' && endDate > now;
   });
 
   const historyRegistrations = filteredRegistrations?.filter(reg => {
     const status = typeof reg.status === "string" ? reg.status : reg.status?.current;
     const endDate = new Date(reg.event?.timeConfiguration?.endDateTime || reg.event?.timeConfiguration?.startDateTime);
-    return status === 'cancelled' || status === 'refunded' || endDate < now;
+    // History if cancelled, refunded, past event, OR used (checked in)
+    return status === 'cancelled' || status === 'refunded' || status === 'checked_in' || endDate < now;
   });
 
   const GroupedEventList = ({ data, emptyTitle, emptyMessage, isHistoryTab }) => {
@@ -183,10 +185,17 @@ export default function MyTicketsPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/90 to-transparent" />
 
-              {/* Ticket Count Badge */}
-              <Badge className="absolute top-4 right-4 bg-amber-500 text-black font-black px-3 py-1 rounded-full shadow-lg border-none">
-                {tickets.length} {tickets.length > 1 ? "Tickets" : "Ticket"}
-              </Badge>
+              {/* Status/Ticket Count Badge */}
+              <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                <Badge className="bg-amber-500 text-black font-black px-3 py-1 rounded-full shadow-lg border-none">
+                  {tickets.length} {tickets.length > 1 ? "Tickets" : "Ticket"}
+                </Badge>
+                {tickets.some(t => (typeof t.status === 'string' ? t.status : t.status?.current) === 'checked_in') && (
+                  <Badge className="bg-green-600 text-white font-black px-3 py-1 rounded-full shadow-lg border-none animate-pulse">
+                    CHECKED IN
+                  </Badge>
+                )}
+              </div>
             </div>
 
             {/* Event Info */}
@@ -285,7 +294,7 @@ export default function MyTicketsPage() {
               value="history"
               className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold transition-all px-8 h-full"
             >
-              History
+              Past Events / Used
             </TabsTrigger>
           </TabsList>
 
@@ -317,7 +326,7 @@ export default function MyTicketsPage() {
               <GroupedEventList
                 data={historyRegistrations}
                 emptyTitle="No history found"
-                emptyMessage="You don't have any past or cancelled event registrations."
+                emptyMessage="You don't have any past, checked-in, or cancelled event registrations."
                 isHistoryTab={true}
               />
             )}
@@ -440,12 +449,12 @@ export default function MyTicketsPage() {
                   <div className="text-center">
                     <Badge variant="outline" className={cn(
                       "rounded-full px-4 py-1 font-black uppercase text-[10px] tracking-widest",
-                      selectedTicket.checkIn?.status === "checked_in"
-                        ? "bg-green-500/10 text-green-500 border-green-500/20"
+                      (typeof selectedTicket.status === 'string' ? selectedTicket.status : selectedTicket.status?.current) === "checked_in"
+                        ? "bg-green-600 text-white border-none shadow-lg animate-pulse scale-110"
                         : "bg-amber-500/10 text-amber-500 border-amber-500/20"
                     )}>
-                      {selectedTicket.checkIn?.status === "checked_in" ? (
-                        <><CheckCircle2 className="w-3 h-3 mr-2" /> Entry Verified</>
+                      {(typeof selectedTicket.status === 'string' ? selectedTicket.status : selectedTicket.status?.current) === "checked_in" ? (
+                        <><CheckCircle2 className="w-3 h-3 mr-2" /> CHECKED IN</>
                       ) : (
                         <><Clock className="w-3 h-3 mr-2" /> Valid Entry Pass</>
                       )}

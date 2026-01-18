@@ -15,10 +15,41 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ShieldAlert } from "lucide-react";
 
+import { useEffect, useState } from "react";
+
 export default function AdminDashboard() {
     const { token } = useAuthStore();
-    const stats = useQuery(api.admin.getAdminStats, { token: token || undefined });
-    const analyticsData = useQuery(api.admin.getAnalyticsData, { token: token || undefined });
+    const [isMounted, setIsMounted] = useState(false);
+
+    // 1. Wait for Hydration
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // 2. Query only if Mounted and Token exists
+    const stats = useQuery(api.admin.getAdminStats,
+        isMounted && token ? { token } : "skip"
+    );
+    const analyticsData = useQuery(api.admin.getAnalyticsData,
+        isMounted && token ? { token } : "skip"
+    );
+
+    if (!isMounted) return null;
+
+    if (!token) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[600px] text-zinc-400 gap-4">
+                <ShieldAlert className="w-16 h-16 text-zinc-700" />
+                <h2 className="text-xl font-medium">Access Denied</h2>
+                <p className="text-zinc-500">Please log in as an administrator to view this page.</p>
+                <Link href="/admin/login">
+                    <Button variant="default" className="bg-amber-500 text-black hover:bg-amber-600">
+                        Go to Login
+                    </Button>
+                </Link>
+            </div>
+        );
+    }
 
     if (!stats) return <div className="p-10 text-zinc-400 animate-pulse">Loading dashboard stats...</div>;
 

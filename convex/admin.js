@@ -2,21 +2,22 @@ import { query, mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 import { api, internal } from "./_generated/api";
 import { logAdminAction } from "./audit";
+import { getAuthenticatedUser } from "./auth";
 
 // --- Helper for Auth Check ---
+// --- Helper for Auth Check ---
 export async function checkAdmin(ctx, token) {
-    // Security Note: We use api.users.getCurrentUser to validate the custom token
-    // instead of relying solely on ctx.auth which might not fully support our custom session logic.
-    const user = await ctx.runQuery(api.users.getCurrentUser, { token });
+    const user = await getAuthenticatedUser(ctx, token);
 
     if (!user) {
-        throw new Error("Unauthorized: Invalid Session");
+        throw new Error("Unauthorized: Invalid Session or Missing Permissions");
     }
 
-    // Check for admin role (support both string and array format for robustness)
+    // Check for admin role
     const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin");
 
     if (!isAdmin) {
+        console.error("Admin Access Denied for user:", user.email || user._id);
         throw new Error("Access Denied: Admin rights required");
     }
 

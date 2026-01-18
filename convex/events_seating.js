@@ -9,7 +9,9 @@ export const updateSeatingMode = mutation({
         seatingMode: v.union(
             v.literal("GENERAL_ADMISSION"),
             v.literal("RESERVED_SEATING"),
-            v.literal("HYBRID")
+            v.literal("HYBRID"),
+            v.literal("GENERAL"),
+            v.literal("RESERVED")
         ),
         token: v.optional(v.string()),
     },

@@ -36,6 +36,7 @@ export const createEvent = mutation({
     themeColor: v.optional(v.string()), // Store in metadata or style config
     venueDesignId: v.optional(v.id("venueDesigns")),
     hasPro: v.optional(v.boolean()),
+    seatingMode: v.optional(v.union(v.literal("GENERAL"), v.literal("RESERVED"))),
     token: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -122,6 +123,7 @@ export const createEvent = mutation({
         externalId: slug, // Use slug as external ID reference for now
         eventType: "conference", // Defaulting. 'category' arg could map here if standard.
         eventSubType: args.category,
+        seatingMode: args.seatingMode || "GENERAL",
         classification: "public",
         complianceLevel: "standard",
 
@@ -505,6 +507,133 @@ export const deleteEvent = mutation({
     await ctx.db.delete(args.eventId);
 
     // Decrement stats...
+    return { success: true };
+  },
+});
+
+export const updateEvent = mutation({
+  args: {
+    eventId: v.id("events"),
+    title: v.optional(v.string()),
+    description: v.optional(v.string()),
+    category: v.optional(v.string()),
+    startDate: v.optional(v.number()),
+    endDate: v.optional(v.number()),
+    locationType: v.optional(v.union(v.literal("physical"), v.literal("online"))),
+    venue: v.optional(v.string()),
+    address: v.optional(v.string()),
+    city: v.optional(v.string()),
+    state: v.optional(v.string()),
+    country: v.optional(v.string()),
+    capacity: v.optional(v.number()),
+    ticketType: v.optional(v.union(v.literal("free"), v.literal("paid"))),
+    ticketPrice: v.optional(v.number()),
+    coverImage: v.optional(v.string()),
+    seatingMode: v.optional(v.union(v.literal("GENERAL"), v.literal("RESERVED"))),
+    token: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { eventId, token, ...updates } = args;
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token });
+    if (!user) throw new Error("Not logged in");
+
+    const event = await ctx.db.get(eventId);
+    const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+
+    if (!event || (event.ownerId !== user._id && !isAdmin)) {
+      throw new Error("Unauthorized");
+    }
+
+    const patch = {
+      updatedAt: Date.now(),
+      audit: {
+        ...event.audit,
+        updatedAt: Date.now(),
+        updatedBy: user._id,
+        version: (event.audit?.version || 1) + 1,
+        changeLog: [
+          ...(event.audit?.changeLog || []),
+          {
+            version: (event.audit?.version || 1) + 1,
+            changedBy: user._id,
+            changedAt: Date.now(),
+            changes: ["Updated event details"]
+          }
+        ]
+      }
+    };
+
+    if (updates.title) patch.title = { ...event.title, en: updates.title };
+    if (updates.description) patch.description = { ...event.description, en: updates.description };
+    if (updates.category) patch.eventSubType = updates.category;
+
+    // Time Config
+    if (updates.startDate || updates.endDate) {
+      patch.timeConfiguration = {
+        ...(event.timeConfiguration || {}),
+        startDateTime: updates.startDate || event.timeConfiguration.startDateTime,
+        endDateTime: updates.endDate || event.timeConfiguration.endDateTime,
+        durationMinutes: ((updates.endDate || event.timeConfiguration.endDateTime) - (updates.startDate || event.timeConfiguration.startDateTime)) / 60000,
+      };
+    }
+
+    // Location
+    if (updates.locationType) {
+      patch.locationConfig = {
+        ...(event.locationConfig || {}),
+        type: updates.locationType === "online" ? "virtual" : "physical"
+      };
+    }
+
+    // Capacity
+    if (updates.capacity !== undefined) {
+      patch.capacityConfig = {
+        ...(event.capacityConfig || {}),
+        totalCapacity: updates.capacity
+      };
+    }
+
+    // Financials
+    if (updates.ticketType || updates.ticketPrice !== undefined) {
+      patch.financials = {
+        ...(event.financials || {}),
+        pricingModel: updates.ticketType || event.financials.pricingModel,
+        budget: updates.ticketPrice ? (updates.capacity || event.capacityConfig.totalCapacity) * updates.ticketPrice : 0
+      };
+    }
+
+    // Metadata / Legacy Support
+    if (Object.keys(updates).some(k => ["city", "state", "country", "venue", "ticketPrice"].includes(k))) {
+      patch.metadata = {
+        ...(event.metadata || {}),
+        legacyProps: {
+          ...(event.metadata?.legacyProps || {}),
+          city: updates.city || event.metadata?.legacyProps?.city,
+          state: updates.state || event.metadata?.legacyProps?.state,
+          country: updates.country || event.metadata?.legacyProps?.country,
+          venueName: updates.venue || event.metadata?.legacyProps?.venueName,
+          ticketPrice: updates.ticketPrice !== undefined ? updates.ticketPrice : event.metadata?.legacyProps?.ticketPrice
+        }
+      };
+    }
+
+    if (updates.coverImage) {
+      let finalCoverImage = updates.coverImage;
+      if (!updates.coverImage.startsWith("http")) {
+        finalCoverImage = (await ctx.storage.getUrl(updates.coverImage)) || "";
+      }
+      patch.content = {
+        ...(event.content || {}),
+        coverImage: {
+          url: finalCoverImage,
+          altText: updates.title || event.title?.en || "Event Image"
+        }
+      };
+    }
+
+    if (updates.seatingMode) patch.seatingMode = updates.seatingMode;
+
+    await ctx.db.patch(eventId, patch);
     return { success: true };
   },
 });

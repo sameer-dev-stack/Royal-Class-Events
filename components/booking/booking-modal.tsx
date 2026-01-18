@@ -6,16 +6,17 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
 } from "@/components/ui/dialog";
 import dynamic from "next/dynamic";
 import CheckoutSidebar from "./checkout-sidebar";
 import { useConvexQuery } from "@/hooks/use-convex-query";
 import { api } from "@/convex/_generated/api";
 import useBookingStore from "@/hooks/use-booking-store";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { MapPin, Armchair, X } from "lucide-react";
+import { MapPin, Armchair, X, Minus, Plus, ShoppingCart } from "lucide-react";
 
 // Dynamic Load for Performance
 const SeatViewer = dynamic(() => import("@/components/seat-engine/SeatViewer"), {
@@ -36,11 +37,21 @@ interface BookingModalProps {
     onOpenChange: (open: boolean) => void;
     eventId: string;
     eventTitle: string;
-    eventLayout: any; // Using any for complex layout object to avoid strict typing issues
+    eventLayout: any;
+    seatingMode?: string;
+    basePrice?: number;
 }
 
-export default function BookingModal({ open, onOpenChange, eventId, eventTitle, eventLayout }: BookingModalProps) {
-    const { cartItems } = useBookingStore();
+export default function BookingModal({
+    open,
+    onOpenChange,
+    eventId,
+    eventTitle,
+    eventLayout,
+    seatingMode = "GENERAL_ADMISSION",
+    basePrice = 0
+}: BookingModalProps) {
+    const { cartItems, addToCart, removeFromCart, clearCart } = useBookingStore();
     const [isMobileCheckoutOpen, setIsMobileCheckoutOpen] = useState(false);
     const [mapEnabled, setMapEnabled] = useState(false);
 
@@ -49,6 +60,31 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
         api.registrations.getSoldSeats,
         eventId ? { eventId } : "skip"
     );
+
+    const isGeneral = seatingMode === "GENERAL" || seatingMode === "GENERAL_ADMISSION";
+    const generalCount = cartItems.filter(item => item.id.startsWith("general_")).length;
+
+    const updateGeneralQuantity = (newCount: number) => {
+        const currentItems = cartItems.filter(item => item.id.startsWith("general_"));
+        const currentCount = currentItems.length;
+
+        if (newCount > currentCount) {
+            // Add items
+            for (let i = currentCount; i < newCount; i++) {
+                addToCart({
+                    id: `general_${Date.now()}_${i}`,
+                    label: `General Admission #${i + 1}`,
+                    price: basePrice,
+                    category: "General",
+                    zone: "GA"
+                });
+            }
+        } else if (newCount < currentCount) {
+            // Remove items
+            const itemsToRemove = currentItems.slice(newCount);
+            itemsToRemove.forEach(item => removeFromCart(item.id));
+        }
+    };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -61,6 +97,9 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
                         </span>
                         <span className="truncate">{eventTitle || "Select Your Seats"}</span>
                     </DialogTitle>
+                    <DialogDescription className="sr-only">
+                        Select your seats or quantity for {eventTitle} and proceed to checkout.
+                    </DialogDescription>
 
                     {/* Explicit Close Button for Kiosk Feel */}
                     <Button
@@ -76,9 +115,56 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
 
                 {/* Main Content Area */}
                 <div className="flex flex-1 min-h-0 w-full overflow-hidden relative">
-                    {/* Seat Map Area */}
+                    {/* Seat Map / Quantity Selector Area */}
                     <div className="flex-1 relative bg-zinc-950 overflow-hidden">
-                        {eventLayout ? (
+                        {isGeneral ? (
+                            /* General Admission Mode: Quantity Selector */
+                            <div className="w-full h-full flex items-center justify-center p-6 sm:p-12">
+                                <div className="max-w-md w-full bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 space-y-8 animate-in fade-in zoom-in duration-300">
+                                    <div className="text-center space-y-2">
+                                        <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                            <ShoppingCart className="w-8 h-8 text-amber-500" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-white">General Admission</h3>
+                                        <p className="text-zinc-400">Select the number of tickets you'd like to purchase.</p>
+                                    </div>
+
+                                    <div className="flex items-center justify-center gap-8 py-6">
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => updateGeneralQuantity(Math.max(0, generalCount - 1))}
+                                            className="h-14 w-14 rounded-full border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-white"
+                                        >
+                                            <Minus className="w-6 h-6" />
+                                        </Button>
+
+                                        <span className="text-5xl font-black text-white w-12 text-center tabular-nums">
+                                            {generalCount}
+                                        </span>
+
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => updateGeneralQuantity(Math.min(10, generalCount + 1))}
+                                            className="h-14 w-14 rounded-full border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-white"
+                                        >
+                                            <Plus className="w-6 h-6" />
+                                        </Button>
+                                    </div>
+
+                                    <div className="bg-zinc-950/50 rounded-2xl p-4 border border-zinc-800 flex justify-between items-center">
+                                        <span className="text-zinc-400 font-medium">Price per ticket</span>
+                                        <span className="text-xl font-bold text-amber-500">৳{basePrice}</span>
+                                    </div>
+
+                                    <p className="text-xs text-center text-zinc-500 uppercase tracking-widest font-bold">
+                                        Max 10 tickets per order
+                                    </p>
+                                </div>
+                            </div>
+                        ) : eventLayout ? (
+                            /* Reserved Mode: Seat Map */
                             <div className="w-full h-full relative">
                                 <SeatViewer
                                     initialData={eventLayout}
@@ -110,12 +196,8 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
                                     <div className="space-y-2">
                                         <h3 className="text-xl font-bold text-white">No Seat Layout</h3>
                                         <p className="text-zinc-400 text-sm leading-relaxed">
-                                            This event needs a seating layout. Set up reserved seating in the Venue Builder.
+                                            This event needs a seating layout. Set up reserved seating in the Venue Builder or switch to General Admission.
                                         </p>
-                                    </div>
-                                    <div className="flex items-center justify-center gap-2 text-xs text-zinc-500 pt-2">
-                                        <MapPin className="w-3 h-3" />
-                                        <span>General Admission may be available</span>
                                     </div>
                                 </div>
                             </div>
@@ -133,24 +215,26 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
                 </div>
 
                 {/* Mobile Cart Button - Fixed to Bottom with Safe Area Support */}
-                <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-4 border-t border-zinc-800 bg-zinc-900 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] pb-[calc(1rem+env(safe-area-inset-bottom))]">
-                    <Button
-                        onClick={() => setIsMobileCheckoutOpen(true)}
-                        className="w-full h-14 bg-amber-500 hover:bg-amber-600 text-black font-black text-lg rounded-2xl shadow-xl active:scale-[0.98] transition-all"
-                    >
-                        {cartItems.length > 0 ? (
-                            <div className="flex items-center justify-between w-full px-4">
-                                <div className="flex items-center gap-2">
-                                    <span className="bg-black/20 px-2 py-0.5 rounded text-sm">{cartItems.length}</span>
-                                    <span>View Cart</span>
+                {!isMobileCheckoutOpen && (
+                    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-4 border-t border-zinc-800 bg-zinc-900 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] pb-[calc(1rem+env(safe-area-inset-bottom))]">
+                        <Button
+                            onClick={() => setIsMobileCheckoutOpen(true)}
+                            className="w-full h-14 bg-amber-500 hover:bg-amber-600 text-black font-black text-lg rounded-2xl shadow-xl active:scale-[0.98] transition-all"
+                        >
+                            {cartItems.length > 0 ? (
+                                <div className="flex items-center justify-between w-full px-4">
+                                    <div className="flex items-center gap-2">
+                                        <span className="bg-black/20 px-2 py-0.5 rounded text-sm">{cartItems.length}</span>
+                                        <span>View Cart</span>
+                                    </div>
+                                    <span className="font-mono">
+                                        ৳{cartItems.reduce((acc, item) => acc + (item.price || 0), 0)}
+                                    </span>
                                 </div>
-                                <span className="font-mono">
-                                    ৳{cartItems.reduce((acc, item) => acc + (item.price || 0), 0)}
-                                </span>
-                            </div>
-                        ) : "View Cart"}
-                    </Button>
-                </div>
+                            ) : "View Cart"}
+                        </Button>
+                    </div>
+                )}
 
                 {/* Vertical Spacer for Fixed Button (Mobile Only) */}
                 <div className="lg:hidden h-24 shrink-0" />
@@ -158,6 +242,10 @@ export default function BookingModal({ open, onOpenChange, eventId, eventTitle, 
                 {/* Mobile Checkout Sheet */}
                 <Sheet open={isMobileCheckoutOpen} onOpenChange={setIsMobileCheckoutOpen}>
                     <SheetContent side="bottom" className="p-0 h-[80vh] bg-zinc-900 border-zinc-800 text-white rounded-t-2xl">
+                        <div className="sr-only">
+                            <SheetTitle>Checkout Cart</SheetTitle>
+                            <SheetDescription>Review your selected seats and proceed to payment.</SheetDescription>
+                        </div>
                         <CheckoutSidebar
                             eventId={eventId}
                             isOpen={true}

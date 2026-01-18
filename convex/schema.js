@@ -178,6 +178,9 @@ export default defineSchema(
 
       metadata: v.optional(v.any()),
 
+      // Referral Tracking
+      referralSource: v.optional(v.union(v.string(), v.null())),
+
       // Usage tracking
       freeEventsCreated: v.optional(v.number()),
 
@@ -229,6 +232,19 @@ export default defineSchema(
       metadata: v.optional(v.any()),
     })
       .index("by_key", ["key"]),
+
+    organizer_upgrade_requests: defineTable({
+      userId: v.id("users"),
+      status: v.union(v.literal('pending'), v.literal('approved'), v.literal('rejected')),
+      reason: v.optional(v.string()),
+      requestedAt: v.number(),
+      reviewedBy: v.optional(v.id("users")),
+      reviewedAt: v.optional(v.number()),
+      rejectionReason: v.optional(v.string()),
+      metadata: v.optional(v.any()),
+    })
+      .index("by_user", ["userId"])
+      .index("by_status", ["status"]),
 
     // ==================== TENANTS/ORGANIZATIONS ====================
     tenants: defineTable({
@@ -425,7 +441,9 @@ export default defineSchema(
       seatingMode: v.optional(v.union(
         v.literal("GENERAL_ADMISSION"),
         v.literal("RESERVED_SEATING"),
-        v.literal("HYBRID")
+        v.literal("HYBRID"),
+        v.literal("GENERAL"),
+        v.literal("RESERVED")
       )),
 
       // Total Capacity from Seat Builder
@@ -845,7 +863,8 @@ export default defineSchema(
     })
       .index("by_event", ["eventId"])
       .index("by_user", ["userId"])
-      .index("by_event_user", ["eventId", "userId"]),
+      .index("by_event_user", ["eventId", "userId"])
+      .index("by_reg_number", ["registrationNumber"]),
 
     // ==================== PAYMENTS ====================
     payments: defineTable({
@@ -3358,6 +3377,8 @@ export default defineSchema(
 
       // Availability
       availability: v.optional(v.array(v.number())), // Array of timestamps for unavailable dates
+
+      isFeatured: v.optional(v.boolean()), // Highlight on landing page
 
       // Audit
       createdAt: v.number(),

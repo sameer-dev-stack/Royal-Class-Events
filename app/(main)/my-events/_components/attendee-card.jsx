@@ -48,9 +48,18 @@ export function AttendeeCard({ registration, token }) {
             <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
               <span>
                 {registration.checkedIn ? "⏰ Checked in" : "📅 Registered"}{" "}
-                {registration.checkedIn && registration.checkedInAt
-                  ? format(registration.checkedInAt, "PPp")
-                  : format(registration.registeredAt, "PPp")}
+                {(() => {
+                  try {
+                    const dateToFormat = registration.checkedIn && registration.checkedInAt
+                      ? registration.checkedInAt
+                      : (registration.registeredAt || registration._creationTime);
+
+                    if (!dateToFormat) return "N/A";
+                    return format(new Date(dateToFormat), "PPp");
+                  } catch (e) {
+                    return "Invalid Date";
+                  }
+                })()}
               </span>
               <span className="font-mono hidden sm:inline">QR: {registration.qrCode}</span>
             </div>

@@ -277,16 +277,28 @@ export const searchSuppliers = query({
 export const getFeaturedSuppliers = query({
     args: { limit: v.optional(v.number()) },
     handler: async (ctx, args) => {
-        // 1. Get featured suppliers directly if 'isFeatured' exists
-        // Since we don't have isFeatured in schema yet, we use rating > 4.5 and reviewCount > 0
-        const featured = await ctx.db
+        // 1. Try to get explicitly featured or high rated vendors
+        let featured = await ctx.db
             .query("suppliers")
             .withIndex("by_status", (q) => q.eq("status", "active"))
-            .filter((q) => q.gt(q.field("rating"), 4.0))
-            .order("desc")
+            .filter((q) =>
+                q.or(
+                    q.eq(q.field("isFeatured"), true),
+                    q.gt(q.field("rating"), 4.0)
+                )
+            )
             .take(args.limit || 8);
 
-        // 2. Enrich with services for starting price
+        // 2. Fallback: If no featured/high-rated, just take the most recent active vendors
+        if (featured.length === 0) {
+            featured = await ctx.db
+                .query("suppliers")
+                .withIndex("by_status", (q) => q.eq("status", "active"))
+                .order("desc")
+                .take(args.limit || 8);
+        }
+
+        // 3. Enrich with services for starting price
         const enriched = await Promise.all(
             featured.map(async (supplier) => {
                 const services = await ctx.db

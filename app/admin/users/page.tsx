@@ -31,7 +31,7 @@ import {
     UserCheck
 } from "lucide-react";
 import { toast } from "sonner";
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,7 +45,17 @@ import {
 
 export default function UsersPage() {
     const { token } = useAuthStore();
-    const data = useQuery(api.admin.getAllUsers, { token: token || undefined });
+    const [isMounted, setIsMounted] = useState(false);
+
+    // 1. Wait for Hydration
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // 2. Query only if Mounted and Token exists
+    const data = useQuery(api.admin.getAllUsers,
+        isMounted && token ? { token } : "skip"
+    );
     const updateUserStatus = useMutation(api.admin.updateUserStatus);
     const updateUserRole = useMutation(api.admin.updateUserRole);
 
@@ -81,6 +91,23 @@ export default function UsersPage() {
             toast.error(err.message || "Action failed");
         }
     };
+
+    if (!isMounted) return null;
+
+    if (!token) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[600px] text-zinc-400 gap-4">
+                <ShieldAlert className="w-16 h-16 text-zinc-700" />
+                <h2 className="text-xl font-medium">Access Denied</h2>
+                <p className="text-zinc-500">Please log in as an administrator to view this page.</p>
+                <Link href="/admin/login">
+                    <Button variant="default" className="bg-amber-500 text-black hover:bg-amber-600">
+                        Go to Login
+                    </Button>
+                </Link>
+            </div>
+        );
+    }
 
     if (!data) return (
         <div className="space-y-8 max-w-7xl mx-auto p-8">
@@ -204,10 +231,10 @@ export default function UsersPage() {
                                     <Badge
                                         variant="outline"
                                         className={`gap-1.5 px-2.5 py-1 font-black text-[10px] uppercase border-none rounded-full ${user.role === 'admin'
-                                                ? 'bg-amber-500/10 text-amber-500'
-                                                : user.role === 'organizer'
-                                                    ? 'bg-blue-500/10 text-blue-500'
-                                                    : 'bg-zinc-800 text-zinc-400'
+                                            ? 'bg-amber-500/10 text-amber-500'
+                                            : user.role === 'organizer'
+                                                ? 'bg-blue-500/10 text-blue-500'
+                                                : 'bg-zinc-800 text-zinc-400'
                                             }`}
                                     >
                                         {user.role === 'admin' && <Crown className="w-3 h-3" />}

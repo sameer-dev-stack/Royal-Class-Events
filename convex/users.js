@@ -1,6 +1,7 @@
 import { internal, api } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { getAuthenticatedUser } from "./auth";
 
 /**
  * CRYPTO HELPERS (SHA-256)
@@ -42,8 +43,11 @@ export const registerUser = mutation({
     email: v.string(),
     password: v.string(),
     role: v.string(), // "organizer" or "attendee"
+    referralSource: v.optional(v.union(v.string(), v.null())), // Track user acquisition
   },
   handler: async (ctx, args) => {
+    // FORCE "attendee" role for new registrations
+    const roleToAssign = "attendee";
     // 1. Check duplicate email (Efficient Index lookup)
     const existingByProfile = await ctx.db
       .query("users")
@@ -62,7 +66,7 @@ export const registerUser = mutation({
     // 2. Lookup role document to get _id
     const roleDoc = await ctx.db
       .query("roles")
-      .withIndex("by_key", (q) => q.eq("key", args.role))
+      .withIndex("by_key", (q) => q.eq("key", roleToAssign))
       .first();
 
     if (!roleDoc) {
@@ -77,7 +81,8 @@ export const registerUser = mutation({
       name: args.name,
       email: args.email,
       passwordHash: passwordHash,
-      role: args.role, // Unified Role String
+      role: roleToAssign, // Force Attendee
+      referralSource: args.referralSource || null, // Track acquisition
       status: "active",
       statusChangedAt: now,
       externalId: `custom_${now}`,
@@ -139,7 +144,7 @@ export const registerUser = mutation({
       success: true,
       token,
       userId: newUserId,
-      role: args.role,
+      role: roleToAssign,
       name: args.name,
       email: args.email
     };
@@ -234,113 +239,95 @@ export const logout = mutation({
 export const getCurrentUser = query({
   args: { token: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    let user = null;
-
-    if (args.token) {
-      const session = await ctx.db
-        .query("user_sessions")
-        .withIndex("by_token", (q) => q.eq("token", args.token))
-        .first();
-
-      if (session && session.expiresAt > Date.now()) {
-        user = await ctx.db.get(session.userId);
-      }
-    }
-
-    if (!user) {
-      let identity = await ctx.auth.getUserIdentity();
-      if (!identity && process.env.NODE_ENV === "development") {
-        const mockId = "mock-user-id-12345";
-        identity = { subject: mockId, tokenIdentifier: mockId };
-      }
-      if (!identity) return null;
-
-      const externalId = identity.subject || identity.tokenIdentifier;
-      user = await ctx.db
-        .query("users")
-        .withIndex("by_external_id", (q) => q.eq("externalId", externalId))
-        .unique();
-    }
-
-    if (!user) return null;
-
-    // 4. Resolve and Prioritize Roles
-    let resolvedRoles = await Promise.all(
-      (user.roles || []).map(async (userRole) => {
-        const roleDoc = await ctx.db.get(userRole.roleId);
-        return roleDoc ? { ...roleDoc, ...userRole } : null;
-      })
-    );
-
-    resolvedRoles = resolvedRoles.filter(Boolean);
-
-    // Prioritization: admin > organizer > attendee
-    const priorityOrder = ["admin", "organizer", "attendee"];
-
-    // Collect all candidate roles from both the array and the direct field
-    const candidateRoles = resolvedRoles.map(r => r.key);
-    if (user.role) candidateRoles.push(user.role);
-
-    // Sort to find the highest priority role
-    candidateRoles.sort((a, b) => {
-      const idxA = priorityOrder.indexOf(a);
-      const idxB = priorityOrder.indexOf(b);
-      // Handle unknown roles (put them at the end)
-      return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
-    });
-
-    const roleKey = candidateRoles[0] || "attendee";
-
-    return {
-      ...user,
-      role: roleKey,
-      roles: resolvedRoles,
-    };
+    return await getAuthenticatedUser(ctx, args.token);
   },
 });
 
-export const upgradeToOrganizer = mutation({
-  args: { token: v.optional(v.string()) },
+export const requestOrganizerUpgrade = mutation({
+  args: {
+    token: v.optional(v.string()),
+    reason: v.optional(v.string())
+  },
   handler: async (ctx, args) => {
     const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
     if (!user) throw new Error("Not logged in");
 
-    const roleDoc = await ctx.db
-      .query("roles")
-      .withIndex("by_key", (q) => q.eq("key", "organizer"))
+    // Check if already an organizer
+    if (user.role === "organizer") {
+      return { success: false, message: "Already an organizer" };
+    }
+
+    // Check for existing pending request
+    const existingRequest = await ctx.db
+      .query("organizer_upgrade_requests")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .filter((q) => q.eq(q.field("status"), "pending"))
       .first();
 
-    if (!roleDoc) throw new Error("Role 'organizer' not found");
+    if (existingRequest) {
+      return { success: false, message: "Request already pending" };
+    }
 
-    const hasOrganizer = user.role === "organizer" || user.roles?.some(r => r.key === "organizer");
+    await ctx.db.insert("organizer_upgrade_requests", {
+      userId: user._id,
+      status: "pending",
+      reason: args.reason,
+      requestedAt: Date.now(),
+    });
 
-    if (!hasOrganizer) {
+    return { success: true, message: "Upgrade request submitted. Awaiting admin approval." };
+  },
+});
+
+export const resolveOrganizerUpgrade = mutation({
+  args: {
+    requestId: v.id("organizer_upgrade_requests"),
+    decision: v.union(v.literal("approved"), v.literal("rejected")),
+    rejectionReason: v.optional(v.string()),
+    token: v.optional(v.string()), // Admin token
+  },
+  handler: async (ctx, args) => {
+    const admin = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    const isAdmin = admin?.role === "admin" || admin?.roles?.some(r => r.key === "admin");
+    if (!admin || !isAdmin) {
+      throw new Error("Unauthorized: Admin only");
+    }
+
+    const request = await ctx.db.get(args.requestId);
+    if (!request) throw new Error("Request not found");
+    if (request.status !== "pending") throw new Error("Request already resolved");
+
+    const now = Date.now();
+
+    if (args.decision === "approved") {
+      const roleDoc = await ctx.db
+        .query("roles")
+        .withIndex("by_key", (q) => q.eq("key", "organizer"))
+        .first();
+
+      if (!roleDoc) throw new Error("Organizer role not found in system");
+
+      const user = await ctx.db.get(request.userId);
       const currentRoles = user.roles || [];
-      const now = Date.now();
 
       await ctx.db.patch(user._id, {
         role: "organizer",
         roles: [...currentRoles, {
           roleId: roleDoc._id,
-          assignedBy: user._id,
+          assignedBy: admin._id,
           assignedAt: now,
         }]
       });
-
-      // Re-fetch to get the fresh object with resolved roles for the frontend
-      const updatedUser = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
-      return {
-        success: true,
-        message: "Upgraded to Organizer",
-        user: updatedUser
-      };
     }
 
-    return {
-      success: true,
-      message: "Already an organizer",
-      user
-    };
+    await ctx.db.patch(args.requestId, {
+      status: args.decision,
+      reviewedBy: admin._id,
+      reviewedAt: now,
+      rejectionReason: args.rejectionReason,
+    });
+
+    return { success: true, decision: args.decision };
   },
 });
 
@@ -425,7 +412,7 @@ export const store = mutation({
 
     if (user !== null) return user._id;
 
-    const roleToAssign = (args.role === 'organizer' || args.role === 'attendee') ? args.role : 'attendee';
+    const roleToAssign = 'attendee';
     const now = Date.now();
 
     const newUser = {
@@ -531,5 +518,38 @@ export const debugGetAllSessions = query({
   args: {},
   handler: async (ctx) => {
     return await ctx.db.query("user_sessions").collect();
+  },
+});
+
+export const getMyUpgradeRequest = query({
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) return null;
+
+    return await ctx.db
+      .query("organizer_upgrade_requests")
+      .withIndex("by_user", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .first();
+  },
+});
+
+export const getPendingUpgradeRequests = query({
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const admin = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    const isAdmin = admin?.role === "admin" || admin?.roles?.some(r => r.key === "admin");
+    if (!admin || !isAdmin) return [];
+
+    const requests = await ctx.db
+      .query("organizer_upgrade_requests")
+      .withIndex("by_status", (q) => q.eq("status", "pending"))
+      .collect();
+
+    return await Promise.all(requests.map(async (req) => {
+      const user = await ctx.db.get(req.userId);
+      return { ...req, user };
+    }));
   },
 });

@@ -8,7 +8,6 @@ import { Crown, Sparkles, ArrowRight, Building, Ticket } from "lucide-react";
 import EventList from "@/components/event-list";
 import InfiniteScrollBanner from "@/components/infinite-scroll-banner";
 import { FadeIn } from "@/components/ui/motion";
-import TicketCTA from "@/components/ticket-cta";
 import useAuthStore from "@/hooks/use-auth-store";
 
 export default function LandingPage() {
@@ -178,8 +177,6 @@ export default function LandingPage() {
           </div>
         </section>
       )}
-
-      <TicketCTA />
 
     </div>
   );

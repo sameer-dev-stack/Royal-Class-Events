@@ -281,6 +281,8 @@ export default function EventDetailPage() {
           eventId={event._id}
           eventTitle={event.title?.en || event.title}
           eventLayout={event.venueLayout}
+          seatingMode={event.seatingMode}
+          basePrice={event.ticketPrice || event.metadata?.legacyProps?.ticketPrice || 0}
         />
       )}
     </div>

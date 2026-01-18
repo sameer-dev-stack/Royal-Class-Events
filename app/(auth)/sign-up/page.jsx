@@ -40,12 +40,12 @@ export default function SignUpLandingPage() {
                 </p>
             </motion.div>
 
-            {/* Role Selection Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+            {/* Role Selection - Center Single Card */}
+            <div className="max-w-md w-full">
                 {/* Attendee Card */}
                 <motion.div
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
                 >
                     <Link href="/sign-up/attendee" className="block group">
@@ -59,12 +59,12 @@ export default function SignUpLandingPage() {
                                 </div>
 
                                 <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                                    Discover Events
+                                    Get Started
                                     <Sparkles className="w-5 h-5 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 </h2>
 
                                 <p className="text-muted-foreground mb-6 leading-relaxed">
-                                    Browse exclusive events, purchase tickets, and attend unforgettable experiences curated just for you.
+                                    Join Royal Class to discover exclusive events, book VIP seats, and enjoy a world of elite experiences.
                                 </p>
 
                                 <ul className="space-y-2 mb-8 text-sm text-muted-foreground">
@@ -78,12 +78,12 @@ export default function SignUpLandingPage() {
                                     </li>
                                     <li className="flex items-center gap-2">
                                         <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                        Personalized recommendations
+                                        VIP seat selection tools
                                     </li>
                                 </ul>
 
                                 <div className="flex items-center gap-2 text-amber-500 font-semibold group-hover:gap-3 transition-all">
-                                    Register as Attendee
+                                    Create Free Account
                                     <ArrowRight className="w-5 h-5" />
                                 </div>
                             </div>
@@ -91,53 +91,17 @@ export default function SignUpLandingPage() {
                     </Link>
                 </motion.div>
 
-                {/* Organizer Card */}
+                {/* Info Note about Organizers */}
                 <motion.div
-                    initial={{ opacity: 0, x: 30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
+                    className="mt-6 p-4 rounded-2xl border border-border bg-muted/30 text-center"
                 >
-                    <Link href="/sign-up/organizer" className="block group">
-                        <div className="relative overflow-hidden rounded-3xl border-2 border-border bg-card/50 backdrop-blur-sm p-8 transition-all duration-300 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-500/10 group-hover:scale-[1.02]">
-                            {/* Premium gradient background */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-amber-600/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                            <div className="relative z-10">
-                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-amber-500/20">
-                                    <Crown className="w-8 h-8 text-black" />
-                                </div>
-
-                                <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
-                                    Host Events
-                                    <Users className="w-5 h-5 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                </h2>
-
-                                <p className="text-muted-foreground mb-6 leading-relaxed">
-                                    Create and manage world-class events, sell tickets, and build your audience with powerful organizer tools.
-                                </p>
-
-                                <ul className="space-y-2 mb-8 text-sm text-muted-foreground">
-                                    <li className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                        Create unlimited events
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                        Advanced analytics dashboard
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                                        Ticket sales & check-in tools
-                                    </li>
-                                </ul>
-
-                                <div className="flex items-center gap-2 text-amber-500 font-semibold group-hover:gap-3 transition-all">
-                                    Register as Organizer
-                                    <ArrowRight className="w-5 h-5" />
-                                </div>
-                            </div>
-                        </div>
-                    </Link>
+                    <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
+                        <Crown className="w-3 h-3 text-amber-500" />
+                        Want to host events? Register as attendee first, then apply for an upgrade from your profile.
+                    </p>
                 </motion.div>
             </div>
 

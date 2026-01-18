@@ -31,12 +31,23 @@ import {
     SelectValue
 } from "@/components/ui/select";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 
 export default function SettingsPage() {
     const { token } = useAuthStore();
-    const settings = useQuery(api.admin.getSettings, { token: token || undefined });
+    const [isMounted, setIsMounted] = useState(false);
+
+    // 1. Wait for Hydration
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // 2. Query only if Mounted and Token exists
+    const settings = useQuery(api.admin.getSettings,
+        isMounted && token ? { token } : "skip"
+    );
     const updateSetting = useMutation(api.admin.updateSetting);
     const broadcast = useMutation(api.admin.broadcastMessage);
 
@@ -103,6 +114,23 @@ export default function SettingsPage() {
             setIsBroadcasting(false);
         }
     };
+
+    if (!isMounted) return null;
+
+    if (!token) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[600px] text-zinc-400 gap-4">
+                <AlertTriangle className="w-16 h-16 text-zinc-700" />
+                <h2 className="text-xl font-medium">Access Denied</h2>
+                <p className="text-zinc-500">Please log in as an administrator to view this page.</p>
+                <Link href="/admin/login">
+                    <Button variant="default" className="bg-amber-500 text-black hover:bg-amber-600">
+                        Go to Login
+                    </Button>
+                </Link>
+            </div>
+        );
+    }
 
     if (!settings) {
         return <div className="p-10 text-zinc-400 animate-pulse">Initializing system interface...</div>;

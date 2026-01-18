@@ -20,11 +20,12 @@ import {
     DollarSign,
     TrendingUp,
     ExternalLink,
-    Filter
+    Filter,
+    ShieldAlert
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,7 +52,17 @@ import {
 export default function EventsPage() {
     const { token } = useAuthStore();
     const router = useRouter();
-    const data = useQuery(api.admin.getAllEvents, { token: token || undefined });
+    const [isMounted, setIsMounted] = useState(false);
+
+    // 1. Wait for Hydration
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // 2. Query only if Mounted and Token exists
+    const data = useQuery(api.admin.getAllEvents,
+        isMounted && token ? { token } : "skip"
+    );
     const deleteEvent = useMutation(api.admin.adminDeleteEvent);
     const toggleStatus = useMutation(api.admin.adminToggleEventStatus);
 
@@ -90,6 +101,23 @@ export default function EventsPage() {
             toast.error(err.message || "Failed to update status");
         }
     };
+
+    if (!isMounted) return null;
+
+    if (!token) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[600px] text-zinc-400 gap-4">
+                <ShieldAlert className="w-16 h-16 text-zinc-700" />
+                <h2 className="text-xl font-medium">Access Denied</h2>
+                <p className="text-zinc-500">Please log in as an administrator to view this page.</p>
+                <Link href="/admin/login">
+                    <Button variant="default" className="bg-amber-500 text-black hover:bg-amber-600">
+                        Go to Login
+                    </Button>
+                </Link>
+            </div>
+        );
+    }
 
     if (!data) return (
         <div className="space-y-8 max-w-7xl mx-auto p-8 border border-zinc-900 rounded-3xl bg-zinc-950/50">
@@ -251,8 +279,8 @@ export default function EventsPage() {
                                         <Badge
                                             variant="outline"
                                             className={`text-[9px] uppercase font-black px-1.5 py-0 border-none ${event.status === 'published'
-                                                    ? 'bg-emerald-500/10 text-emerald-500'
-                                                    : 'bg-zinc-800 text-zinc-500'
+                                                ? 'bg-emerald-500/10 text-emerald-500'
+                                                : 'bg-zinc-800 text-zinc-500'
                                                 }`}
                                         >
                                             {event.status}

@@ -11,14 +11,18 @@ import Image from "next/image";
 
 // Premium Cyberpunk/Luxury Category Images
 const CATEGORY_IMAGES = {
-    "Venue": "https://images.unsplash.com/photo-1514302240736-b1fee59858eb?q=80&w=800&auto=format&fit=crop", // Dark Neon Bar/Venue
-    "Catering": "https://images.unsplash.com/photo-1555243348-1d24dd80800b?q=80&w=800&auto=format&fit=crop", // Fancy Plating with mood lighting
-    "Tech & AV": "https://images.unsplash.com/photo-1505236858219-8359eb29e329?q=80&w=800&auto=format&fit=crop", // Concert Lights/Mixer
-    "Security": "https://images.unsplash.com/photo-1628113426868-bb8d234a9747?q=80&w=800&auto=format&fit=crop", // Professional Guard/Suit
-    "Logistics": "https://images.unsplash.com/photo-1494412574643-35d324698427?q=80&w=800&auto=format&fit=crop", // Dark Fleet/Transport
-    "Photography": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=800&auto=format&fit=crop", // Camera lens with neon reflection
-    "Decor": "https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?q=80&w=800&auto=format&fit=crop", // Atmospheric lighting
-    "Entertainment": "https://images.unsplash.com/photo-1493225255756-d95298119351?q=80&w=800&auto=format&fit=crop", // DJ/Crowd
+    "Venue": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
+    "Catering": "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80",
+    "Photography": "https://images.unsplash.com/photo-1520854221256-17451cc330e7?w=800&q=80",
+    "Cinematography": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80",
+    "Decor": "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=800&q=80",
+    "Makeup": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80",
+    "Music": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
+    "Attire": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80",
+    "Tech & AV": "https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80",
+    "Security": "https://images.unsplash.com/photo-1555952517-2e8e729e0b44?w=800&q=80",
+    "Logistics": "https://images.unsplash.com/photo-1586880244406-556ebe35f288?w=800&q=80",
+    "Entertainment": "https://images.unsplash.com/photo-1493225255756-d95298119351?w=800&q=80",
 };
 
 // Default categories for fallback

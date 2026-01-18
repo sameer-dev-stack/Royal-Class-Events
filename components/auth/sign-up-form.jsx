@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,10 @@ export default function SignUpForm({ role = null }) {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // Capture referral source from URL (?ref=xyz)
+    const referralSource = searchParams.get('ref') || null;
 
     const registerUser = useMutation(api.users.registerUser);
 
@@ -39,7 +43,8 @@ export default function SignUpForm({ role = null }) {
                 name: fullName,
                 email,
                 password,
-                role: role || "attendee"
+                role: role || "attendee",
+                referralSource: referralSource
             });
 
             if (result.success) {
@@ -74,23 +79,6 @@ export default function SignUpForm({ role = null }) {
     return (
         <div className="w-full max-w-md mx-auto">
             <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl shadow-2xl p-8">
-                {/* Role Badge */}
-                {role && (
-                    <div className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full mb-6 ${isOrganizer
-                        ? "bg-gradient-to-r from-amber-500/20 to-amber-600/10 border border-amber-500/30"
-                        : "bg-amber-500/10 border border-amber-500/20"
-                        }`}>
-                        {isOrganizer ? (
-                            <Crown className="w-4 h-4 text-amber-500" />
-                        ) : (
-                            <Heart className="w-4 h-4 text-amber-500" />
-                        )}
-                        <span className="text-sm font-medium text-amber-500">
-                            Registering as {isOrganizer ? "Event Organizer" : "Attendee"}
-                        </span>
-                    </div>
-                )}
-
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-500/10 rounded-full border border-amber-500/20 mb-4">
@@ -98,7 +86,7 @@ export default function SignUpForm({ role = null }) {
                     </div>
                     <h1 className="text-2xl font-bold">Create Account</h1>
                     <p className="text-muted-foreground mt-2">
-                        {isOrganizer ? "Start hosting amazing events" : "Join Royal Class Events"}
+                        Join Royal Class Events
                     </p>
                 </div>
 
@@ -221,27 +209,6 @@ export default function SignUpForm({ role = null }) {
                         Sign In
                     </Link>
                 </p>
-
-                {/* Role Switch */}
-                {role && (
-                    <p className="text-center text-sm text-muted-foreground mt-4">
-                        {isOrganizer ? (
-                            <>
-                                Just want to attend events?{" "}
-                                <Link href="/sign-up/attendee" className="text-amber-500 hover:underline font-medium">
-                                    Register as Attendee
-                                </Link>
-                            </>
-                        ) : (
-                            <>
-                                Want to host events?{" "}
-                                <Link href="/sign-up/organizer" className="text-amber-500 hover:underline font-medium">
-                                    Register as Organizer
-                                </Link>
-                            </>
-                        )}
-                    </p>
-                )}
             </div>
         </div>
     );

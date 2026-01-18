@@ -11,6 +11,7 @@
 import type * as TEST_INTELLIGENCE from "../TEST_INTELLIGENCE.js";
 import type * as admin from "../admin.js";
 import type * as audit from "../audit.js";
+import type * as auth from "../auth.js";
 import type * as backfill_zones from "../backfill_zones.js";
 import type * as battle_of_decks_seed from "../battle_of_decks_seed.js";
 import type * as bootstrap from "../bootstrap.js";
@@ -66,6 +67,7 @@ declare const fullApi: ApiFromModules<{
   TEST_INTELLIGENCE: typeof TEST_INTELLIGENCE;
   admin: typeof admin;
   audit: typeof audit;
+  auth: typeof auth;
   backfill_zones: typeof backfill_zones;
   battle_of_decks_seed: typeof battle_of_decks_seed;
   bootstrap: typeof bootstrap;

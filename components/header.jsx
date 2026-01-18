@@ -32,7 +32,7 @@ function HeaderContent() {
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, viewMode } = useAuthStore();
   const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } = useOnboarding();
   const { isAdmin, isOrganizer, isAttendee } = useUserRoles();
 
@@ -130,15 +130,15 @@ function HeaderContent() {
 
                 {isAuthenticated ? (
                   <>
-                    {/* Create Event Button (Gold) */}
-                    <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all h-9">
-                      <Link href={(isOrganizer || isAdmin) ? "/create-event" : "/account/profile"}>
-                        {isAttendee ? <ArrowRight className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                        <span className="hidden xl:inline">
-                          {isAttendee ? "Become an Organizer" : "Create Event"}
-                        </span>
-                      </Link>
-                    </Button>
+                    {/* Create Event Button (Gold) - Only for Organizers in Organizer Mode */}
+                    {(isOrganizer && viewMode === 'organizer') && (
+                      <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all h-9">
+                        <Link href="/create-event">
+                          <Plus className="w-4 h-4" />
+                          <span className="hidden xl:inline">Create Event</span>
+                        </Link>
+                      </Button>
+                    )}
 
                     {/* Notification Bell */}
                     <NotificationBell />
@@ -226,7 +226,7 @@ function HeaderContent() {
                             Stop attending, start hosting. Upgrade to an Organizer account and claim your throne.
                           </p>
                           <Button asChild className="w-full bg-white hover:bg-amber-500 hover:text-black text-black font-black uppercase text-[10px] tracking-widest h-11 rounded-xl transition-all relative z-10">
-                            <Link href="/account/profile" onClick={() => setIsMenuOpen(false)}>Become an Organizer</Link>
+                            <Link href="/account/organizer-request" onClick={() => setIsMenuOpen(false)}>Become an Organizer</Link>
                           </Button>
                         </div>
                       )}

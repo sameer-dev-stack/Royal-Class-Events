@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, Map, ExternalLink, QrCode } from "lucide-react";
+import { Edit, Trash2, Map, ExternalLink, QrCode, Armchair } from "lucide-react";
 import Link from "next/link";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -56,9 +56,14 @@ export default function EventList({ events, onDelete }) {
                                 </td>
                                 <td className="p-4 pr-6 text-right">
                                     <div className="flex justify-end gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                                        <Button variant="ghost" size="icon" asChild title="Manage Event">
-                                            <Link href={`/events/${event.slug}/manage`}>
+                                        <Button variant="ghost" size="icon" asChild title="Edit Details">
+                                            <Link href={`/events/${event.slug}/edit`}>
                                                 <Edit className="w-4 h-4 text-muted-foreground hover:text-foreground" />
+                                            </Link>
+                                        </Button>
+                                        <Button variant="ghost" size="icon" asChild title="Edit Seat Map">
+                                            <Link href={`/seat-builder?eventId=${event._id}`}>
+                                                <Armchair className="w-4 h-4 text-blue-500" />
                                             </Link>
                                         </Button>
                                         <Button variant="ghost" size="icon" asChild title="Scan Tickets">

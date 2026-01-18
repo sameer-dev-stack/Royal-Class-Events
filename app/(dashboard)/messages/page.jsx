@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
@@ -19,11 +20,28 @@ import { cn } from "@/lib/utils";
 
 export default function MessagesPage() {
     const { token, isAuthenticated } = useAuthStore();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const conversations = useQuery(
         api.messages.getConversations,
         token ? { token } : "skip"
     );
+
+    // Initial loading or server render
+    if (!mounted) {
+        return (
+            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+                    <p className="text-muted-foreground">Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     // Not authenticated
     if (!isAuthenticated) {

@@ -20,6 +20,8 @@ import {
   Search,
   Eye,
   Grid3X3,
+  Settings,
+  Edit3,
 } from "lucide-react";
 import Link from "next/link";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
@@ -33,8 +35,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
+import { cn } from "@/lib/utils";
 import QRScannerModal from "../_components/qr-scanner-modal";
 import { AttendeeCard } from "../_components/attendee-card";
 
@@ -61,6 +66,11 @@ export default function EventDashboardPage() {
   // Delete event mutation
   const { mutate: deleteEvent, isLoading: isDeleting } = useConvexMutation(
     api.dashboard.deleteEvent
+  );
+
+  // Update seating mode mutation
+  const { mutate: updateSeatingMode } = useConvexMutation(
+    api.events_seating.updateSeatingMode
   );
 
   const handleDelete = async () => {
@@ -247,7 +257,7 @@ export default function EventDashboardPage() {
                 </span>
               </div>
               <Badge variant="secondary" className="bg-blue-500/10 text-blue-400 border-blue-500/20">
-                {event.venueDesignId ? "Enterprise Venue Design" : "Simple Seating Map"}
+                {(event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "Reserved Seating Map" : "General Admission"}
               </Badge>
             </div>
           </div>
@@ -259,6 +269,15 @@ export default function EventDashboardPage() {
                 Configure Seating
               </Button>
             </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push(`/events/${event.slug}/edit`)}
+              className="gap-2 flex-1"
+            >
+              <Edit3 className="w-4 h-4" />
+              Edit
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -302,6 +321,43 @@ export default function EventDashboardPage() {
             Scan QR Code to Check-In
           </Button>
         )}
+
+        {/* Seating Mode Controller */}
+        <Card className="mb-8 border-amber-500/20 bg-amber-500/5 shadow-sm ring-1 ring-amber-500/10">
+          <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-amber-500/10 rounded-lg shrink-0">
+                <Settings className="w-5 h-5 text-amber-500" />
+              </div>
+              <div className="space-y-0.5">
+                <Label className="text-base font-bold text-foreground">Enable Seat Map</Label>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Turn on for stadium/theater style seating. Turn off for standing/open events.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-zinc-900/50 p-2 px-3 rounded-full border border-white/5">
+              <span className={cn("text-xs font-bold uppercase tracking-wider", !(event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "text-amber-500" : "text-muted-foreground")}>General</span>
+              <Switch
+                checked={event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING"}
+                onCheckedChange={async (checked) => {
+                  try {
+                    await updateSeatingMode({
+                      eventId,
+                      seatingMode: checked ? "RESERVED" : "GENERAL",
+                      token
+                    });
+                    toast.success(`Seating mode changed to ${checked ? "Reserved" : "General"}`);
+                  } catch (error) {
+                    toast.error(error.message || "Failed to update seating mode");
+                  }
+                }}
+                className="data-[state=checked]:bg-amber-500"
+              />
+              <span className={cn("text-xs font-bold uppercase tracking-wider", (event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "text-amber-500" : "text-muted-foreground")}>Reserved</span>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
