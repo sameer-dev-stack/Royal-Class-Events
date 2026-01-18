@@ -860,11 +860,17 @@ export default function CanvasStage() {
         const stage = stageRef.current;
         if (!stage || !containerRef.current) return;
 
-        stage.setPointersPositions(e);
-        const { x, y } = stage.getRelativePointerPosition();
+        // Manual Coordinate Math for Ghost Preview
+        const stageBox = containerRef.current.getBoundingClientRect();
+        const pointerX = e.clientX - stageBox.left;
+        const pointerY = e.clientY - stageBox.top;
 
-        const snappedX = Math.round(x / 10) * 10;
-        const snappedY = Math.round(y / 10) * 10;
+        // Apply Reverse Transform
+        const finalX = (pointerX - stage.x()) / stage.scaleX();
+        const finalY = (pointerY - stage.y()) / stage.scaleY();
+
+        const snappedX = Math.round(finalX / 10) * 10;
+        const snappedY = Math.round(finalY / 10) * 10;
 
         setGhostPos({ x: snappedX, y: snappedY });
     };
