@@ -251,9 +251,10 @@ const AssetGraphic = ({ element, width, height }) => {
     );
 };
 
-// 🔥 FIXED AssetElement Component
+// AssetElement Component
 function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
     const shapeRef = useRef(null);
+    const fillColor = element.fill || ZONE_FILL_DEFAULT;
 
     return (
         <Group
@@ -270,8 +271,7 @@ function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
             onMouseLeave={(e) => {
                 e.target.getStage().container().style.cursor = 'default';
             }}
-            onClick={onSelect} onTap={onSelect}
-
+            onClick={onSelect}
             onDragStart={(e) => {
                 if (!isSelected) {
                     useSeatEngine.getState().setSelectedIds([element.id]);
@@ -279,33 +279,25 @@ function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
                 const stage = e.target.getStage();
                 const currentSelectedIds = useSeatEngine.getState().selectedIds;
                 const allElements = useSeatEngine.getState().elements;
-
                 const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
-
                 stage._draggedNodes = allElements
                     .filter(el => targetIds.includes(el.id))
                     .map(el => ({ id: el.id, x: el.x, y: el.y }));
-
                 stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
             }}
-
             onDragMove={(e) => {
                 e.evt.preventDefault();
                 const stage = e.target.getStage();
                 if (!stage._dragStartPos) return;
-
                 const dx = e.target.x() - stage._dragStartPos.x;
                 const dy = e.target.y() - stage._dragStartPos.y;
 
                 stage.find('.element-group').forEach(node => {
                     if (node === e.target) return;
                     const stored = stage._draggedNodes?.find(d => d.id === node.id());
-                    if (stored) {
-                        node.position({ x: stored.x + dx, y: stored.y + dy });
-                    }
+                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
                 });
             }}
-
             onDragEnd={(e) => {
                 const stage = e.target.getStage();
                 if (!stage._dragStartPos) {
@@ -322,19 +314,13 @@ function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
                     const snappedY = Math.round((d.y + dy) / 10) * 10;
                     useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
                 });
-
                 delete stage._draggedNodes;
                 delete stage._dragStartPos;
             }}
-
             onTransformEnd={() => {
                 const node = shapeRef.current;
-                onChange({
-                    x: node.x(), y: node.y(),
-                    width: Math.max(20, node.width() * node.scaleX()),
-                    height: Math.max(20, node.height() * node.scaleY()),
-                    rotation: node.rotation()
-                });
+                const scale = Math.max(node.scaleX(), node.scaleY());
+                onChange({ x: node.x(), y: node.y(), width: element.width * scale, height: element.height * scale });
                 node.scaleX(1); node.scaleY(1);
             }}
         >
@@ -343,202 +329,7 @@ function AssetElement({ element, isSelected, onSelect, onChange, draggable }) {
     );
 }
 
-// 🔥 FIXED ZoneElement Component
-function ZoneElement({ element, isSelected, onSelect, onChange, scale, draggable }) {
-    const groupRef = useRef(null);
-
-    const categories = useSeatEngine.getState().categories;
-    const category = categories.find(c => c.id === element.seatConfig?.categoryId);
-    const fillColor = category ? category.color : (element.fill || ZONE_FILL_DEFAULT);
-    const isLowDetail = scale < LOD_THRESHOLD;
-
-    return (
-        <Group
-            id={element.id}
-            name="element-group"
-            ref={groupRef}
-            x={element.x} y={element.y}
-            width={element.width} height={element.height}
-            rotation={element.rotation || 0}
-            draggable={draggable}
-            onMouseEnter={(e) => {
-                if (draggable) e.target.getStage().container().style.cursor = 'move';
-            }}
-            onMouseLeave={(e) => {
-                e.target.getStage().container().style.cursor = 'default';
-            }}
-            onClick={onSelect} onTap={onSelect}
-
-            onDragStart={(e) => {
-                if (!isSelected) {
-                    useSeatEngine.getState().setSelectedIds([element.id]);
-                }
-                const stage = e.target.getStage();
-                const currentSelectedIds = useSeatEngine.getState().selectedIds;
-                const allElements = useSeatEngine.getState().elements;
-                const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
-
-                stage._draggedNodes = allElements
-                    .filter(el => targetIds.includes(el.id))
-                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
-                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
-            }}
-
-            onDragMove={(e) => {
-                e.evt.preventDefault();
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) return;
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage.find('.element-group').forEach(node => {
-                    if (node === e.target) return;
-                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
-                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
-                });
-            }}
-
-            onDragEnd={(e) => {
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) {
-                    const snappedX = Math.round(e.target.x() / 10) * 10;
-                    const snappedY = Math.round(e.target.y() / 10) * 10;
-                    onChange({ x: snappedX, y: snappedY });
-                    return;
-                }
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage._draggedNodes?.forEach(d => {
-                    const snappedX = Math.round((d.x + dx) / 10) * 10;
-                    const snappedY = Math.round((d.y + dy) / 10) * 10;
-                    useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
-                });
-                delete stage._draggedNodes;
-                delete stage._dragStartPos;
-            }}
-
-            onTransformEnd={() => {
-                const node = groupRef.current;
-                onChange({
-                    x: node.x(), y: node.y(),
-                    width: Math.max(20, node.width() * node.scaleX()),
-                    height: Math.max(20, node.height() * node.scaleY()),
-                    rotation: node.rotation()
-                });
-                node.scaleX(1); node.scaleY(1);
-            }}
-        >
-            <Rect
-                width={element.width} height={element.height}
-                fill={fillColor}
-                opacity={isLowDetail ? LOD_OPACITY : ZONE_OPACITY}
-                cornerRadius={isLowDetail ? 4 : 8}
-                stroke={isSelected ? "#D4AF37" : fillColor}
-                strokeWidth={isSelected ? 3 : 1}
-            />
-
-            {isLowDetail && (
-                <Text
-                    text={element.name?.toUpperCase() || "ZONE"}
-                    width={element.width} height={element.height}
-                    fontSize={Math.min(element.width, element.height) / 4}
-                    fontStyle="bold" fill="white" align="center" verticalAlign="middle" listening={false}
-                />
-            )}
-
-            {!isLowDetail && (
-                <>
-                    {element.name && (
-                        <Text x={0} y={5} width={element.width} text={element.name} fontSize={12} fontStyle="bold" fill={isSelected ? "#fff" : fillColor} align="center" listening={false} />
-                    )}
-                    {renderSeats(element, scale)}
-                </>
-            )}
-        </Group>
-    );
-}
-
-// 🔥 FIXED CircleElement Component
-function CircleElement({ element, isSelected, onSelect, onChange, draggable }) {
-    const shapeRef = useRef(null);
-    const fillColor = element.fill || ZONE_FILL_DEFAULT;
-
-    return (
-        <Group
-            id={element.id}
-            name="element-group"
-            ref={shapeRef} x={element.x} y={element.y}
-            draggable={draggable}
-            onMouseEnter={(e) => {
-                if (draggable) e.target.getStage().container().style.cursor = 'move';
-            }}
-            onMouseLeave={(e) => {
-                e.target.getStage().container().style.cursor = 'default';
-            }}
-            onClick={onSelect}
-
-            onDragStart={(e) => {
-                if (!isSelected) {
-                    useSeatEngine.getState().setSelectedIds([element.id]);
-                }
-                const stage = e.target.getStage();
-                const currentSelectedIds = useSeatEngine.getState().selectedIds;
-                const allElements = useSeatEngine.getState().elements;
-                const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
-                stage._draggedNodes = allElements
-                    .filter(el => targetIds.includes(el.id))
-                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
-                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
-            }}
-
-            onDragMove={(e) => {
-                e.evt.preventDefault();
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) return;
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage.find('.element-group').forEach(node => {
-                    if (node === e.target) return;
-                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
-                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
-                });
-            }}
-
-            onDragEnd={(e) => {
-                const stage = e.target.getStage();
-                if (!stage._dragStartPos) {
-                    const snappedX = Math.round(e.target.x() / 10) * 10;
-                    const snappedY = Math.round(e.target.y() / 10) * 10;
-                    onChange({ x: snappedX, y: snappedY });
-                    return;
-                }
-                const dx = e.target.x() - stage._dragStartPos.x;
-                const dy = e.target.y() - stage._dragStartPos.y;
-
-                stage._draggedNodes?.forEach(d => {
-                    const snappedX = Math.round((d.x + dx) / 10) * 10;
-                    const snappedY = Math.round((d.y + dy) / 10) * 10;
-                    useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
-                });
-                delete stage._draggedNodes;
-                delete stage._dragStartPos;
-            }}
-
-            onTransformEnd={() => {
-                const node = shapeRef.current;
-                const scale = Math.max(node.scaleX(), node.scaleY());
-                onChange({ x: node.x(), y: node.y(), width: element.width * scale, height: element.height * scale });
-                node.scaleX(1); node.scaleY(1);
-            }}
-        >
-            <Circle x={element.width / 2} y={element.height / 2} radius={element.width / 2} fill={fillColor} opacity={ZONE_OPACITY} stroke={isSelected ? "#D4AF37" : fillColor} strokeWidth={isSelected ? 2 : 1} />
-        </Group>
-    );
-}
-
-// 🔥 FIXED PolygonElement Component
+// PolygonElement Component
 function PolygonElement({ element, isSelected, onSelect, onChange, draggable }) {
     const shapeRef = useRef(null);
     const fillColor = element.fill || ZONE_FILL_DEFAULT;
@@ -556,7 +347,6 @@ function PolygonElement({ element, isSelected, onSelect, onChange, draggable }) 
                 e.target.getStage().container().style.cursor = 'default';
             }}
             onClick={onSelect}
-
             onDragStart={(e) => {
                 if (!isSelected) {
                     useSeatEngine.getState().setSelectedIds([element.id]);
@@ -570,7 +360,6 @@ function PolygonElement({ element, isSelected, onSelect, onChange, draggable }) 
                     .map(el => ({ id: el.id, x: el.x, y: el.y }));
                 stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
             }}
-
             onDragMove={(e) => {
                 e.evt.preventDefault();
                 const stage = e.target.getStage();
@@ -584,7 +373,6 @@ function PolygonElement({ element, isSelected, onSelect, onChange, draggable }) 
                     if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
                 });
             }}
-
             onDragEnd={(e) => {
                 const stage = e.target.getStage();
                 if (!stage._dragStartPos) {
@@ -622,6 +410,162 @@ function PolygonElement({ element, isSelected, onSelect, onChange, draggable }) 
     );
 }
 
+// ZoneElement Component
+function ZoneElement({ element, isSelected, onSelect, onChange, scale, draggable }) {
+    const shapeRef = useRef(null);
+    const fillColor = element.fill || ZONE_FILL_DEFAULT;
+
+    return (
+        <Group
+            id={element.id}
+            name="element-group"
+            ref={shapeRef}
+            x={element.x} y={element.y}
+            width={element.width} height={element.height}
+            draggable={draggable}
+            onMouseEnter={(e) => {
+                if (draggable) e.target.getStage().container().style.cursor = 'move';
+            }}
+            onMouseLeave={(e) => {
+                e.target.getStage().container().style.cursor = 'default';
+            }}
+            onClick={onSelect}
+            onDragStart={(e) => {
+                if (!isSelected) {
+                    useSeatEngine.getState().setSelectedIds([element.id]);
+                }
+                const stage = e.target.getStage();
+                const currentSelectedIds = useSeatEngine.getState().selectedIds;
+                const allElements = useSeatEngine.getState().elements;
+                const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
+                stage._draggedNodes = allElements
+                    .filter(el => targetIds.includes(el.id))
+                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
+                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
+            }}
+            onDragMove={(e) => {
+                e.evt.preventDefault();
+                const stage = e.target.getStage();
+                if (!stage._dragStartPos) return;
+                const dx = e.target.x() - stage._dragStartPos.x;
+                const dy = e.target.y() - stage._dragStartPos.y;
+
+                stage.find('.element-group').forEach(node => {
+                    if (node === e.target) return;
+                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
+                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
+                });
+            }}
+            onDragEnd={(e) => {
+                const stage = e.target.getStage();
+                if (!stage._dragStartPos) {
+                    const snappedX = Math.round(e.target.x() / 10) * 10;
+                    const snappedY = Math.round(e.target.y() / 10) * 10;
+                    onChange({ x: snappedX, y: snappedY });
+                    return;
+                }
+                const dx = e.target.x() - stage._dragStartPos.x;
+                const dy = e.target.y() - stage._dragStartPos.y;
+
+                stage._draggedNodes?.forEach(d => {
+                    const snappedX = Math.round((d.x + dx) / 10) * 10;
+                    const snappedY = Math.round((d.y + dy) / 10) * 10;
+                    useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
+                });
+                delete stage._draggedNodes;
+                delete stage._dragStartPos;
+            }}
+            onTransformEnd={() => {
+                const node = shapeRef.current;
+                const scale = Math.max(node.scaleX(), node.scaleY());
+                onChange({ x: node.x(), y: node.y(), width: element.width * scale, height: element.height * scale });
+                node.scaleX(1); node.scaleY(1);
+            }}
+        >
+            <Rect width={element.width} height={element.height} fill={fillColor} opacity={ZONE_OPACITY} stroke={isSelected ? "#D4AF37" : fillColor} strokeWidth={isSelected ? 2 : 1} cornerRadius={4} />
+            <Text text={element.name?.toUpperCase()} width={element.width} height={TITLE_HEIGHT} y={5} align="center" fontSize={12} fontStyle="bold" fill={fillColor} opacity={0.8} listening={false} />
+            {renderSeats(element, scale)}
+        </Group>
+    );
+}
+
+// CircleElement Component
+function CircleElement({ element, isSelected, onSelect, onChange, draggable }) {
+    const shapeRef = useRef(null);
+    const fillColor = element.fill || ZONE_FILL_DEFAULT;
+
+    return (
+        <Group
+            id={element.id}
+            name="element-group"
+            ref={shapeRef}
+            x={element.x} y={element.y}
+            width={element.width} height={element.height}
+            draggable={draggable}
+            onMouseEnter={(e) => {
+                if (draggable) e.target.getStage().container().style.cursor = 'move';
+            }}
+            onMouseLeave={(e) => {
+                e.target.getStage().container().style.cursor = 'default';
+            }}
+            onClick={onSelect}
+            onDragStart={(e) => {
+                if (!isSelected) {
+                    useSeatEngine.getState().setSelectedIds([element.id]);
+                }
+                const stage = e.target.getStage();
+                const currentSelectedIds = useSeatEngine.getState().selectedIds;
+                const allElements = useSeatEngine.getState().elements;
+                const targetIds = currentSelectedIds.includes(element.id) ? currentSelectedIds : [element.id];
+                stage._draggedNodes = allElements
+                    .filter(el => targetIds.includes(el.id))
+                    .map(el => ({ id: el.id, x: el.x, y: el.y }));
+                stage._dragStartPos = { x: e.target.x(), y: e.target.y() };
+            }}
+            onDragMove={(e) => {
+                e.evt.preventDefault();
+                const stage = e.target.getStage();
+                if (!stage._dragStartPos) return;
+                const dx = e.target.x() - stage._dragStartPos.x;
+                const dy = e.target.y() - stage._dragStartPos.y;
+
+                stage.find('.element-group').forEach(node => {
+                    if (node === e.target) return;
+                    const stored = stage._draggedNodes?.find(d => d.id === node.id());
+                    if (stored) node.position({ x: stored.x + dx, y: stored.y + dy });
+                });
+            }}
+            onDragEnd={(e) => {
+                const stage = e.target.getStage();
+                if (!stage._dragStartPos) {
+                    const snappedX = Math.round(e.target.x() / 10) * 10;
+                    const snappedY = Math.round(e.target.y() / 10) * 10;
+                    onChange({ x: snappedX, y: snappedY });
+                    return;
+                }
+                const dx = e.target.x() - stage._dragStartPos.x;
+                const dy = e.target.y() - stage._dragStartPos.y;
+
+                stage._draggedNodes?.forEach(d => {
+                    const snappedX = Math.round((d.x + dx) / 10) * 10;
+                    const snappedY = Math.round((d.y + dy) / 10) * 10;
+                    useSeatEngine.getState().updateElement(d.id, { x: snappedX, y: snappedY });
+                });
+                delete stage._draggedNodes;
+                delete stage._dragStartPos;
+            }}
+            onTransformEnd={() => {
+                const node = shapeRef.current;
+                const scale = Math.max(node.scaleX(), node.scaleY());
+                onChange({ x: node.x(), y: node.y(), width: element.width * scale, height: element.height * scale });
+                node.scaleX(1); node.scaleY(1);
+            }}
+        >
+            <Circle x={element.width / 2} y={element.height / 2} radius={element.width / 2} fill={fillColor} opacity={ZONE_OPACITY} stroke={isSelected ? "#D4AF37" : fillColor} strokeWidth={isSelected ? 2 : 1} />
+        </Group>
+    );
+}
+
 export default function CanvasStage() {
     const containerRef = useRef(null);
     const stageRef = useRef(null);
@@ -655,12 +599,40 @@ export default function CanvasStage() {
 
     useSeatHotkeys();
 
-    const getRelativePos = () => {
+    /**
+     * 🔥 FIXED: getRelativePos using DOM Rect Projection
+     * This ensures that mouse coordinates are correctly mapped to the canvas space,
+     * accounting for sidebar offsets and zoom levels.
+     */
+    const getRelativePos = (evt) => {
         const stage = stageRef.current;
-        if (!stage) return null;
-        const pointer = stage.getPointerPosition();
-        if (!pointer) return null;
-        return { x: (pointer.x - stage.x()) / stage.scaleX(), y: (pointer.y - stage.y()) / stage.scaleY() };
+        if (!stage || !containerRef.current) return null;
+
+        // Step A: Get the raw DOM position of the canvas container (accounts for Sidebar)
+        const stageBox = containerRef.current.getBoundingClientRect();
+
+        // Step B: Calculate Mouse Position relative to the Canvas DOM element
+        // If evt is provided (from native events), use clientX/Y. Otherwise, use Konva's pointer.
+        let pointerX, pointerY;
+        if (evt) {
+            pointerX = evt.clientX - stageBox.left;
+            pointerY = evt.clientY - stageBox.top;
+        } else {
+            const pointer = stage.getPointerPosition();
+            if (!pointer) return null;
+            pointerX = pointer.x;
+            pointerY = pointer.y;
+        }
+
+        // Step C: Apply the "Inverse Transform" to account for Zoom (scale) and Pan (x,y)
+        // Formula: (RawMouse - StagePan) / StageScale
+        const scaleX = stage.scaleX();
+        const scaleY = stage.scaleY();
+
+        return {
+            x: (pointerX - stage.x()) / scaleX,
+            y: (pointerY - stage.y()) / scaleY
+        };
     };
 
     const handleWheel = useCallback((e) => {
@@ -709,10 +681,7 @@ export default function CanvasStage() {
         const stage = stageRef.current;
         if (!stage) return;
 
-        const pointer = stage.getPointerPosition();
-        if (!pointer) return;
-
-        const pos = stage.getRelativePointerPosition();
+        const pos = getRelativePos();
         if (!pos) return;
 
         setMousePos(pos);
@@ -792,38 +761,18 @@ export default function CanvasStage() {
 
     const handleDrop = (e) => {
         e.preventDefault();
-        const stage = stageRef.current;
-        if (!stage || !containerRef.current) return;
+        const pos = getRelativePos(e);
+        if (!pos) return;
 
-        // 1. Get the raw DOM position of the canvas container
-        // This accounts for the Sidebar offset automatically
-        const stageBox = containerRef.current.getBoundingClientRect();
+        // Snap to Grid
+        const snappedX = Math.round(pos.x / 10) * 10;
+        const snappedY = Math.round(pos.y / 10) * 10;
 
-        // 2. Calculate Mouse Position relative to the Canvas DOM element
-        // e.clientX is the mouse position on the user's monitor
-        const pointerX = e.clientX - stageBox.left;
-        const pointerY = e.clientY - stageBox.top;
-
-        // 3. Apply the "Inverse Transform" to account for Zoom (scale) and Pan (x,y)
-        // Formula: (RawMouse - StagePan) / StageScale
-        const scaleX = stage.scaleX();
-        const scaleY = stage.scaleY();
-
-        const finalX = (pointerX - stage.x()) / scaleX;
-        const finalY = (pointerY - stage.y()) / scaleY;
-
-        // 4. Snap to Grid (Optional, but recommended for Seat Maps)
-        const snappedX = Math.round(finalX / 10) * 10;
-        const snappedY = Math.round(finalY / 10) * 10;
-
-        // 5. Process the Asset Data
         const assetJson = e.dataTransfer.getData("asset");
         if (!assetJson) return;
 
         try {
             const asset = JSON.parse(assetJson);
-
-            // Add the element at the CALCULATED coordinates
             addElement({
                 type: TOOL_TYPES.ASSET,
                 x: snappedX,
@@ -835,10 +784,7 @@ export default function CanvasStage() {
                 assetType: asset.type,
                 assetConfig: asset
             });
-
-            // Switch to Select tool to allow immediate moving of the new item
             useSeatEngine.getState().setTool(TOOL_TYPES.SELECT);
-
         } catch (err) {
             console.error("Drop failed:", err);
         } finally {
@@ -857,20 +803,11 @@ export default function CanvasStage() {
 
     const handleDragOver = (e) => {
         e.preventDefault();
-        const stage = stageRef.current;
-        if (!stage || !containerRef.current) return;
+        const pos = getRelativePos(e);
+        if (!pos) return;
 
-        // Manual Coordinate Math for Ghost Preview
-        const stageBox = containerRef.current.getBoundingClientRect();
-        const pointerX = e.clientX - stageBox.left;
-        const pointerY = e.clientY - stageBox.top;
-
-        // Apply Reverse Transform
-        const finalX = (pointerX - stage.x()) / stage.scaleX();
-        const finalY = (pointerY - stage.y()) / stage.scaleY();
-
-        const snappedX = Math.round(finalX / 10) * 10;
-        const snappedY = Math.round(finalY / 10) * 10;
+        const snappedX = Math.round(pos.x / 10) * 10;
+        const snappedY = Math.round(pos.y / 10) * 10;
 
         setGhostPos({ x: snappedX, y: snappedY });
     };
