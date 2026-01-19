@@ -421,7 +421,7 @@ export default function VendorProfilePage() {
                                 {/* CTA Button */}
                                 <Button
                                     onClick={() => setIsRFQModalOpen(true)}
-                                    className="w-full h-14 bg-gradient-to-r from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-amber-700 text-black font-bold text-lg shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transition-all rounded-xl"
+                                    className="w-full h-14 bg-gradient-to-r from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-[#8C7326] text-black font-bold text-lg shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transition-all rounded-xl"
                                 >
                                     <MessageSquare className="w-5 h-5 mr-2" />
                                     Request Quote

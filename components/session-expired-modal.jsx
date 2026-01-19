@@ -56,7 +56,7 @@ export default function SessionExpiredModal({ isOpen, onClose, eventId }) {
                 </DialogHeader>
 
                 <div className="space-y-4 mt-4">
-                    <div className="p-4 bg-#D4AF37/5 border border-#D4AF37/20 rounded-lg">
+                    <div className="p-4 bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-lg">
                         <p className="text-sm text-muted-foreground">
                             <strong className="text-foreground">What happened?</strong>
                             <br />

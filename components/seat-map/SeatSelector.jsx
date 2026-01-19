@@ -141,12 +141,12 @@ export default function SeatSelector({ eventId, venueId, onSeatsSelected }) {
 
     if (!seatMapData.venue?.seatMapEnabled) {
         return (
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-6 text-center">
-                <svg className="w-12 h-12 mx-auto mb-4 text-#8C7326" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-[#F7E08B] dark:bg-[#8C7326]/20 border border-[#F7E08B] dark:border-[#8C7326] rounded-lg p-6 text-center">
+                <svg className="w-12 h-12 mx-auto mb-4 text-[#8C7326]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
-                <p className="text-amber-800 dark:text-amber-200 font-medium">Seat map not available for this venue</p>
-                <p className="text-#8C7326 dark:text-#F7E08B text-sm mt-2">Please select ticket quantity instead</p>
+                <p className="text-[#8C7326] dark:text-[#F7E08B] font-medium">Seat map not available for this venue</p>
+                <p className="text-[#8C7326] dark:text-[#F7E08B] text-sm mt-2">Please select ticket quantity instead</p>
             </div>
         );
     }

@@ -17,14 +17,14 @@ export default function SecuritySettingsPage() {
             <div className="grid gap-6">
                 <Card className="p-8 rounded-3xl bg-card border border-border space-y-6 shadow-sm">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-#D4AF37/10 rounded-xl flex items-center justify-center text-#D4AF37">
+                        <div className="w-12 h-12 bg-[#D4AF37]/10 rounded-xl flex items-center justify-center text-[#D4AF37]">
                             <Lock className="w-6 h-6" />
                         </div>
                         <div>
                             <h3 className="font-bold text-foreground">Password</h3>
                             <p className="text-xs text-muted-foreground">Last changed 3 months ago</p>
                         </div>
-                        <Button variant="outline" size="sm" className="ml-auto rounded-xl bg-background border-border hover:border-#D4AF37/50 hover:bg-muted text-foreground">
+                        <Button variant="outline" size="sm" className="ml-auto rounded-xl bg-background border-border hover:border-[#D4AF37]/50 hover:bg-muted text-foreground">
                             Change Password
                         </Button>
                     </div>

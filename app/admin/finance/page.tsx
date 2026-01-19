@@ -35,7 +35,7 @@ export default function FinancePage() {
                 <h2 className="text-3xl font-bold tracking-tight">Financial Overview</h2>
                 <Button
                     onClick={() => window.location.href = "/admin/finance/payouts"}
-                    className="bg-#8C7326 hover:bg-amber-700 text-white"
+                    className="bg-[#8C7326] hover:bg-[#8C7326] text-white"
                 >
                     <DollarSign className="w-4 h-4 mr-2" />
                     Manage Payouts
@@ -75,7 +75,7 @@ export default function FinancePage() {
             <Card className="bg-zinc-900 border-zinc-800 text-white shadow-xl shadow-black/50 overflow-hidden">
                 <CardHeader>
                     <CardTitle className="text-lg font-bold flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-#D4AF37" />
+                        <TrendingUp className="w-5 h-5 text-[#D4AF37]" />
                         Revenue & User Growth Trends
                     </CardTitle>
                 </CardHeader>
@@ -95,7 +95,7 @@ export default function FinancePage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                 <Input
                     placeholder="Search by user, event, or type..."
-                    className="bg-zinc-900 border-zinc-800 pl-10 h-11 text-white focus:ring-#D4AF37/50"
+                    className="bg-zinc-900 border-zinc-800 pl-10 h-11 text-white focus:ring-[#D4AF37]/50"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -125,7 +125,7 @@ export default function FinancePage() {
                                 </TableCell>
                                 <TableCell className="font-medium text-white">
                                     <div className="flex items-center gap-2">
-                                        <User className="w-3 h-3 text-#D4AF37/50" />
+                                        <User className="w-3 h-3 text-[#D4AF37]/50" />
                                         {tx.payerName}
                                     </div>
                                 </TableCell>

@@ -101,7 +101,7 @@ export default function UsersPage() {
                 <h2 className="text-xl font-medium">Access Denied</h2>
                 <p className="text-zinc-500">Please log in as an administrator to view this page.</p>
                 <Link href="/admin/login">
-                    <Button variant="default" className="bg-#D4AF37 text-black hover:bg-#8C7326">
+                    <Button variant="default" className="bg-[#D4AF37] text-black hover:bg-[#8C7326]">
                         Go to Login
                     </Button>
                 </Link>
@@ -174,7 +174,7 @@ export default function UsersPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                     <Input
                         placeholder="Search by name or email..."
-                        className="bg-zinc-950/50 border-zinc-800 text-white pl-10 h-11 focus:ring-#D4AF37"
+                        className="bg-zinc-950/50 border-zinc-800 text-white pl-10 h-11 focus:ring-[#D4AF37]"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -219,7 +219,7 @@ export default function UsersPage() {
                                             </AvatarFallback>
                                         </Avatar>
                                         <div className="flex flex-col">
-                                            <span className="font-bold text-white group-hover:text-#D4AF37 transition-colors uppercase tracking-tight">{user.name}</span>
+                                            <span className="font-bold text-white group-hover:text-[#D4AF37] transition-colors uppercase tracking-tight">{user.name}</span>
                                             <div className="flex items-center gap-2 mt-0.5">
                                                 <Mail className="w-3 h-3 text-zinc-600" />
                                                 <span className="text-xs text-zinc-500 font-medium lowercase tracking-tight">{user.email}</span>
@@ -231,7 +231,7 @@ export default function UsersPage() {
                                     <Badge
                                         variant="outline"
                                         className={`gap-1.5 px-2.5 py-1 font-black text-[10px] uppercase border-none rounded-full ${user.role === 'admin'
-                                            ? 'bg-#D4AF37/10 text-#D4AF37'
+                                            ? 'bg-[#D4AF37]/10 text-[#D4AF37]'
                                             : user.role === 'organizer'
                                                 ? 'bg-blue-500/10 text-blue-500'
                                                 : 'bg-zinc-800 text-zinc-400'
@@ -282,7 +282,7 @@ export default function UsersPage() {
                                                 className="hover:bg-zinc-900 cursor-pointer focus:bg-zinc-900 rounded-lg py-2 transition-colors px-3 font-medium"
                                                 onClick={() => handleRoleChange(user._id, "admin")}
                                             >
-                                                <Crown className="mr-3 h-4 w-4 text-#D4AF37" /> Grant Admin Access
+                                                <Crown className="mr-3 h-4 w-4 text-[#D4AF37]" /> Grant Admin Access
                                             </DropdownMenuItem>
                                             <DropdownMenuSeparator className="bg-zinc-800 my-1" />
                                             <DropdownMenuLabel className="text-[10px] uppercase text-zinc-500 font-black px-3 py-2">Moderation</DropdownMenuLabel>

@@ -30,7 +30,7 @@ export default function TicketingSolutionsPage() {
             <section className="pt-32 pb-24 px-6">
                 <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
                     <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-xs font-bold uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-widest">
                             <Box className="w-3 h-3" />
                             The Core Engine
                         </div>
@@ -43,7 +43,7 @@ export default function TicketingSolutionsPage() {
                             Real-time mapping, dynamic tiers, and absolute reliability.
                         </p>
                         <div className="pt-4">
-                            <Button asChild className="h-14 px-10 rounded-2xl bg-#D4AF37 hover:bg-#8C7326 text-black font-black uppercase tracking-widest text-sm group">
+                            <Button asChild className="h-14 px-10 rounded-2xl bg-[#D4AF37] hover:bg-[#8C7326] text-black font-black uppercase tracking-widest text-sm group">
                                 <Link href="/create-event">
                                     Start Building
                                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -66,7 +66,7 @@ export default function TicketingSolutionsPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent" />
                         <div className="absolute inset-0 flex items-center justify-center p-8">
                             <div className="bg-black/50 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10 space-y-4 max-w-sm text-center">
-                                <div className="w-16 h-16 bg-#D4AF37/20 rounded-2xl flex items-center justify-center text-#D4AF37 mx-auto animate-pulse">
+                                <div className="w-16 h-16 bg-[#D4AF37]/20 rounded-2xl flex items-center justify-center text-[#D4AF37] mx-auto animate-pulse">
                                     <MousePointer2 className="w-8 h-8" />
                                 </div>
                                 <h4 className="text-xl font-bold tracking-tight">Interactive Plotting</h4>
@@ -110,9 +110,9 @@ export default function TicketingSolutionsPage() {
                                 key={i}
                                 {...fadeIn}
                                 transition={{ delay: i * 0.1 }}
-                                className="p-10 rounded-[3rem] bg-zinc-900 border border-white/5 space-y-6 hover:bg-zinc-900/50 transition-all border-b-4 border-b-transparent hover:border-b-#D4AF37"
+                                className="p-10 rounded-[3rem] bg-zinc-900 border border-white/5 space-y-6 hover:bg-zinc-900/50 transition-all border-b-4 border-b-transparent hover:border-b-[#D4AF37]"
                             >
-                                <div className="w-16 h-16 bg-#D4AF37/10 rounded-2xl flex items-center justify-center text-#D4AF37">
+                                <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-2xl flex items-center justify-center text-[#D4AF37]">
                                     <item.icon className="w-8 h-8" />
                                 </div>
                                 <h3 className="text-2xl font-black italic">{item.title}</h3>
@@ -138,22 +138,22 @@ export default function TicketingSolutionsPage() {
 
                     <div className="flex flex-col md:flex-row items-center justify-center gap-12">
                         <div className="flex flex-col items-center gap-4 group">
-                            <div className="w-24 h-24 rounded-[2rem] bg-zinc-900 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:border-#D4AF37/20 transition-all duration-500">
-                                <Box className="w-10 h-10 text-#D4AF37/50" />
+                            <div className="w-24 h-24 rounded-[2rem] bg-zinc-900 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:border-[#D4AF37]/20 transition-all duration-500">
+                                <Box className="w-10 h-10 text-[#D4AF37]/50" />
                             </div>
                             <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Drafting</span>
                         </div>
                         <ArrowRight className="hidden md:block w-8 h-8 text-white/10" />
                         <div className="flex flex-col items-center gap-4 group">
-                            <div className="w-24 h-24 rounded-[2rem] bg-zinc-900 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:border-#D4AF37/20 transition-all duration-500">
-                                <TrendingUp className="w-10 h-10 text-#D4AF37/50" />
+                            <div className="w-24 h-24 rounded-[2rem] bg-zinc-900 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:border-[#D4AF37]/20 transition-all duration-500">
+                                <TrendingUp className="w-10 h-10 text-[#D4AF37]/50" />
                             </div>
                             <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Sale Phase</span>
                         </div>
                         <ArrowRight className="hidden md:block w-8 h-8 text-white/10" />
                         <div className="flex flex-col items-center gap-4 group">
-                            <div className="w-24 h-24 rounded-[2rem] bg-zinc-900 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:border-#D4AF37/20 transition-all duration-500">
-                                <ShieldCheck className="w-10 h-10 text-#D4AF37" />
+                            <div className="w-24 h-24 rounded-[2rem] bg-zinc-900 border border-white/5 flex items-center justify-center group-hover:scale-110 group-hover:border-[#D4AF37]/20 transition-all duration-500">
+                                <ShieldCheck className="w-10 h-10 text-[#D4AF37]" />
                             </div>
                             <span className="text-xs font-bold uppercase tracking-widest text-white">Full Occupancy</span>
                         </div>

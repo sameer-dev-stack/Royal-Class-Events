@@ -31,7 +31,7 @@ export default function ScanningAppPage() {
             <section className="pt-32 pb-24 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 relative z-10">
                     <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="flex-1 space-y-8">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-xs font-bold uppercase tracking-widest">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-widest">
                             <Smartphone className="w-3 h-3" />
                             Hardware & Softare
                         </div>
@@ -81,19 +81,19 @@ export default function ScanningAppPage() {
                                     </div>
                                 </div>
 
-                                <div className="w-full aspect-square rounded-3xl border-2 border-dashed border-#D4AF37/20 flex items-center justify-center relative">
-                                    <Zap className="w-12 h-12 text-#D4AF37 animate-pulse" />
-                                    <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-#D4AF37 to-transparent animate-scan" />
+                                <div className="w-full aspect-square rounded-3xl border-2 border-dashed border-[#D4AF37]/20 flex items-center justify-center relative">
+                                    <Zap className="w-12 h-12 text-[#D4AF37] animate-pulse" />
+                                    <div className="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent animate-scan" />
                                 </div>
 
                                 <div className="text-center space-y-1">
-                                    <p className="text-xs font-black text-#D4AF37 uppercase tracking-widest">Scanning...</p>
+                                    <p className="text-xs font-black text-[#D4AF37] uppercase tracking-widest">Scanning...</p>
                                     <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-[0.2em]">892 / 1200 Guests In</p>
                                 </div>
                             </div>
 
                             {/* Floating Glow */}
-                            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-#D4AF37/5 blur-[120px] rounded-full pointer-events-none" />
+                            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[#D4AF37]/5 blur-[120px] rounded-full pointer-events-none" />
                         </div>
                     </motion.div>
                 </div>
@@ -104,7 +104,7 @@ export default function ScanningAppPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
                         <motion.div {...fadeIn} className="space-y-6">
-                            <div className="w-16 h-16 bg-#D4AF37/10 rounded-2xl flex items-center justify-center text-#D4AF37">
+                            <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-2xl flex items-center justify-center text-[#D4AF37]">
                                 <Zap className="w-8 h-8" />
                             </div>
                             <h3 className="text-3xl font-black italic">Speed Matters.</h3>
@@ -115,7 +115,7 @@ export default function ScanningAppPage() {
                         </motion.div>
 
                         <motion.div {...fadeIn} transition={{ delay: 0.1 }} className="space-y-6">
-                            <div className="w-16 h-16 bg-#D4AF37/10 rounded-2xl flex items-center justify-center text-#D4AF37">
+                            <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-2xl flex items-center justify-center text-[#D4AF37]">
                                 <WifiOff className="w-8 h-8" />
                             </div>
                             <h3 className="text-3xl font-black italic">Offline Mode.</h3>
@@ -126,7 +126,7 @@ export default function ScanningAppPage() {
                         </motion.div>
 
                         <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="space-y-6">
-                            <div className="w-16 h-16 bg-#D4AF37/10 rounded-2xl flex items-center justify-center text-#D4AF37">
+                            <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-2xl flex items-center justify-center text-[#D4AF37]">
                                 <ShieldCheck className="w-8 h-8" />
                             </div>
                             <h3 className="text-3xl font-black italic">Fraud Prevention.</h3>
@@ -153,7 +153,7 @@ export default function ScanningAppPage() {
                                     "Instant ticket list exports"
                                 ].map((item, i) => (
                                     <div key={i} className="flex items-center gap-4">
-                                        <CheckCircle2 className="w-5 h-5 text-#D4AF37" />
+                                        <CheckCircle2 className="w-5 h-5 text-[#D4AF37]" />
                                         <span className="font-bold text-sm uppercase tracking-widest text-zinc-400">{item}</span>
                                     </div>
                                 ))}
@@ -161,7 +161,7 @@ export default function ScanningAppPage() {
                         </div>
 
                         <div className="text-center md:text-right space-y-4">
-                            <div className="text-7xl md:text-9xl font-black italic text-#D4AF37 opacity-20">2.5M</div>
+                            <div className="text-7xl md:text-9xl font-black italic text-[#D4AF37] opacity-20">2.5M</div>
                             <p className="text-lg font-bold uppercase tracking-widest text-muted-foreground">Successful Scans in 2025</p>
                         </div>
                     </div>

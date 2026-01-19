@@ -27,7 +27,7 @@ const Section = ({ id, activeId, title, children }) => (
     >
         <div className="space-y-2">
             <h2 className="text-4xl font-black italic tracking-tight">{title}</h2>
-            <div className="flex items-center gap-4 text-xs font-bold text-#D4AF37 uppercase tracking-widest">
+            <div className="flex items-center gap-4 text-xs font-bold text-[#D4AF37] uppercase tracking-widest">
                 <div className="flex items-center gap-1.5">
                     <Clock className="w-3 h-3" />
                     Last Updated: January 2026
@@ -65,7 +65,7 @@ export default function LegalPage() {
                         </p>
                     </div>
                     <Button variant="outline" className="rounded-xl border-white/10 hover:bg-white/5 gap-2 h-12 font-bold">
-                        <Download className="w-4 h-4 text-#D4AF37" />
+                        <Download className="w-4 h-4 text-[#D4AF37]" />
                         Download Full Documentation (PDF)
                     </Button>
                 </div>
@@ -87,12 +87,12 @@ export default function LegalPage() {
                                     className={cn(
                                         "group w-full flex items-center justify-between p-4 rounded-2xl transition-all border border-transparent text-left",
                                         activeTab === tab.id
-                                            ? "bg-#D4AF37/10 border-#D4AF37/20 text-#D4AF37"
+                                            ? "bg-[#D4AF37]/10 border-[#D4AF37]/20 text-[#D4AF37]"
                                             : "hover:bg-white/5 text-muted-foreground"
                                     )}
                                 >
                                     <div className="flex items-center gap-4">
-                                        <Icon className={cn("w-5 h-5 transition-colors", activeTab === tab.id ? "text-#D4AF37" : "text-muted-foreground/50")} />
+                                        <Icon className={cn("w-5 h-5 transition-colors", activeTab === tab.id ? "text-[#D4AF37]" : "text-muted-foreground/50")} />
                                         <span className="font-bold">{tab.label}</span>
                                     </div>
                                     <ChevronRight className={cn(
@@ -191,7 +191,7 @@ export default function LegalPage() {
                                     "ISO 27001 Information Security"
                                 ].map((item, i) => (
                                     <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-zinc-900 border border-white/5">
-                                        <FileCheck className="w-5 h-5 text-#D4AF37" />
+                                        <FileCheck className="w-5 h-5 text-[#D4AF37]" />
                                         <span className="text-sm font-bold text-white">{item}</span>
                                     </div>
                                 ))}

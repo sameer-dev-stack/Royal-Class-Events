@@ -53,7 +53,7 @@ export default function MarketplacePage() {
     const categories = dbCategories?.length > 0 ? dbCategories : DEFAULT_CATEGORIES;
 
     return (
-        <div className="min-h-screen bg-background text-foreground selection:bg-#D4AF37/30">
+        <div className="min-h-screen bg-background text-foreground selection:bg-[#D4AF37]/30">
             {/* 1. Hero Section */}
             <MarketplaceHero categories={categories} cities={cities} />
 
@@ -64,7 +64,7 @@ export default function MarketplacePage() {
                     <section>
                         <div className="flex justify-between items-end mb-10">
                             <div>
-                                <span className="text-#D4AF37 font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
+                                <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
                                     <Sparkles className="w-3 h-3" /> Search Results
                                 </span>
                                 <h2 className="text-3xl md:text-4xl font-bold text-foreground">
@@ -74,7 +74,7 @@ export default function MarketplacePage() {
                                     {category && category !== "all" && <span className="bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">Category: {category}</span>}
                                     {city && <span className="bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">City: {city}</span>}
                                     {query && <span className="bg-zinc-800 px-3 py-1 rounded-full border border-zinc-700">"{query}"</span>}
-                                    <Link href="/marketplace" className="text-#D4AF37 hover:text-#F7E08B underline ml-2 self-center">
+                                    <Link href="/marketplace" className="text-[#D4AF37] hover:text-[#F7E08B] underline ml-2 self-center">
                                         Clear Filters
                                     </Link>
                                 </div>
@@ -83,7 +83,7 @@ export default function MarketplacePage() {
 
                         {searchResults === undefined ? (
                             <div className="flex justify-center py-20">
-                                <Loader2 className="w-12 h-12 animate-spin text-#D4AF37" />
+                                <Loader2 className="w-12 h-12 animate-spin text-[#D4AF37]" />
                             </div>
                         ) : searchResults.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-border rounded-3xl bg-muted/30">
@@ -94,7 +94,7 @@ export default function MarketplacePage() {
                                 </p>
                                 <Link
                                     href="/marketplace"
-                                    className="mt-6 px-6 py-2 bg-#8C7326 hover:bg-amber-700 text-white rounded-full font-bold transition-colors"
+                                    className="mt-6 px-6 py-2 bg-[#8C7326] hover:bg-[#8C7326] text-white rounded-full font-bold transition-colors"
                                 >
                                     Browse All
                                 </Link>
@@ -116,7 +116,7 @@ export default function MarketplacePage() {
                         <section>
                             <div className="flex justify-between items-end mb-10">
                                 <div>
-                                    <span className="text-#D4AF37 font-bold tracking-widest uppercase text-xs mb-2 block">Curated Collections</span>
+                                    <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 block">Curated Collections</span>
                                     <h2 className="text-3xl md:text-4xl font-bold text-foreground">
                                         Service Categories
                                     </h2>
@@ -131,7 +131,7 @@ export default function MarketplacePage() {
                                     <Link
                                         href={`/marketplace?category=${cat}`}
                                         key={cat}
-                                        className="group relative h-64 rounded-2xl overflow-hidden border border-white/5 hover:border-#D4AF37/50 transition-colors"
+                                        className="group relative h-64 rounded-2xl overflow-hidden border border-white/5 hover:border-[#D4AF37]/50 transition-colors"
                                     >
                                         <Image
                                             src={CATEGORY_IMAGES[cat] || `https://placehold.co/400x600?text=${encodeURIComponent(cat)}`}
@@ -139,11 +139,11 @@ export default function MarketplacePage() {
                                             fill
                                             className="object-cover object-top transition-transform duration-700 group-hover:scale-110 group-hover:saturate-150"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent group-hover:from-amber-950/80 transition-colors duration-500" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent group-hover:from-[#8C7326]/80 transition-colors duration-500" />
 
                                         <div className="absolute bottom-0 inset-x-0 p-4">
-                                            <span className="block w-8 h-0.5 bg-#D4AF37 mb-2 transform origin-left group-hover:scale-x-150 transition-transform duration-300" />
-                                            <span className="font-bold text-lg text-white group-hover:text-amber-200 transition-colors">
+                                            <span className="block w-8 h-0.5 bg-[#D4AF37] mb-2 transform origin-left group-hover:scale-x-150 transition-transform duration-300" />
+                                            <span className="font-bold text-lg text-white group-hover:text-[#F7E08B] transition-colors">
                                                 {cat}
                                             </span>
                                         </div>
@@ -156,7 +156,7 @@ export default function MarketplacePage() {
                         <section>
                             <div className="flex justify-between items-end mb-10">
                                 <div>
-                                    <span className="text-#D4AF37 font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
+                                    <span className="text-[#D4AF37] font-bold tracking-widest uppercase text-xs mb-2 block flex items-center gap-2">
                                         <Sparkles className="w-3 h-3" /> Top Rated
                                     </span>
                                     <h2 className="text-3xl md:text-4xl font-bold text-foreground">
@@ -170,7 +170,7 @@ export default function MarketplacePage() {
 
                             {featuredSuppliers === undefined ? (
                                 <div className="flex justify-center py-12">
-                                    <Loader2 className="w-8 h-8 animate-spin text-#D4AF37" />
+                                    <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -196,12 +196,12 @@ export default function MarketplacePage() {
                             </div>
 
                             <div className="relative p-8 md:p-16 max-w-2xl">
-                                <span className="inline-block px-3 py-1 rounded-full bg-#D4AF37/20 text-#F7E08B text-xs font-bold uppercase tracking-widest mb-6 border border-#D4AF37/20">
+                                <span className="inline-block px-3 py-1 rounded-full bg-[#D4AF37]/20 text-[#F7E08B] text-xs font-bold uppercase tracking-widest mb-6 border border-[#D4AF37]/20">
                                     Enterprise Ready
                                 </span>
                                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
                                     Planning a Corporate <br />
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-#8C7326">Mega-Event?</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F7E08B] to-[#8C7326]">Mega-Event?</span>
                                 </h2>
                                 <p className="text-zinc-400 text-lg mb-8 leading-relaxed">
                                     Get dedicated support, custom billing, and priority vendor access for large-scale productions.

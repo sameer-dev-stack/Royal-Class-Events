@@ -382,7 +382,7 @@ export default function SupplierJoinPage() {
                                 type="button"
                                 onClick={handleNext}
                                 disabled={!isStepValid()}
-                                className="bg-[#D4AF37] hover:bg-#8C7326 text-black px-8"
+                                className="bg-[#D4AF37] hover:bg-[#8C7326] text-black px-8"
                             >
                                 Next
                                 <ChevronRight className="w-4 h-4 ml-2" />
@@ -392,7 +392,7 @@ export default function SupplierJoinPage() {
                                 type="button"
                                 onClick={handleFinalSubmit}
                                 disabled={loading}
-                                className="bg-[#D4AF37] hover:bg-#8C7326 text-black px-8 font-bold shadow-lg shadow-[#D4AF37]/10 active:scale-95 transition-all"
+                                className="bg-[#D4AF37] hover:bg-[#8C7326] text-black px-8 font-bold shadow-lg shadow-[#D4AF37]/10 active:scale-95 transition-all"
                             >
                                 {loading ? (
                                     <Loader2 className="w-4 h-4 animate-spin mr-2" />

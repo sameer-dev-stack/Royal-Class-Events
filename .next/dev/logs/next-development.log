@@ -234,3 +234,87 @@ Import trace:
   Client Component Browser:
     ./app/globals.css [Client Component Browser]
     ./app/layout.js [Server Component]
+[02:37:51.260] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Meskat\Documents\Royal-Class-Events-main\app\globals.css:1:1: Cannot apply unknown utility class `via-#D4AF37`
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (C:\Users\Meskat\Documents\Royal-Class-Events-main\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.js [Server Component]
+[02:37:52.268] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Meskat\Documents\Royal-Class-Events-main\app\globals.css:1:1: Cannot apply unknown utility class `via-#D4AF37`
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (C:\Users\Meskat\Documents\Royal-Class-Events-main\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.js [Server Component]
+[02:37:52.268] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Meskat\Documents\Royal-Class-Events-main\app\globals.css:1:1: Cannot apply unknown utility class `via-#D4AF37`
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (C:\Users\Meskat\Documents\Royal-Class-Events-main\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.js [Server Component]
+[02:37:52.268] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Meskat\Documents\Royal-Class-Events-main\app\globals.css:1:1: Cannot apply unknown utility class `via-#D4AF37`
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (C:\Users\Meskat\Documents\Royal-Class-Events-main\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.js [Server Component]
+[02:39:04.975] Server  LOG     ✓ Compiled in 117ms
+[02:39:06.267] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Meskat\Documents\Royal-Class-Events-main\app\globals.css:1:1: Cannot apply unknown utility class `via-#D4AF37`
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (C:\Users\Meskat\Documents\Royal-Class-Events-main\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.js [Server Component]
+[02:39:06.918] Server  LOG     ✓ Compiled in 2.1s
+[02:39:07.206] Server  WARN    ⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/compiled/next-devtools/index.js (raw) changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[02:39:08.417] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[02:39:08.417] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[02:39:08.417] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[02:39:08.417] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[02:39:08.417] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[02:39:08.417] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[02:39:08.417] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[02:39:08.773] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[02:39:12.267] Browser LOG     AuthProvider: Syncing Convex data to Zustand Store. Role: admin
+[02:39:12.267] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]
+[02:39:12.267] Browser LOG     Current User Role: admin [{"_creationTime":1766677631543.5752,"_id":"ph7bb5svs37vzma120cvvmn5dn7xztec","assignedAt":1768034060989,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Browse events, purchase tickets, manage bookings","isSystem":true,"key":"attendee","name":"Attendee / Visitor","permissions":["events:view","tickets:purchase","bookings:view","bookings:cancel","profile:manage"],"roleId":"ph7bb5svs37vzma120cvvmn5dn7xztec"},{"_creationTime":1766677631543.575,"_id":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw","assignedAt":1768041441039,"assignedBy":"jd79vkfzf7hq0c3f4fs0bkb2d17yz96b","description":"Create and manage events, tickets, and attendees","isSystem":true,"key":"organizer","name":"Event Organizer","permissions":["events:create","events:edit","events:delete","events:publish","tickets:manage","attendees:view","attendees:check_in","analytics:view","communications:send"],"roleId":"ph7b7ka9ewm6r3rbw2xh2pp53n7xy1nw"}]

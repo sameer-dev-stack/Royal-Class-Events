@@ -88,7 +88,7 @@ export default function AdminPayoutsPage() {
     if (!isMounted) {
         return (
             <div className="flex items-center justify-center h-96">
-                <Loader2 className="w-8 h-8 animate-spin text-#D4AF37" />
+                <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
             </div>
         );
     }
@@ -157,7 +157,7 @@ export default function AdminPayoutsPage() {
                             <CardDescription className="text-zinc-400">Pending Payouts</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-#F7E08B">
+                            <div className="text-2xl font-bold text-[#F7E08B]">
                                 {formatCurrency(platformStats.pendingPayoutAmount)}
                             </div>
                             <p className="text-xs text-zinc-500">{platformStats.pendingPayoutCount} requests</p>
@@ -170,7 +170,7 @@ export default function AdminPayoutsPage() {
             <Card className="bg-zinc-900 border-zinc-800">
                 <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
-                        <Clock className="w-5 h-5 text-#D4AF37" />
+                        <Clock className="w-5 h-5 text-[#D4AF37]" />
                         Held Escrows (Ready for Release)
                     </CardTitle>
                     <CardDescription>
@@ -180,7 +180,7 @@ export default function AdminPayoutsPage() {
                 <CardContent>
                     {heldEscrows === undefined ? (
                         <div className="flex justify-center py-8">
-                            <Loader2 className="w-6 h-6 animate-spin text-#D4AF37" />
+                            <Loader2 className="w-6 h-6 animate-spin text-[#D4AF37]" />
                         </div>
                     ) : heldEscrows.length === 0 ? (
                         <div className="text-center py-8 text-zinc-500">
@@ -210,7 +210,7 @@ export default function AdminPayoutsPage() {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
-                                                <Building2 className="w-4 h-4 text-#D4AF37" />
+                                                <Building2 className="w-4 h-4 text-[#D4AF37]" />
                                                 <span className="text-white font-medium">{txn.supplierName}</span>
                                             </div>
                                         </TableCell>
@@ -264,7 +264,7 @@ export default function AdminPayoutsPage() {
                 <CardContent>
                     {pendingWithdrawals === undefined ? (
                         <div className="flex justify-center py-8">
-                            <Loader2 className="w-6 h-6 animate-spin text-#D4AF37" />
+                            <Loader2 className="w-6 h-6 animate-spin text-[#D4AF37]" />
                         </div>
                     ) : pendingWithdrawals.length === 0 ? (
                         <div className="text-center py-8 text-zinc-500">
@@ -338,7 +338,7 @@ export default function AdminPayoutsPage() {
                                 </div>
                                 <div>
                                     <p className="text-zinc-500">Commission (10%)</p>
-                                    <p className="text-#F7E08B font-medium">
+                                    <p className="text-[#F7E08B] font-medium">
                                         {formatCurrency(Math.round(releaseDialog.amount * 0.10))}
                                     </p>
                                 </div>

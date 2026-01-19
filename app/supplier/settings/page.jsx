@@ -122,7 +122,7 @@ export default function VendorSettingsPage() {
                 <Button
                     onClick={handleSave}
                     disabled={isLoading}
-                    className="bg-[#D4AF37] hover:bg-#8C7326 text-black font-bold"
+                    className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold"
                 >
                     {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                     Save Changes
@@ -306,7 +306,7 @@ export default function VendorSettingsPage() {
                             </div>
 
                             <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-lg p-4 mt-4">
-                                <p className="text-sm text-#F7E08B">
+                                <p className="text-sm text-[#F7E08B]">
                                     <strong>Note:</strong> Payouts are processed every Wednesday for balances above ৳5,000.
                                 </p>
                             </div>

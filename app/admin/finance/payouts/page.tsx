@@ -83,10 +83,10 @@ export default function PayoutsPage() {
 
             {/* Stats */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="bg-zinc-900/50 border-zinc-800 border-l-4 border-l-#D4AF37 shadow-2xl">
+                <Card className="bg-zinc-900/50 border-zinc-800 border-l-4 border-l-[#D4AF37] shadow-2xl">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-xs font-black uppercase tracking-widest text-zinc-500">Queue Volume</CardTitle>
-                        <Clock className="w-4 h-4 text-#D4AF37" />
+                        <Clock className="w-4 h-4 text-[#D4AF37]" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-4xl font-black text-white italic">৳{totalPending.toLocaleString()}</div>
@@ -150,7 +150,7 @@ export default function PayoutsPage() {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex flex-col gap-1">
-                                                <span className="text-lg font-black text-#D4AF37 tracking-tighter italic">৳{p.amount.toLocaleString()}</span>
+                                                <span className="text-lg font-black text-[#D4AF37] tracking-tighter italic">৳{p.amount.toLocaleString()}</span>
                                                 <div className="flex items-center gap-2">
                                                     <Wallet className="w-3 h-3 text-zinc-700" />
                                                     <Badge variant="outline" className="text-[9px] uppercase font-black border-zinc-800 bg-zinc-900/50 text-zinc-400">

@@ -260,7 +260,7 @@ export default function EventDetailPage() {
               <Button
                 disabled={isPast || isFull || canManageEvent}
                 onClick={handleRegister}
-                className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:shadow-[0_0_45px_rgba(245,158,11,0.4)] transition-all transform hover:-translate-y-1"
+                className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-[#8C7326] text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:shadow-[0_0_45px_rgba(245,158,11,0.4)] transition-all transform hover:-translate-y-1"
               >
                 {isPast ? "Event Ended" : isFull ? "Sold Out" : canManageEvent ? "Host View" : "Pick Your Seats"}
               </Button>

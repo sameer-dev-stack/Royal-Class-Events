@@ -194,7 +194,7 @@ export default function SearchLocationBar() {
             placeholder="Search event or category..."
             value={eventQuery}
             onChange={handleEventSearch}
-            className="w-full h-12 pl-12 pr-10 rounded-full bg-white dark:bg-zinc-900/80 border border-black/20 dark:border-white/20 text-black dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-#D4AF37/50 transition-all shadow-sm"
+            className="w-full h-12 pl-12 pr-10 rounded-full bg-white dark:bg-zinc-900/80 border border-black/20 dark:border-white/20 text-black dark:text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 transition-all shadow-sm"
           />
           <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
             <Calendar className="w-4 h-4" />
@@ -205,7 +205,7 @@ export default function SearchLocationBar() {
         {showEventResults && (
           <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden z-50">
             {searchLoading ? (
-              <div className="p-4 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-#D4AF37" /></div>
+              <div className="p-4 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-[#D4AF37]" /></div>
             ) : (
               <div>
                 {searchResults?.length > 0 ? searchResults.map(event => (
@@ -233,7 +233,7 @@ export default function SearchLocationBar() {
       <div className="relative shrink-0" ref={locationRef}>
         <button
           onClick={() => setLocationOpen(!locationOpen)}
-          className="h-12 px-5 flex items-center gap-2 rounded-full bg-white dark:bg-zinc-900/80 border border-black/20 dark:border-white/20 text-black dark:text-white hover:border-#D4AF37/50 transition-all shadow-sm"
+          className="h-12 px-5 flex items-center gap-2 rounded-full bg-white dark:bg-zinc-900/80 border border-black/20 dark:border-white/20 text-black dark:text-white hover:border-[#D4AF37]/50 transition-all shadow-sm"
         >
           <MapPin className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           <span className="max-w-[100px] truncate">{selectedCity || "Bangladesh"}</span>
@@ -248,7 +248,7 @@ export default function SearchLocationBar() {
               <button
                 onClick={handleGeolocation}
                 disabled={isLocating}
-                className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-#D4AF37 bg-#D4AF37/10 hover:bg-#D4AF37/20 rounded-lg transition-colors border border-#D4AF37/20"
+                className="w-full flex items-center justify-center gap-2 py-2 text-sm font-medium text-[#D4AF37] bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 rounded-lg transition-colors border border-[#D4AF37]/20"
               >
                 {isLocating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
                 Use my current location
@@ -257,7 +257,7 @@ export default function SearchLocationBar() {
               {viewMode === "cities" && (
                 <button
                   onClick={handleBackToCountries}
-                  className="text-xs text-#D4AF37 hover:text-#8C7326 flex items-center gap-1 font-medium mb-1"
+                  className="text-xs text-[#D4AF37] hover:text-[#8C7326] flex items-center gap-1 font-medium mb-1"
                 >
                   ← Change Country
                 </button>
@@ -269,7 +269,7 @@ export default function SearchLocationBar() {
                   placeholder={viewMode === "countries" ? "Search country..." : "Search city..."}
                   value={locationSearch}
                   onChange={(e) => setLocationSearch(e.target.value)}
-                  className="w-full h-9 pl-9 pr-3 text-sm bg-gray-100 dark:bg-black/30 border border-transparent dark:border-white/10 rounded-lg text-black dark:text-white placeholder:text-gray-500 focus:outline-none focus:border-#D4AF37"
+                  className="w-full h-9 pl-9 pr-3 text-sm bg-gray-100 dark:bg-black/30 border border-transparent dark:border-white/10 rounded-lg text-black dark:text-white placeholder:text-gray-500 focus:outline-none focus:border-[#D4AF37]"
                 />
               </div>
             </div>
@@ -289,7 +289,7 @@ export default function SearchLocationBar() {
                         className={cn(
                           "w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between",
                           selectedCountryCode === country.isoCode
-                            ? "bg-#D4AF37/10 text-#D4AF37 font-medium"
+                            ? "bg-[#D4AF37]/10 text-[#D4AF37] font-medium"
                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-black dark:hover:text-white"
                         )}
                       >
@@ -316,7 +316,7 @@ export default function SearchLocationBar() {
                           className={cn(
                             "w-full text-left px-3 py-2 text-sm rounded-md transition-colors flex items-center justify-between",
                             selectedCity === city.name
-                              ? "bg-#D4AF37/10 text-#D4AF37 font-medium"
+                              ? "bg-[#D4AF37]/10 text-[#D4AF37] font-medium"
                               : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-black dark:hover:text-white"
                           )}
                         >

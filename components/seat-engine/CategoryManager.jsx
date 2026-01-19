@@ -43,7 +43,7 @@ export default function CategoryManager() {
             {/* Header */}
             <div className="p-4 border-b border-zinc-800/50">
                 <div className="flex items-center gap-2 text-zinc-400">
-                    <Palette className="w-4 h-4 text-#D4AF37" />
+                    <Palette className="w-4 h-4 text-[#D4AF37]" />
                     <span className="text-sm font-medium">Pricing Categories</span>
                 </div>
             </div>
@@ -88,7 +88,7 @@ export default function CategoryManager() {
                                     type="number"
                                     value={cat.price}
                                     onChange={(e) => updateCategory(cat.id, { price: parseFloat(e.target.value) || 0 })}
-                                    className="w-16 px-2 py-1 bg-zinc-900/50 border border-zinc-700/50 rounded text-xs text-#D4AF37 font-bold focus:outline-none focus:border-#D4AF37/50"
+                                    className="w-16 px-2 py-1 bg-zinc-900/50 border border-zinc-700/50 rounded text-xs text-[#D4AF37] font-bold focus:outline-none focus:border-[#D4AF37]/50"
                                 />
                             </div>
 
@@ -123,7 +123,7 @@ export default function CategoryManager() {
                     placeholder="Category Name (e.g., VIP)"
                     value={newCatName}
                     onChange={(e) => setNewCatName(e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-#D4AF37/50"
+                    className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#D4AF37]/50"
                 />
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-zinc-500">Price:</span>
@@ -152,7 +152,7 @@ export default function CategoryManager() {
                 <button
                     onClick={handleAddCategory}
                     disabled={!newCatName.trim()}
-                    className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-#D4AF37/10 border border-#D4AF37/30 text-#D4AF37 rounded-lg text-sm font-medium hover:bg-#D4AF37/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] rounded-lg text-sm font-medium hover:bg-[#D4AF37]/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <Plus className="w-4 h-4" />
                     Add Category

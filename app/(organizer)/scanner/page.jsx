@@ -139,8 +139,8 @@ export default function ScannerPage() {
             <div className="grid gap-6">
                 {/* Scanner Interface */}
                 <Card className="border-white/5 bg-card/50 backdrop-blur-sm overflow-hidden">
-                    <CardHeader className="bg-#D4AF37/10 border-b border-#D4AF37/20">
-                        <CardTitle className="flex items-center gap-2 text-#D4AF37">
+                    <CardHeader className="bg-[#D4AF37]/10 border-b border-[#D4AF37]/20">
+                        <CardTitle className="flex items-center gap-2 text-[#D4AF37]">
                             <Camera className="w-5 h-5" />
                             Live Verification
                         </CardTitle>
@@ -151,8 +151,8 @@ export default function ScannerPage() {
                                 onClick={startScanner}
                                 className="aspect-square w-full rounded-2xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-4 cursor-pointer hover:bg-white/5 transition-colors group"
                             >
-                                <div className="w-16 h-16 rounded-full bg-#D4AF37/20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                    <QrCode className="w-8 h-8 text-#D4AF37" />
+                                <div className="w-16 h-16 rounded-full bg-[#D4AF37]/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <QrCode className="w-8 h-8 text-[#D4AF37]" />
                                 </div>
                                 <div className="text-center">
                                     <p className="font-bold text-lg">Launch Camera Scanner</p>
@@ -162,7 +162,7 @@ export default function ScannerPage() {
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                <div id="reader" className="overflow-hidden rounded-2xl border-2 border-#D4AF37/50"></div>
+                                <div id="reader" className="overflow-hidden rounded-2xl border-2 border-[#D4AF37]/50"></div>
                                 <Button variant="outline" onClick={stopScanner} className="w-full gap-2">
                                     <CameraOff className="w-4 h-4" /> Stop Scanner
                                 </Button>
@@ -190,7 +190,7 @@ export default function ScannerPage() {
                                 <Button
                                     disabled={!manualId || isProcessing}
                                     onClick={() => handleCheckIn(manualId)}
-                                    className="bg-#D4AF37 hover:bg-#8C7326 text-black font-bold h-12 px-6"
+                                    className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold h-12 px-6"
                                 >
                                     {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify"}
                                 </Button>

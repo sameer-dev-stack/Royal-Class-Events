@@ -59,7 +59,7 @@ export default function SupplierLayout({ children }) {
                     <p className="text-muted-foreground">Please sign in to access your vendor dashboard.</p>
                     <Link
                         href="/sign-in"
-                        className="inline-block px-6 py-3 bg-[#D4AF37] hover:bg-#8C7326 text-black font-bold rounded-xl transition-colors"
+                        className="inline-block px-6 py-3 bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold rounded-xl transition-colors"
                     >
                         Sign In
                     </Link>
@@ -80,7 +80,7 @@ export default function SupplierLayout({ children }) {
                     </p>
                     <Link
                         href="/supplier/join"
-                        className="inline-block px-6 py-3 bg-[#D4AF37] hover:bg-#8C7326 text-black font-bold rounded-xl transition-colors"
+                        className="inline-block px-6 py-3 bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold rounded-xl transition-colors"
                     >
                         <Sparkles className="w-4 h-4 inline mr-2" />
                         Join as Vendor
@@ -123,7 +123,7 @@ export default function SupplierLayout({ children }) {
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
                                     isActive
-                                        ? "bg-[#D4AF37]/10 text-#8C7326 dark:text-#F7E08B border border-[#D4AF37]/30"
+                                        ? "bg-[#D4AF37]/10 text-[#8C7326] dark:text-[#F7E08B] border border-[#D4AF37]/30"
                                         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                 )}
                             >
@@ -139,7 +139,7 @@ export default function SupplierLayout({ children }) {
                 <div className="p-4 border-t border-border">
                     <Link
                         href={`/marketplace/vendor/${supplier?._id}`}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-#8C7326 dark:hover:text-#F7E08B hover:bg-muted/50 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-[#8C7326] dark:hover:text-[#F7E08B] hover:bg-muted/50 transition-colors"
                     >
                         <Store className="w-5 h-5" />
                         View Public Profile

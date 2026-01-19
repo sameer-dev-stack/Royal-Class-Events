@@ -130,7 +130,7 @@ export default function SupplierProfilePage() {
                     <Button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="bg-[#D4AF37] hover:bg-#8C7326 text-black font-bold px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 active:scale-95 transition-all"
+                        className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 active:scale-95 transition-all"
                     >
                         {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                         Save Changes
@@ -165,7 +165,7 @@ export default function SupplierProfilePage() {
                                 <Input
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    className="bg-background border-border h-12 rounded-xl focus:ring-#D4AF37"
+                                    className="bg-background border-border h-12 rounded-xl focus:ring-[#D4AF37]"
                                     placeholder="e.g. Royal Cinematic Productions"
                                 />
                             </div>
@@ -175,7 +175,7 @@ export default function SupplierProfilePage() {
                                 <Textarea
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                    className="bg-background border-border min-h-[150px] rounded-xl focus:ring-#D4AF37"
+                                    className="bg-background border-border min-h-[150px] rounded-xl focus:ring-[#D4AF37]"
                                     placeholder="Describe your services, experience, and what makes you unique..."
                                 />
                             </div>
@@ -302,7 +302,7 @@ export default function SupplierProfilePage() {
                                 <Textarea
                                     value={formData.address}
                                     onChange={e => setFormData({ ...formData, address: e.target.value })}
-                                    className="bg-background border-border min-h-[100px] rounded-xl focus:ring-#D4AF37"
+                                    className="bg-background border-border min-h-[100px] rounded-xl focus:ring-[#D4AF37]"
                                     placeholder="Street address, building, floor..."
                                 />
                                 <p className="text-[10px] text-zinc-600 uppercase font-bold tracking-widest mt-2">

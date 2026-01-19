@@ -50,7 +50,7 @@ export default function SeatBuilderPage() {
             {/* Header */}
             <header className="h-14 flex-shrink-0 flex items-center justify-between px-6 border-b border-zinc-800/50 bg-zinc-900/50 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-#D4AF37 to-#8C7326 flex items-center justify-center shadow-lg shadow-#D4AF37/20">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#8C7326] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
                         <Crown className="w-4 h-4 text-black" />
                     </div>
                     <div>
@@ -83,7 +83,7 @@ export default function SeatBuilderPage() {
                 <main className="flex-1 relative">
                     {eventId && event === undefined ? (
                         <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 z-50">
-                            <Loader2 className="w-8 h-8 text-#D4AF37 animate-spin" />
+                            <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
                         </div>
                     ) : (
                         <CanvasStage />
@@ -98,7 +98,7 @@ export default function SeatBuilderPage() {
                             onClick={() => setActiveTab("properties")}
                             className={cn(
                                 "p-2 rounded-lg transition-all",
-                                activeTab === "properties" ? "bg-#D4AF37 text-black" : "text-zinc-500 hover:text-zinc-300"
+                                activeTab === "properties" ? "bg-[#D4AF37] text-black" : "text-zinc-500 hover:text-zinc-300"
                             )}
                             title="Properties"
                         >
@@ -108,7 +108,7 @@ export default function SeatBuilderPage() {
                             onClick={() => setActiveTab("categories")}
                             className={cn(
                                 "p-2 rounded-lg transition-all",
-                                activeTab === "categories" ? "bg-#D4AF37 text-black" : "text-zinc-500 hover:text-zinc-300"
+                                activeTab === "categories" ? "bg-[#D4AF37] text-black" : "text-zinc-500 hover:text-zinc-300"
                             )}
                             title="Pricing Categories"
                         >
@@ -118,7 +118,7 @@ export default function SeatBuilderPage() {
                             onClick={() => setActiveTab("assets")}
                             className={cn(
                                 "p-2 rounded-lg transition-all",
-                                activeTab === "assets" ? "bg-#D4AF37 text-black" : "text-zinc-500 hover:text-zinc-300"
+                                activeTab === "assets" ? "bg-[#D4AF37] text-black" : "text-zinc-500 hover:text-zinc-300"
                             )}
                             title="Asset Library"
                         >

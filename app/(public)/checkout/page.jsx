@@ -326,10 +326,10 @@ export default function CheckoutPage() {
                     <h1 className="text-3xl font-bold text-foreground">Review Your Order</h1>
 
                     {/* Countdown Timer */}
-                    <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${timeLeft < 60 ? "bg-red-500/10" : "bg-#D4AF37/10"
+                    <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${timeLeft < 60 ? "bg-red-500/10" : "bg-[#D4AF37]/10"
                         }`}>
-                        <Clock className={`w-5 h-5 ${timeLeft < 60 ? "text-red-500" : "text-#D4AF37"}`} />
-                        <span className={`font-mono font-bold ${timeLeft < 60 ? "text-red-500" : "text-#D4AF37"
+                        <Clock className={`w-5 h-5 ${timeLeft < 60 ? "text-red-500" : "text-[#D4AF37]"}`} />
+                        <span className={`font-mono font-bold ${timeLeft < 60 ? "text-red-500" : "text-[#D4AF37]"
                             }`}>
                             {formatTime(timeLeft)}
                         </span>

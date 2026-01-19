@@ -56,7 +56,7 @@ export default function SupplierCalendarPage() {
     if (existingAvailability === undefined) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-#D4AF37 animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
             </div>
         );
     }
@@ -74,7 +74,7 @@ export default function SupplierCalendarPage() {
                 <Button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="bg-#D4AF37 hover:bg-#8C7326 text-black font-bold h-12 px-6 rounded-xl shadow-lg shadow-#D4AF37/20 transition-all active:scale-95"
+                    className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all active:scale-95"
                 >
                     {isSaving ? (
                         <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -90,8 +90,8 @@ export default function SupplierCalendarPage() {
                 <Card className="lg:col-span-2 bg-zinc-900/50 border-zinc-800 rounded-3xl overflow-hidden backdrop-blur-sm shadow-xl">
                     <CardHeader className="border-b border-zinc-800/50 pb-6">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-#D4AF37/10 rounded-lg">
-                                <CalendarIcon className="w-5 h-5 text-#D4AF37" />
+                            <div className="p-2 bg-[#D4AF37]/10 rounded-lg">
+                                <CalendarIcon className="w-5 h-5 text-[#D4AF37]" />
                             </div>
                             <div>
                                 <CardTitle className="text-xl">Manage Dates</CardTitle>
@@ -108,8 +108,8 @@ export default function SupplierCalendarPage() {
                             onSelect={handleDateSelect}
                             className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 shadow-2xl"
                             classNames={{
-                                day_selected: "bg-#D4AF37 text-black hover:bg-#8C7326 focus:bg-#D4AF37 focus:text-black font-bold pointer-events-auto",
-                                day_today: "bg-zinc-800 text-#D4AF37",
+                                day_selected: "bg-[#D4AF37] text-black hover:bg-[#8C7326] focus:bg-[#D4AF37] focus:text-black font-bold pointer-events-auto",
+                                day_today: "bg-zinc-800 text-[#D4AF37]",
                                 head_cell: "text-zinc-500 font-bold uppercase text-[10px] tracking-widest",
                                 nav_button: "hover:bg-zinc-800 text-zinc-400 transition-colors",
                                 caption: "font-semibold text-white",
@@ -123,7 +123,7 @@ export default function SupplierCalendarPage() {
                     <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl overflow-hidden backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="text-lg flex items-center gap-2">
-                                <Info className="w-5 h-5 text-#D4AF37" />
+                                <Info className="w-5 h-5 text-[#D4AF37]" />
                                 Instructions
                             </CardTitle>
                         </CardHeader>
@@ -140,9 +140,9 @@ export default function SupplierCalendarPage() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-gradient-to-br from-#D4AF37/10 to-#8C7326/5 border-#D4AF37/20 rounded-3xl overflow-hidden backdrop-blur-sm">
+                    <Card className="bg-gradient-to-br from-[#D4AF37]/10 to-[#8C7326]/5 border-[#D4AF37]/20 rounded-3xl overflow-hidden backdrop-blur-sm">
                         <CardHeader>
-                            <CardTitle className="text-lg flex items-center gap-2 text-#D4AF37">
+                            <CardTitle className="text-lg flex items-center gap-2 text-[#D4AF37]">
                                 <Sparkles className="w-5 h-5" />
                                 Selection Summary
                             </CardTitle>

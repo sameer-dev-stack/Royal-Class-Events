@@ -68,7 +68,7 @@ export default function EventList({ events, onDelete }) {
                                         </Button>
                                         <Button variant="ghost" size="icon" asChild title="Scan Tickets">
                                             <Link href={`/organizer/scan?eventId=${event._id}`}>
-                                                <QrCode className="w-4 h-4 text-#D4AF37" />
+                                                <QrCode className="w-4 h-4 text-[#D4AF37]" />
                                             </Link>
                                         </Button>
                                         {/* Add seat map link if applicable */}

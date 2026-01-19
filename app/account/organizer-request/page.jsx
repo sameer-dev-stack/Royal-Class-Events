@@ -49,20 +49,20 @@ export default function OrganizerRequestPage() {
     if (isRequestLoading) {
         return (
             <div className="h-48 flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-#D4AF37" />
+                <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
             </div>
         );
     }
 
     if (user?.role === "organizer") {
         return (
-            <Card className="bg-card/50 backdrop-blur-sm border-#D4AF37/20 shadow-2xl shadow-#D4AF37/5">
+            <Card className="bg-card/50 backdrop-blur-sm border-[#D4AF37]/20 shadow-2xl shadow-[#D4AF37]/5">
                 <CardHeader className="text-center pb-2">
-                    <div className="mx-auto w-16 h-16 bg-#D4AF37/10 rounded-2xl flex items-center justify-center mb-4">
-                        <Crown className="w-8 h-8 text-#D4AF37" />
+                    <div className="mx-auto w-16 h-16 bg-[#D4AF37]/10 rounded-2xl flex items-center justify-center mb-4">
+                        <Crown className="w-8 h-8 text-[#D4AF37]" />
                     </div>
                     <CardTitle className="text-2xl font-black italic tracking-tight">
-                        You are an <span className="text-#D4AF37">ORGANIZER.</span>
+                        You are an <span className="text-[#D4AF37]">ORGANIZER.</span>
                     </CardTitle>
                     <CardDescription>
                         Your account has full access to event organizer tools.
@@ -93,10 +93,10 @@ export default function OrganizerRequestPage() {
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <CardTitle className="text-xl font-bold flex items-center gap-2">
-                                <ShieldCheck className="w-5 h-5 text-#D4AF37" />
+                                <ShieldCheck className="w-5 h-5 text-[#D4AF37]" />
                                 Current Request Status
                             </CardTitle>
-                            <div className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-2 ${request.status === 'pending' ? 'bg-#D4AF37/10 text-#D4AF37 border border-#D4AF37/20' :
+                            <div className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-2 ${request.status === 'pending' ? 'bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20' :
                                     request.status === 'approved' ? 'bg-green-500/10 text-green-500 border border-green-500/20' :
                                         'bg-red-500/10 text-red-500 border border-red-500/20'
                                 }`}>
@@ -114,7 +114,7 @@ export default function OrganizerRequestPage() {
                         </div>
 
                         {request.status === 'pending' && (
-                            <div className="p-4 rounded-2xl bg-#D4AF37/5 border border-#D4AF37/20">
+                            <div className="p-4 rounded-2xl bg-[#D4AF37]/5 border border-[#D4AF37]/20">
                                 <p className="text-sm text-muted-foreground">
                                     Our team is currently reviewing your profile. We usually resolve requests within 24-48 hours.
                                 </p>
@@ -147,7 +147,7 @@ export default function OrganizerRequestPage() {
                 >
                     <Card className="bg-card/50 backdrop-blur-sm border-border shadow-2xl relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-                            <Crown className="w-32 h-32 text-#D4AF37" />
+                            <Crown className="w-32 h-32 text-[#D4AF37]" />
                         </div>
 
                         <CardHeader>
@@ -165,7 +165,7 @@ export default function OrganizerRequestPage() {
                                     </label>
                                     <Textarea
                                         placeholder="e.g. I am a professional luxury wedding planner with 5 years of experience..."
-                                        className="min-h-[150px] rounded-2xl bg-muted/50 focus:ring-#D4AF37/20 border-border"
+                                        className="min-h-[150px] rounded-2xl bg-muted/50 focus:ring-[#D4AF37]/20 border-border"
                                         value={reason}
                                         onChange={(e) => setReason(e.target.value)}
                                         disabled={isSubmitting}
@@ -179,7 +179,7 @@ export default function OrganizerRequestPage() {
                                 type="submit"
                                 form="upgrade-form"
                                 disabled={isSubmitting || !reason.trim()}
-                                className="w-full h-12 bg-#D4AF37 hover:bg-#8C7326 text-black font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-#D4AF37/10"
+                                className="w-full h-12 bg-[#D4AF37] hover:bg-[#8C7326] text-black font-black uppercase tracking-widest rounded-2xl transition-all shadow-lg shadow-[#D4AF37]/10"
                             >
                                 {isSubmitting ? (
                                     <>

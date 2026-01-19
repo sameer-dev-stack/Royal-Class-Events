@@ -32,7 +32,7 @@ export default function SupplierDashboardPage() {
     if (data === undefined) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-#D4AF37 animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
             </div>
         );
     }
@@ -41,10 +41,10 @@ export default function SupplierDashboardPage() {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center space-y-4 max-w-md mx-auto p-8 rounded-3xl bg-card border border-border">
-                    <Search className="w-12 h-12 mx-auto text-#D4AF37/50" />
+                    <Search className="w-12 h-12 mx-auto text-[#D4AF37]/50" />
                     <h2 className="text-xl font-bold text-foreground">Access Denied</h2>
                     <p className="text-muted-foreground">{data?.message || "You must be a registered vendor to access this dashboard."}</p>
-                    <Button asChild className="bg-#D4AF37 hover:bg-#8C7326 text-black">
+                    <Button asChild className="bg-[#D4AF37] hover:bg-[#8C7326] text-black">
                         <Link href="/supplier/join">Join as Vendor</Link>
                     </Button>
                 </div>
@@ -59,25 +59,25 @@ export default function SupplierDashboardPage() {
             title: "Total Leads",
             value: stats.totalLeads,
             icon: Users,
-            color: "text-#D4AF37",
+            color: "text-[#D4AF37]",
         },
         {
             title: "New Requests",
             value: stats.newLeads,
             icon: Sparkles,
-            color: "text-#D4AF37",
+            color: "text-[#D4AF37]",
         },
         {
             title: "Profile Views",
             value: stats.profileViews,
             icon: Eye,
-            color: "text-#D4AF37",
+            color: "text-[#D4AF37]",
         },
     ];
 
     const getStatusStyle = (status) => {
         const styles = {
-            new: "bg-#D4AF37/10 text-#D4AF37 border-#D4AF37/20",
+            new: "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20",
             contacted: "bg-blue-500/10 text-blue-400 border-blue-500/20",
             quoted: "bg-purple-500/10 text-purple-400 border-purple-500/20",
             booked: "bg-green-500/10 text-green-400 border-green-500/20",
@@ -106,15 +106,15 @@ export default function SupplierDashboardPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="bg-card border border-border p-8 rounded-3xl relative overflow-hidden group hover:border-#D4AF37/30 transition-colors"
+                        className="bg-card border border-border p-8 rounded-3xl relative overflow-hidden group hover:border-[#D4AF37]/30 transition-colors"
                     >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-#D4AF37/5 rounded-full blur-3xl -z-10 group-hover:bg-#D4AF37/10 transition-colors" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/5 rounded-full blur-3xl -z-10 group-hover:bg-[#D4AF37]/10 transition-colors" />
 
                         <div className="flex items-center justify-between mb-6">
-                            <div className="p-3 bg-#D4AF37/10 rounded-2xl">
-                                <card.icon className="w-6 h-6 text-#D4AF37" />
+                            <div className="p-3 bg-[#D4AF37]/10 rounded-2xl">
+                                <card.icon className="w-6 h-6 text-[#D4AF37]" />
                             </div>
-                            <ArrowUpRight className="w-5 h-5 text-zinc-800 group-hover:text-#D4AF37/50 transition-colors" />
+                            <ArrowUpRight className="w-5 h-5 text-zinc-800 group-hover:text-[#D4AF37]/50 transition-colors" />
                         </div>
 
                         <div className="space-y-1">
@@ -133,7 +133,7 @@ export default function SupplierDashboardPage() {
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold text-foreground">Recent Leads</h2>
-                    <Button asChild variant="ghost" className="text-#D4AF37 hover:text-#8C7326 dark:hover:text-#F7E08B hover:bg-#D4AF37/5">
+                    <Button asChild variant="ghost" className="text-[#D4AF37] hover:text-[#8C7326] dark:hover:text-[#F7E08B] hover:bg-[#D4AF37]/5">
                         <Link href="/messages">View All Messages</Link>
                     </Button>
                 </div>
@@ -141,8 +141,8 @@ export default function SupplierDashboardPage() {
                 <div className="bg-card border border-border rounded-3xl overflow-hidden backdrop-blur-sm shadow-xl">
                     {recentLeads.length === 0 ? (
                         <div className="p-16 text-center space-y-6">
-                            <div className="w-20 h-20 bg-#D4AF37/10 rounded-full flex items-center justify-center mx-auto">
-                                <MessageSquare className="w-10 h-10 text-#D4AF37/50" />
+                            <div className="w-20 h-20 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mx-auto">
+                                <MessageSquare className="w-10 h-10 text-[#D4AF37]/50" />
                             </div>
                             <div className="space-y-2">
                                 <h3 className="text-xl font-bold text-foreground">Waiting for leads...</h3>
@@ -151,7 +151,7 @@ export default function SupplierDashboardPage() {
                                 </p>
                             </div>
                             <div className="p-4 bg-zinc-800/50 border border-zinc-700/50 rounded-2xl inline-block">
-                                <p className="text-sm text-#F7E08B flex items-center gap-2 font-medium">
+                                <p className="text-sm text-[#F7E08B] flex items-center gap-2 font-medium">
                                     <Sparkles className="w-4 h-4" />
                                     Tip: Share your profile on social media to get started!
                                 </p>
@@ -197,7 +197,7 @@ export default function SupplierDashboardPage() {
                                                 </span>
                                             </td>
                                             <td className="px-8 py-5 text-right">
-                                                <Button asChild size="sm" variant="ghost" className="h-9 w-9 p-0 hover:bg-#D4AF37/10 hover:text-#D4AF37 transition-all rounded-xl border border-border hover:border-#D4AF37/30">
+                                                <Button asChild size="sm" variant="ghost" className="h-9 w-9 p-0 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] transition-all rounded-xl border border-border hover:border-[#D4AF37]/30">
                                                     <Link href={`/messages/${lead._id}`}>
                                                         <ArrowUpRight className="w-4 h-4" />
                                                     </Link>

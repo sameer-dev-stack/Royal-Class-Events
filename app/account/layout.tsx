@@ -83,13 +83,13 @@ export default function AccountLayout({ children }) {
                                     className={cn(
                                         "flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 group relative",
                                         isActive
-                                            ? "bg-#D4AF37/10 text-#D4AF37 border border-#D4AF37/20 shadow-lg shadow-#D4AF37/5"
+                                            ? "bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 shadow-lg shadow-[#D4AF37]/5"
                                             : "hover:bg-muted text-muted-foreground border border-transparent"
                                     )}
                                 >
                                     <div className={cn(
                                         "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
-                                        isActive ? "bg-#D4AF37 text-black" : "bg-muted group-hover:bg-#D4AF37/20 group-hover:text-#D4AF37"
+                                        isActive ? "bg-[#D4AF37] text-black" : "bg-muted group-hover:bg-[#D4AF37]/20 group-hover:text-[#D4AF37]"
                                     )}>
                                         <item.icon className="w-5 h-5" />
                                     </div>
@@ -102,7 +102,7 @@ export default function AccountLayout({ children }) {
                                     {isActive && (
                                         <motion.div
                                             layoutId="active-nav"
-                                            className="absolute left-0 w-1 h-6 bg-#D4AF37 rounded-full"
+                                            className="absolute left-0 w-1 h-6 bg-[#D4AF37] rounded-full"
                                         />
                                     )}
                                 </Link>
@@ -121,7 +121,7 @@ export default function AccountLayout({ children }) {
                                     className={cn(
                                         "flex items-center gap-2 px-5 py-3 rounded-2xl whitespace-nowrap border font-bold text-sm transition-all",
                                         isActive
-                                            ? "bg-#D4AF37 border-#D4AF37 text-black shadow-lg shadow-#D4AF37/20"
+                                            ? "bg-[#D4AF37] border-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/20"
                                             : "bg-muted border-transparent text-muted-foreground"
                                     )}
                                 >

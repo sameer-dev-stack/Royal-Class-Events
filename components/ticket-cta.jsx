@@ -37,19 +37,19 @@ export default function TicketCTA() {
 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-4">
                     {/* Primary Action */}
-                    <button className="group relative px-6 py-3 bg-[#D4AF37] hover:bg-#8C7326 text-black rounded-lg font-bold transition-all duration-300 flex items-center gap-2 shadow-lg shadow-amber-900/20 hover:shadow-amber-900/40 transform hover:-translate-y-1">
+                    <button className="group relative px-6 py-3 bg-[#D4AF37] hover:bg-[#8C7326] text-black rounded-lg font-bold transition-all duration-300 flex items-center gap-2 shadow-lg shadow-[#8C7326]/20 hover:shadow-[#8C7326]/40 transform hover:-translate-y-1">
                         <RefreshCw className="w-4 h-4" />
                         <span>Transfer Tickets</span>
                     </button>
 
                     {/* Secondary Action - Verify */}
-                    <button className="px-6 py-3 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-transparent hover:border-#D4AF37/50 hover:bg-amber-50 dark:hover:bg-[#D4AF37]/5 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300 flex items-center gap-2 group">
+                    <button className="px-6 py-3 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-transparent hover:border-[#D4AF37]/50 hover:bg-[#F7E08B] dark:hover:bg-[#D4AF37]/5 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300 flex items-center gap-2 group">
                         <AlertCircle className="w-4 h-4 text-[#D4AF37]" />
                         <span>Verify Pass</span>
                     </button>
 
                     {/* Secondary Action - Secure */}
-                    <button className="px-6 py-3 rounded-lg border border-gray-300 dark:border-amber-900/50 bg-white dark:bg-transparent hover:border-#D4AF37/50 hover:bg-amber-50 dark:hover:bg-[#D4AF37]/5 text-gray-700 dark:text-slate-300 hover:text-#8C7326 dark:hover:text-#F7E08B transition-all duration-300 flex items-center gap-2">
+                    <button className="px-6 py-3 rounded-lg border border-gray-300 dark:border-[#8C7326]/50 bg-white dark:bg-transparent hover:border-[#D4AF37]/50 hover:bg-[#F7E08B] dark:hover:bg-[#D4AF37]/5 text-gray-700 dark:text-slate-300 hover:text-[#8C7326] dark:hover:text-[#F7E08B] transition-all duration-300 flex items-center gap-2">
                         <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
                         <span>Secure Pass Access</span>
                     </button>

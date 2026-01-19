@@ -90,7 +90,7 @@ export default function LandingPage() {
                   </div>
                   <div className="text-left">
                     <h3 className="text-white font-bold text-lg">The Royal Gala</h3>
-                    <div className="flex items-center gap-2 text-amber-200 text-sm">
+                    <div className="flex items-center gap-2 text-[#F7E08B] text-sm">
                       <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                       <span>Selling Fast</span>
                     </div>

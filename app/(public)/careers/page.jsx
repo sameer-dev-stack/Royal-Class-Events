@@ -25,9 +25,9 @@ const fadeIn = {
 const ValueCard = ({ icon: Icon, title, desc }) => (
     <motion.div
         {...fadeIn}
-        className="p-8 rounded-[2rem] bg-zinc-900/50 border border-white/5 hover:border-#D4AF37/30 transition-all group"
+        className="p-8 rounded-[2rem] bg-zinc-900/50 border border-white/5 hover:border-[#D4AF37]/30 transition-all group"
     >
-        <div className="w-12 h-12 rounded-xl bg-#D4AF37/10 flex items-center justify-center text-#D4AF37 mb-6 group-hover:scale-110 transition-transform">
+        <div className="w-12 h-12 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] mb-6 group-hover:scale-110 transition-transform">
             <Icon className="w-6 h-6" />
         </div>
         <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
@@ -38,12 +38,12 @@ const ValueCard = ({ icon: Icon, title, desc }) => (
 const JobCard = ({ title, dept, type, location }) => (
     <motion.div
         {...fadeIn}
-        className="p-6 rounded-2xl bg-zinc-900/30 border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-zinc-900/50 transition-all border-l-4 border-l-transparent hover:border-l-#D4AF37"
+        className="p-6 rounded-2xl bg-zinc-900/30 border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-zinc-900/50 transition-all border-l-4 border-l-transparent hover:border-l-[#D4AF37]"
     >
         <div className="space-y-1">
             <h3 className="text-xl font-bold text-white">{title}</h3>
             <div className="flex flex-wrap gap-4 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                <span className="text-#D4AF37/80">{dept}</span>
+                <span className="text-[#D4AF37]/80">{dept}</span>
                 <span>•</span>
                 <span>{type}</span>
                 <span>•</span>
@@ -52,7 +52,7 @@ const JobCard = ({ title, dept, type, location }) => (
         </div>
         <Button
             onClick={() => window.location.href = "mailto:careers@royalclass.com"}
-            className="bg-#D4AF37 hover:bg-#8C7326 text-black font-black rounded-xl h-11 px-8 group"
+            className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-black rounded-xl h-11 px-8 group"
         >
             Apply Now
             <ArrowUpRight className="ml-2 w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
@@ -67,7 +67,7 @@ export default function CareersPage() {
             <section className="relative pt-32 pb-20 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto text-center relative z-10">
                     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }}>
-                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-xs font-bold uppercase tracking-widest mb-6">
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-widest mb-6">
                             Now Hiring
                         </span>
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 leading-[0.9]">
@@ -85,7 +85,7 @@ export default function CareersPage() {
             {/* Values Section */}
             <section className="py-24 px-6 bg-zinc-900/20">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-sm font-bold text-#D4AF37 uppercase tracking-[0.3em] mb-4 text-center">Our Core Values</div>
+                    <div className="text-sm font-bold text-[#D4AF37] uppercase tracking-[0.3em] mb-4 text-center">Our Core Values</div>
                     <h2 className="text-4xl md:text-5xl font-black mb-16 text-center italic">What defines us</h2>
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -121,7 +121,7 @@ export default function CareersPage() {
                             <h2 className="text-4xl font-black italic tracking-tight">Open Castles</h2>
                             <p className="text-muted-foreground font-light">Find your seat at the table.</p>
                         </div>
-                        <div className="flex items-center gap-2 text-#D4AF37 font-bold bg-#D4AF37/10 px-4 py-2 rounded-xl text-sm border border-#D4AF37/20">
+                        <div className="flex items-center gap-2 text-[#D4AF37] font-bold bg-[#D4AF37]/10 px-4 py-2 rounded-xl text-sm border border-[#D4AF37]/20">
                             <Briefcase className="w-4 h-4" />
                             6 Opportunities
                         </div>

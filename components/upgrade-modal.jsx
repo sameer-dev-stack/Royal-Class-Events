@@ -70,7 +70,7 @@ export default function UpgradeModal({ isOpen, onClose, trigger = "limit" }) {
           <Button variant="outline" onClick={onClose} className="flex-1 border-border hover:bg-muted hover:text-foreground">
             Dismiss
           </Button>
-          <Button className="flex-1 bg-#8C7326 hover:bg-amber-700 text-white border-none">
+          <Button className="flex-1 bg-[#8C7326] hover:bg-[#8C7326] text-white border-none">
             Contact Us
           </Button>
         </div>

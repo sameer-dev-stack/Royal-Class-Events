@@ -122,7 +122,7 @@ export function ServiceModal({ isOpen, onClose, onSubmit, initialData }: Service
                                 id="name"
                                 type="text"
                                 {...form.register("name")}
-                                className="bg-zinc-900 border-zinc-800 h-12 rounded-xl focus:border-#D4AF37 transition-colors"
+                                className="bg-zinc-900 border-zinc-800 h-12 rounded-xl focus:border-[#D4AF37] transition-colors"
                                 placeholder="e.g. Premium Wedding Package"
                             />
                             {form.formState.errors.name && (
@@ -137,7 +137,7 @@ export function ServiceModal({ isOpen, onClose, onSubmit, initialData }: Service
                                     id="price"
                                     type="number"
                                     {...form.register("price")}
-                                    className="bg-zinc-900 border-zinc-800 h-12 rounded-xl focus:border-#D4AF37"
+                                    className="bg-zinc-900 border-zinc-800 h-12 rounded-xl focus:border-[#D4AF37]"
                                     placeholder="0"
                                 />
                                 {form.formState.errors.price && (
@@ -152,7 +152,7 @@ export function ServiceModal({ isOpen, onClose, onSubmit, initialData }: Service
                                         id="active"
                                         checked={form.watch("active")}
                                         onCheckedChange={(val) => form.setValue("active", val)}
-                                        className="data-[state=checked]:bg-#D4AF37"
+                                        className="data-[state=checked]:bg-[#D4AF37]"
                                     />
                                     <span className="text-sm font-medium text-zinc-300">
                                         {form.watch("active") ? "Public" : "Private"}
@@ -166,7 +166,7 @@ export function ServiceModal({ isOpen, onClose, onSubmit, initialData }: Service
                             <Textarea
                                 id="description"
                                 {...form.register("description")}
-                                className="bg-zinc-900 border-zinc-800 min-h-[120px] rounded-xl focus:border-#D4AF37 leading-relaxed"
+                                className="bg-zinc-900 border-zinc-800 min-h-[120px] rounded-xl focus:border-[#D4AF37] leading-relaxed"
                                 placeholder="What's included in this package? Be descriptive..."
                             />
                             {form.formState.errors.description && (
@@ -184,7 +184,7 @@ export function ServiceModal({ isOpen, onClose, onSubmit, initialData }: Service
                                 type="text"
                                 value={newFeature}
                                 onChange={(e) => setNewFeature(e.target.value)}
-                                className="bg-zinc-900 border-zinc-800 h-12 rounded-xl focus:border-#D4AF37"
+                                className="bg-zinc-900 border-zinc-800 h-12 rounded-xl focus:border-[#D4AF37]"
                                 placeholder="Add a feature (e.g. 100 Edited Photos)"
                                 onKeyDown={(e) => {
                                     if (e.key === "Enter") {
@@ -238,7 +238,7 @@ export function ServiceModal({ isOpen, onClose, onSubmit, initialData }: Service
                             variant="default"
                             size="default"
                             disabled={isSubmitting}
-                            className="bg-#D4AF37 hover:bg-#8C7326 text-black font-black px-10 rounded-xl h-12 shadow-xl shadow-#D4AF37/10 active:scale-95 transition-all"
+                            className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-black px-10 rounded-xl h-12 shadow-xl shadow-[#D4AF37]/10 active:scale-95 transition-all"
                         >
                             {isSubmitting && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                             {initialData ? "Apply Changes" : "Create Service"}

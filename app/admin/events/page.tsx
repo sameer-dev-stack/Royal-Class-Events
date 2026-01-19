@@ -111,7 +111,7 @@ export default function EventsPage() {
                 <h2 className="text-xl font-medium">Access Denied</h2>
                 <p className="text-zinc-500">Please log in as an administrator to view this page.</p>
                 <Link href="/admin/login">
-                    <Button variant="default" className="bg-#D4AF37 text-black hover:bg-#8C7326">
+                    <Button variant="default" className="bg-[#D4AF37] text-black hover:bg-[#8C7326]">
                         Go to Login
                     </Button>
                 </Link>
@@ -169,13 +169,13 @@ export default function EventsPage() {
                 <Card className="bg-zinc-900/50 border-zinc-800 shadow-xl overflow-hidden group">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-zinc-400">Drafts</CardTitle>
-                        <Clock className="w-5 h-5 text-#D4AF37 group-hover:scale-110 transition-transform" />
+                        <Clock className="w-5 h-5 text-[#D4AF37] group-hover:scale-110 transition-transform" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-black text-white">{summary.draftCount}</div>
                         <p className="text-xs text-zinc-500 mt-1">Pending publication</p>
                     </CardContent>
-                    <div className="h-1 bg-#D4AF37/20 w-full" />
+                    <div className="h-1 bg-[#D4AF37]/20 w-full" />
                 </Card>
 
                 <Card className="bg-zinc-900/50 border-zinc-800 shadow-xl overflow-hidden group">
@@ -197,7 +197,7 @@ export default function EventsPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                     <Input
                         placeholder="Search events or organizers..."
-                        className="bg-zinc-950/50 border-zinc-800 text-white pl-10 h-11 focus:ring-#D4AF37"
+                        className="bg-zinc-950/50 border-zinc-800 text-white pl-10 h-11 focus:ring-[#D4AF37]"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -244,7 +244,7 @@ export default function EventsPage() {
                                             )}
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="font-bold text-white text-base group-hover:text-#D4AF37 transition-colors">{event.title}</span>
+                                            <span className="font-bold text-white text-base group-hover:text-[#D4AF37] transition-colors">{event.title}</span>
                                             <div className="flex items-center gap-2 mt-1">
                                                 <Calendar className="w-3 h-3 text-zinc-500" />
                                                 <span className="text-xs text-zinc-500 font-medium tracking-tight">
@@ -258,7 +258,7 @@ export default function EventsPage() {
                                     <div className="flex items-center gap-3">
                                         <Avatar className="w-8 h-8 ring-2 ring-zinc-800">
                                             <AvatarImage src={event.organizerAvatar} />
-                                            <AvatarFallback className="bg-#D4AF37/10 text-#D4AF37 text-[10px]">{event.organizerName?.[0] || 'O'}</AvatarFallback>
+                                            <AvatarFallback className="bg-[#D4AF37]/10 text-[#D4AF37] text-[10px]">{event.organizerName?.[0] || 'O'}</AvatarFallback>
                                         </Avatar>
                                         <span className="text-sm font-medium text-zinc-300">{event.organizerName}</span>
                                     </div>
@@ -350,7 +350,7 @@ export default function EventsPage() {
                         <p className="text-zinc-500 text-sm max-w-[250px]">Try adjusting your search or filters to see more results.</p>
                         <Button
                             variant="ghost"
-                            className="text-#D4AF37 hover:text-#F7E08B hover:bg-transparent text-sm mt-4 font-bold"
+                            className="text-[#D4AF37] hover:text-[#F7E08B] hover:bg-transparent text-sm mt-4 font-bold"
                             onClick={() => {
                                 setSearchTerm("");
                                 setStatusFilter("all");

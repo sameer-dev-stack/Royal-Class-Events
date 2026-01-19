@@ -23,7 +23,7 @@ export default function AssetLibrary() {
             {/* Header */}
             <div className="p-4 border-b border-zinc-800/50 bg-zinc-900/40">
                 <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-md bg-#D4AF37/10 text-#D4AF37">
+                    <div className="p-1.5 rounded-md bg-[#D4AF37]/10 text-[#D4AF37]">
                         <LayoutGrid className="w-4 h-4" />
                     </div>
                     <div>
@@ -43,7 +43,7 @@ export default function AssetLibrary() {
                                 key={asset.type}
                                 draggable="true"
                                 onDragStart={(e) => handleDragStart(e, asset)}
-                                className="group relative flex flex-col items-center justify-center p-4 bg-zinc-800/30 border border-zinc-800/50 rounded-xl hover:bg-zinc-800/60 hover:border-#D4AF37/30 hover:shadow-lg transition-all cursor-grab active:cursor-grabbing"
+                                className="group relative flex flex-col items-center justify-center p-4 bg-zinc-800/30 border border-zinc-800/50 rounded-xl hover:bg-zinc-800/60 hover:border-[#D4AF37]/30 hover:shadow-lg transition-all cursor-grab active:cursor-grabbing"
                             >
                                 {/* Icon Preview */}
                                 <div

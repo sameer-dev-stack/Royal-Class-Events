@@ -81,8 +81,8 @@ export function PaymentModal({ isOpen, onClose, eventId, amount, guestDetails, s
 
                     {/* Icon State */}
                     {status === "processing" && (
-                        <div className="w-16 h-16 bg-#D4AF37/10 rounded-full flex items-center justify-center animate-pulse">
-                            <Loader2 className="w-8 h-8 text-#D4AF37 animate-spin" />
+                        <div className="w-16 h-16 bg-[#D4AF37]/10 rounded-full flex items-center justify-center animate-pulse">
+                            <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
                         </div>
                     )}
                     {status === "success" && (

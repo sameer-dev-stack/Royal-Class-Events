@@ -54,7 +54,7 @@ export default function CheckoutSidebar({ eventId, isOpen, onClose }) {
             {/* Header */}
             <div className="p-6 border-b border-zinc-800 flex items-center justify-between shrink-0">
                 <h2 className="text-xl font-bold flex items-center gap-3">
-                    <ShoppingCart className="w-6 h-6 text-#D4AF37" />
+                    <ShoppingCart className="w-6 h-6 text-[#D4AF37]" />
                     Your Cart
                 </h2>
                 <button
@@ -100,7 +100,7 @@ export default function CheckoutSidebar({ eventId, isOpen, onClose }) {
                         <input
                             {...register("name", { required: "Name is required" })}
                             placeholder="Full Name"
-                            className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-#D4AF37 transition-colors text-white"
+                            className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-[#D4AF37] transition-colors text-white"
                         />
                         {errors.name && <span className="text-xs text-red-500">{errors.name.message}</span>}
                     </div>
@@ -111,7 +111,7 @@ export default function CheckoutSidebar({ eventId, isOpen, onClose }) {
                                 pattern: { value: /^\S+@\S+$/i, message: "Invalid email" }
                             })}
                             placeholder="Email Address"
-                            className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-#D4AF37 transition-colors text-white"
+                            className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-[#D4AF37] transition-colors text-white"
                         />
                         {errors.email && <span className="text-xs text-red-500">{errors.email.message}</span>}
                     </div>
@@ -119,7 +119,7 @@ export default function CheckoutSidebar({ eventId, isOpen, onClose }) {
                         <input
                             {...register("phone", { required: "Phone is required" })}
                             placeholder="Phone Number"
-                            className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-#D4AF37 transition-colors text-white"
+                            className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-[#D4AF37] transition-colors text-white"
                         />
                         {errors.phone && <span className="text-xs text-red-500">{errors.phone.message}</span>}
                     </div>
@@ -130,13 +130,13 @@ export default function CheckoutSidebar({ eventId, isOpen, onClose }) {
             <div className="p-6 border-t border-zinc-800 bg-zinc-900 shrink-0 pb-10 md:pb-6">
                 <div className="flex justify-between items-center mb-5">
                     <span className="text-zinc-400 text-lg">Total</span>
-                    <span className="text-3xl font-bold text-#D4AF37">{formatMoney(totalAmount())}</span>
+                    <span className="text-3xl font-bold text-[#D4AF37]">{formatMoney(totalAmount())}</span>
                 </div>
 
                 <button
                     type="submit"
                     disabled={cartItems.length === 0 || !isValid}
-                    className="w-full py-4 bg-gradient-to-r from-#D4AF37 to-orange-600 hover:from-#8C7326 hover:to-orange-700 text-black font-black text-lg rounded-xl shadow-lg shadow-#D4AF37/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 active:scale-95 touch-manipulation"
+                    className="w-full py-4 bg-gradient-to-r from-[#D4AF37] to-orange-600 hover:from-[#8C7326] hover:to-orange-700 text-black font-black text-lg rounded-xl shadow-lg shadow-[#D4AF37]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 active:scale-95 touch-manipulation"
                 >
                     <CreditCard className="w-5 h-5" />
                     Pay Now

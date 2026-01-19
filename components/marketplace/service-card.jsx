@@ -40,15 +40,15 @@ export default function ServiceCard({
                 relative group rounded-2xl p-6
                 bg-zinc-900/50 backdrop-blur-xl
                 border border-zinc-800/50
-                hover:border-#D4AF37/50
+                hover:border-[#D4AF37]/50
                 hover:shadow-[0_0_30px_rgba(212,175,55,0.15)]
                 transition-all duration-500
-                ${featured ? "ring-2 ring-#D4AF37/30" : ""}
+                ${featured ? "ring-2 ring-[#D4AF37]/30" : ""}
             `}
         >
             {/* Featured Badge */}
             {featured && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-#D4AF37 text-black text-xs font-bold rounded-full flex items-center gap-1.5 shadow-lg">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[#D4AF37] text-black text-xs font-bold rounded-full flex items-center gap-1.5 shadow-lg">
                     <Sparkles className="w-3 h-3" />
                     RECOMMENDED
                 </div>
@@ -56,7 +56,7 @@ export default function ServiceCard({
 
             {/* Header */}
             <div className="mb-6">
-                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-#F7E08B transition-colors">
+                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-[#F7E08B] transition-colors">
                     {title}
                 </h3>
                 <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">
@@ -67,7 +67,7 @@ export default function ServiceCard({
             {/* Price */}
             <div className="mb-6 pb-6 border-b border-zinc-800/50">
                 <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-black text-#D4AF37">
+                    <span className="text-3xl font-black text-[#D4AF37]">
                         {formatPrice(price)}
                     </span>
                     <span className="text-muted-foreground text-sm">/package</span>
@@ -79,8 +79,8 @@ export default function ServiceCard({
                 <ul className="space-y-3">
                     {features.map((feature, index) => (
                         <li key={index} className="flex items-start gap-3 text-sm">
-                            <div className="w-5 h-5 rounded-full bg-#D4AF37/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <Check className="w-3 h-3 text-#D4AF37" />
+                            <div className="w-5 h-5 rounded-full bg-[#D4AF37]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <Check className="w-3 h-3 text-[#D4AF37]" />
                             </div>
                             <span className="text-zinc-300">{feature}</span>
                         </li>
@@ -89,7 +89,7 @@ export default function ServiceCard({
             )}
 
             {/* Hover Glow Effect */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-#D4AF37/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         </motion.div>
     );
 }

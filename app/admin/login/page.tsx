@@ -51,12 +51,12 @@ export default function AdminLoginPage() {
 
     return (
         <div className="h-screen w-full flex items-center justify-center bg-zinc-950 px-4">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-#D4AF37/5 via-transparent to-transparent -z-10" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#D4AF37]/5 via-transparent to-transparent -z-10" />
 
             <Card className="w-full max-w-md bg-zinc-900 border-zinc-800 shadow-2xl shadow-black">
                 <CardHeader className="text-center space-y-2">
-                    <div className="mx-auto w-12 h-12 bg-#D4AF37/10 rounded-xl flex items-center justify-center border border-#D4AF37/20 mb-2">
-                        <Lock className="w-6 h-6 text-#D4AF37" />
+                    <div className="mx-auto w-12 h-12 bg-[#D4AF37]/10 rounded-xl flex items-center justify-center border border-[#D4AF37]/20 mb-2">
+                        <Lock className="w-6 h-6 text-[#D4AF37]" />
                     </div>
                     <CardTitle className="text-2xl font-black text-white tracking-tight uppercase">Admin Verification</CardTitle>
                     <CardDescription className="text-zinc-500">
@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
                                     id="email"
                                     type="email"
                                     placeholder="admin@royalclass.com"
-                                    className="bg-zinc-800 border-zinc-700 text-white pl-10 h-11 focus:ring-#D4AF37"
+                                    className="bg-zinc-800 border-zinc-700 text-white pl-10 h-11 focus:ring-[#D4AF37]"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
@@ -89,7 +89,7 @@ export default function AdminLoginPage() {
                                     id="password"
                                     type="password"
                                     placeholder="••••••••"
-                                    className="bg-zinc-800 border-zinc-700 text-white pl-10 h-11 focus:ring-#D4AF37"
+                                    className="bg-zinc-800 border-zinc-700 text-white pl-10 h-11 focus:ring-[#D4AF37]"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
@@ -107,7 +107,7 @@ export default function AdminLoginPage() {
                         <Button
                             type="submit"
                             disabled={isPending}
-                            className="w-full h-12 bg-#8C7326 hover:bg-amber-700 text-white font-bold text-lg shadow-lg shadow-amber-900/20 transition-all active:scale-[0.98]"
+                            className="w-full h-12 bg-[#8C7326] hover:bg-[#8C7326] text-white font-bold text-lg shadow-lg shadow-[#8C7326]/20 transition-all active:scale-[0.98]"
                         >
                             {isPending ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />

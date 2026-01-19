@@ -415,7 +415,7 @@ export default function EventDashboardPage() {
 
           <Card className="py-0">
             <CardContent className="p-6 flex items-center gap-3">
-              <div className="p-3 bg-amber-100 rounded-lg">
+              <div className="p-3 bg-[#F7E08B] rounded-lg">
                 <Clock className="w-6 h-6 text-[#8C7326]" />
               </div>
               <div>

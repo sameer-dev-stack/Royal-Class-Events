@@ -36,15 +36,15 @@ export default function LayoutWrapper({ children }) {
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6 text-white text-center">
                 <div className="max-w-md space-y-6">
                     <div className="relative inline-block">
-                        <Hammer className="w-20 h-20 text-#D4AF37 animate-bounce" />
-                        <ShieldAlert className="w-8 h-8 text-black absolute -bottom-2 -right-2 bg-#D4AF37 rounded-full p-1" />
+                        <Hammer className="w-20 h-20 text-[#D4AF37] animate-bounce" />
+                        <ShieldAlert className="w-8 h-8 text-black absolute -bottom-2 -right-2 bg-[#D4AF37] rounded-full p-1" />
                     </div>
                     <h1 className="text-4xl font-black italic tracking-tighter uppercase">Platform Refactoring</h1>
                     <p className="text-zinc-500 font-medium">
                         The Royal-Class infrastructure is currently undergoing scheduled maintenance to upgrade security and performance.
                     </p>
                     <div className="p-4 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center gap-3 text-left">
-                        <AlertCircle className="w-5 h-5 text-#D4AF37 shrink-0" />
+                        <AlertCircle className="w-5 h-5 text-[#D4AF37] shrink-0" />
                         <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">
                             Estimated Uptime: <span className="text-white">Under 2 Hours</span>
                         </p>
@@ -60,7 +60,7 @@ export default function LayoutWrapper({ children }) {
 
             {/* Admin Maintenance Banner */}
             {isMaintenance && isAdmin && (
-                <div className="fixed top-0 left-0 w-full bg-#D4AF37 text-black py-1 px-4 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 z-[9999]">
+                <div className="fixed top-0 left-0 w-full bg-[#D4AF37] text-black py-1 px-4 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 z-[9999]">
                     <ShieldAlert className="w-3 h-3" />
                     Maintenance Mode Active - Public Access Restricted
                 </div>
@@ -69,7 +69,7 @@ export default function LayoutWrapper({ children }) {
             <main className={isFullscreenTool ? "h-screen w-full overflow-hidden" : "relative min-h-screen container mx-auto pt-24 md:pt-32 pb-12"}>
                 {!isFullscreenTool && (
                     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-                        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-#D4AF37/10 rounded-full blur-[100px] opacity-40" />
+                        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-[100px] opacity-40" />
                         <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] opacity-30" />
                     </div>
                 )}

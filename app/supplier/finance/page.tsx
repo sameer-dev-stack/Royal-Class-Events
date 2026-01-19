@@ -78,7 +78,7 @@ export default function VendorFinancePage() {
     if (!isMounted) {
         return (
             <div className="flex items-center justify-center h-96">
-                <Loader2 className="w-8 h-8 animate-spin text-#D4AF37" />
+                <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
             </div>
         );
     }
@@ -89,7 +89,7 @@ export default function VendorFinancePage() {
             <div className="flex flex-col items-center justify-center h-96 gap-4">
                 <Building2 className="w-16 h-16 text-zinc-600" />
                 <p className="text-zinc-400">Please log in to view your finance dashboard.</p>
-                <Button asChild className="mt-4 bg-#D4AF37 hover:bg-#8C7326">
+                <Button asChild className="mt-4 bg-[#D4AF37] hover:bg-[#8C7326]">
                     <a href="/auth/signin">Sign In</a>
                 </Button>
             </div>
@@ -100,7 +100,7 @@ export default function VendorFinancePage() {
     if (financeStats === undefined) {
         return (
             <div className="flex items-center justify-center h-96">
-                <Loader2 className="w-8 h-8 animate-spin text-#D4AF37" />
+                <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
             </div>
         );
     }
@@ -127,7 +127,7 @@ export default function VendorFinancePage() {
             <div className="flex justify-between items-start">
                 <div>
                     <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                        <Wallet className="w-6 h-6 text-#D4AF37" />
+                        <Wallet className="w-6 h-6 text-[#D4AF37]" />
                         Finance Dashboard
                     </h1>
                     <p className="text-zinc-400 mt-1">Track your earnings and request payouts</p>
@@ -136,7 +136,7 @@ export default function VendorFinancePage() {
                 <Dialog open={withdrawOpen} onOpenChange={setWithdrawOpen}>
                     <DialogTrigger asChild>
                         <Button
-                            className="bg-gradient-to-r from-#D4AF37 to-orange-600 hover:from-#8C7326 hover:to-orange-700"
+                            className="bg-gradient-to-r from-[#D4AF37] to-orange-600 hover:from-[#8C7326] hover:to-orange-700"
                             disabled={!financeStats.canWithdraw}
                         >
                             <Download className="w-4 h-4 mr-2" />
@@ -222,7 +222,7 @@ export default function VendorFinancePage() {
 
                         <DialogFooter>
                             <Button variant="outline" onClick={() => setWithdrawOpen(false)}>Cancel</Button>
-                            <Button onClick={handleWithdraw} className="bg-#D4AF37 hover:bg-#8C7326">
+                            <Button onClick={handleWithdraw} className="bg-[#D4AF37] hover:bg-[#8C7326]">
                                 Submit Request
                             </Button>
                         </DialogFooter>
@@ -244,15 +244,15 @@ export default function VendorFinancePage() {
                     </CardContent>
                 </Card>
 
-                <Card className="bg-gradient-to-br from-amber-900/50 to-amber-950 border-amber-800">
+                <Card className="bg-gradient-to-br from-[#8C7326]/50 to-[#8C7326] border-[#8C7326]">
                     <CardHeader className="pb-2">
-                        <CardDescription className="text-amber-300">Pending Withdrawal</CardDescription>
+                        <CardDescription className="text-[#F7E08B]">Pending Withdrawal</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-white">
                             {formatCurrency(financeStats.pendingBalance)}
                         </div>
-                        <p className="text-sm text-#F7E08B mt-1">Processing</p>
+                        <p className="text-sm text-[#F7E08B] mt-1">Processing</p>
                     </CardContent>
                 </Card>
 
@@ -273,7 +273,7 @@ export default function VendorFinancePage() {
             <Card className="bg-zinc-900 border-zinc-800">
                 <CardHeader>
                     <CardTitle className="text-white flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-#D4AF37" />
+                        <TrendingUp className="w-5 h-5 text-[#D4AF37]" />
                         Recent Transactions
                     </CardTitle>
                 </CardHeader>
@@ -300,7 +300,7 @@ export default function VendorFinancePage() {
                                             <Badge variant="outline" className={
                                                 txn.type === "vendor_credit" ? "border-green-600 text-green-400" :
                                                     txn.type === "payout" ? "border-blue-600 text-blue-400" :
-                                                        txn.type === "withdrawal_request" ? "border-#8C7326 text-#F7E08B" :
+                                                        txn.type === "withdrawal_request" ? "border-[#8C7326] text-[#F7E08B]" :
                                                             "border-zinc-600 text-zinc-300"
                                             }>
                                                 {txn.type.replace("_", " ")}
@@ -312,7 +312,7 @@ export default function VendorFinancePage() {
                                                     <CheckCircle2 className="w-3 h-3" /> Completed
                                                 </span>
                                             ) : txn.status === "pending" ? (
-                                                <span className="flex items-center gap-1 text-#F7E08B">
+                                                <span className="flex items-center gap-1 text-[#F7E08B]">
                                                     <Clock className="w-3 h-3" /> Pending
                                                 </span>
                                             ) : (
@@ -338,7 +338,7 @@ export default function VendorFinancePage() {
                 <Card className="bg-zinc-900 border-zinc-800">
                     <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
-                            <ArrowUpRight className="w-5 h-5 text-#D4AF37" />
+                            <ArrowUpRight className="w-5 h-5 text-[#D4AF37]" />
                             Withdrawal Requests
                         </CardTitle>
                     </CardHeader>
@@ -360,7 +360,7 @@ export default function VendorFinancePage() {
                                         <TableCell>
                                             <Badge className={
                                                 w.status === "completed" ? "bg-green-500/20 text-green-400" :
-                                                    w.status === "pending" ? "bg-#D4AF37/20 text-#F7E08B" :
+                                                    w.status === "pending" ? "bg-[#D4AF37]/20 text-[#F7E08B]" :
                                                         w.status === "rejected" ? "bg-red-500/20 text-red-400" :
                                                             "bg-zinc-700"
                                             }>

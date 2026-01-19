@@ -23,7 +23,7 @@ export default function NotificationsSettingsPage() {
                 ].map((item, i) => (
                     <Card key={i} className="p-6 rounded-3xl bg-card border border-border flex items-center justify-between shadow-sm">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center text-muted-foreground group-hover:text-#D4AF37 transition-colors">
+                            <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center text-muted-foreground group-hover:text-[#D4AF37] transition-colors">
                                 <item.icon className="w-5 h-5" />
                             </div>
                             <div>
@@ -31,7 +31,7 @@ export default function NotificationsSettingsPage() {
                                 <p className="text-xs text-muted-foreground max-w-xs">{item.desc}</p>
                             </div>
                         </div>
-                        <Switch checked={item.checked} className="data-[state=checked]:bg-#D4AF37" />
+                        <Switch checked={item.checked} className="data-[state=checked]:bg-[#D4AF37]" />
                     </Card>
                 ))}
             </div>

@@ -11,7 +11,7 @@ export default function SupplierCard({ supplier }) {
 
     return (
         <Link href={`/marketplace/vendor/${_id}`} className="group block h-full">
-            <div className="relative h-full bg-card/60 backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)] hover:-translate-y-1 flex flex-col group border border-border hover:border-#D4AF37/30">
+            <div className="relative h-full bg-card/60 backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)] hover:-translate-y-1 flex flex-col group border border-border hover:border-[#D4AF37]/30">
 
                 {/* Image Section */}
                 <div className="relative h-56 overflow-hidden rounded-3xl">
@@ -29,12 +29,12 @@ export default function SupplierCard({ supplier }) {
                     <div className="absolute top-4 left-4 flex gap-2 z-10">
                         {rating > 0 && (
                             <div className="bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                                <Star className="w-3 h-3 text-#D4AF37 fill-#D4AF37" />
+                                <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
                                 {rating.toFixed(1)} <span className="text-zinc-400 font-normal">({reviewCount})</span>
                             </div>
                         )}
                         {!rating && (
-                            <Badge variant="secondary" className="bg-#D4AF37/20 text-#F7E08B border border-#D4AF37/20 backdrop-blur-md">
+                            <Badge variant="secondary" className="bg-[#D4AF37]/20 text-[#F7E08B] border border-[#D4AF37]/20 backdrop-blur-md">
                                 New Arrival
                             </Badge>
                         )}
@@ -53,10 +53,10 @@ export default function SupplierCard({ supplier }) {
 
                     {/* Category Overlay */}
                     <div className="absolute bottom-4 left-4 z-10">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-#D4AF37 mb-1 block">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37] mb-1 block">
                             {categories?.[0] || "Vendor"}
                         </span>
-                        <h3 className="text-xl font-bold text-white leading-tight group-hover:text-amber-100 transition-colors">
+                        <h3 className="text-xl font-bold text-white leading-tight group-hover:text-[#F7E08B] transition-colors">
                             {name}
                         </h3>
                     </div>
@@ -82,7 +82,7 @@ export default function SupplierCard({ supplier }) {
                             </span>
                         </div>
 
-                        <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center group-hover:bg-#D4AF37 group-hover:text-black transition-all duration-300">
+                        <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center group-hover:bg-[#D4AF37] group-hover:text-black transition-all duration-300">
                             <ArrowUpRight className="w-4 h-4 text-foreground group-hover:text-black" />
                         </div>
                     </div>

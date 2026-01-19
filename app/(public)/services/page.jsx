@@ -26,23 +26,23 @@ const ServiceCard = ({ icon: Icon, title, desc, href, delay }) => (
     <motion.div
         {...fadeIn}
         transition={{ delay }}
-        className="group relative p-1 rounded-[2.5rem] bg-gradient-to-br from-white/10 to-transparent hover:from-#D4AF37/20 transition-all duration-500"
+        className="group relative p-1 rounded-[2.5rem] bg-gradient-to-br from-white/10 to-transparent hover:from-[#D4AF37]/20 transition-all duration-500"
     >
         <Link href={href}>
             <div className="bg-zinc-900 p-8 rounded-[2.4rem] h-full flex flex-col items-start justify-between gap-8 group-hover:bg-zinc-900/50 transition-colors">
                 <div className="space-y-6">
-                    <div className="w-14 h-14 rounded-2xl bg-#D4AF37/10 flex items-center justify-center text-#D4AF37 group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] group-hover:scale-110 transition-transform">
                         <Icon className="w-7 h-7" />
                     </div>
                     <div className="space-y-3">
-                        <h3 className="text-2xl font-black italic text-white group-hover:text-#D4AF37 transition-colors">{title}</h3>
+                        <h3 className="text-2xl font-black italic text-white group-hover:text-[#D4AF37] transition-colors">{title}</h3>
                         <p className="text-muted-foreground font-light leading-relaxed">
                             {desc}
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-#D4AF37 font-bold uppercase text-xs tracking-widest group-hover:gap-4 transition-all">
+                <div className="flex items-center gap-2 text-[#D4AF37] font-bold uppercase text-xs tracking-widest group-hover:gap-4 transition-all">
                     Explore Service
                     <ChevronRight className="w-4 h-4" />
                 </div>
@@ -85,7 +85,7 @@ export default function ServicesHub() {
             <section className="relative pt-40 pb-24 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto text-center relative z-10 space-y-8">
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
-                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-xs font-bold uppercase tracking-[0.3em] mb-6">
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-[0.3em] mb-6">
                             <Layers className="w-3 h-3" />
                             The Ecosystem
                         </span>
@@ -101,8 +101,8 @@ export default function ServicesHub() {
                 </div>
 
                 {/* Background Decorative Rings */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-#D4AF37/5 rounded-full -z-0" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-#D4AF37/10 rounded-full -z-0" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-[#D4AF37]/5 rounded-full -z-0" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-[#D4AF37]/10 rounded-full -z-0" />
             </section>
 
             {/* Services Grid */}
@@ -135,21 +135,21 @@ export default function ServicesHub() {
                                     on-ground scanners, physical tickets, and online dashboard. Zero latency,
                                     maximum prestige.
                                 </p>
-                                <Button variant="outline" className="rounded-full h-12 px-8 border-white/10 hover:bg-#D4AF37 hover:text-black transition-all font-bold">
+                                <Button variant="outline" className="rounded-full h-12 px-8 border-white/10 hover:bg-[#D4AF37] hover:text-black transition-all font-bold">
                                     Schedule a Demo
                                 </Button>
                             </div>
                             <div className="relative aspect-square max-w-[300px] mx-auto lg:ml-auto">
-                                <div className="w-full h-full border-2 border-dashed border-#D4AF37/20 rounded-full animate-spin-slow flex items-center justify-center p-8">
-                                    <Sparkles className="w-20 h-20 text-#D4AF37/40" />
+                                <div className="w-full h-full border-2 border-dashed border-[#D4AF37]/20 rounded-full animate-spin-slow flex items-center justify-center p-8">
+                                    <Sparkles className="w-20 h-20 text-[#D4AF37]/40" />
                                 </div>
                                 <div className="absolute inset-0 flex items-center justify-center">
-                                    <ShieldCheck className="w-12 h-12 text-#D4AF37" />
+                                    <ShieldCheck className="w-12 h-12 text-[#D4AF37]" />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="absolute inset-0 bg-gradient-to-r from-#D4AF37/5 to-transparent pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-[#D4AF37]/5 to-transparent pointer-events-none" />
                     </motion.div>
                 </div>
             </section>

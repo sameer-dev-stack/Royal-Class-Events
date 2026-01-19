@@ -34,7 +34,7 @@ export default function DashboardPage() {
     };
 
     if (isRoleLoading) {
-        return <div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-#D4AF37" /></div>;
+        return <div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#D4AF37]" /></div>;
     }
 
     if (!isOrganizer) {
@@ -49,7 +49,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex flex-col w-full gap-3">
                     <Button
-                        className="w-full bg-#D4AF37 hover:bg-#8C7326 text-black font-bold h-12"
+                        className="w-full bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold h-12"
                         onClick={async () => {
                             try {
                                 await upgradeToOrganizer({ token });
@@ -85,7 +85,7 @@ export default function DashboardPage() {
                             <QrCode className="mr-2 h-5 w-5" /> Launch Scanner
                         </Link>
                     </Button>
-                    <Button asChild className="bg-gradient-to-r from-#D4AF37 to-#8C7326 hover:from-#8C7326 hover:to-amber-700 text-black font-bold h-12 px-6 rounded-xl shadow-lg shadow-#D4AF37/20">
+                    <Button asChild className="bg-gradient-to-r from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-[#8C7326] text-black font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20">
                         <Link href="/create-event">
                             <Plus className="mr-2 h-5 w-5" /> Create New Event
                         </Link>
@@ -95,30 +95,30 @@ export default function DashboardPage() {
 
             {/* Stats */}
             <div className="grid gap-6 md:grid-cols-3">
-                <Card className="bg-card/50 backdrop-blur-sm border-white/5 shadow-sm hover:border-#D4AF37/20 transition-colors">
+                <Card className="bg-card/50 backdrop-blur-sm border-white/5 shadow-sm hover:border-[#D4AF37]/20 transition-colors">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
-                        <DollarSign className="h-4 w-4 text-#D4AF37" />
+                        <DollarSign className="h-4 w-4 text-[#D4AF37]" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-foreground">৳{stats.revenue?.toLocaleString() ?? 0}</div>
                         <p className="text-xs text-muted-foreground mt-1">Lifetime earnings</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-card/50 backdrop-blur-sm border-white/5 shadow-sm hover:border-#D4AF37/20 transition-colors">
+                <Card className="bg-card/50 backdrop-blur-sm border-white/5 shadow-sm hover:border-[#D4AF37]/20 transition-colors">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">Tickets Sold</CardTitle>
-                        <Ticket className="h-4 w-4 text-#D4AF37" />
+                        <Ticket className="h-4 w-4 text-[#D4AF37]" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-foreground">{stats.ticketsSold ?? 0}</div>
                         <p className="text-xs text-muted-foreground mt-1">Across all events</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-card/50 backdrop-blur-sm border-white/5 shadow-sm hover:border-#D4AF37/20 transition-colors">
+                <Card className="bg-card/50 backdrop-blur-sm border-white/5 shadow-sm hover:border-[#D4AF37]/20 transition-colors">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground">Active Events</CardTitle>
-                        <Calendar className="h-4 w-4 text-#D4AF37" />
+                        <Calendar className="h-4 w-4 text-[#D4AF37]" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-3xl font-bold text-foreground">{stats.activeEvents ?? 0}</div>
@@ -131,7 +131,7 @@ export default function DashboardPage() {
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
                     <h2 className="text-xl font-bold text-foreground">Recent Events</h2>
-                    <Button variant="ghost" className="text-#D4AF37 hover:text-#8C7326 hover:bg-#D4AF37/10" asChild>
+                    <Button variant="ghost" className="text-[#D4AF37] hover:text-[#8C7326] hover:bg-[#D4AF37]/10" asChild>
                         <Link href="/my-events">View All</Link>
                     </Button>
                 </div>

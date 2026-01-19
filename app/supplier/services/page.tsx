@@ -108,7 +108,7 @@ export default function SupplierServicesPage() {
                 </div>
                 <Button
                     onClick={handleAdd}
-                    className="bg-[#D4AF37] hover:bg-#8C7326 text-black font-black h-14 px-8 rounded-2xl shadow-xl shadow-[#D4AF37]/20 transition-all active:scale-95 group"
+                    className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-black h-14 px-8 rounded-2xl shadow-xl shadow-[#D4AF37]/20 transition-all active:scale-95 group"
                 >
                     <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform" />
                     New Service
@@ -135,7 +135,7 @@ export default function SupplierServicesPage() {
                                             className={cn(
                                                 "rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest border-2",
                                                 service.active
-                                                    ? "border-[#D4AF37]/20 text-#8C7326 dark:text-[#D4AF37] bg-[#D4AF37]/5"
+                                                    ? "border-[#D4AF37]/20 text-[#8C7326] dark:text-[#D4AF37] bg-[#D4AF37]/5"
                                                     : "border-border text-muted-foreground bg-muted/50"
                                             )}
                                         >
@@ -173,7 +173,7 @@ export default function SupplierServicesPage() {
 
                                     {/* Main Content */}
                                     <div className="space-y-4 mb-8">
-                                        <h3 className="text-2xl font-black text-foreground group-hover:text-#8C7326 dark:group-hover:text-[#D4AF37] transition-colors leading-tight">
+                                        <h3 className="text-2xl font-black text-foreground group-hover:text-[#8C7326] dark:group-hover:text-[#D4AF37] transition-colors leading-tight">
                                             {service.name}
                                         </h3>
                                         <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed font-medium">
@@ -186,7 +186,7 @@ export default function SupplierServicesPage() {
                                         <div className="space-y-3 mb-8">
                                             {service.features.slice(0, 3).map((feat: string, i: number) => (
                                                 <div key={i} className="flex items-center gap-3 text-xs font-bold text-muted-foreground">
-                                                    <Star className="w-3.5 h-3.5 text-[#D4AF37] fill-#D4AF37/20" />
+                                                    <Star className="w-3.5 h-3.5 text-[#D4AF37] fill-[#D4AF37]/20" />
                                                     {feat}
                                                 </div>
                                             ))}
@@ -203,7 +203,7 @@ export default function SupplierServicesPage() {
                                         <div className="flex flex-col">
                                             <span className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-1">Starting Investment</span>
                                             <div className="flex items-baseline gap-1.5">
-                                                <span className="text-xs font-bold text-#8C7326 dark:text-[#D4AF37]/60 uppercase">{service.currency}</span>
+                                                <span className="text-xs font-bold text-[#8C7326] dark:text-[#D4AF37]/60 uppercase">{service.currency}</span>
                                                 <span className="text-3xl font-black text-foreground">
                                                     {service.price.toLocaleString()}
                                                 </span>

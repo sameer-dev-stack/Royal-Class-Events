@@ -34,7 +34,7 @@ export default function MerchantsPage() {
             <div className="flex justify-between items-start">
                 <div>
                     <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-                        <Building2 className="w-6 h-6 text-#D4AF37" />
+                        <Building2 className="w-6 h-6 text-[#D4AF37]" />
                         Merchant Operations
                     </h1>
                     <p className="text-zinc-400 mt-1">Track vendor sales, commissions, and performance</p>
@@ -58,7 +58,7 @@ export default function MerchantsPage() {
                 <Card className="bg-zinc-900 border-zinc-800">
                     <CardHeader className="py-4">
                         <CardDescription className="text-zinc-400">Commission Earned</CardDescription>
-                        <CardTitle className="text-2xl text-#D4AF37">৳ {totalCommission.toLocaleString()}</CardTitle>
+                        <CardTitle className="text-2xl text-[#D4AF37]">৳ {totalCommission.toLocaleString()}</CardTitle>
                     </CardHeader>
                 </Card>
                 <Card className="bg-zinc-900 border-zinc-800">
@@ -78,7 +78,7 @@ export default function MerchantsPage() {
                 <CardContent>
                     {merchants === undefined ? (
                         <div className="flex justify-center py-12">
-                            <Loader2 className="w-8 h-8 animate-spin text-#D4AF37" />
+                            <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
                         </div>
                     ) : merchants.length === 0 ? (
                         <div className="text-center py-12 text-zinc-500">
@@ -104,7 +104,7 @@ export default function MerchantsPage() {
                                     <TableRow key={merchant._id} className="border-zinc-800 hover:bg-zinc-800/50">
                                         <TableCell>
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-#D4AF37 to-orange-600 flex items-center justify-center text-white font-bold">
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4AF37] to-orange-600 flex items-center justify-center text-white font-bold">
                                                     {merchant.name?.charAt(0) || "?"}
                                                 </div>
                                                 <div>
@@ -115,7 +115,7 @@ export default function MerchantsPage() {
                                                         )}
                                                         {merchant.rating > 0 && (
                                                             <span className="flex items-center gap-1">
-                                                                <Star className="w-3 h-3 text-#D4AF37 fill-#D4AF37" />
+                                                                <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
                                                                 {merchant.rating.toFixed(1)}
                                                             </span>
                                                         )}
@@ -132,7 +132,7 @@ export default function MerchantsPage() {
                                         <TableCell className="text-right font-medium text-green-400">
                                             ৳ {merchant.totalSales.toLocaleString()}
                                         </TableCell>
-                                        <TableCell className="text-right font-medium text-#D4AF37">
+                                        <TableCell className="text-right font-medium text-[#D4AF37]">
                                             ৳ {merchant.commission.toLocaleString()}
                                         </TableCell>
                                         <TableCell className="text-center">
@@ -153,7 +153,7 @@ export default function MerchantsPage() {
                                         </TableCell>
                                         <TableCell className="text-right">
                                             <Link href={`/marketplace/vendor/${merchant._id}`}>
-                                                <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-#D4AF37">
+                                                <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-[#D4AF37]">
                                                     View <ExternalLink className="w-3 h-3 ml-1" />
                                                 </Button>
                                             </Link>

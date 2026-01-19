@@ -91,7 +91,7 @@ export default function ReviewModal({
                                 >
                                     <Star
                                         className={`w-10 h-10 transition-colors ${star <= (hoverRating || rating)
-                                                ? "fill-#F7E08B text-#F7E08B"
+                                                ? "fill-[#F7E08B] text-[#F7E08B]"
                                                 : "text-zinc-600"
                                             }`}
                                     />
@@ -99,7 +99,7 @@ export default function ReviewModal({
                             ))}
                         </div>
                         {(hoverRating || rating) > 0 && (
-                            <p className="mt-2 text-#F7E08B font-medium">
+                            <p className="mt-2 text-[#F7E08B] font-medium">
                                 {ratingLabels[hoverRating || rating]}
                             </p>
                         )}
@@ -130,7 +130,7 @@ export default function ReviewModal({
                     <Button
                         onClick={handleSubmit}
                         disabled={isSubmitting || rating === 0}
-                        className="bg-gradient-to-r from-#D4AF37 to-orange-600 hover:from-#8C7326 hover:to-orange-700"
+                        className="bg-gradient-to-r from-[#D4AF37] to-orange-600 hover:from-[#8C7326] hover:to-orange-700"
                     >
                         {isSubmitting ? (
                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />

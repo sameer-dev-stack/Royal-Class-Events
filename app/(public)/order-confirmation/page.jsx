@@ -202,7 +202,7 @@ export default function OrderConfirmationPage() {
                 </div>
 
                 {/* Additional Info */}
-                <div className="mt-8 p-6 bg-#D4AF37/5 border border-#D4AF37/20 rounded-lg">
+                <div className="mt-8 p-6 bg-[#D4AF37]/5 border border-[#D4AF37]/20 rounded-lg">
                     <h4 className="font-semibold text-foreground mb-2">What's Next?</h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                         <li>✓ Confirmation email sent to your inbox</li>

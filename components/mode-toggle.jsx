@@ -26,7 +26,7 @@ export function ModeToggle() {
     const options = [
         { id: "system", label: "Default", icon: Monitor, color: "text-blue-400", bg: "focus:bg-blue-500/10" },
         { id: "dark", label: "Dark", icon: Moon, color: "text-purple-400", bg: "focus:bg-purple-500/10" },
-        { id: "light", label: "White", icon: Sun, color: "text-#D4AF37", bg: "focus:bg-#D4AF37/10" },
+        { id: "light", label: "White", icon: Sun, color: "text-[#D4AF37]", bg: "focus:bg-[#D4AF37]/10" },
     ];
 
     return (
@@ -37,11 +37,11 @@ export function ModeToggle() {
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
                     "rounded-full w-10 h-10 bg-background/50 backdrop-blur-sm border border-border/50 hover:bg-accent hover:text-accent-foreground transition-all duration-300 relative overflow-hidden group z-50",
-                    isOpen && "bg-accent border-#D4AF37/30 ring-2 ring-#D4AF37/20"
+                    isOpen && "bg-accent border-[#D4AF37]/30 ring-2 ring-[#D4AF37]/20"
                 )}
             >
-                <div className="absolute inset-0 bg-gradient-to-tr from-#D4AF37/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0 text-#D4AF37" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-[#D4AF37]/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all duration-500 dark:-rotate-90 dark:scale-0 text-[#D4AF37]" />
                 <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all duration-500 dark:rotate-0 dark:scale-100 text-purple-400" />
                 <span className="sr-only">Toggle theme</span>
             </Button>
@@ -72,7 +72,7 @@ export function ModeToggle() {
                                 {theme === opt.id && (
                                     <motion.div
                                         layoutId="active-indicator"
-                                        className="absolute left-0 w-0.5 h-4 bg-#D4AF37 rounded-full"
+                                        className="absolute left-0 w-0.5 h-4 bg-[#D4AF37] rounded-full"
                                     />
                                 )}
                             </button>

@@ -58,7 +58,7 @@ function MockPaymentContent() {
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <Card className="w-full max-w-md shadow-2xl border-t-8 border-t-#D4AF37">
+            <Card className="w-full max-w-md shadow-2xl border-t-8 border-t-[#D4AF37]">
                 <CardHeader className="text-center border-b bg-white pb-6">
                     <div className="mx-auto w-32 h-12 mb-4 relative">
                         {/* Imagine an SSL Commerz Logo here, using text for now */}
@@ -132,7 +132,7 @@ export default function MockPaymentGateway() {
     return (
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-10 h-10 animate-spin text-#D4AF37" />
+                <Loader2 className="w-10 h-10 animate-spin text-[#D4AF37]" />
             </div>
         }>
             <MockPaymentContent />
