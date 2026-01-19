@@ -91,18 +91,18 @@ export default function MyTicketsPage() {
   if (!isAuthenticated) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 text-center px-6">
-        <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center">
-          <Ticket className="w-10 h-10 text-amber-500" />
+        <div className="w-20 h-20 rounded-full bg-[#D4AF37]/10 flex items-center justify-center">
+          <Ticket className="w-10 h-10 text-[#D4AF37]" />
         </div>
         <div className="space-y-2">
           <h1 className="text-3xl font-black tracking-tight">Your Premium Passes</h1>
-          <p className="text-muted-foreground max-w-md mx-auto">
+          <p className="text-zinc-400 max-w-md mx-auto">
             Please sign in to view and manage your exclusive event registrations.
           </p>
         </div>
         <Button
           onClick={() => router.push("/sign-in")}
-          className="bg-amber-500 hover:bg-amber-600 text-black font-bold h-12 px-8 rounded-xl"
+          className="bg-[#D4AF37] hover:bg-[#B8962E] text-black font-bold h-12 px-8 rounded-xl"
         >
           Sign In Now
         </Button>
@@ -187,7 +187,7 @@ export default function MyTicketsPage() {
 
               {/* Status/Ticket Count Badge */}
               <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
-                <Badge className="bg-amber-500 text-black font-black px-3 py-1 rounded-full shadow-lg border-none">
+                <Badge className="bg-[#D4AF37] text-black font-black px-3 py-1 rounded-full shadow-lg border-none">
                   {tickets.length} {tickets.length > 1 ? "Tickets" : "Ticket"}
                 </Badge>
                 {tickets.some(t => (typeof t.status === 'string' ? t.status : t.status?.current) === 'checked_in') && (
@@ -202,19 +202,19 @@ export default function MyTicketsPage() {
             <div className="p-6 space-y-4">
               <div className="space-y-1">
                 <h3 className="text-xl font-bold line-clamp-1">{event.title?.en || event.title}</h3>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-                  <Calendar className="w-3 h-3 text-amber-500" />
+                <div className="flex items-center gap-2 text-sm text-zinc-400 font-medium">
+                  <Calendar className="w-3 h-3 text-[#D4AF37]" />
                   <span>{event.timeConfiguration?.startDateTime ? format(new Date(event.timeConfiguration.startDateTime), "MMM do, yyyy") : "TBA"}</span>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-foreground/80">
-                <MapPin className="w-3 h-3 text-amber-500" />
+                <MapPin className="w-3 h-3 text-[#D4AF37]" />
                 <span className="line-clamp-1">{event.locationConfiguration?.venueName || "TBA"}</span>
               </div>
 
               <div className="pt-2">
-                <Button className="w-full bg-amber-500/10 hover:bg-amber-500 text-amber-500 hover:text-black font-bold rounded-xl transition-all">
+                <Button className="w-full bg-[#D4AF37]/10 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-black font-bold rounded-xl transition-all">
                   Manage Passes
                 </Button>
               </div>
@@ -245,12 +245,12 @@ export default function MyTicketsPage() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-wider">
             <Ticket className="w-3 h-3" />
             <span>Member Access</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black tracking-tighter">My <span className="text-gradient-gold">Tickets</span></h1>
-          <p className="text-muted-foreground font-light text-lg">Manage your digital event passes in one place.</p>
+          <h1 className="text-4xl md:text-5xl font-black tracking-tighter">My <span className="text-[#D4AF37]">Tickets</span></h1>
+          <p className="text-zinc-400 font-light text-lg">Manage your digital event passes in one place.</p>
         </div>
       </div>
 
@@ -269,7 +269,7 @@ export default function MyTicketsPage() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="h-14 px-6 rounded-2xl border-white/5 bg-card/40 gap-2 min-w-[140px]">
-                <Filter className="w-5 h-5 text-amber-500" />
+                <Filter className="w-5 h-5 text-[#D4AF37]" />
                 <span className="capitalize">{filterStatus === 'all' ? 'All Status' : filterStatus}</span>
               </Button>
             </DropdownMenuTrigger>
@@ -286,13 +286,13 @@ export default function MyTicketsPage() {
           <TabsList className="bg-white/5 border border-white/10 p-1 h-14 rounded-2xl inline-flex w-full sm:w-auto mb-10">
             <TabsTrigger
               value="active"
-              className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold transition-all px-8 h-full"
+              className="rounded-xl data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black font-bold transition-all px-8 h-full"
             >
               Active Passes
             </TabsTrigger>
             <TabsTrigger
               value="history"
-              className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold transition-all px-8 h-full"
+              className="rounded-xl data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black font-bold transition-all px-8 h-full"
             >
               Past Events / Used
             </TabsTrigger>
@@ -355,12 +355,12 @@ export default function MyTicketsPage() {
                     size="sm"
                     onClick={() => router.push(`/events/${selectedGroup.event.slug}`)}
                   >
-                    <ExternalLink className="w-3 h-3 mr-2 text-amber-500" />
+                    <ExternalLink className="w-3 h-3 mr-2 text-[#D4AF37]" />
                     Event Details
                   </Button>
 
                   {totalTickets > 1 && (
-                    <Badge className="bg-amber-500 text-black border-none font-bold">
+                    <Badge className="bg-[#D4AF37] text-black border-none font-bold">
                       Ticket {currentTicketIndex + 1} of {totalTickets}
                     </Badge>
                   )}
@@ -389,7 +389,7 @@ export default function MyTicketsPage() {
                             key={i}
                             className={cn(
                               "w-2 h-2 rounded-full transition-all",
-                              i === currentTicketIndex ? "bg-amber-500 w-4" : "bg-white/10"
+                              i === currentTicketIndex ? "bg-[#D4AF37] w-4" : "bg-white/10"
                             )}
                           />
                         ))}
@@ -411,7 +411,7 @@ export default function MyTicketsPage() {
                     <DialogTitle className="text-2xl font-black text-white leading-tight">
                       {selectedGroup.event?.title?.en || selectedGroup.event?.title}
                     </DialogTitle>
-                    <p className="text-amber-500 font-bold uppercase tracking-[0.2em] text-[10px]">Secure Digital Pass</p>
+                    <p className="text-[#D4AF37] font-bold uppercase tracking-[0.2em] text-[10px]">Secure Digital Pass</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 py-6 border-y border-white/5">
@@ -422,8 +422,8 @@ export default function MyTicketsPage() {
                       </p>
                     </div>
                     <div className="space-y-1 text-right">
-                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Ticket ID</p>
-                      <p className="font-bold text-sm text-amber-500 font-mono tracking-tighter">
+                      <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Ticket ID</p>
+                      <p className="font-bold text-sm text-[#D4AF37] font-mono tracking-tighter">
                         {selectedTicket.registrationNumber}
                       </p>
                     </div>
@@ -431,7 +431,7 @@ export default function MyTicketsPage() {
                       <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Venue & Seat</p>
                       <p className="font-bold text-sm text-white line-clamp-1">
                         {selectedGroup.event?.locationConfiguration?.venueName}
-                        {selectedTicket.seatNumber && <span className="text-amber-500 ml-2"> - {selectedTicket.seatNumber}</span>}
+                        {selectedTicket.seatNumber && <span className="text-[#D4AF37] ml-2"> - {selectedTicket.seatNumber}</span>}
                       </p>
                     </div>
                   </div>
@@ -451,7 +451,7 @@ export default function MyTicketsPage() {
                       "rounded-full px-4 py-1 font-black uppercase text-[10px] tracking-widest",
                       (typeof selectedTicket.status === 'string' ? selectedTicket.status : selectedTicket.status?.current) === "checked_in"
                         ? "bg-green-600 text-white border-none shadow-lg animate-pulse scale-110"
-                        : "bg-amber-500/10 text-amber-500 border-amber-500/20"
+                        : "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20"
                     )}>
                       {(typeof selectedTicket.status === 'string' ? selectedTicket.status : selectedTicket.status?.current) === "checked_in" ? (
                         <><CheckCircle2 className="w-3 h-3 mr-2" /> CHECKED IN</>
@@ -463,7 +463,7 @@ export default function MyTicketsPage() {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <Button className="w-full h-12 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-wider shadow-lg">
+                  <Button className="w-full h-12 rounded-2xl bg-gradient-to-r from-[#F7E08B] via-[#D4AF37] to-[#8C7326] hover:brightness-110 text-black font-black uppercase tracking-wider shadow-lg transition-all active:scale-95 border-none">
                     <Download className="w-4 h-4 mr-2" />
                     Download This PDF
                   </Button>
