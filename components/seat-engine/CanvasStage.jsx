@@ -165,13 +165,25 @@ function SceneElement({ element, isSelected, onSelect, onChange, scale, draggabl
             onDragEnd={(e) => handleDragEndGlobal(e, updateElement)}
             onTransformEnd={() => {
                 const node = shapeRef.current;
+                const scaleX = node.scaleX();
+                const scaleY = node.scaleY();
+
+                // 1. Reset scale to 1 IMMEDIATELY to prevent child distortion
+                node.scaleX(1);
+                node.scaleY(1);
+
+                // 2. Calculate new dimensions with min constraints
+                const newWidth = Math.max(50, Math.round(node.width() * scaleX));
+                const newHeight = Math.max(50, Math.round(node.height() * scaleY));
+
+                // 3. Update store with clean values
                 onChange({
-                    x: node.x(), y: node.y(),
-                    width: node.width() * node.scaleX(),
-                    height: node.height() * node.scaleY(),
-                    rotation: node.rotation()
+                    x: node.x(),
+                    y: node.y(),
+                    width: newWidth,
+                    height: newHeight,
+                    rotation: Math.round(node.rotation())
                 });
-                node.scaleX(1); node.scaleY(1);
             }}
         >
             {element.type === TOOL_TYPES.RECTANGLE || element.type === TOOL_TYPES.CURVE ? (
