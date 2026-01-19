@@ -70,7 +70,7 @@ export default function LayoutWrapper({ children }) {
                 {!isFullscreenTool && (
                     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
                         <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-[100px] opacity-40" />
-                        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] opacity-30" />
+                        <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-[#8C7326]/5 rounded-full blur-[120px] opacity-30" />
                     </div>
                 )}
 
