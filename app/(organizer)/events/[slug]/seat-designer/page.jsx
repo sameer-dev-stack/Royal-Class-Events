@@ -1,160 +1,88 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { Crown, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { Save, ArrowLeft, Loader2 } from "lucide-react";
-import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
+import Toolbox from "@/components/seat-engine/Toolbox";
+import PropertiesPanel from "@/components/seat-engine/PropertiesPanel";
+import HeaderActions from "@/components/seat-engine/HeaderActions";
+import useSeatEngine from "@/hooks/use-seat-engine";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
-import useAuthStore from "@/hooks/use-auth-store";
-import { toast } from "sonner";
-import "@mezh-hq/react-seat-toolkit/styles";
-import "@/app/seat-toolkit-theme.css";
+import { use, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
-// Dynamic import to avoid SSR issues
-const SeatToolkit = dynamic(() => import("@mezh-hq/react-seat-toolkit"), {
-    ssr: false,
-    loading: () => (
-        <div className="h-screen flex items-center justify-center bg-[#0a0a0a]">
-            <Loader2 className="w-8 h-8 animate-spin text-[#FBB03B]" />
-        </div>
-    ),
-});
+const CanvasStage = dynamic(
+    () => import("@/components/seat-engine/CanvasStage"),
+    { ssr: false }
+);
 
 export default function SeatDesignerPage({ params }) {
     const unwrappedParams = use(params);
-    const router = useRouter();
-    const [layoutData, setLayoutData] = useState(null);
-    const [isSaving, setIsSaving] = useState(false);
-    const { token } = useAuthStore();
+    const { elements, setElements, setStagePosition, resetStage } = useSeatEngine();
 
-    // Fetch event data
-    const { data: event, isLoading } = useConvexQuery(api.events.getEventBySlug, {
-        slug: unwrappedParams.slug,
-    });
+    // 1. Fetch Event by Slug
+    const event = useQuery(api.events.getEventBySlug, { slug: unwrappedParams.slug });
+    const eventId = event?._id;
 
-    // Fetch existing seat map layout
-    const { data: existingLayout } = useConvexQuery(
-        api.seatMapToolkit.getSeatMapLayout,
-        event?._id ? { eventId: event._id, token } : "skip"
-    );
-
-    // Save mutation
-    const { mutate: saveSeatMap } = useConvexMutation(
-        api.seatMapToolkit.saveSeatMapLayout
-    );
-
-    // Load existing layout when available
+    // Reset state
     useEffect(() => {
-        if (existingLayout) {
-            setLayoutData(existingLayout);
+        resetStage();
+        return () => resetStage();
+    }, [resetStage]);
+
+    // Hydrate Store
+    useEffect(() => {
+        if (event?.venueLayout) {
+            const { shapes: savedElements, stageConfig: savedStage } = event.venueLayout;
+            if (savedElements) setElements(savedElements);
+            if (savedStage) setStagePosition(savedStage.x, savedStage.y, savedStage.scale);
         }
-    }, [existingLayout]);
-
-    const handleExport = async (data) => {
-        setLayoutData(data);
-    };
-
-    const handleSave = async () => {
-        if (!layoutData) {
-            toast.error("No layout data to save");
-            return;
-        }
-
-        if (!event?._id) {
-            toast.error("Event not found");
-            return;
-        }
-
-        setIsSaving(true);
-        try {
-            await saveSeatMap({
-                eventId: event._id,
-                layoutData: layoutData,
-                token,
-            });
-
-            toast.success("Seat map saved successfully!");
-        } catch (error) {
-            console.error("Save error:", error);
-            toast.error("Failed to save seat map");
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    if (isLoading) {
-        return (
-            <div className="h-screen flex items-center justify-center bg-[#0a0a0a]">
-                <Loader2 className="w-8 h-8 animate-spin text-[#FBB03B]" />
-            </div>
-        );
-    }
+    }, [event, setElements, setStagePosition]);
 
     if (!event) {
         return (
-            <div className="h-screen flex items-center justify-center bg-[#0a0a0a] text-white">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold mb-2">Event Not Found</h1>
-                    <Button onClick={() => router.push("/events")}>
-                        Back to Events
-                    </Button>
-                </div>
+            <div className="fixed inset-0 flex items-center justify-center bg-zinc-950 z-50">
+                <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
             </div>
         );
     }
 
-    const eventTitle = event.title?.en || (typeof event.title === "string" ? event.title : "Untitled Event");
-
     return (
-        <div className="h-screen flex flex-col bg-[#0a0a0a]">
+        <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-zinc-950 flex flex-col z-[9999]">
             {/* Header */}
-            <div className="bg-[#1f1f23] border-b border-white/10 px-6 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => router.push(`/events/${unwrappedParams.slug}/manage`)}
-                        className="text-white hover:bg-white/5"
-                    >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back
-                    </Button>
+            <header className="h-14 flex-shrink-0 flex items-center justify-between px-6 border-b border-zinc-800/50 bg-zinc-900/50 backdrop-blur-sm">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                        <Crown className="w-4 h-4 text-black" />
+                    </div>
                     <div>
-                        <h1 className="text-xl font-bold text-white">{eventTitle}</h1>
-                        <p className="text-sm text-gray-400">Seat Map Designer</p>
+                        <h1 className="text-base font-bold text-white tracking-tight">
+                            Seat Designer
+                        </h1>
+                        <p className="text-[10px] text-zinc-500 -mt-0.5">
+                            {event.title?.en ?? event.title ?? "Untitled Event"}
+                        </p>
                     </div>
                 </div>
 
-                <Button
-                    onClick={handleSave}
-                    disabled={isSaving || !layoutData}
-                    className="bg-gradient-to-r from-[#FBB03B] to-[#f59e0b] hover:from-[#f59e0b] hover:to-[#FBB03B] text-black font-bold"
-                >
-                    {isSaving ? (
-                        <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Saving...
-                        </>
-                    ) : (
-                        <>
-                            <Save className="w-4 h-4 mr-2" />
-                            Save Layout
-                        </>
-                    )}
-                </Button>
-            </div>
+                <div className="flex items-center gap-2">
+                    <HeaderActions eventId={eventId} />
+                </div>
+            </header>
 
-            {/* Seat Toolkit Designer */}
-            <div className="flex-1 overflow-hidden">
-                <SeatToolkit
-                    mode="designer"
-                    data={layoutData}
-                    events={{
-                        onExport: handleExport,
-                    }}
-                />
+            {/* Layout */}
+            <div className="flex-1 flex relative overflow-hidden">
+                <aside className="absolute left-4 top-4 z-50">
+                    <Toolbox />
+                </aside>
+
+                <main className="flex-1 relative">
+                    <CanvasStage />
+                </main>
+
+                <aside className="absolute right-4 top-4 bottom-4 w-80 z-50 flex flex-col gap-4">
+                    <PropertiesPanel />
+                </aside>
             </div>
         </div>
     );

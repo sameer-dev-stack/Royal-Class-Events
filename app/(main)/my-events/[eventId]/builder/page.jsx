@@ -1,151 +1,103 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { Crown, Loader2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { Loader2, ArrowLeft, Save, CheckCircle } from "lucide-react";
-import { toast } from "sonner";
-
-// Custom Hooks
-import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
+import Toolbox from "@/components/seat-engine/Toolbox";
+import PropertiesPanel from "@/components/seat-engine/PropertiesPanel";
+import HeaderActions from "@/components/seat-engine/HeaderActions";
+import useSeatEngine from "@/hooks/use-seat-engine";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Button } from "@/components/ui/button";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
-// 1. Dynamic Import for Canvas (Prevents "window is undefined" error)
-const SeatToolkit = dynamic(
-    () => import("@mezh-hq/react-seat-toolkit").then((mod) => mod.SeatToolkit),
-    {
-        ssr: false,
-        loading: () => (
-            <div className="flex flex-col items-center justify-center h-full text-amber-500 gap-2">
-                <Loader2 className="w-8 h-8 animate-spin" />
-                <span className="text-sm font-medium">Initializing Design Engine...</span>
-            </div>
-        )
-    }
+// Dynamic Import for Canvas
+const CanvasStage = dynamic(
+    () => import("@/components/seat-engine/CanvasStage"),
+    { ssr: false }
 );
 
-// Styles
-import "@mezh-hq/react-seat-toolkit/styles";
-import "@/app/seat-toolkit-theme.css";
-
 export default function SeatingBuilderPage() {
+    const { elements, clearElements, selectedId, setElements, setStagePosition, resetStage } = useSeatEngine();
+    const [activeTab, setActiveTab] = useState("properties");
+
+    // Params
     const params = useParams();
-    const router = useRouter();
     const eventId = params.eventId;
-    const [isSaving, setIsSaving] = useState(false);
 
-    // 2. Fetch Event Data
-    const { data: event, isLoading } = useConvexQuery(api.events.getById, { id: eventId });
-    const { mutate: saveVenueLayout } = useConvexMutation(api.events.saveVenueLayout);
+    // Fetch Event Data
+    const event = useQuery(api.events.getById, eventId ? { id: eventId } : "skip");
 
-    // 3. Handle Save
-    const handleSave = async (json) => {
-        setIsSaving(true);
-        try {
-            await saveVenueLayout({
-                eventId: eventId,
-                layout: json,
-            });
-            toast.success("Venue Layout Saved Successfully");
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to save layout");
-        } finally {
-            setIsSaving(false);
-        }
-    };
-
-    // 4. Suppress Library Warning (AirplaneMode bug in library)
+    // Reset state on mount/unmount
     useEffect(() => {
-        const originalError = console.error;
-        console.error = (...args) => {
-            if (typeof args[0] === 'string' && args[0].includes('airplaneMode')) {
-                return;
-            }
-            originalError.apply(console, args);
-        };
-        return () => {
-            console.error = originalError;
-        };
-    }, []);
+        resetStage();
+        return () => resetStage();
+    }, [resetStage]);
 
-    // Loading State
-    if (isLoading) {
-        return (
-            <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
-            </div>
-        );
-    }
-
-    if (!event) {
-        return (
-            <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex items-center justify-center text-white">
-                Event not found
-            </div>
-        );
-    }
+    // Hydrate Store on Load
+    useEffect(() => {
+        if (event?.venueLayout) {
+            const { shapes: savedElements, stageConfig: savedStage } = event.venueLayout;
+            if (savedElements) setElements(savedElements);
+            if (savedStage) setStagePosition(savedStage.x, savedStage.y, savedStage.scale);
+        }
+    }, [event, setElements, setStagePosition]);
 
     return (
-        // === FULL SCREEN WRAPPER ===
-        // Uses 'fixed inset-0 z-[9999]' to overlay the entire dashboard.
-        // This fixes the Cursor Offset issue by resetting coordinates to (0,0).
-        <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex flex-col overflow-hidden animate-in fade-in duration-300">
-
-            {/* --- HEADER --- */}
-            <header className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-[#111] shrink-0 shadow-md z-50">
-                <div className="flex items-center gap-4">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => router.back()}
-                        className="text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-                    >
-                        <ArrowLeft className="w-4 h-4 mr-2" />
-                        Back to Dashboard
-                    </Button>
-                    <div className="h-6 w-px bg-white/10" />
+        <div className="fixed inset-0 w-screen h-screen overflow-hidden bg-zinc-950 flex flex-col z-[9999]">
+            {/* Header */}
+            <header className="h-14 flex-shrink-0 flex items-center justify-between px-6 border-b border-zinc-800/50 bg-zinc-900/50 backdrop-blur-sm">
+                <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                        <Crown className="w-4 h-4 text-black" />
+                    </div>
                     <div>
-                        <h1 className="text-sm font-bold text-white tracking-wide">VENUE DESIGNER</h1>
-                        <p className="text-xs text-white/50 max-w-[200px] truncate">
-                            {event.title?.en || (typeof event.title === "string" ? event.title : "Untitled Event")}
+                        <h1 className="text-base font-bold text-white tracking-tight">
+                            Venue Designer
+                        </h1>
+                        <p className="text-[10px] text-zinc-500 -mt-0.5">
+                            {event?.title || "Loading..."}
                         </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    {/* Save Status */}
-                    <div className="flex items-center gap-2 text-xs">
-                        {isSaving ? (
-                            <span className="text-amber-500 flex items-center gap-1">
-                                <Loader2 className="w-3 h-3 animate-spin" /> Saving...
-                            </span>
-                        ) : (
-                            <span className="text-green-500 flex items-center gap-1">
-                                <CheckCircle className="w-3 h-3" /> Ready
-                            </span>
-                        )}
+                {/* Actions */}
+                <div className="flex items-center gap-2">
+                    <div className="px-3 py-1.5 rounded-lg bg-zinc-800/50 border border-zinc-700/50 text-xs text-zinc-400">
+                        {elements.length} elements
                     </div>
-
-                    {/* Helper Text */}
-                    <div className="bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded text-xs text-amber-500 font-medium">
-                        Click "Export" in toolbar to save
-                    </div>
+                    {/* Pass eventId explicitly if HeaderActions needs it contextually, 
+                        though HeaderActions usually reads logic or just triggers generic saves.
+                        If HeaderActions relies on URL searchParams, it might break here.
+                        For now, assuming HeaderActions works or we might need to patch it.
+                     */}
+                    <HeaderActions eventId={eventId} />
                 </div>
             </header>
 
-            {/* --- CANVAS AREA --- */}
-            {/* 'select-none' prevents cursor flickering during drag */}
-            {/* 'isolate' prevents CSS leaks from parent theme */}
-            <div className="relative flex-1 w-full bg-[#181611] select-none isolate overflow-hidden cursor-default">
-                <SeatToolkit
-                    mode="designer"
-                    events={{
-                        onExport: (json) => handleSave(json),
-                    }}
-                    data={event.venueLayout || null}
-                />
+            {/* Main Content */}
+            <div className="flex-1 flex relative overflow-hidden">
+                {/* Left Sidebar - Toolbox */}
+                <aside className="absolute left-4 top-4 z-50">
+                    <Toolbox />
+                </aside>
+
+                {/* Canvas */}
+                <main className="flex-1 relative">
+                    {!event ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 z-50">
+                            <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
+                        </div>
+                    ) : (
+                        <CanvasStage />
+                    )}
+                </main>
+
+                {/* Right Sidebar */}
+                <aside className="absolute right-4 top-4 bottom-4 w-80 z-50 flex flex-col gap-4">
+                    <PropertiesPanel />
+                </aside>
             </div>
         </div>
     );
