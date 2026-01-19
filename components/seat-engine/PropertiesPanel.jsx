@@ -256,7 +256,7 @@ export default function PropertiesPanel() {
                     )}
 
                     {/* Table Configuration */}
-                    {(selectedElement?.type === TOOL_TYPES.ASSET || selectedElement?.type === TOOL_TYPES.IMAGE) && (selectedElement?.assetType === 'TABLE' || selectedElement?.assetConfig?.type === 'TABLE') && (
+                    {(selectedElement?.type === TOOL_TYPES.ASSET || selectedElement?.type === TOOL_TYPES.IMAGE) && (selectedElement?.assetType === 'TABLE' || selectedElement?.assetType === 'RECT_TABLE' || selectedElement?.assetConfig?.type === 'TABLE' || selectedElement?.assetConfig?.type === 'RECT_TABLE') && (
                         <div className="p-3 bg-zinc-800/30 border border-zinc-700/30 rounded-xl space-y-3">
                             <div className="flex items-center justify-between">
                                 <label className="text-[10px] text-zinc-500 uppercase tracking-widest block font-semibold">Table Capacity</label>
