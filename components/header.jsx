@@ -85,11 +85,11 @@ function HeaderContent() {
               isMenuOpen ? "opacity-0 invisible lg:opacity-100 lg:visible" : "opacity-100 visible"
             )}
           >
-            <div className="bg-amber-500/10 p-2 rounded-full border border-amber-500/20 group-hover:bg-amber-500/20 transition-colors">
-              <Crown className="w-5 h-5 text-amber-500" />
+            <div className="bg-[#D4AF37]/10 p-2 rounded-full border border-[#D4AF37]/20 group-hover:bg-[#D4AF37]/20 transition-colors">
+              <Crown className="w-5 h-5 text-[#D4AF37]" />
             </div>
             <span className="text-xl font-bold tracking-tighter text-foreground">
-              Royal Class <span className="text-amber-500">Events</span>
+              Royal Class <span className="text-[#D4AF37]">Events</span>
             </span>
           </Link>
 
@@ -112,8 +112,8 @@ function HeaderContent() {
                   className={cn(
                     "transition-all",
                     pathname?.startsWith(link.href)
-                      ? "text-amber-500 font-semibold bg-amber-500/10"
-                      : "text-muted-foreground hover:text-amber-400 hover:bg-amber-500/10"
+                      ? "text-[#D4AF37] font-semibold bg-[#D4AF37]/10"
+                      : "text-muted-foreground hover:text-[#F7E08B] hover:bg-[#D4AF37]/10"
                   )}
                 >
                   <Link href={link.href}>{link.name}</Link>
@@ -132,7 +132,7 @@ function HeaderContent() {
                   <>
                     {/* Create Event Button (Gold) - Only for Organizers in Organizer Mode */}
                     {(isOrganizer && viewMode === 'organizer') && (
-                      <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold border-none shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.4)] transition-all h-9">
+                      <Button size="sm" asChild className="hidden sm:flex gap-2 bg-gradient-to-r from-[#F7E08B] via-[#D4AF37] to-[#8C7326] hover:brightness-110 text-black font-bold border-none shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-all h-9">
                         <Link href="/create-event">
                           <Plus className="w-4 h-4" />
                           <span className="hidden xl:inline">Create Event</span>
@@ -152,11 +152,11 @@ function HeaderContent() {
                       variant="ghost"
                       size="sm"
                       asChild
-                      className="hidden sm:flex text-muted-foreground hover:text-amber-400"
+                      className="hidden sm:flex text-muted-foreground hover:text-[#F7E08B]"
                     >
                       <Link href="/sign-up">Get Started</Link>
                     </Button>
-                    <Button size="sm" asChild className="bg-amber-500 hover:bg-amber-600 text-black font-semibold h-9">
+                    <Button size="sm" asChild className="bg-[#D4AF37] hover:bg-[#B8962E] text-black font-semibold h-9 border-none">
                       <Link href="/sign-in">Sign In</Link>
                     </Button>
                   </>
@@ -170,8 +170,8 @@ function HeaderContent() {
                     variant="ghost"
                     size="icon"
                     className={cn(
-                      "lg:hidden h-9 w-9 text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10 border border-transparent hover:border-amber-500/20 transition-all",
-                      isMenuOpen && "text-amber-500 bg-amber-500/10 rotate-90"
+                      "lg:hidden h-9 w-9 text-muted-foreground hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 border border-transparent hover:border-[#D4AF37]/20 transition-all",
+                      isMenuOpen && "text-[#D4AF37] bg-[#D4AF37]/10 rotate-90"
                     )}
                   >
                     {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -183,12 +183,12 @@ function HeaderContent() {
                     {/* Brand in Menu */}
                     <div className="p-8 border-b border-white/5 bg-zinc-900/20">
                       <div className="flex items-center gap-3">
-                        <div className="bg-amber-500/20 p-2.5 rounded-2xl border border-amber-500/20">
-                          <Crown className="w-6 h-6 text-amber-500" />
+                        <div className="bg-[#D4AF37]/20 p-2.5 rounded-2xl border border-[#D4AF37]/20">
+                          <Crown className="w-6 h-6 text-[#D4AF37]" />
                         </div>
                         <div className="flex flex-col">
                           <span className="text-xl font-black tracking-tighter italic text-white leading-none">Royal-Class</span>
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-amber-500 mt-1">Event Empire</span>
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#D4AF37] mt-1">Event Empire</span>
                         </div>
                       </div>
                     </div>
@@ -206,7 +206,7 @@ function HeaderContent() {
                           className={cn(
                             "flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-black uppercase italic tracking-widest transition-all",
                             pathname?.startsWith(link.href)
-                              ? "bg-amber-500 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+                              ? "bg-[#D4AF37] text-black shadow-[0_0_20px_rgba(212,175,55,0.3)]"
                               : "text-zinc-500 hover:text-white hover:bg-white/5"
                           )}
                         >
@@ -216,16 +216,16 @@ function HeaderContent() {
 
                       {/* Attendee Promo in Menu */}
                       {isAuthenticated && isAttendee && (
-                        <div className="mt-12 p-6 bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20 rounded-[2rem] space-y-4 relative overflow-hidden group">
-                          <div className="absolute -top-4 -right-4 w-24 h-24 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-colors" />
-                          <div className="flex items-center gap-2 text-amber-500 font-black italic text-[11px] uppercase tracking-[0.2em] relative z-10">
+                        <div className="mt-12 p-6 bg-gradient-to-br from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-[2rem] space-y-4 relative overflow-hidden group">
+                          <div className="absolute -top-4 -right-4 w-24 h-24 bg-[#D4AF37]/10 rounded-full blur-2xl group-hover:bg-[#D4AF37]/20 transition-colors" />
+                          <div className="flex items-center gap-2 text-[#D4AF37] font-black italic text-[11px] uppercase tracking-[0.2em] relative z-10">
                             <Store className="w-4 h-4" />
                             Launch Empire
                           </div>
                           <p className="text-xs text-zinc-400 font-medium leading-relaxed relative z-10">
                             Stop attending, start hosting. Upgrade to an Organizer account and claim your throne.
                           </p>
-                          <Button asChild className="w-full bg-white hover:bg-amber-500 hover:text-black text-black font-black uppercase text-[10px] tracking-widest h-11 rounded-xl transition-all relative z-10">
+                          <Button asChild className="w-full bg-white hover:bg-[#D4AF37] hover:text-black text-black font-black uppercase text-[10px] tracking-widest h-11 rounded-xl transition-all relative z-10 border-none">
                             <Link href="/account/organizer-request" onClick={() => setIsMenuOpen(false)}>Become an Organizer</Link>
                           </Button>
                         </div>
@@ -240,7 +240,7 @@ function HeaderContent() {
 
         {isLoading && (
           <div className="absolute bottom-0 left-0 w-full">
-            <BarLoader width={"100%"} color="#f59e0b" />
+            <BarLoader width={"100%"} color="#D4AF37" />
           </div>
         )}
       </nav>

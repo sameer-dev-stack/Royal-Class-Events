@@ -34,11 +34,11 @@ export default function Footer() {
 
           {/* Socials */}
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Facebook className="w-5 h-5" /></Link>
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Twitter className="w-5 h-5" /></Link>
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Instagram className="w-5 h-5" /></Link>
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Youtube className="w-5 h-5" /></Link>
-            <Link href="#" className="text-gray-400 hover:text-amber-600 dark:hover:text-amber-500 transition-colors" suppressHydrationWarning><Linkedin className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-[#D4AF37] transition-colors" suppressHydrationWarning><Facebook className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-[#D4AF37] transition-colors" suppressHydrationWarning><Twitter className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-[#D4AF37] transition-colors" suppressHydrationWarning><Instagram className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-[#D4AF37] transition-colors" suppressHydrationWarning><Youtube className="w-5 h-5" /></Link>
+            <Link href="#" className="text-gray-400 hover:text-[#D4AF37] transition-colors" suppressHydrationWarning><Linkedin className="w-5 h-5" /></Link>
           </div>
 
           {/* Copyright */}
@@ -49,7 +49,7 @@ export default function Footer() {
           {/* Support CTA */}
           <div className="flex items-center gap-4">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 hidden lg:inline-block">Do you have any questions?</span>
-            <Button variant="outline" className="gap-2 rounded-full border-gray-300 dark:border-white/10 hover:bg-amber-50 dark:hover:bg-amber-500/10 hover:text-amber-600 dark:hover:text-amber-500">
+            <Button variant="outline" className="gap-2 rounded-full border-gray-300 dark:border-white/10 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] border-none">
               <HelpCircle className="w-4 h-4" /> Visit Support Center
             </Button>
           </div>

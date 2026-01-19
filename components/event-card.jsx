@@ -34,7 +34,7 @@ export default function EventCard({
       <FadeIn>
         <Card
           className={cn(
-            "py-0 group cursor-pointer border-white/5 bg-white/5 hover:bg-white/10 transition-all hover:border-amber-500/50",
+            "py-0 group cursor-pointer border-white/5 bg-white/5 hover:bg-white/10 transition-all hover:border-[#D4AF37]/50",
             className
           )}
           onClick={onClick}
@@ -52,14 +52,14 @@ export default function EventCard({
 
             {/* Event Details */}
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-sm mb-1 group-hover:text-amber-500 transition-colors line-clamp-2">
+              <h3 className="font-semibold text-sm mb-1 group-hover:text-[#D4AF37] transition-colors line-clamp-2">
                 {eventTitle}
               </h3>
               <p className="text-xs text-muted-foreground mb-1">
                 {format(eventStartDate, "EEE, dd MMM, HH:mm")}
               </p>
               <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
-                <MapPin className="w-3 h-3 text-amber-500/70" />
+                <MapPin className="w-3 h-3 text-[#D4AF37]/70" />
                 <span className="line-clamp-1">
                   {isOnline ? "Online Event" : eventCity}
                 </span>
@@ -77,8 +77,8 @@ export default function EventCard({
       <ScaleOnHover scale={1.02}>
         <Card
           className={cn(
-            "overflow-hidden group pt-0 bg-card/40 backdrop-blur-sm border-border hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300",
-            onClick ? "cursor-pointer hover:border-amber-500/50" : "",
+            "overflow-hidden group pt-0 bg-card/40 backdrop-blur-sm border-border hover:shadow-2xl hover:shadow-[#D4AF37]/10 transition-all duration-300",
+            onClick ? "cursor-pointer hover:border-[#D4AF37]/50" : "",
             className
           )}
           onClick={onClick}
@@ -104,21 +104,21 @@ export default function EventCard({
 
           <CardContent className="space-y-4 p-4">
             <div>
-              <Badge variant="outline" className="mb-2 text-amber-500 border-amber-500/30 bg-amber-500/5">
+              <Badge variant="outline" className="mb-2 text-[#D4AF37] border-[#D4AF37]/30 bg-[#D4AF37]/5">
                 {getCategoryIcon(eventCategory)} <span className="ml-1">{getCategoryLabel(eventCategory)}</span>
               </Badge>
-              <h3 className="font-bold text-lg line-clamp-1 leading-tight group-hover:text-amber-500 transition-colors">
+              <h3 className="font-bold text-lg line-clamp-1 leading-tight group-hover:text-[#D4AF37] transition-colors">
                 {eventTitle}
               </h3>
             </div>
 
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-amber-500/80" />
+                <Calendar className="w-4 h-4 text-[#D4AF37]/80" />
                 <span className="text-muted-foreground/80">{format(eventStartDate, "PPP")}</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-amber-500/80" />
+                <MapPin className="w-4 h-4 text-[#D4AF37]/80" />
                 <span className="line-clamp-1">
                   {isOnline
                     ? "Online Event"
@@ -126,7 +126,7 @@ export default function EventCard({
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-amber-500/80" />
+                <Users className="w-4 h-4 text-[#D4AF37]/80" />
                 <span>
                   {eventRegistrations} / {eventCapacity} registered
                 </span>
@@ -139,7 +139,7 @@ export default function EventCard({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="flex-1 gap-2 hover:bg-amber-500 hover:text-black border-amber-500/30 text-amber-500"
+                  className="flex-1 gap-2 hover:bg-[#D4AF37] hover:text-black border-[#D4AF37]/30 text-[#D4AF37]"
                   onClick={(e) => {
                     e.stopPropagation();
                     onClick?.(e);

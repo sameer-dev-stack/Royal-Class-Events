@@ -131,7 +131,7 @@ export default function EventFilters({ onFilterChange, activeFilters = {} }) {
                             {activeFilterCount > 0 && (
                                 <Badge
                                     variant="secondary"
-                                    className="ml-2 px-1.5 py-0.5 h-5 min-w-[20px] bg-[#FBB03B] text-black"
+                                    className="ml-2 px-1.5 py-0.5 h-5 min-w-[20px] bg-[#D4AF37] text-black"
                                 >
                                     {activeFilterCount}
                                 </Badge>
@@ -247,7 +247,7 @@ export default function EventFilters({ onFilterChange, activeFilters = {} }) {
 
                             {/* Apply Button */}
                             <Button
-                                className="w-full bg-[#FBB03B] hover:bg-[#FBB03B]/90 text-black font-bold"
+                                className="w-full bg-[#D4AF37] hover:bg-[#B8962E] text-black font-bold border-none"
                                 onClick={handleApplyFilters}
                             >
                                 Apply Filters

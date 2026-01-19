@@ -27,8 +27,8 @@ export default function LandingPage() {
 
           {/* Left content */}
           <FadeIn direction="up" className="text-center sm:text-left space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-sm font-medium backdrop-blur-sm">
-              <Crown className="w-4 h-4 fill-amber-500/20" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-sm font-medium backdrop-blur-sm">
+              <Crown className="w-4 h-4 fill-[#D4AF37]/20" />
               <span>The #1 Platform for Elite Experiences</span>
             </div>
 
@@ -39,7 +39,7 @@ export default function LandingPage() {
               <span className="block text-gradient-gold relative">
                 Exclusive
                 {/* Decorative spark */}
-                <Sparkles className="absolute -top-4 -right-6 md:-top-6 md:-right-8 w-6 h-6 md:w-8 md:h-8 text-amber-400 rotate-12 animate-pulse" />
+                <Sparkles className="absolute -top-4 -right-6 md:-top-6 md:-right-8 w-6 h-6 md:w-8 md:h-8 text-[#F7E08B] rotate-12 animate-pulse" />
               </span>
             </h1>
 
@@ -49,7 +49,7 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center sm:justify-start">
-              <Button size="xl" asChild className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all transform hover:-translate-y-1">
+              <Button size="xl" asChild className="w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-[#F7E08B] via-[#D4AF37] to-[#8C7326] hover:brightness-110 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all transform hover:-translate-y-1">
                 <Link href="/explore" suppressHydrationWarning>
                   Explore Events
                 </Link>
@@ -84,7 +84,7 @@ export default function LandingPage() {
 
                 {/* Floating Ticket Info */}
                 <div className="absolute bottom-6 left-6 right-6 bg-white/10 backdrop-blur-xl border border-white/20 p-5 rounded-2xl flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex flex-col items-center justify-center text-black font-bold shadow-lg">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F7E08B] to-[#D4AF37] flex flex-col items-center justify-center text-black font-bold shadow-lg">
                     <span className="text-xs font-medium uppercase opacity-80">Aug</span>
                     <span className="text-xl leading-none">15</span>
                   </div>
@@ -100,7 +100,7 @@ export default function LandingPage() {
             </div>
 
             {/* Gold Glow Behind */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-amber-500/10 rounded-full blur-[100px] -z-10" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-[#D4AF37]/10 rounded-full blur-[100px] -z-10" />
           </div>
 
         </div>
@@ -133,11 +133,11 @@ export default function LandingPage() {
 
             <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {/* Attendee Path */}
-              <div className="group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden">
-                <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-colors" />
+              <div className="group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-[#D4AF37]/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(212,175,55,0.1)] overflow-hidden">
+                <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-[#D4AF37]/5 rounded-full blur-3xl group-hover:bg-[#D4AF37]/10 transition-colors" />
                 <div className="relative z-10 space-y-6">
-                  <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform duration-500">
-                    <Ticket className="w-8 h-8 text-amber-500" />
+                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20 group-hover:scale-110 transition-transform duration-500">
+                    <Ticket className="w-8 h-8 text-[#D4AF37]" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold mb-2 text-foreground">Browse as Attendee</h3>
@@ -146,7 +146,7 @@ export default function LandingPage() {
                     </p>
                   </div>
                   <Link href="/explore?role=attendee" className="block" suppressHydrationWarning>
-                    <Button variant="outline" className="w-full h-12 rounded-xl hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-all font-bold gap-2">
+                    <Button variant="outline" className="w-full h-12 rounded-xl hover:bg-[#D4AF37] hover:text-black hover:border-none transition-all font-bold gap-2">
                       Browse <ArrowRight className="w-4 h-4" />
                     </Button>
                   </Link>
@@ -154,11 +154,11 @@ export default function LandingPage() {
               </div>
 
               {/* Organizer Path */}
-              <div className="group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden">
+              <div className="group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-[#D4AF37]/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(212,175,55,0.1)] overflow-hidden">
                 <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors" />
                 <div className="relative z-10 space-y-6">
-                  <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform duration-500">
-                    <Building className="w-8 h-8 text-amber-500" />
+                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20 group-hover:scale-110 transition-transform duration-500">
+                    <Building className="w-8 h-8 text-[#D4AF37]" />
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold mb-2 text-foreground">Join as Organizer</h3>
@@ -167,7 +167,7 @@ export default function LandingPage() {
                     </p>
                   </div>
                   <Link href="/create-event?role=organizer" className="block" suppressHydrationWarning>
-                    <Button className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold shadow-lg shadow-amber-900/20 transition-all transform group-hover:-translate-y-1">
+                    <Button className="w-full h-12 rounded-xl bg-gradient-to-r from-[#F7E08B] via-[#D4AF37] to-[#8C7326] hover:brightness-110 text-black font-bold shadow-lg shadow-[#D4AF37]/20 transition-all transform group-hover:-translate-y-1 border-none">
                       Start Hosting <ArrowRight className="w-4 h-4" />
                     </Button>
                   </Link>

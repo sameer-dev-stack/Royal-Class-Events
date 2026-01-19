@@ -173,3 +173,10 @@
 [02:09:11.295] Server  LOG     ✓ Compiled in 369ms
 [02:09:19.048] Server  LOG     ✓ Compiled in 430ms
 [02:09:37.880] Server  LOG     ✓ Finished filesystem cache database compaction in 15.7s
+[02:11:57.659] Server  LOG     ✓ Compiled in 441ms
+[02:12:10.535] Server  LOG     ✓ Compiled in 506ms
+[02:12:49.877] Server  LOG     ✓ Compiled in 355ms
+[02:13:17.812] Server  LOG     ✓ Compiled in 484ms
+[02:13:30.108] Server  LOG     ✓ Compiled in 445ms
+[02:13:37.929] Server  LOG     ✓ Compiled in 868ms
+[02:13:47.130] Server  LOG     ✓ Finished filesystem cache database compaction in 11.5s
