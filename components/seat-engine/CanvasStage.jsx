@@ -144,10 +144,20 @@ const handleDragEndGlobal = (e, updateElement) => {
 
 
 // Generic Element Component to avoid code repetition
-function SceneElement({ element, isSelected, onSelect, onChange, scale, draggable }) {
+function SceneElement({ element, isSelected, onSelect, onChange, scale, draggable, refCallback }) {
     const shapeRef = useRef(null);
     const updateElement = useSeatEngine(state => state.updateElement);
     const [isDragging, setIsDragging] = useState(false);
+
+    // Register ref with parent's elementRefs Map
+    useEffect(() => {
+        if (refCallback && shapeRef.current) {
+            refCallback(shapeRef.current);
+        }
+        return () => {
+            if (refCallback) refCallback(null);
+        };
+    }, [refCallback]);
 
     return (
         <Group
@@ -155,6 +165,9 @@ function SceneElement({ element, isSelected, onSelect, onChange, scale, draggabl
             name="element-group"
             ref={shapeRef}
             x={element.x} y={element.y}
+            width={element.width}
+            height={element.height}
+            rotation={element.rotation || 0}
             draggable={draggable}
             dragBoundFunc={(pos) => ({
                 x: Math.round(pos.x / GRID_SIZE) * GRID_SIZE,
@@ -211,6 +224,8 @@ function SceneElement({ element, isSelected, onSelect, onChange, scale, draggabl
 export default function CanvasStage() {
     const containerRef = useRef(null);
     const stageRef = useRef(null);
+    const transformerRef = useRef(null);
+    const elementRefs = useRef(new Map());
     const {
         stageConfig, setStageSize, setStagePosition, tool, setTool, elements, addElement, updateElement,
         selectedIds, setSelectedIds, toggleSelection, clearSelection, deleteSelectedElement, canvasSettings
@@ -238,6 +253,17 @@ export default function CanvasStage() {
     }, [setStageSize]);
 
     useSeatHotkeys();
+
+    // Sync Transformer nodes with selectedIds
+    useEffect(() => {
+        if (transformerRef.current) {
+            const nodes = selectedIds
+                .map(id => elementRefs.current.get(id))
+                .filter(node => node);
+            transformerRef.current.nodes(nodes);
+            transformerRef.current.getLayer()?.batchDraw();
+        }
+    }, [selectedIds, elements]);
 
     // Correctly mapped relative position
     const getRelativePos = (evt) => {
@@ -528,16 +554,30 @@ export default function CanvasStage() {
                                 else setSelectedIds([el.id]);
                             }}
                             onChange={(u) => updateElement(el.id, u)}
+                            refCallback={(node) => {
+                                if (node) elementRefs.current.set(el.id, node);
+                                else elementRefs.current.delete(el.id);
+                            }}
                         />
                     ))}
 
                     {selectedIds.length > 0 && (
                         <Transformer
-                            nodes={stageRef.current?.find('.element-group').filter(n => selectedIds.includes(n.id()))}
+                            ref={transformerRef}
                             rotateEnabled={true}
                             borderStroke="#D4AF37"
                             anchorStroke="#D4AF37"
+                            anchorFill="#0a0a0a"
+                            anchorSize={8}
+                            anchorCornerRadius={2}
                             keepRatio={false}
+                            boundBoxFunc={(oldBox, newBox) => {
+                                // Minimum size constraint
+                                if (newBox.width < 30 || newBox.height < 30) {
+                                    return oldBox;
+                                }
+                                return newBox;
+                            }}
                         />
                     )}
                 </Layer>
