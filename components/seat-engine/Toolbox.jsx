@@ -1,6 +1,6 @@
 "use client";
 
-import { MousePointer2, Square, Circle, PenTool, Image, RotateCw, LayoutGrid, Maximize2 } from "lucide-react";
+import { MousePointer2, Square, Circle, PenTool } from "lucide-react";
 import useSeatEngine, { TOOL_TYPES } from "@/hooks/use-seat-engine";
 import { cn } from "@/lib/utils";
 
@@ -33,34 +33,6 @@ const tools = [
         icon: PenTool,
         label: "Pen Tool",
         shortcut: "P",
-    },
-    {
-        id: TOOL_TYPES.CURVE,
-        icon: RotateCw,
-        label: "Arc Tool",
-        shortcut: "A",
-    },
-    {
-        id: "STAGE",
-        icon: LayoutGrid,
-        label: "Add Stage",
-        type: TOOL_TYPES.IMAGE,
-        assetType: "STAGE",
-        shortcut: "S"
-    },
-    {
-        id: "EXIT",
-        icon: Maximize2,
-        label: "Add Exit",
-        type: TOOL_TYPES.IMAGE,
-        assetType: "EXIT",
-        shortcut: "E"
-    },
-    {
-        id: TOOL_TYPES.IMAGE,
-        icon: Image,
-        label: "Custom Asset",
-        shortcut: "I",
     },
 ];
 
