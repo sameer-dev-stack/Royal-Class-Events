@@ -260,18 +260,19 @@ export default function PropertiesPanel() {
                         <div className="p-3 bg-zinc-800/30 border border-zinc-700/30 rounded-xl space-y-3">
                             <div className="flex items-center justify-between">
                                 <label className="text-[10px] text-zinc-500 uppercase tracking-widest block font-semibold">Table Capacity</label>
-                                <span className="text-xs font-bold text-amber-500">{seatConfig?.capacity || 6}</span>
+                                <span className="text-xs font-bold text-amber-500">{seatConfig?.capacity ?? 4} seats</span>
                             </div>
                             <input
                                 type="range"
-                                min="0"
+                                min="1"
                                 max="20"
-                                value={seatConfig?.capacity || 6}
+                                step="1"
+                                value={seatConfig?.capacity ?? 4}
                                 onChange={(e) => handleSeatConfigChange("capacity", parseInt(e.target.value))}
                                 className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
                             />
                             <div className="flex justify-between text-[8px] text-zinc-600 font-mono">
-                                <span>0</span>
+                                <span>1</span>
                                 <span>10</span>
                                 <span>20</span>
                             </div>
