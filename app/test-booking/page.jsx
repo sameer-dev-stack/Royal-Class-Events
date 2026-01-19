@@ -68,7 +68,7 @@ export default function TestBookingPage() {
                 {eventId && event === undefined ? (
                     <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 z-50">
                         <div className="flex flex-col items-center gap-3">
-                            <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
+                            <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
                             <p className="text-zinc-500 text-sm">Loading Live Map...</p>
                         </div>
                     </div>
@@ -110,7 +110,7 @@ export default function TestBookingPage() {
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-zinc-900 border-t border-zinc-800 md:hidden z-50">
                 <Button
                     onClick={() => setIsSidebarOpen(true)}
-                    className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-6 text-lg rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.2)] animate-in slide-in-from-bottom-5 duration-300"
+                    className="w-full bg-[#D4AF37] hover:bg-[#B8962E] text-black font-bold py-6 text-lg rounded-xl shadow-[0_0_20px_rgba(245,158,11,0.2)] animate-in slide-in-from-bottom-5 duration-300"
                 >
                     <ShoppingCart className="w-5 h-5 mr-2" />
                     View Cart • {formatMoney(totalAmount)}

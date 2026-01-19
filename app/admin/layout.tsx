@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (!isMounted || isLoading) {
         return (
             <div className="h-screen w-full flex items-center justify-center bg-zinc-950 text-white">
-                <Loader2 className="h-10 w-10 animate-spin text-amber-500" />
+                <Loader2 className="h-10 w-10 animate-spin text-#D4AF37" />
             </div>
         );
     }
@@ -74,7 +74,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Sidebar */}
             <aside className="w-64 border-r border-zinc-800 bg-zinc-900/50 hidden md:flex flex-col">
                 <div className="p-6">
-                    <h1 className="text-xl font-black tracking-tighter text-amber-500 uppercase">
+                    <h1 className="text-xl font-black tracking-tighter text-#D4AF37 uppercase">
                         Admin Portal
                     </h1>
                 </div>
@@ -87,7 +87,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 key={item.href}
                                 href={item.href}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${isActive
-                                    ? "bg-amber-500/10 text-amber-500"
+                                    ? "bg-#D4AF37/10 text-#D4AF37"
                                     : "text-zinc-400 hover:text-white hover:bg-zinc-800"
                                     }`}
                             >
@@ -100,7 +100,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                 <div className="p-4 border-t border-zinc-800 space-y-2">
                     <div className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-500">
-                        <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-500 font-bold uppercase">
+                        <div className="w-8 h-8 rounded-full bg-#D4AF37/20 flex items-center justify-center text-#D4AF37 font-bold uppercase">
                             {user?.name?.[0] || "A"}
                         </div>
                         <div className="overflow-hidden flex-1">
@@ -141,3 +141,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
     );
 }
+

@@ -24,16 +24,16 @@ const fadeIn = {
 const NewsItem = ({ date, title, source, link }) => (
     <motion.div
         {...fadeIn}
-        className="group p-6 rounded-3xl bg-zinc-900/40 border border-white/5 hover:border-amber-500/30 transition-all space-y-4"
+        className="group p-6 rounded-3xl bg-zinc-900/40 border border-white/5 hover:border-#D4AF37/30 transition-all space-y-4"
     >
-        <div className="flex items-center gap-3 text-xs font-medium text-amber-500/80 uppercase tracking-widest">
+        <div className="flex items-center gap-3 text-xs font-medium text-#D4AF37/80 uppercase tracking-widest">
             <Calendar className="w-3 h-3" />
             {date}
         </div>
-        <h3 className="text-xl font-bold text-white group-hover:text-amber-500 transition-colors leading-tight">{title}</h3>
+        <h3 className="text-xl font-bold text-white group-hover:text-#D4AF37 transition-colors leading-tight">{title}</h3>
         <div className="flex items-center justify-between pt-4 border-t border-white/5">
             <span className="text-sm text-muted-foreground font-medium">{source}</span>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full hover:bg-amber-500/10 hover:text-amber-500">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full hover:bg-#D4AF37/10 hover:text-#D4AF37">
                 <ExternalLink className="w-4 h-4" />
             </Button>
         </div>
@@ -47,7 +47,7 @@ export default function PressCenterPage() {
             <section className="relative pt-32 pb-20 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto text-center relative z-10">
                     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
-                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-widest mb-6">
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-xs font-bold uppercase tracking-widest mb-6">
                             Press & Media
                         </span>
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 leading-[0.9]">
@@ -77,22 +77,22 @@ export default function PressCenterPage() {
                             <div className="grid gap-4">
                                 <Button className="h-16 justify-between bg-zinc-900 border border-white/5 hover:bg-zinc-800 rounded-2xl px-6 text-white group">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                                        <div className="w-10 h-10 rounded-xl bg-#D4AF37/10 flex items-center justify-center text-#D4AF37">
                                             <ImageIcon className="w-5 h-5" />
                                         </div>
                                         <span className="font-bold">Official Brand Assets (2026)</span>
                                     </div>
-                                    <Download className="w-5 h-5 text-muted-foreground group-hover:text-amber-500 group-hover:translate-y-1 transition-all" />
+                                    <Download className="w-5 h-5 text-muted-foreground group-hover:text-#D4AF37 group-hover:translate-y-1 transition-all" />
                                 </Button>
 
                                 <Button className="h-16 justify-between bg-zinc-900 border border-white/5 hover:bg-zinc-800 rounded-2xl px-6 text-white group">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                                        <div className="w-10 h-10 rounded-xl bg-#D4AF37/10 flex items-center justify-center text-#D4AF37">
                                             <FileText className="w-5 h-5" />
                                         </div>
                                         <span className="font-bold">Latest Press Release</span>
                                     </div>
-                                    <Download className="w-5 h-5 text-muted-foreground group-hover:text-amber-500 group-hover:translate-y-1 transition-all" />
+                                    <Download className="w-5 h-5 text-muted-foreground group-hover:text-#D4AF37 group-hover:translate-y-1 transition-all" />
                                 </Button>
                             </div>
                         </motion.div>
@@ -103,15 +103,15 @@ export default function PressCenterPage() {
                             viewport={{ once: true }}
                             className="relative aspect-square max-w-md mx-auto"
                         >
-                            <div className="absolute inset-0 bg-amber-500/10 blur-[100px] rounded-full animate-pulse" />
-                            <div className="relative z-10 p-1 bg-gradient-to-br from-amber-500/30 to-transparent rounded-[3rem] overflow-hidden shadow-2xl">
+                            <div className="absolute inset-0 bg-#D4AF37/10 blur-[100px] rounded-full animate-pulse" />
+                            <div className="relative z-10 p-1 bg-gradient-to-br from-#D4AF37/30 to-transparent rounded-[3rem] overflow-hidden shadow-2xl">
                                 <div className="bg-zinc-950 p-8 rounded-[2.8rem] aspect-square flex flex-col items-center justify-center text-center space-y-6">
-                                    <Newspaper className="w-20 h-20 text-amber-500/50" />
+                                    <Newspaper className="w-20 h-20 text-#D4AF37/50" />
                                     <div className="space-y-2">
                                         <p className="text-2xl font-black italic">Download <br /> Everything</p>
                                         <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">ZIP • 42MB</p>
                                     </div>
-                                    <Button className="rounded-full bg-amber-500 hover:bg-amber-600 text-black font-black px-8">
+                                    <Button className="rounded-full bg-#D4AF37 hover:bg-#8C7326 text-black font-black px-8">
                                         Get Media Pack
                                     </Button>
                                 </div>
@@ -172,7 +172,7 @@ export default function PressCenterPage() {
 
             {/* Press Contact */}
             <section className="py-24 px-6">
-                <div className="max-w-3xl mx-auto text-center space-y-8 p-12 rounded-[3rem] bg-amber-500/5 border border-amber-500/10">
+                <div className="max-w-3xl mx-auto text-center space-y-8 p-12 rounded-[3rem] bg-#D4AF37/5 border border-#D4AF37/10">
                     <h3 className="text-2xl font-black">Media Inquiries</h3>
                     <p className="text-muted-foreground font-light text-lg">
                         For interviews, press passes, or media opportunities, please reach out to our global
@@ -180,12 +180,12 @@ export default function PressCenterPage() {
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                         <div className="space-y-1">
-                            <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">Global PR</p>
+                            <p className="text-xs font-bold text-#D4AF37 uppercase tracking-widest">Global PR</p>
                             <p className="text-xl font-bold">press@royalclass.com</p>
                         </div>
                         <div className="w-px h-10 bg-white/10 hidden sm:block" />
                         <div className="space-y-1">
-                            <p className="text-xs font-bold text-amber-500 uppercase tracking-widest">Office</p>
+                            <p className="text-xs font-bold text-#D4AF37 uppercase tracking-widest">Office</p>
                             <p className="text-xl font-bold">+971 4 000 0000</p>
                         </div>
                     </div>
@@ -194,3 +194,4 @@ export default function PressCenterPage() {
         </div>
     );
 }
+

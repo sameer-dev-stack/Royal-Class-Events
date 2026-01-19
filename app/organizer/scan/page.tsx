@@ -84,12 +84,12 @@ export default function ScannerPage() {
                 <Button variant="ghost" size="icon" onClick={() => router.back()} className="text-white hover:bg-white/20 rounded-full">
                     <ArrowLeft />
                 </Button>
-                <h1 className="text-lg font-bold text-amber-500 tracking-wider">GATEKEEPER LIVE</h1>
+                <h1 className="text-lg font-bold text-#D4AF37 tracking-wider">GATEKEEPER LIVE</h1>
                 <div className="w-10" />
             </div>
 
             {/* FULL SCREEN CAMERA */}
-            <div className="relative w-full h-[60vh] bg-black overflow-hidden mt-16 rounded-b-3xl shadow-2xl shadow-amber-500/10">
+            <div className="relative w-full h-[60vh] bg-black overflow-hidden mt-16 rounded-b-3xl shadow-2xl shadow-#D4AF37/10">
                 {!scanResult && (
                     <Scanner
                         onScan={handleScan}
@@ -110,11 +110,11 @@ export default function ScannerPage() {
                 {/* Custom Overlay / Viewfinder */}
                 {!scanResult && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-64 h-64 border-2 border-amber-500/80 rounded-3xl relative shadow-[0_0_100px_rgba(245,158,11,0.3)]">
-                            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-amber-500 -mt-1 -ml-1 rounded-tl-lg" />
-                            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-amber-500 -mt-1 -mr-1 rounded-tr-lg" />
-                            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-amber-500 -mb-1 -ml-1 rounded-bl-lg" />
-                            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-amber-500 -mb-1 -mr-1 rounded-br-lg" />
+                        <div className="w-64 h-64 border-2 border-#D4AF37/80 rounded-3xl relative shadow-[0_0_100px_rgba(245,158,11,0.3)]">
+                            <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-#D4AF37 -mt-1 -ml-1 rounded-tl-lg" />
+                            <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-#D4AF37 -mt-1 -mr-1 rounded-tr-lg" />
+                            <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-#D4AF37 -mb-1 -ml-1 rounded-bl-lg" />
+                            <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-#D4AF37 -mb-1 -mr-1 rounded-br-lg" />
 
                             {/* Scanning Laser */}
                             <div className="absolute top-1/2 left-4 right-4 h-0.5 bg-red-500 shadow-[0_0_15px_red] animate-scan" />
@@ -152,7 +152,7 @@ export default function ScannerPage() {
                             placeholder="Enter Ticket ID (e.g. REG-123)"
                             value={manualId}
                             onChange={(e) => setManualId(e.target.value)}
-                            className="bg-zinc-900 border-zinc-800 h-12 text-center font-mono uppercase tracking-widest text-lg focus:ring-amber-500"
+                            className="bg-zinc-900 border-zinc-800 h-12 text-center font-mono uppercase tracking-widest text-lg focus:ring-#D4AF37"
                         />
                     </div>
                     <Button

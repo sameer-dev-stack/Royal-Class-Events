@@ -123,7 +123,7 @@ export default function HeaderActions() {
             <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-4 py-2 bg-[#D4AF37] hover:bg-[#b5952f] text-black font-bold text-sm rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-amber-500/20"
+                className="flex items-center gap-2 px-4 py-2 bg-[#D4AF37] hover:bg-[#b5952f] text-black font-bold text-sm rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-#D4AF37/20"
             >
                 {isSaving ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
@@ -135,3 +135,4 @@ export default function HeaderActions() {
         </div>
     );
 }
+

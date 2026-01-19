@@ -311,7 +311,7 @@ export default function CheckoutPage() {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FBB03B] mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
                     <p className="text-muted-foreground">Loading checkout...</p>
                 </div>
             </div>
@@ -326,10 +326,10 @@ export default function CheckoutPage() {
                     <h1 className="text-3xl font-bold text-foreground">Review Your Order</h1>
 
                     {/* Countdown Timer */}
-                    <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${timeLeft < 60 ? "bg-red-500/10" : "bg-amber-500/10"
+                    <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${timeLeft < 60 ? "bg-red-500/10" : "bg-#D4AF37/10"
                         }`}>
-                        <Clock className={`w-5 h-5 ${timeLeft < 60 ? "text-red-500" : "text-amber-500"}`} />
-                        <span className={`font-mono font-bold ${timeLeft < 60 ? "text-red-500" : "text-amber-500"
+                        <Clock className={`w-5 h-5 ${timeLeft < 60 ? "text-red-500" : "text-#D4AF37"}`} />
+                        <span className={`font-mono font-bold ${timeLeft < 60 ? "text-red-500" : "text-#D4AF37"
                             }`}>
                             {formatTime(timeLeft)}
                         </span>
@@ -368,7 +368,7 @@ export default function CheckoutPage() {
                                         </div>
                                     </div>
                                 </div>
-                                <Button variant="ghost" size="sm" className="text-[#FBB03B] hover:text-[#FBB03B]/80">
+                                <Button variant="ghost" size="sm" className="text-[#D4AF37] hover:text-[#D4AF37]/80">
                                     <Edit className="w-4 h-4 mr-2" />
                                     Edit
                                 </Button>
@@ -388,7 +388,7 @@ export default function CheckoutPage() {
                                             <p className="font-medium text-foreground">
                                                 {ticket.name}
                                                 {ticket.details?.seatId && (
-                                                    <span className="ml-2 text-xs bg-[#FBB03B]/10 text-[#FBB03B] px-2 py-0.5 rounded-full border border-[#FBB03B]/20">
+                                                    <span className="ml-2 text-xs bg-[#D4AF37]/10 text-[#D4AF37] px-2 py-0.5 rounded-full border border-[#D4AF37]/20">
                                                         {ticket.details.name || ticket.details.seatId}
                                                     </span>
                                                 )}
@@ -401,7 +401,7 @@ export default function CheckoutPage() {
                                                 <Button
                                                     variant="outline"
                                                     size="icon"
-                                                    className="h-8 w-8 border-[#FBB03B] text-[#FBB03B] hover:bg-[#FBB03B]/10"
+                                                    className="h-8 w-8 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
                                                     onClick={() => updateQuantity(ticket.id, -1)}
                                                 >
                                                     <Minus className="w-4 h-4" />
@@ -412,7 +412,7 @@ export default function CheckoutPage() {
                                                 <Button
                                                     variant="outline"
                                                     size="icon"
-                                                    className="h-8 w-8 border-[#FBB03B] text-[#FBB03B] hover:bg-[#FBB03B]/10"
+                                                    className="h-8 w-8 border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
                                                     onClick={() => updateQuantity(ticket.id, 1)}
                                                 >
                                                     <Plus className="w-4 h-4" />
@@ -443,7 +443,7 @@ export default function CheckoutPage() {
                                         type="checkbox"
                                         checked={useUserInfo}
                                         onChange={(e) => setUseUserInfo(e.target.checked)}
-                                        className="w-4 h-4 accent-[#FBB03B]"
+                                        className="w-4 h-4 accent-[#D4AF37]"
                                     />
                                     <span className="text-sm text-foreground">Same as logged-in user</span>
                                 </label>
@@ -458,7 +458,7 @@ export default function CheckoutPage() {
                                         onChange={(e) =>
                                             setAttendeeInfo({ ...attendeeInfo, fullName: e.target.value })
                                         }
-                                        className="mt-1.5 bg-input border-border text-foreground focus:border-[#FBB03B]"
+                                        className="mt-1.5 bg-input border-border text-foreground focus:border-[#D4AF37]"
                                         placeholder="Enter your full name"
                                     />
                                     {errors.fullName && (
@@ -475,7 +475,7 @@ export default function CheckoutPage() {
                                         onChange={(e) =>
                                             setAttendeeInfo({ ...attendeeInfo, email: e.target.value })
                                         }
-                                        className="mt-1.5 bg-input border-border text-foreground focus:border-[#FBB03B]"
+                                        className="mt-1.5 bg-input border-border text-foreground focus:border-[#D4AF37]"
                                         placeholder="your.email@example.com"
                                     />
                                     {errors.email && (
@@ -491,7 +491,7 @@ export default function CheckoutPage() {
                                         onChange={(e) =>
                                             setAttendeeInfo({ ...attendeeInfo, mobile: e.target.value })
                                         }
-                                        className="mt-1.5 bg-input border-border text-foreground focus:border-[#FBB03B]"
+                                        className="mt-1.5 bg-input border-border text-foreground focus:border-[#D4AF37]"
                                         placeholder="+8801XXXXXXXXX"
                                         maxLength={14}
                                     />
@@ -542,7 +542,7 @@ export default function CheckoutPage() {
                                     <Button
                                         variant="outline"
                                         onClick={applyPromoCode}
-                                        className="border-[#FBB03B] text-[#FBB03B] hover:bg-[#FBB03B]/10"
+                                        className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
                                     >
                                         Apply
                                     </Button>
@@ -570,8 +570,8 @@ export default function CheckoutPage() {
                                             key={method}
                                             onClick={() => setSelectedPayment(method)}
                                             className={`relative p-4 rounded-lg border-2 transition-all ${selectedPayment === method
-                                                ? "border-[#FBB03B] bg-[#FBB03B]/5"
-                                                : "border-border hover:border-[#FBB03B]/50"
+                                                ? "border-[#D4AF37] bg-[#D4AF37]/5"
+                                                : "border-border hover:border-[#D4AF37]/50"
                                                 }`}
                                         >
                                             <div className="text-sm font-medium text-foreground capitalize">
@@ -580,7 +580,7 @@ export default function CheckoutPage() {
                                                 {method === "card" && "Card"}
                                             </div>
                                             {selectedPayment === method && (
-                                                <Check className="absolute top-2 right-2 w-4 h-4 text-[#FBB03B]" />
+                                                <Check className="absolute top-2 right-2 w-4 h-4 text-[#D4AF37]" />
                                             )}
                                         </button>
                                     ))}
@@ -594,15 +594,15 @@ export default function CheckoutPage() {
                                         type="checkbox"
                                         checked={agreeToTerms}
                                         onChange={(e) => setAgreeToTerms(e.target.checked)}
-                                        className="w-4 h-4 mt-0.5 accent-[#FBB03B]"
+                                        className="w-4 h-4 mt-0.5 accent-[#D4AF37]"
                                     />
                                     <span className="text-sm text-muted-foreground">
                                         I agree to the{" "}
-                                        <a href="/terms" className="text-[#FBB03B] hover:underline">
+                                        <a href="/terms" className="text-[#D4AF37] hover:underline">
                                             Terms & Conditions
                                         </a>{" "}
                                         and{" "}
-                                        <a href="/refund" className="text-[#FBB03B] hover:underline">
+                                        <a href="/refund" className="text-[#D4AF37] hover:underline">
                                             Refund Policy
                                         </a>
                                     </span>
@@ -613,7 +613,7 @@ export default function CheckoutPage() {
                             <Button
                                 onClick={handleCheckout}
                                 disabled={timeLeft <= 0 || !agreeToTerms || total <= 0 || !event}
-                                className="w-full py-6 text-lg font-bold bg-[#FBB03B] hover:bg-[#FBB03B]/90 text-black border-none"
+                                className="w-full py-6 text-lg font-bold bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none"
                             >
                                 <Lock className="w-5 h-5 mr-2" />
                                 Pay Securely BDT {total.toLocaleString()}
@@ -638,7 +638,7 @@ export default function CheckoutPage() {
                     <Button
                         onClick={handleCheckout}
                         disabled={timeLeft <= 0 || !agreeToTerms}
-                        className="w-full py-6 text-lg font-bold bg-[#FBB03B] hover:bg-[#FBB03B]/90 text-black"
+                        className="w-full py-6 text-lg font-bold bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black"
                     >
                         <Lock className="w-5 h-5 mr-2" />
                         Pay BDT {total.toLocaleString()}
@@ -655,3 +655,4 @@ export default function CheckoutPage() {
         </div>
     );
 }
+

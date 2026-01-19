@@ -71,7 +71,7 @@ export function NotificationBell() {
                             variant="ghost"
                             size="sm"
                             onClick={handleMarkAllRead}
-                            className="h-7 text-[10px] font-black uppercase tracking-tighter text-amber-500 hover:text-amber-600 hover:bg-amber-500/10"
+                            className="h-7 text-[10px] font-black uppercase tracking-tighter text-#D4AF37 hover:text-#8C7326 hover:bg-#D4AF37/10"
                         >
                             <Check className="w-3 h-3 mr-1" /> Mark All
                         </Button>
@@ -97,7 +97,7 @@ export function NotificationBell() {
                                     onClick={() => handleNotificationClick(n)}
                                     className={cn(
                                         "p-4 flex flex-col gap-1 cursor-pointer transition-colors hover:bg-muted/50",
-                                        !n.isRead ? 'bg-amber-500/5' : ''
+                                        !n.isRead ? 'bg-#D4AF37/5' : ''
                                     )}
                                 >
                                     <div className="flex items-start justify-between gap-2">
@@ -118,7 +118,7 @@ export function NotificationBell() {
                                         {n.message}
                                     </p>
                                     {n.link && (
-                                        <div className="flex items-center gap-1 mt-1 text-[9px] font-black text-amber-500 uppercase">
+                                        <div className="flex items-center gap-1 mt-1 text-[9px] font-black text-#D4AF37 uppercase">
                                             <ExternalLink className="w-2.5 h-2.5" /> View
                                         </div>
                                     )}
@@ -134,3 +134,4 @@ export function NotificationBell() {
         </Popover>
     );
 }
+

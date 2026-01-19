@@ -72,7 +72,7 @@ export default function OrderConfirmationPage() {
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FBB03B] mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37] mx-auto mb-4"></div>
                     <p className="text-muted-foreground">Loading your ticket...</p>
                 </div>
             </div>
@@ -120,7 +120,7 @@ export default function OrderConfirmationPage() {
                         <h3 className="font-semibold text-lg text-foreground">Event Details</h3>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3">
-                                <TicketIcon className="w-5 h-5 text-[#FBB03B] mt-0.5" />
+                                <TicketIcon className="w-5 h-5 text-[#D4AF37] mt-0.5" />
                                 <div>
                                     <p className="font-medium text-foreground">
                                         {eventTitle}
@@ -129,7 +129,7 @@ export default function OrderConfirmationPage() {
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <Calendar className="w-5 h-5 text-[#FBB03B] mt-0.5" />
+                                <Calendar className="w-5 h-5 text-[#D4AF37] mt-0.5" />
                                 <div>
                                     <p className="text-sm text-foreground">
                                         {registration?.event?.startDate
@@ -144,7 +144,7 @@ export default function OrderConfirmationPage() {
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
-                                <MapPin className="w-5 h-5 text-[#FBB03B] mt-0.5" />
+                                <MapPin className="w-5 h-5 text-[#D4AF37] mt-0.5" />
                                 <div>
                                     <p className="text-sm text-foreground">
                                         {registration?.event?.venue || "Venue TBA"}
@@ -188,7 +188,7 @@ export default function OrderConfirmationPage() {
                 <div className="flex flex-col sm:flex-row gap-4">
                     <Button
                         onClick={() => router.push("/my-tickets")}
-                        className="flex-1 bg-[#FBB03B] hover:bg-[#FBB03B]/90 text-black font-bold"
+                        className="flex-1 bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black font-bold"
                     >
                         View All My Tickets
                     </Button>
@@ -202,7 +202,7 @@ export default function OrderConfirmationPage() {
                 </div>
 
                 {/* Additional Info */}
-                <div className="mt-8 p-6 bg-amber-500/5 border border-amber-500/20 rounded-lg">
+                <div className="mt-8 p-6 bg-#D4AF37/5 border border-#D4AF37/20 rounded-lg">
                     <h4 className="font-semibold text-foreground mb-2">What's Next?</h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                         <li>✓ Confirmation email sent to your inbox</li>
@@ -215,3 +215,4 @@ export default function OrderConfirmationPage() {
         </div>
     );
 }
+

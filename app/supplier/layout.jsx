@@ -54,12 +54,12 @@ export default function SupplierLayout({ children }) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-6">
                 <div className="text-center space-y-4">
-                    <Store className="w-16 h-16 mx-auto text-amber-500" />
+                    <Store className="w-16 h-16 mx-auto text-[#D4AF37]" />
                     <h1 className="text-2xl font-bold text-foreground">Vendor Area</h1>
                     <p className="text-muted-foreground">Please sign in to access your vendor dashboard.</p>
                     <Link
                         href="/sign-in"
-                        className="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl transition-colors"
+                        className="inline-block px-6 py-3 bg-[#D4AF37] hover:bg-#8C7326 text-black font-bold rounded-xl transition-colors"
                     >
                         Sign In
                     </Link>
@@ -73,14 +73,14 @@ export default function SupplierLayout({ children }) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-6">
                 <div className="text-center space-y-4 max-w-md">
-                    <Store className="w-16 h-16 mx-auto text-amber-500" />
+                    <Store className="w-16 h-16 mx-auto text-[#D4AF37]" />
                     <h1 className="text-2xl font-bold text-foreground">Become a Vendor</h1>
                     <p className="text-muted-foreground">
                         You're not registered as a vendor yet. Join our marketplace to showcase your services.
                     </p>
                     <Link
                         href="/supplier/join"
-                        className="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-600 text-black font-bold rounded-xl transition-colors"
+                        className="inline-block px-6 py-3 bg-[#D4AF37] hover:bg-#8C7326 text-black font-bold rounded-xl transition-colors"
                     >
                         <Sparkles className="w-4 h-4 inline mr-2" />
                         Join as Vendor
@@ -97,11 +97,11 @@ export default function SupplierLayout({ children }) {
                 {/* Header */}
                 <div className="p-6 border-b border-border">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center">
-                            <Store className="w-5 h-5 text-amber-500" />
+                        <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-xl flex items-center justify-center">
+                            <Store className="w-5 h-5 text-[#D4AF37]" />
                         </div>
                         <div>
-                            <p className="text-xs text-amber-500 font-medium uppercase tracking-wider">
+                            <p className="text-xs text-[#D4AF37] font-medium uppercase tracking-wider">
                                 Vendor Mode
                             </p>
                             <p className="text-sm font-semibold text-foreground truncate max-w-[140px]">
@@ -123,7 +123,7 @@ export default function SupplierLayout({ children }) {
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
                                     isActive
-                                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30"
+                                        ? "bg-[#D4AF37]/10 text-#8C7326 dark:text-#F7E08B border border-[#D4AF37]/30"
                                         : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                 )}
                             >
@@ -139,7 +139,7 @@ export default function SupplierLayout({ children }) {
                 <div className="p-4 border-t border-border">
                     <Link
                         href={`/marketplace/vendor/${supplier?._id}`}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-amber-600 dark:hover:text-amber-400 hover:bg-muted/50 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-#8C7326 dark:hover:text-#F7E08B hover:bg-muted/50 transition-colors"
                     >
                         <Store className="w-5 h-5" />
                         View Public Profile

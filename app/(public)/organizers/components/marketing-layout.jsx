@@ -33,7 +33,7 @@ export default function MarketingLayout({ children, activeSlug }) {
                                 className={cn(
                                     "text-xs font-bold uppercase tracking-widest transition-colors relative h-14 flex items-center whitespace-nowrap",
                                     pathname === item.href || activeSlug === item.slug
-                                        ? "text-amber-500"
+                                        ? "text-#D4AF37"
                                         : "text-muted-foreground hover:text-white"
                                 )}
                             >
@@ -41,14 +41,14 @@ export default function MarketingLayout({ children, activeSlug }) {
                                 {(pathname === item.href || activeSlug === item.slug) && (
                                     <motion.div
                                         layoutId="activeTab"
-                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500"
+                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-#D4AF37"
                                     />
                                 )}
                             </Link>
                         ))}
                     </div>
 
-                    <div className="hidden md:flex items-center gap-2 text-amber-500/50 text-[10px] font-bold uppercase tracking-[0.2em]">
+                    <div className="hidden md:flex items-center gap-2 text-#D4AF37/50 text-[10px] font-bold uppercase tracking-[0.2em]">
                         <Sparkles className="w-3 h-3" />
                         Partner with Excellence
                     </div>
@@ -61,3 +61,4 @@ export default function MarketingLayout({ children, activeSlug }) {
         </div>
     );
 }
+

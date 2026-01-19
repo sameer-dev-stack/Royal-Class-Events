@@ -77,7 +77,7 @@ export default function TicketConfigPage({ params }) {
     if (isLoading || isRoleLoading) {
         return (
             <div className="h-screen flex items-center justify-center bg-[#0a0a0a]">
-                <Loader2 className="w-8 h-8 animate-spin text-[#FBB03B]" />
+                <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
             </div>
         );
     }
@@ -122,7 +122,7 @@ export default function TicketConfigPage({ params }) {
                 <Card className="bg-[#18181b] border-white/10">
                     <CardHeader>
                         <CardTitle className="text-white flex items-center gap-2">
-                            <Armchair className="w-5 h-5 text-[#FBB03B]" /> Seating Mode
+                            <Armchair className="w-5 h-5 text-[#D4AF37]" /> Seating Mode
                         </CardTitle>
                         <CardDescription className="text-gray-400">
                             Choose how tickets are allocated to attendees.
@@ -132,12 +132,12 @@ export default function TicketConfigPage({ params }) {
                         <RadioGroup value={seatingMode} onValueChange={handleModeChange} className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                             {/* General Admission Option */}
-                            <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${seatingMode === "GENERAL_ADMISSION" ? "border-[#FBB03B] bg-[#FBB03B]/5" : "border-white/10 hover:border-white/20"}`}>
+                            <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${seatingMode === "GENERAL_ADMISSION" ? "border-[#D4AF37] bg-[#D4AF37]/5" : "border-white/10 hover:border-white/20"}`}>
                                 <RadioGroupItem value="GENERAL_ADMISSION" id="ga" className="sr-only" />
                                 <Label htmlFor="ga" className="cursor-pointer">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="font-bold text-lg text-white">General Admission</span>
-                                        {seatingMode === "GENERAL_ADMISSION" && <Badge className="bg-[#FBB03B] text-black">Selected</Badge>}
+                                        {seatingMode === "GENERAL_ADMISSION" && <Badge className="bg-[#D4AF37] text-black">Selected</Badge>}
                                     </div>
                                     <div className="flex items-start gap-3">
                                         <Ticket className="w-8 h-8 text-gray-400 mt-1" />
@@ -153,12 +153,12 @@ export default function TicketConfigPage({ params }) {
                             </div>
 
                             {/* Reserved Seating Option */}
-                            <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${seatingMode === "RESERVED_SEATING" ? "border-[#FBB03B] bg-[#FBB03B]/5" : "border-white/10 hover:border-white/20"}`}>
+                            <div className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${seatingMode === "RESERVED_SEATING" ? "border-[#D4AF37] bg-[#D4AF37]/5" : "border-white/10 hover:border-white/20"}`}>
                                 <RadioGroupItem value="RESERVED_SEATING" id="rs" className="sr-only" />
                                 <Label htmlFor="rs" className="cursor-pointer">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="font-bold text-lg text-white">Reserved Seating</span>
-                                        {seatingMode === "RESERVED_SEATING" && <Badge className="bg-[#FBB03B] text-black">Selected</Badge>}
+                                        {seatingMode === "RESERVED_SEATING" && <Badge className="bg-[#D4AF37] text-black">Selected</Badge>}
                                     </div>
                                     <div className="flex items-start gap-3">
                                         <Armchair className="w-8 h-8 text-gray-400 mt-1" />
@@ -179,7 +179,7 @@ export default function TicketConfigPage({ params }) {
                                 <Button
                                     onClick={handleSaveMode}
                                     disabled={isSaving}
-                                    className="bg-[#FBB03B] text-black hover:bg-[#e09e35]"
+                                    className="bg-[#D4AF37] text-black hover:bg-[#e09e35]"
                                 >
                                     {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                     Update Mode
@@ -191,7 +191,7 @@ export default function TicketConfigPage({ params }) {
 
                 {/* Venue Builder Access */}
                 {(event.seatingMode === "RESERVED_SEATING" || event.seatingMode === "HYBRID") && (
-                    <Card className="bg-[#18181b] border-[#FBB03B]/30 border shadow-lg shadow-[#FBB03B]/5">
+                    <Card className="bg-[#18181b] border-[#D4AF37]/30 border shadow-lg shadow-[#D4AF37]/5">
                         <CardHeader>
                             <CardTitle className="text-white">Venue Configuration</CardTitle>
                             <CardDescription className="text-gray-400">

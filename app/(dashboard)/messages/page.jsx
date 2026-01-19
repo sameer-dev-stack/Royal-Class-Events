@@ -36,7 +36,7 @@ export default function MessagesPage() {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-#D4AF37/30 border-t-#D4AF37 rounded-full animate-spin" />
                     <p className="text-muted-foreground">Loading...</p>
                 </div>
             </div>
@@ -48,14 +48,14 @@ export default function MessagesPage() {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-6">
                 <div className="text-center space-y-4">
-                    <div className="w-16 h-16 mx-auto bg-amber-500/10 rounded-2xl flex items-center justify-center">
-                        <MessageSquare className="w-8 h-8 text-amber-500" />
+                    <div className="w-16 h-16 mx-auto bg-#D4AF37/10 rounded-2xl flex items-center justify-center">
+                        <MessageSquare className="w-8 h-8 text-#D4AF37" />
                     </div>
                     <h1 className="text-2xl font-bold text-foreground">Sign in to view messages</h1>
                     <p className="text-muted-foreground max-w-md">
                         Connect with vendors and manage your event inquiries in one place.
                     </p>
-                    <Button asChild className="bg-amber-500 hover:bg-amber-600 text-black">
+                    <Button asChild className="bg-#D4AF37 hover:bg-#8C7326 text-black">
                         <Link href="/sign-in">Sign In</Link>
                     </Button>
                 </div>
@@ -68,7 +68,7 @@ export default function MessagesPage() {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-#D4AF37/30 border-t-#D4AF37 rounded-full animate-spin" />
                     <p className="text-muted-foreground">Loading your messages...</p>
                 </div>
             </div>
@@ -81,8 +81,8 @@ export default function MessagesPage() {
             <div className="border-b border-border bg-card/50">
                 <div className="max-w-4xl mx-auto px-6 py-8">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center">
-                            <MessageSquare className="w-6 h-6 text-amber-500" />
+                        <div className="w-12 h-12 bg-#D4AF37/10 rounded-xl flex items-center justify-center">
+                            <MessageSquare className="w-6 h-6 text-#D4AF37" />
                         </div>
                         <div>
                             <h1 className="text-2xl font-bold text-foreground">Messages</h1>
@@ -109,7 +109,7 @@ export default function MessagesPage() {
                         <p className="text-muted-foreground max-w-md mx-auto">
                             Start connecting with vendors! Browse our marketplace and request quotes to begin conversations.
                         </p>
-                        <Button asChild className="bg-amber-500 hover:bg-amber-600 text-black mt-4">
+                        <Button asChild className="bg-#D4AF37 hover:bg-#8C7326 text-black mt-4">
                             <Link href="/marketplace">
                                 <Sparkles className="w-4 h-4 mr-2" />
                                 Browse Vendors
@@ -127,7 +127,7 @@ export default function MessagesPage() {
                             >
                                 <Link
                                     href={`/messages/${conv.leadId}`}
-                                    className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-amber-500/50 hover:bg-muted/50 transition-all group shadow-sm hover:shadow-md"
+                                    className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-#D4AF37/50 hover:bg-muted/50 transition-all group shadow-sm hover:shadow-md"
                                 >
                                     {/* Avatar */}
                                     <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -149,7 +149,7 @@ export default function MessagesPage() {
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between mb-1">
-                                            <h3 className="font-semibold text-foreground truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                                            <h3 className="font-semibold text-foreground truncate group-hover:text-#8C7326 dark:group-hover:text-#F7E08B transition-colors">
                                                 {conv.otherParty?.name}
                                             </h3>
                                             <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
@@ -163,7 +163,7 @@ export default function MessagesPage() {
                                             <span className={cn(
                                                 "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase",
                                                 conv.status === "new" && "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
-                                                conv.status === "contacted" && "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400",
+                                                conv.status === "contacted" && "bg-#D4AF37/10 text-#8C7326 dark:bg-#D4AF37/20 dark:text-#F7E08B",
                                                 conv.status === "quoted" && "bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400",
                                                 conv.status === "booked" && "bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400"
                                             )}>
@@ -182,7 +182,7 @@ export default function MessagesPage() {
                                     </div>
 
                                     {/* Arrow */}
-                                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-amber-500 transition-colors flex-shrink-0" />
+                                    <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-#D4AF37 transition-colors flex-shrink-0" />
                                 </Link>
                             </motion.div>
                         ))}
@@ -192,3 +192,4 @@ export default function MessagesPage() {
         </div>
     );
 }
+

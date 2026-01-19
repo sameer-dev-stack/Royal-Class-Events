@@ -42,7 +42,7 @@ export default function ServiceLayout({
                         animate={{ opacity: 1, x: 0 }}
                         className="flex-1 space-y-8"
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-[0.2em]">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-xs font-bold uppercase tracking-[0.2em]">
                             <Sparkles className="w-3 h-3" />
                             Elite Service
                         </div>
@@ -54,7 +54,7 @@ export default function ServiceLayout({
                             {heroSubtitle}
                         </p>
                         <div className="flex flex-wrap gap-4 pt-4">
-                            <Button asChild className="h-14 px-10 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-widest text-sm shadow-xl shadow-amber-500/20">
+                            <Button asChild className="h-14 px-10 rounded-2xl bg-#D4AF37 hover:bg-#8C7326 text-black font-black uppercase tracking-widest text-sm shadow-xl shadow-#D4AF37/20">
                                 <a href={ctaLink}>{ctaLabel}</a>
                             </Button>
                             <Button variant="outline" className="h-14 px-10 rounded-2xl border-white/10 hover:bg-white/5 text-white font-bold text-sm">
@@ -66,7 +66,7 @@ export default function ServiceLayout({
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="flex-1 relative aspect-[4/3] w-full max-w-2xl rounded-[3rem] overflow-hidden border border-white/10 shadow-3xl shadow-amber-500/5"
+                        className="flex-1 relative aspect-[4/3] w-full max-w-2xl rounded-[3rem] overflow-hidden border border-white/10 shadow-3xl shadow-#D4AF37/5"
                     >
                         <Image
                             src={heroImage || "/hero_image.jpeg"}
@@ -79,7 +79,7 @@ export default function ServiceLayout({
                 </div>
 
                 {/* Abstract Background Elements */}
-                <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[150px] -z-0" />
+                <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-#D4AF37/5 rounded-full blur-[150px] -z-0" />
             </section>
 
             {/* Value Proposition Section */}
@@ -89,7 +89,7 @@ export default function ServiceLayout({
                         <h2 className="text-3xl md:text-5xl font-black italic tracking-tight mb-8">
                             {valueProp}
                         </h2>
-                        <div className="w-24 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto" />
+                        <div className="w-24 h-1 bg-gradient-to-r from-transparent via-#D4AF37 to-transparent mx-auto" />
                     </motion.div>
                 </div>
             </section>
@@ -103,9 +103,9 @@ export default function ServiceLayout({
                                 key={i}
                                 {...fadeIn}
                                 transition={{ delay: i * 0.1 }}
-                                className="p-8 rounded-[2.5rem] bg-zinc-900/50 border border-white/5 hover:border-amber-500/30 transition-all group"
+                                className="p-8 rounded-[2.5rem] bg-zinc-900/50 border border-white/5 hover:border-#D4AF37/30 transition-all group"
                             >
-                                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-8 group-hover:scale-110 transition-transform">
+                                <div className="w-14 h-14 rounded-2xl bg-#D4AF37/10 flex items-center justify-center text-#D4AF37 mb-8 group-hover:scale-110 transition-transform">
                                     {feature.icon || <CheckCircle2 className="w-6 h-6" />}
                                 </div>
                                 <h3 className="text-2xl font-black italic mb-4">{feature.title}</h3>
@@ -144,7 +144,7 @@ export default function ServiceLayout({
                             as flawless as your vision.
                         </p>
                         <div className="pt-8">
-                            <Button asChild className="h-16 px-12 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-widest text-lg group">
+                            <Button asChild className="h-16 px-12 rounded-2xl bg-#D4AF37 hover:bg-#8C7326 text-black font-black uppercase tracking-widest text-lg group">
                                 <a href={ctaLink}>
                                     {ctaLabel}
                                     <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -154,9 +154,10 @@ export default function ServiceLayout({
                     </div>
 
                     {/* Background Glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-#D4AF37/5 rounded-full blur-[140px] pointer-events-none" />
                 </motion.div>
             </section>
         </div>
     );
 }
+

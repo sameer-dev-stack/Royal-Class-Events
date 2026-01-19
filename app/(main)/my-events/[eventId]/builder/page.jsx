@@ -49,7 +49,7 @@ export default function SeatingBuilderPage() {
             {/* Header */}
             <header className="h-14 flex-shrink-0 flex items-center justify-between px-6 border-b border-zinc-800/50 bg-zinc-900/50 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#D4AF37] to-[#8C7326] flex items-center justify-center shadow-lg shadow-[#D4AF37]/20">
                         <Crown className="w-4 h-4 text-black" />
                     </div>
                     <div>
@@ -87,7 +87,7 @@ export default function SeatingBuilderPage() {
                 <main className="flex-1 relative">
                     {!event ? (
                         <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 z-50">
-                            <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
+                            <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
                         </div>
                     ) : (
                         <CanvasStage />

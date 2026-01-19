@@ -71,8 +71,8 @@ export function CreateOfferModal({
                 {/* Header */}
                 <DialogHeader className="p-8 pb-0">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center">
-                            <FileText className="w-6 h-6 text-amber-500" />
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-#D4AF37/20 to-#8C7326/10 flex items-center justify-center">
+                            <FileText className="w-6 h-6 text-#D4AF37" />
                         </div>
                         <div>
                             <DialogTitle className="text-2xl font-black text-foreground tracking-tight">
@@ -101,7 +101,7 @@ export function CreateOfferModal({
                             id="title"
                             type="text"
                             {...form.register("title")}
-                            className="bg-muted/50 border-input h-12 rounded-xl focus:border-amber-500 transition-colors"
+                            className="bg-muted/50 border-input h-12 rounded-xl focus:border-#D4AF37 transition-colors"
                             placeholder="e.g. Premium Wedding Photography Package"
                         />
                         {form.formState.errors.title && (
@@ -125,7 +125,7 @@ export function CreateOfferModal({
                                 id="price"
                                 type="number"
                                 {...form.register("price")}
-                                className="bg-muted/50 border-input h-12 rounded-xl focus:border-amber-500"
+                                className="bg-muted/50 border-input h-12 rounded-xl focus:border-#D4AF37"
                                 placeholder="50000"
                             />
                             {form.formState.errors.price && (
@@ -147,7 +147,7 @@ export function CreateOfferModal({
                                 id="validForDays"
                                 type="number"
                                 {...form.register("validForDays")}
-                                className="bg-muted/50 border-input h-12 rounded-xl focus:border-amber-500"
+                                className="bg-muted/50 border-input h-12 rounded-xl focus:border-#D4AF37"
                                 placeholder="7"
                                 min={1}
                                 max={30}
@@ -166,15 +166,15 @@ export function CreateOfferModal({
                         <Textarea
                             id="description"
                             {...form.register("description")}
-                            className="bg-muted/50 border-input min-h-[100px] rounded-xl focus:border-amber-500 leading-relaxed"
+                            className="bg-muted/50 border-input min-h-[100px] rounded-xl focus:border-#D4AF37 leading-relaxed"
                             placeholder="Include details about what's covered in this offer..."
                         />
                     </div>
 
                     {/* Info Note */}
-                    <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4">
+                    <div className="bg-#D4AF37/5 border border-#D4AF37/20 rounded-xl p-4">
                         <p className="text-xs text-muted-foreground leading-relaxed">
-                            <span className="text-amber-500 font-bold">Note:</span> Once sent,
+                            <span className="text-#D4AF37 font-bold">Note:</span> Once sent,
                             the client can accept or decline this offer. Accepting will mark
                             the deal as booked and prepare for payment.
                         </p>
@@ -196,7 +196,7 @@ export function CreateOfferModal({
                             variant="default"
                             size="default"
                             disabled={isSubmitting}
-                            className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-black rounded-xl h-12 shadow-xl shadow-amber-500/20 active:scale-95 transition-all"
+                            className="flex-1 bg-gradient-to-r from-#D4AF37 to-#8C7326 hover:from-#8C7326 hover:to-amber-700 text-black font-black rounded-xl h-12 shadow-xl shadow-#D4AF37/20 active:scale-95 transition-all"
                         >
                             {isSubmitting ? (
                                 <>
@@ -216,3 +216,4 @@ export function CreateOfferModal({
         </Dialog>
     );
 }
+

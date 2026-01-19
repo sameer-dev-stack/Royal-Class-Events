@@ -102,7 +102,7 @@ export default function SeatingBuilder({ event }) {
             height: 100,
             shape: 'rect',
             name: 'New Zone',
-            color: '#FBB03B',
+            color: '#D4AF37',
             price: 0,
             rotation: 0
         };
@@ -295,7 +295,7 @@ export default function SeatingBuilder({ event }) {
                             <div className="space-y-2">
                                 <Label className="text-white/70">Color</Label>
                                 <div className="flex gap-2">
-                                    {['#FBB03B', '#A855F7', '#3B82F6', '#EF4444', '#10B981'].map(color => (
+                                    {['#D4AF37', '#A855F7', '#3B82F6', '#EF4444', '#10B981'].map(color => (
                                         <div
                                             key={color}
                                             className={`w-6 h-6 rounded-full cursor-pointer ring-2 ring-offset-2 ring-offset-[#181611] ${selectedZone.color === color ? 'ring-white' : 'ring-transparent'}`}
@@ -422,3 +422,4 @@ export default function SeatingBuilder({ event }) {
         </div>
     );
 }
+

@@ -223,14 +223,14 @@ export default function EditEventPage() {
                     <ArrowLeft className="w-4 h-4" /> Back to Dashboard
                 </Link>
                 <div className="flex items-center gap-2">
-                    <Crown className="w-8 h-8 text-amber-500" />
+                    <Crown className="w-8 h-8 text-[#D4AF37]" />
                     <h1 className="text-4xl font-bold">Edit Event</h1>
                 </div>
             </div>
 
             <div className="max-w-6xl mx-auto grid md:grid-cols-[320px_1fr] gap-10">
                 <div className="space-y-6">
-                    <div className="relative aspect-square w-full rounded-xl overflow-hidden border-2 border-dashed border-border bg-muted/30 group hover:border-amber-500/50 transition-all">
+                    <div className="relative aspect-square w-full rounded-xl overflow-hidden border-2 border-dashed border-border bg-muted/30 group hover:border-[#D4AF37]/50 transition-all">
                         {imagePreview ? (
                             <Image src={imagePreview} alt="Cover" fill className="object-cover" />
                         ) : (
@@ -357,10 +357,10 @@ export default function EditEventPage() {
                             <Label className="text-muted-foreground">Ticket Type</Label>
                             <div className="flex items-center gap-6">
                                 <Label className="flex items-center gap-2 cursor-pointer font-normal">
-                                    <input type="radio" value="free" {...register("ticketType")} className="accent-amber-500" /> Free
+                                    <input type="radio" value="free" {...register("ticketType")} className="accent-[#D4AF37]" /> Free
                                 </Label>
                                 <Label className="flex items-center gap-2 cursor-pointer font-normal">
-                                    <input type="radio" value="paid" {...register("ticketType")} className="accent-amber-500" /> Paid
+                                    <input type="radio" value="paid" {...register("ticketType")} className="accent-[#D4AF37]" /> Paid
                                 </Label>
                             </div>
                             {ticketType === "paid" && (
@@ -390,7 +390,7 @@ export default function EditEventPage() {
                                     <Switch
                                         checked={field.value === "RESERVED"}
                                         onCheckedChange={(checked) => field.onChange(checked ? "RESERVED" : "GENERAL")}
-                                        className="data-[state=checked]:bg-amber-500"
+                                        className="data-[state=checked]:bg-[#D4AF37]"
                                     />
                                 )}
                             />
@@ -399,7 +399,7 @@ export default function EditEventPage() {
 
                     <div className="flex gap-4 pt-4">
                         <Button type="button" variant="outline" onClick={() => router.back()} className="flex-1">Cancel</Button>
-                        <Button type="submit" disabled={isUpdating} className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold h-12">
+                        <Button type="submit" disabled={isUpdating} className="flex-1 bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold h-12">
                             {isUpdating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</> : "Save Changes"}
                         </Button>
                     </div>

@@ -184,8 +184,8 @@ export default function CreateEventPage() {
     return (
       <div className="flex h-screen items-center justify-center p-6 text-center">
         <div className="max-w-md space-y-6">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-amber-500/10 rounded-full">
-            <Crown className="w-10 h-10 text-amber-500" />
+          <div className="inline-flex items-center justify-center w-20 h-20 bg-#D4AF37/10 rounded-full">
+            <Crown className="w-10 h-10 text-#D4AF37" />
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-bold">Organizer Account Required</h2>
@@ -207,7 +207,7 @@ export default function CreateEventPage() {
                 }
               }}
               disabled={isUpgrading}
-              className="h-12 bg-amber-500 hover:bg-amber-600 text-black font-bold"
+              className="h-12 bg-#D4AF37 hover:bg-#8C7326 text-black font-bold"
             >
               {isUpgrading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
               Switch to Organizer Account
@@ -590,10 +590,10 @@ export default function CreateEventPage() {
               <Label className="text-muted-foreground">Tickets</Label>
               <div className="flex items-center gap-6 text-foreground">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" value="free" {...register("ticketType")} className="accent-amber-500 w-4 h-4" /> Free
+                  <input type="radio" value="free" {...register("ticketType")} className="accent-#D4AF37 w-4 h-4" /> Free
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" value="paid" {...register("ticketType")} className="accent-amber-500 w-4 h-4" /> Paid
+                  <input type="radio" value="paid" {...register("ticketType")} className="accent-#D4AF37 w-4 h-4" /> Paid
                 </label>
               </div>
               {ticketType === "paid" && (
@@ -626,24 +626,24 @@ export default function CreateEventPage() {
                   <Switch
                     checked={field.value === "RESERVED"}
                     onCheckedChange={(checked) => field.onChange(checked ? "RESERVED" : "GENERAL")}
-                    className="data-[state=checked]:bg-amber-500"
+                    className="data-[state=checked]:bg-#D4AF37"
                   />
                 )}
               />
             </div>
 
             {watch("seatingMode") === "RESERVED" && (
-              <div className="mt-4 p-4 border border-amber-500/30 bg-amber-500/10 rounded-xl animate-in fade-in slide-in-from-top-2">
+              <div className="mt-4 p-4 border border-#D4AF37/30 bg-#D4AF37/10 rounded-xl animate-in fade-in slide-in-from-top-2">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="text-amber-500 font-bold">Venue Layout Required</h4>
+                    <h4 className="text-#D4AF37 font-bold">Venue Layout Required</h4>
                     <p className="text-xs text-zinc-400">You need to design the seating map before publishing.</p>
                   </div>
                   <Button
                     type="button"
                     onClick={handleSaveAndBuild}
                     disabled={isCreating}
-                    className="bg-amber-500 text-black hover:bg-amber-600 font-bold"
+                    className="bg-#D4AF37 text-black hover:bg-#8C7326 font-bold"
                   >
                     {isCreating ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : "Save & Open Builder 🏗️"}
                   </Button>
@@ -659,7 +659,7 @@ export default function CreateEventPage() {
             onUsePrice={handleUseAIPrice}
           />
 
-          <Button type="submit" disabled={isCreating} className="w-full py-6 text-lg rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all border-none">
+          <Button type="submit" disabled={isCreating} className="w-full py-6 text-lg rounded-xl bg-gradient-to-r from-#D4AF37 to-#8C7326 hover:from-#8C7326 hover:to-amber-700 text-black font-bold shadow-[0_0_20px_rgba(245,158,11,0.2)] hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all border-none">
             {isCreating ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Publishing...</> : "Publish Event"}
           </Button>
         </form>

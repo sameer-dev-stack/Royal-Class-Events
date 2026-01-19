@@ -43,7 +43,7 @@ export default function AdminDashboard() {
                 <h2 className="text-xl font-medium">Access Denied</h2>
                 <p className="text-zinc-500">Please log in as an administrator to view this page.</p>
                 <Link href="/admin/login">
-                    <Button variant="default" className="bg-amber-500 text-black hover:bg-amber-600">
+                    <Button variant="default" className="bg-#D4AF37 text-black hover:bg-#8C7326">
                         Go to Login
                     </Button>
                 </Link>
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
                 <Card className="bg-zinc-900 border-zinc-800 text-white shadow-lg shadow-black/50">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-zinc-400">Total Users</CardTitle>
-                        <Users className="h-4 w-4 text-amber-500" />
+                        <Users className="h-4 w-4 text-#D4AF37" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stats.totalUsers}</div>
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
                 <Card className="bg-zinc-900 border-zinc-800 text-white shadow-lg shadow-black/50">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-zinc-400">Total Events</CardTitle>
-                        <Calendar className="h-4 w-4 text-amber-500" />
+                        <Calendar className="h-4 w-4 text-#D4AF37" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stats.totalEvents}</div>
@@ -99,7 +99,7 @@ export default function AdminDashboard() {
                 <Card className="bg-zinc-900 border-zinc-800 text-white shadow-lg shadow-black/50">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium text-zinc-400">Total Revenue</CardTitle>
-                        <DollarSign className="h-4 w-4 text-amber-500" />
+                        <DollarSign className="h-4 w-4 text-#D4AF37" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">${stats.totalRevenue?.toLocaleString()}</div>
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <div className="col-span-4 bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-lg shadow-black/50">
                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                        <TrendingUp className="w-5 h-5 text-amber-500" />
+                        <TrendingUp className="w-5 h-5 text-#D4AF37" />
                         Recent Activity
                     </h3>
                     <div className="space-y-6">
@@ -121,7 +121,7 @@ export default function AdminDashboard() {
                             stats.recentRegistrations.map((reg: any) => (
                                 <div key={reg.id} className="flex items-center justify-between group">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 font-bold group-hover:bg-amber-500/20 group-hover:text-amber-500 transition-colors">
+                                        <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 font-bold group-hover:bg-#D4AF37/20 group-hover:text-#D4AF37 transition-colors">
                                             {reg.user?.charAt(0) || "?"}
                                         </div>
                                         <div>
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-bold text-amber-500">+${reg.amount}</p>
+                                        <p className="font-bold text-#D4AF37">+${reg.amount}</p>
                                         <p className="text-xs text-zinc-500">{new Date(reg.date).toLocaleDateString()}</p>
                                     </div>
                                 </div>
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
 
                 <div className="col-span-3 bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-lg shadow-black/50 overflow-hidden">
                     <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                        <BarChart3 className="w-5 h-5 text-amber-500" />
+                        <BarChart3 className="w-5 h-5 text-#D4AF37" />
                         Trends
                     </h3>
                     {!analyticsData ? (
@@ -156,3 +156,4 @@ export default function AdminDashboard() {
         </div>
     );
 }
+

@@ -302,7 +302,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
     if (variant === "list") {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$motion$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["FadeIn"], {
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("py-0 group cursor-pointer border-white/5 bg-white/5 hover:bg-white/10 transition-all hover:border-amber-500/50", className),
+                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("py-0 group cursor-pointer border-white/5 bg-white/5 hover:bg-white/10 transition-all hover:border-#D4AF37/50", className),
                 onClick: onClick,
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["CardContent"], {
                     className: "p-3 flex gap-3",
@@ -328,7 +328,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
                             className: "flex-1 min-w-0",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                    className: "font-semibold text-sm mb-1 group-hover:text-amber-500 transition-colors line-clamp-2",
+                                    className: "font-semibold text-sm mb-1 group-hover:text-#D4AF37 transition-colors line-clamp-2",
                                     children: eventTitle
                                 }, void 0, false, {
                                     fileName: "[project]/components/event-card.jsx",
@@ -347,7 +347,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
                                     className: "flex items-center gap-1 text-xs text-muted-foreground mb-1",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$map$2d$pin$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__MapPin$3e$__["MapPin"], {
-                                            className: "w-3 h-3 text-amber-500/70"
+                                            className: "w-3 h-3 text-#D4AF37/70"
                                         }, void 0, false, {
                                             fileName: "[project]/components/event-card.jsx",
                                             lineNumber: 62,
@@ -395,7 +395,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$motion$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["ScaleOnHover"], {
             scale: 1.02,
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
-                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("overflow-hidden group pt-0 bg-card/40 backdrop-blur-sm border-border hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300", onClick ? "cursor-pointer hover:border-amber-500/50" : "", className),
+                className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$utils$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["cn"])("overflow-hidden group pt-0 bg-card/40 backdrop-blur-sm border-border hover:shadow-2xl hover:shadow-#D4AF37/10 transition-all duration-300", onClick ? "cursor-pointer hover:border-#D4AF37/50" : "", className),
                 onClick: onClick,
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -432,7 +432,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Badge"], {
                                         variant: "outline",
-                                        className: "mb-2 text-amber-500 border-amber-500/30 bg-amber-500/5",
+                                        className: "mb-2 text-#D4AF37 border-#D4AF37/30 bg-#D4AF37/5",
                                         children: [
                                             (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$data$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getCategoryIcon"])(eventCategory),
                                             " ",
@@ -451,7 +451,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                        className: "font-bold text-lg line-clamp-1 leading-tight group-hover:text-amber-500 transition-colors",
+                                        className: "font-bold text-lg line-clamp-1 leading-tight group-hover:text-#D4AF37 transition-colors",
                                         children: eventTitle
                                     }, void 0, false, {
                                         fileName: "[project]/components/event-card.jsx",
@@ -471,7 +471,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
                                         className: "flex items-center gap-2",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__["Calendar"], {
-                                                className: "w-4 h-4 text-amber-500/80"
+                                                className: "w-4 h-4 text-#D4AF37/80"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/event-card.jsx",
                                                 lineNumber: 117,
@@ -495,7 +495,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
                                         className: "flex items-center gap-2",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$map$2d$pin$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__MapPin$3e$__["MapPin"], {
-                                                className: "w-4 h-4 text-amber-500/80"
+                                                className: "w-4 h-4 text-#D4AF37/80"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/event-card.jsx",
                                                 lineNumber: 121,
@@ -519,7 +519,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
                                         className: "flex items-center gap-2",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$users$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Users$3e$__["Users"], {
-                                                className: "w-4 h-4 text-amber-500/80"
+                                                className: "w-4 h-4 text-#D4AF37/80"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/event-card.jsx",
                                                 lineNumber: 129,
@@ -555,7 +555,7 @@ function EventCard({ event, onClick, onDelete, variant = "grid", action = null, 
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                         variant: "outline",
                                         size: "sm",
-                                        className: "flex-1 gap-2 hover:bg-amber-500 hover:text-black border-amber-500/30 text-amber-500",
+                                        className: "flex-1 gap-2 hover:bg-#D4AF37 hover:text-black border-#D4AF37/30 text-#D4AF37",
                                         onClick: (e)=>{
                                             e.stopPropagation();
                                             onClick?.(e);
@@ -868,7 +868,7 @@ function EventList() {
                             const count = categoryCounts[category.id] || 0;
                             return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                 href: `/explore?category=${category.id}`,
-                                className: "group relative overflow-hidden rounded-xl bg-card border border-border p-6 hover:border-amber-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(245,158,11,0.1)]",
+                                className: "group relative overflow-hidden rounded-xl bg-card border border-border p-6 hover:border-#D4AF37/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(245,158,11,0.1)]",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "mb-4 text-4xl group-hover:scale-110 transition-transform duration-300",
@@ -881,7 +881,7 @@ function EventList() {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                                                className: "font-semibold text-lg text-foreground group-hover:text-amber-500 transition-colors",
+                                                className: "font-semibold text-lg text-foreground group-hover:text-#D4AF37 transition-colors",
                                                 children: category.label
                                             }, void 0, false, {
                                                 fileName: "[project]/components/event-list.jsx",
@@ -933,7 +933,7 @@ function EventList() {
                                 className: "flex items-center gap-2",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$crown$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Crown$3e$__["Crown"], {
-                                        className: "w-6 h-6 text-amber-500"
+                                        className: "w-6 h-6 text-#D4AF37"
                                     }, void 0, false, {
                                         fileName: "[project]/components/event-list.jsx",
                                         lineNumber: 95,
@@ -955,7 +955,7 @@ function EventList() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                 href: "/explore",
-                                className: "text-amber-500 hover:text-amber-400 flex items-center gap-2 text-sm font-medium",
+                                className: "text-#D4AF37 hover:text-#F7E08B flex items-center gap-2 text-sm font-medium",
                                 children: [
                                     "View All ",
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {
@@ -995,9 +995,9 @@ function EventList() {
                         className: "flex flex-col items-center justify-center py-20 text-center border border-dashed border-border/10 rounded-[2.5rem] bg-card/20 backdrop-blur-sm",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "w-20 h-20 bg-amber-500/5 rounded-3xl flex items-center justify-center mb-6 border border-amber-500/10",
+                                className: "w-20 h-20 bg-#D4AF37/5 rounded-3xl flex items-center justify-center mb-6 border border-#D4AF37/10",
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2d$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarX$3e$__["CalendarX"], {
-                                    className: "w-10 h-10 text-amber-500/20"
+                                    className: "w-10 h-10 text-#D4AF37/20"
                                 }, void 0, false, {
                                     fileName: "[project]/components/event-list.jsx",
                                     lineNumber: 116,
@@ -1026,7 +1026,7 @@ function EventList() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                 href: "/create-event",
-                                className: "text-amber-500 hover:underline mt-6 inline-block font-bold text-sm tracking-tight",
+                                className: "text-#D4AF37 hover:underline mt-6 inline-block font-bold text-sm tracking-tight",
                                 children: "Host your own event"
                             }, void 0, false, {
                                 fileName: "[project]/components/event-list.jsx",
@@ -1077,7 +1077,7 @@ function InfiniteScrollBanner() {
         "ELITE GATHERINGS"
     ];
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "w-full overflow-hidden bg-amber-500/5 border-y border-amber-500/10 py-4 md:py-6 backdrop-blur-sm relative z-20",
+        className: "w-full overflow-hidden bg-#D4AF37/5 border-y border-#D4AF37/10 py-4 md:py-6 backdrop-blur-sm relative z-20",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex w-fit animate-scroll hover:[animation-play-state:paused]",
             children: [
@@ -1087,7 +1087,7 @@ function InfiniteScrollBanner() {
                             className: "flex items-center gap-4 md:gap-6 whitespace-nowrap",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "text-xl md:text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-600/40 to-amber-400/40",
+                                    className: "text-xl md:text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-#8C7326/40 to-#F7E08B/40",
                                     children: item
                                 }, void 0, false, {
                                     fileName: "[project]/components/infinite-scroll-banner.jsx",
@@ -1095,7 +1095,7 @@ function InfiniteScrollBanner() {
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$star$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Star$3e$__["Star"], {
-                                    className: "w-3 h-3 md:w-5 md:h-5 text-amber-500/30"
+                                    className: "w-3 h-3 md:w-5 md:h-5 text-#D4AF37/30"
                                 }, void 0, false, {
                                     fileName: "[project]/components/infinite-scroll-banner.jsx",
                                     lineNumber: 26,
@@ -1118,7 +1118,7 @@ function InfiniteScrollBanner() {
                             className: "flex items-center gap-4 md:gap-6 whitespace-nowrap",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "text-xl md:text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-amber-600/40 to-amber-400/40",
+                                    className: "text-xl md:text-2xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-#8C7326/40 to-#F7E08B/40",
                                     children: item
                                 }, void 0, false, {
                                     fileName: "[project]/components/infinite-scroll-banner.jsx",
@@ -1126,7 +1126,7 @@ function InfiniteScrollBanner() {
                                     columnNumber: 29
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$star$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Star$3e$__["Star"], {
-                                    className: "w-3 h-3 md:w-5 md:h-5 text-amber-500/30"
+                                    className: "w-3 h-3 md:w-5 md:h-5 text-#D4AF37/30"
                                 }, void 0, false, {
                                     fileName: "[project]/components/infinite-scroll-banner.jsx",
                                     lineNumber: 38,
@@ -1207,7 +1207,7 @@ function TicketCTA() {
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "mb-2 flex justify-center",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__["RefreshCw"], {
-                            className: "w-8 h-8 text-amber-500 animate-spin-slow mb-4"
+                            className: "w-8 h-8 text-#D4AF37 animate-spin-slow mb-4"
                         }, void 0, false, {
                             fileName: "[project]/components/ticket-cta.jsx",
                             lineNumber: 25,
@@ -1223,7 +1223,7 @@ function TicketCTA() {
                         children: [
                             "Manage Your ",
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "text-amber-500",
+                                className: "text-#D4AF37",
                                 children: "Tickets!"
                             }, void 0, false, {
                                 fileName: "[project]/components/ticket-cta.jsx",
@@ -1258,7 +1258,7 @@ function TicketCTA() {
                         className: "flex flex-col md:flex-row items-center justify-center gap-4",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                className: "group relative px-6 py-3 bg-amber-500 hover:bg-amber-600 text-black rounded-lg font-bold transition-all duration-300 flex items-center gap-2 shadow-lg shadow-amber-900/20 hover:shadow-amber-900/40 transform hover:-translate-y-1",
+                                className: "group relative px-6 py-3 bg-#D4AF37 hover:bg-#8C7326 text-black rounded-lg font-bold transition-all duration-300 flex items-center gap-2 shadow-lg shadow-amber-900/20 hover:shadow-amber-900/40 transform hover:-translate-y-1",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__["RefreshCw"], {
                                         className: "w-4 h-4"
@@ -1281,10 +1281,10 @@ function TicketCTA() {
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                className: "px-6 py-3 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-transparent hover:border-amber-500/50 hover:bg-amber-50 dark:hover:bg-amber-500/5 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300 flex items-center gap-2 group",
+                                className: "px-6 py-3 rounded-lg border border-gray-300 dark:border-slate-700 bg-white dark:bg-transparent hover:border-#D4AF37/50 hover:bg-amber-50 dark:hover:bg-#D4AF37/5 text-gray-700 dark:text-slate-300 hover:text-gray-900 dark:hover:text-white transition-all duration-300 flex items-center gap-2 group",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$alert$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AlertCircle$3e$__["AlertCircle"], {
-                                        className: "w-4 h-4 text-amber-500"
+                                        className: "w-4 h-4 text-#D4AF37"
                                     }, void 0, false, {
                                         fileName: "[project]/components/ticket-cta.jsx",
                                         lineNumber: 47,
@@ -1304,10 +1304,10 @@ function TicketCTA() {
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                className: "px-6 py-3 rounded-lg border border-gray-300 dark:border-amber-900/50 bg-white dark:bg-transparent hover:border-amber-500/50 hover:bg-amber-50 dark:hover:bg-amber-500/5 text-gray-700 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 transition-all duration-300 flex items-center gap-2",
+                                className: "px-6 py-3 rounded-lg border border-gray-300 dark:border-amber-900/50 bg-white dark:bg-transparent hover:border-#D4AF37/50 hover:bg-amber-50 dark:hover:bg-#D4AF37/5 text-gray-700 dark:text-slate-300 hover:text-#8C7326 dark:hover:text-#F7E08B transition-all duration-300 flex items-center gap-2",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2d$check$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ShieldCheck$3e$__["ShieldCheck"], {
-                                        className: "w-4 h-4 text-amber-500"
+                                        className: "w-4 h-4 text-#D4AF37"
                                     }, void 0, false, {
                                         fileName: "[project]/components/ticket-cta.jsx",
                                         lineNumber: 53,
@@ -1399,10 +1399,10 @@ function LandingPage() {
                             className: "text-center sm:text-left space-y-8",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-sm font-medium backdrop-blur-sm",
+                                    className: "inline-flex items-center gap-2 px-4 py-2 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-sm font-medium backdrop-blur-sm",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$crown$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Crown$3e$__["Crown"], {
-                                            className: "w-4 h-4 fill-amber-500/20"
+                                            className: "w-4 h-4 fill-#D4AF37/20"
                                         }, void 0, false, {
                                             fileName: "[project]/app/page.js",
                                             lineNumber: 32,
@@ -1437,7 +1437,7 @@ function LandingPage() {
                                             children: [
                                                 "Exclusive",
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sparkles$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Sparkles$3e$__["Sparkles"], {
-                                                    className: "absolute -top-4 -right-6 md:-top-6 md:-right-8 w-6 h-6 md:w-8 md:h-8 text-amber-400 rotate-12 animate-pulse"
+                                                    className: "absolute -top-4 -right-6 md:-top-6 md:-right-8 w-6 h-6 md:w-8 md:h-8 text-#F7E08B rotate-12 animate-pulse"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/page.js",
                                                     lineNumber: 43,
@@ -1469,7 +1469,7 @@ function LandingPage() {
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                             size: "xl",
                                             asChild: true,
-                                            className: "w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all transform hover:-translate-y-1",
+                                            className: "w-full sm:w-auto h-14 px-8 rounded-full bg-gradient-to-r from-#D4AF37 to-#8C7326 hover:from-#8C7326 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_50px_rgba(245,158,11,0.5)] transition-all transform hover:-translate-y-1",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                                 href: "/explore",
                                                 children: "Explore Events"
@@ -1553,7 +1553,7 @@ function LandingPage() {
                                                 className: "absolute bottom-6 left-6 right-6 bg-white/10 backdrop-blur-xl border border-white/20 p-5 rounded-2xl flex items-center gap-4",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex flex-col items-center justify-center text-black font-bold shadow-lg",
+                                                        className: "w-14 h-14 rounded-2xl bg-gradient-to-br from-#F7E08B to-#8C7326 flex flex-col items-center justify-center text-black font-bold shadow-lg",
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "text-xs font-medium uppercase opacity-80",
@@ -1635,7 +1635,7 @@ function LandingPage() {
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-amber-500/10 rounded-full blur-[100px] -z-10"
+                                    className: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-#D4AF37/10 rounded-full blur-[100px] -z-10"
                                 }, void 0, false, {
                                     fileName: "[project]/app/page.js",
                                     lineNumber: 104,
@@ -1762,10 +1762,10 @@ function LandingPage() {
                             className: "grid md:grid-cols-2 gap-8 max-w-5xl mx-auto",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden",
+                                    className: "group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-#D4AF37/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "absolute -right-8 -bottom-8 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-colors"
+                                            className: "absolute -right-8 -bottom-8 w-40 h-40 bg-#D4AF37/5 rounded-full blur-3xl group-hover:bg-#D4AF37/10 transition-colors"
                                         }, void 0, false, {
                                             fileName: "[project]/app/page.js",
                                             lineNumber: 138,
@@ -1775,9 +1775,9 @@ function LandingPage() {
                                             className: "relative z-10 space-y-6",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform duration-500",
+                                                    className: "w-16 h-16 rounded-2xl bg-#D4AF37/10 flex items-center justify-center border border-#D4AF37/20 group-hover:scale-110 transition-transform duration-500",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$ticket$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Ticket$3e$__["Ticket"], {
-                                                        className: "w-8 h-8 text-amber-500"
+                                                        className: "w-8 h-8 text-#D4AF37"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/page.js",
                                                         lineNumber: 141,
@@ -1817,7 +1817,7 @@ function LandingPage() {
                                                     className: "block",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
                                                         variant: "outline",
-                                                        className: "w-full h-12 rounded-xl hover:bg-amber-500 hover:text-black hover:border-amber-500 transition-all font-bold gap-2",
+                                                        className: "w-full h-12 rounded-xl hover:bg-#D4AF37 hover:text-black hover:border-#D4AF37 transition-all font-bold gap-2",
                                                         children: [
                                                             "Browse ",
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {
@@ -1851,7 +1851,7 @@ function LandingPage() {
                                     columnNumber: 15
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden",
+                                    className: "group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-#D4AF37/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)] overflow-hidden",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "absolute -right-8 -bottom-8 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors"
@@ -1864,9 +1864,9 @@ function LandingPage() {
                                             className: "relative z-10 space-y-6",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:scale-110 transition-transform duration-500",
+                                                    className: "w-16 h-16 rounded-2xl bg-#D4AF37/10 flex items-center justify-center border border-#D4AF37/20 group-hover:scale-110 transition-transform duration-500",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$building$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Building$3e$__["Building"], {
-                                                        className: "w-8 h-8 text-amber-500"
+                                                        className: "w-8 h-8 text-#D4AF37"
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/page.js",
                                                         lineNumber: 162,
@@ -1905,7 +1905,7 @@ function LandingPage() {
                                                     href: "/create-event?role=organizer",
                                                     className: "block",
                                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
-                                                        className: "w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold shadow-lg shadow-amber-900/20 transition-all transform group-hover:-translate-y-1",
+                                                        className: "w-full h-12 rounded-xl bg-gradient-to-r from-#D4AF37 to-#8C7326 hover:from-#8C7326 hover:to-amber-700 text-black font-bold shadow-lg shadow-amber-900/20 transition-all transform group-hover:-translate-y-1",
                                                         children: [
                                                             "Start Hosting ",
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {

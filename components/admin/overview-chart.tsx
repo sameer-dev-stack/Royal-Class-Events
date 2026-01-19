@@ -33,8 +33,8 @@ export function OverviewChart({ data }: OverviewChartProps) {
                 >
                     <defs>
                         <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.8} />
-                            <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#D4AF37" stopOpacity={0.8} />
+                            <stop offset="95%" stopColor="#D4AF37" stopOpacity={0} />
                         </linearGradient>
                         <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8} />
@@ -69,7 +69,7 @@ export function OverviewChart({ data }: OverviewChartProps) {
                     <Area
                         type="monotone"
                         dataKey="revenue"
-                        stroke="#f59e0b"
+                        stroke="#D4AF37"
                         fillOpacity={1}
                         fill="url(#colorRevenue)"
                         strokeWidth={2}
@@ -87,3 +87,4 @@ export function OverviewChart({ data }: OverviewChartProps) {
         </div>
     );
 }
+

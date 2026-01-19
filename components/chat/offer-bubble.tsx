@@ -81,9 +81,9 @@ export function OfferBubble({
             return {
                 icon: ShieldCheck,
                 text: "Paid & Secured",
-                color: "text-amber-500",
-                bgColor: "bg-amber-500/10",
-                borderColor: "border-amber-500/30",
+                color: "text-#D4AF37",
+                bgColor: "bg-#D4AF37/10",
+                borderColor: "border-#D4AF37/30",
             };
         }
         if (isExpired) {
@@ -116,9 +116,9 @@ export function OfferBubble({
         return {
             icon: Clock,
             text: "Pending",
-            color: "text-amber-500",
-            bgColor: "bg-amber-500/10",
-            borderColor: "border-amber-500/30",
+            color: "text-#D4AF37",
+            bgColor: "bg-#D4AF37/10",
+            borderColor: "border-#D4AF37/30",
         };
     };
 
@@ -142,14 +142,14 @@ export function OfferBubble({
                 )}
             >
                 {/* Header */}
-                <div className="bg-gradient-to-r from-amber-500/20 to-amber-600/10 border-b border-amber-500/20 px-5 py-4">
+                <div className="bg-gradient-to-r from-#D4AF37/20 to-#8C7326/10 border-b border-#D4AF37/20 px-5 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
-                                <FileText className="w-5 h-5 text-amber-500" />
+                            <div className="w-10 h-10 rounded-xl bg-#D4AF37/20 flex items-center justify-center">
+                                <FileText className="w-5 h-5 text-#D4AF37" />
                             </div>
                             <div>
-                                <p className="text-xs font-bold uppercase tracking-widest text-amber-500">
+                                <p className="text-xs font-bold uppercase tracking-widest text-#D4AF37">
                                     Official Offer
                                 </p>
                                 <p className="text-xs text-muted-foreground">
@@ -253,3 +253,4 @@ export function OfferBubble({
         </motion.div>
     );
 }
+

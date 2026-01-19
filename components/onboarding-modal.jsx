@@ -141,7 +141,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
           <DialogTitle className="flex items-center gap-2 text-2xl">
             {step === 1 ? (
               <>
-                <Crown className="w-6 h-6 text-amber-500" />
+                <Crown className="w-6 h-6 text-#D4AF37" />
                 Choose your path
               </>
             ) : step === 2 ? (
@@ -172,12 +172,12 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
               <button
                 onClick={() => setSelectedRole("attendee")}
                 className={`p-6 rounded-xl border-2 text-left transition-all hover:scale-[1.02] ${selectedRole === "attendee"
-                  ? "border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/20"
-                  : "border-border hover:border-amber-500/50"
+                  ? "border-#D4AF37 bg-#D4AF37/10 shadow-lg shadow-#D4AF37/20"
+                  : "border-border hover:border-#D4AF37/50"
                   }`}
               >
                 <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
-                  <Heart className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                  <Heart className="w-6 h-6 text-#8C7326 dark:text-#F7E08B" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Discover Events</h3>
                 <p className="text-muted-foreground text-sm">
@@ -188,12 +188,12 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
               <button
                 onClick={() => setSelectedRole("organizer")}
                 className={`p-6 rounded-xl border-2 text-left transition-all hover:scale-[1.02] ${selectedRole === "organizer"
-                  ? "border-amber-500 bg-amber-500/10 shadow-lg shadow-amber-500/20"
-                  : "border-border hover:border-amber-500/50"
+                  ? "border-#D4AF37 bg-#D4AF37/10 shadow-lg shadow-#D4AF37/20"
+                  : "border-border hover:border-#D4AF37/50"
                   }`}
               >
                 <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-4">
-                  <Crown className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                  <Crown className="w-6 h-6 text-#8C7326 dark:text-#F7E08B" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">Host Events</h3>
                 <p className="text-muted-foreground text-sm">
@@ -343,3 +343,4 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
     </Dialog>
   );
 }
+

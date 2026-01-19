@@ -67,7 +67,7 @@ export default function AuditPage() {
             case 'USER_STATUS_CHANGE_V2':
                 return <Badge className="bg-red-500/10 text-red-500 border-red-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><ShieldAlert className="w-3 h-3" /> Moderation</Badge>;
             case 'USER_ROLE_CHANGE':
-                return <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><CrownIcon className="w-3 h-3" /> Promotion</Badge>;
+                return <Badge className="bg-#D4AF37/10 text-#D4AF37 border-#D4AF37/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><CrownIcon className="w-3 h-3" /> Promotion</Badge>;
             case 'EVENT_DELETE':
                 return <Badge className="bg-rose-600/10 text-rose-500 border-rose-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><Trash2 className="w-3 h-3" /> Suppression</Badge>;
             case 'EVENT_STATUS_TOGGLE':
@@ -220,3 +220,4 @@ function CrownIcon({ className }: { className?: string }) {
         </svg>
     )
 }
+

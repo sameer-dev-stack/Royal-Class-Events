@@ -70,7 +70,7 @@ export default function ChatBot() {
             "h-16 w-16 rounded-full shadow-2xl transition-all duration-300",
             isOpen
               ? "bg-destructive hover:bg-destructive/90 rotate-90"
-              : "bg-gradient-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 hover:scale-110 shadow-[0_0_30px_rgba(217,119,6,0.5)]"
+              : "bg-gradient-to-br from-#D4AF37 to-#8C7326 hover:from-#8C7326 hover:to-amber-700 hover:scale-110 shadow-[0_0_30px_rgba(217,119,6,0.5)]"
           )}
         >
           {isOpen ? <X className="h-7 w-7 text-white" /> : <MessageSquare className="h-7 w-7 text-white" />}
@@ -85,11 +85,11 @@ export default function ChatBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-28 right-6 z-50 w-[90vw] md:w-[400px] h-[550px] max-h-[75vh] flex flex-col rounded-3xl border border-amber-500/30 bg-background/95 backdrop-blur-md shadow-2xl overflow-hidden"
+            className="fixed bottom-28 right-6 z-50 w-[90vw] md:w-[400px] h-[550px] max-h-[75vh] flex flex-col rounded-3xl border border-#D4AF37/30 bg-background/95 backdrop-blur-md shadow-2xl overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center gap-3 p-4 border-b border-border bg-gradient-to-r from-amber-600/20 to-transparent">
-              <div className="h-8 w-8 rounded-full bg-amber-600 flex items-center justify-center">
+            <div className="flex items-center gap-3 p-4 border-b border-border bg-gradient-to-r from-#8C7326/20 to-transparent">
+              <div className="h-8 w-8 rounded-full bg-#8C7326 flex items-center justify-center">
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -131,7 +131,7 @@ export default function ChatBot() {
                       className={cn(
                         "rounded-[1.4rem] px-4 py-3 text-sm shadow-sm leading-relaxed",
                         msg.role === "user"
-                          ? "bg-amber-600 text-white rounded-tr-none"
+                          ? "bg-#8C7326 text-white rounded-tr-none"
                           : "bg-muted/50 text-foreground rounded-tl-none border border-border"
                       )}
                     >
@@ -148,9 +148,9 @@ export default function ChatBot() {
                       <Bot className="h-4 w-4" />
                     </div>
                     <div className="bg-muted/50 rounded-[1.4rem] rounded-tl-none px-4 py-4 flex items-center gap-1.5 border border-border">
-                      <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                      <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                      <span className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-bounce"></span>
+                      <span className="w-1.5 h-1.5 bg-#D4AF37 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                      <span className="w-1.5 h-1.5 bg-#D4AF37 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                      <span className="w-1.5 h-1.5 bg-#D4AF37 rounded-full animate-bounce"></span>
                     </div>
                   </div>
                 </div>
@@ -164,14 +164,14 @@ export default function ChatBot() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask anything..."
-                  className="h-12 pr-12 bg-background border-input focus-visible:ring-amber-500 rounded-2xl"
+                  className="h-12 pr-12 bg-background border-input focus-visible:ring-#D4AF37 rounded-2xl"
                   disabled={isLoading}
                 />
                 <Button
                   type="submit"
                   size="icon"
                   disabled={!input.trim() || isLoading}
-                  className="absolute right-1.5 h-9 w-9 rounded-xl bg-amber-600 hover:bg-amber-700 text-white shadow-lg"
+                  className="absolute right-1.5 h-9 w-9 rounded-xl bg-#8C7326 hover:bg-amber-700 text-white shadow-lg"
                 >
                   {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                 </Button>
@@ -188,3 +188,4 @@ export default function ChatBot() {
     </>
   );
 }
+

@@ -105,7 +105,7 @@ export default function SupplierProfilePage() {
     if (supplier === undefined) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
             </div>
         );
     }
@@ -122,7 +122,7 @@ export default function SupplierProfilePage() {
                 </div>
                 <div className="flex items-center gap-3">
                     {supplier.verified && (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-full text-amber-500 text-xs font-bold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-full text-[#D4AF37] text-xs font-bold uppercase tracking-wider">
                             <ShieldCheck className="w-3.5 h-3.5" />
                             Verified Provider
                         </div>
@@ -130,7 +130,7 @@ export default function SupplierProfilePage() {
                     <Button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="bg-amber-500 hover:bg-amber-600 text-black font-bold px-6 rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
+                        className="bg-[#D4AF37] hover:bg-#8C7326 text-black font-bold px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 active:scale-95 transition-all"
                     >
                         {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
                         Save Changes
@@ -140,13 +140,13 @@ export default function SupplierProfilePage() {
 
             <Tabs defaultValue="basic" className="space-y-6">
                 <TabsList className="bg-muted/50 border border-border p-1 rounded-2xl h-14 w-full md:w-auto grid grid-cols-3 md:flex gap-2">
-                    <TabsTrigger value="basic" className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold h-11 px-6 transition-all">
+                    <TabsTrigger value="basic" className="rounded-xl data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black font-bold h-11 px-6 transition-all">
                         Business Details
                     </TabsTrigger>
-                    <TabsTrigger value="contact" className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold h-11 px-6">
+                    <TabsTrigger value="contact" className="rounded-xl data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black font-bold h-11 px-6">
                         Contact Info
                     </TabsTrigger>
-                    <TabsTrigger value="location" className="rounded-xl data-[state=active]:bg-amber-500 data-[state=active]:text-black font-bold h-11 px-6">
+                    <TabsTrigger value="location" className="rounded-xl data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black font-bold h-11 px-6">
                         Office Location
                     </TabsTrigger>
                 </TabsList>
@@ -155,7 +155,7 @@ export default function SupplierProfilePage() {
                     <Card className="bg-card/50 border-border rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
                         <CardHeader className="border-b border-border/50">
                             <CardTitle className="flex items-center gap-2">
-                                <User className="w-5 h-5 text-amber-500" />
+                                <User className="w-5 h-5 text-[#D4AF37]" />
                                 Brand Identity
                             </CardTitle>
                         </CardHeader>
@@ -165,7 +165,7 @@ export default function SupplierProfilePage() {
                                 <Input
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    className="bg-background border-border h-12 rounded-xl focus:ring-amber-500"
+                                    className="bg-background border-border h-12 rounded-xl focus:ring-#D4AF37"
                                     placeholder="e.g. Royal Cinematic Productions"
                                 />
                             </div>
@@ -175,7 +175,7 @@ export default function SupplierProfilePage() {
                                 <Textarea
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
-                                    className="bg-background border-border min-h-[150px] rounded-xl focus:ring-amber-500"
+                                    className="bg-background border-border min-h-[150px] rounded-xl focus:ring-#D4AF37"
                                     placeholder="Describe your services, experience, and what makes you unique..."
                                 />
                             </div>
@@ -191,8 +191,8 @@ export default function SupplierProfilePage() {
                                             className={cn(
                                                 "px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all duration-200 active:scale-95",
                                                 formData.categories.includes(cat)
-                                                    ? "bg-amber-500 text-black border-amber-500 shadow-lg shadow-amber-500/10"
-                                                    : "bg-muted/50 text-muted-foreground border-border hover:border-amber-500/30 hover:text-foreground"
+                                                    ? "bg-[#D4AF37] text-black border-[#D4AF37] shadow-lg shadow-[#D4AF37]/10"
+                                                    : "bg-muted/50 text-muted-foreground border-border hover:border-[#D4AF37]/30 hover:text-foreground"
                                             )}
                                         >
                                             {cat}
@@ -208,7 +208,7 @@ export default function SupplierProfilePage() {
                     <Card className="bg-card/50 border-border rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
                         <CardHeader className="border-b border-border/50">
                             <CardTitle className="flex items-center gap-2">
-                                <Mail className="w-5 h-5 text-amber-500" />
+                                <Mail className="w-5 h-5 text-[#D4AF37]" />
                                 Channels
                             </CardTitle>
                         </CardHeader>
@@ -272,7 +272,7 @@ export default function SupplierProfilePage() {
                     <Card className="bg-card/50 border-border rounded-3xl overflow-hidden shadow-xl backdrop-blur-sm">
                         <CardHeader className="border-b border-border/50">
                             <CardTitle className="flex items-center gap-2">
-                                <MapPin className="w-5 h-5 text-amber-500" />
+                                <MapPin className="w-5 h-5 text-[#D4AF37]" />
                                 Physical Presence
                             </CardTitle>
                         </CardHeader>
@@ -302,7 +302,7 @@ export default function SupplierProfilePage() {
                                 <Textarea
                                     value={formData.address}
                                     onChange={e => setFormData({ ...formData, address: e.target.value })}
-                                    className="bg-background border-border min-h-[100px] rounded-xl focus:ring-amber-500"
+                                    className="bg-background border-border min-h-[100px] rounded-xl focus:ring-#D4AF37"
                                     placeholder="Street address, building, floor..."
                                 />
                                 <p className="text-[10px] text-zinc-600 uppercase font-bold tracking-widest mt-2">
@@ -316,3 +316,4 @@ export default function SupplierProfilePage() {
         </div>
     );
 }
+

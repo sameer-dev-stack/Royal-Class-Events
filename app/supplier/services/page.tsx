@@ -88,7 +88,7 @@ export default function SupplierServicesPage() {
     if (services === undefined) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
-                <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
             </div>
         );
     }
@@ -99,7 +99,7 @@ export default function SupplierServicesPage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="space-y-1">
                     <h1 className="text-3xl md:text-4xl font-black text-foreground tracking-tight flex items-center gap-3">
-                        <Package className="w-10 h-10 text-amber-500" />
+                        <Package className="w-10 h-10 text-[#D4AF37]" />
                         Offerings & Packages
                     </h1>
                     <p className="text-muted-foreground text-lg font-medium">
@@ -108,7 +108,7 @@ export default function SupplierServicesPage() {
                 </div>
                 <Button
                     onClick={handleAdd}
-                    className="bg-amber-500 hover:bg-amber-600 text-black font-black h-14 px-8 rounded-2xl shadow-xl shadow-amber-500/20 transition-all active:scale-95 group"
+                    className="bg-[#D4AF37] hover:bg-#8C7326 text-black font-black h-14 px-8 rounded-2xl shadow-xl shadow-[#D4AF37]/20 transition-all active:scale-95 group"
                 >
                     <Plus className="w-5 h-5 mr-3 group-hover:rotate-90 transition-transform" />
                     New Service
@@ -126,7 +126,7 @@ export default function SupplierServicesPage() {
                             exit={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
                             layout
                         >
-                            <Card className="bg-card/40 border-border rounded-3xl overflow-hidden hover:border-amber-500/30 transition-all group h-full flex flex-col backdrop-blur-md shadow-2xl relative">
+                            <Card className="bg-card/40 border-border rounded-3xl overflow-hidden hover:border-[#D4AF37]/30 transition-all group h-full flex flex-col backdrop-blur-md shadow-2xl relative">
                                 <CardContent className="p-8 flex flex-col h-full z-10">
                                     {/* Card Header Actions */}
                                     <div className="flex justify-between items-start mb-6">
@@ -135,13 +135,13 @@ export default function SupplierServicesPage() {
                                             className={cn(
                                                 "rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest border-2",
                                                 service.active
-                                                    ? "border-amber-500/20 text-amber-600 dark:text-amber-500 bg-amber-500/5"
+                                                    ? "border-[#D4AF37]/20 text-#8C7326 dark:text-[#D4AF37] bg-[#D4AF37]/5"
                                                     : "border-border text-muted-foreground bg-muted/50"
                                             )}
                                         >
                                             {service.active ? (
                                                 <span className="flex items-center gap-2">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
                                                     Active on Profile
                                                 </span>
                                             ) : (
@@ -160,7 +160,7 @@ export default function SupplierServicesPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end" className="bg-card border-border text-foreground rounded-2xl p-2 min-w-[160px] shadow-2xl">
                                                 <DropdownMenuItem onClick={() => handleEdit(service)} className="hover:bg-zinc-900 cursor-pointer rounded-xl h-12 gap-3 focus:bg-zinc-900">
-                                                    <Pencil className="w-4 h-4 text-amber-500" />
+                                                    <Pencil className="w-4 h-4 text-[#D4AF37]" />
                                                     <span className="font-bold">Edit Details</span>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={() => handleDelete(service._id)} className="text-red-500 hover:bg-red-500/10 cursor-pointer rounded-xl h-12 gap-3 focus:bg-red-500/10">
@@ -173,7 +173,7 @@ export default function SupplierServicesPage() {
 
                                     {/* Main Content */}
                                     <div className="space-y-4 mb-8">
-                                        <h3 className="text-2xl font-black text-foreground group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors leading-tight">
+                                        <h3 className="text-2xl font-black text-foreground group-hover:text-#8C7326 dark:group-hover:text-[#D4AF37] transition-colors leading-tight">
                                             {service.name}
                                         </h3>
                                         <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed font-medium">
@@ -186,7 +186,7 @@ export default function SupplierServicesPage() {
                                         <div className="space-y-3 mb-8">
                                             {service.features.slice(0, 3).map((feat: string, i: number) => (
                                                 <div key={i} className="flex items-center gap-3 text-xs font-bold text-muted-foreground">
-                                                    <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500/20" />
+                                                    <Star className="w-3.5 h-3.5 text-[#D4AF37] fill-#D4AF37/20" />
                                                     {feat}
                                                 </div>
                                             ))}
@@ -203,7 +203,7 @@ export default function SupplierServicesPage() {
                                         <div className="flex flex-col">
                                             <span className="text-[10px] text-muted-foreground uppercase font-black tracking-[0.2em] mb-1">Starting Investment</span>
                                             <div className="flex items-baseline gap-1.5">
-                                                <span className="text-xs font-bold text-amber-600 dark:text-amber-500/60 uppercase">{service.currency}</span>
+                                                <span className="text-xs font-bold text-#8C7326 dark:text-[#D4AF37]/60 uppercase">{service.currency}</span>
                                                 <span className="text-3xl font-black text-foreground">
                                                     {service.price.toLocaleString()}
                                                 </span>
@@ -212,7 +212,7 @@ export default function SupplierServicesPage() {
                                         <Button
                                             variant="ghost"
                                             onClick={() => handleEdit(service)}
-                                            className="h-12 w-12 rounded-2xl bg-muted/40 hover:bg-amber-500 hover:text-black transition-all"
+                                            className="h-12 w-12 rounded-2xl bg-muted/40 hover:bg-[#D4AF37] hover:text-black transition-all"
                                         >
                                             <Pencil className="w-5 h-5" />
                                         </Button>
@@ -220,7 +220,7 @@ export default function SupplierServicesPage() {
                                 </CardContent>
 
                                 {/* Background Aesthetic Glow */}
-                                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-amber-500/5 blur-[80px] rounded-full group-hover:bg-amber-500/10 transition-all" />
+                                <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-[#D4AF37]/5 blur-[80px] rounded-full group-hover:bg-[#D4AF37]/10 transition-all" />
                             </Card>
                         </motion.div>
                     ))}
@@ -233,8 +233,8 @@ export default function SupplierServicesPage() {
                         animate={{ opacity: 1 }}
                         className="col-span-full py-24 text-center"
                     >
-                        <div className="w-24 h-24 bg-card rounded-3xl flex items-center justify-center mx-auto mb-8 border-2 border-dashed border-border group hover:border-amber-500/50 transition-all">
-                            <Briefcase className="w-10 h-10 text-muted-foreground/40 group-hover:text-amber-500/50" />
+                        <div className="w-24 h-24 bg-card rounded-3xl flex items-center justify-center mx-auto mb-8 border-2 border-dashed border-border group hover:border-[#D4AF37]/50 transition-all">
+                            <Briefcase className="w-10 h-10 text-muted-foreground/40 group-hover:text-[#D4AF37]/50" />
                         </div>
                         <h3 className="text-2xl font-black text-foreground">No Services Defined</h3>
                         <p className="text-muted-foreground mt-3 max-w-sm mx-auto font-medium">
@@ -243,7 +243,7 @@ export default function SupplierServicesPage() {
                         <Button
                             onClick={handleAdd}
                             variant="outline"
-                            className="mt-10 border-zinc-800 hover:border-amber-500/50 hover:bg-zinc-900 rounded-2xl h-14 px-8 font-bold text-zinc-400 hover:text-amber-500"
+                            className="mt-10 border-zinc-800 hover:border-[#D4AF37]/50 hover:bg-zinc-900 rounded-2xl h-14 px-8 font-bold text-zinc-400 hover:text-[#D4AF37]"
                         >
                             <Plus className="w-5 h-5 mr-3" /> Publish Your First Service
                         </Button>
@@ -261,3 +261,4 @@ export default function SupplierServicesPage() {
         </div>
     );
 }
+

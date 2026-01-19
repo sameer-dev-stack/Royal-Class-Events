@@ -103,7 +103,7 @@ export default function VendorSettingsPage() {
     if (supplier === undefined) {
         return (
             <div className="flex justify-center py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-amber-500" />
+                <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
             </div>
         );
     }
@@ -122,7 +122,7 @@ export default function VendorSettingsPage() {
                 <Button
                     onClick={handleSave}
                     disabled={isLoading}
-                    className="bg-amber-500 hover:bg-amber-600 text-black font-bold"
+                    className="bg-[#D4AF37] hover:bg-#8C7326 text-black font-bold"
                 >
                     {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
                     Save Changes
@@ -131,10 +131,10 @@ export default function VendorSettingsPage() {
 
             <Tabs defaultValue="profile" className="space-y-6">
                 <TabsList className="bg-zinc-900 border border-zinc-800">
-                    <TabsTrigger value="profile" className="data-[state=active]:bg-amber-500 data-[state=active]:text-black">
+                    <TabsTrigger value="profile" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black">
                         <User className="w-4 h-4 mr-2" /> Profile
                     </TabsTrigger>
-                    <TabsTrigger value="payments" className="data-[state=active]:bg-amber-500 data-[state=active]:text-black">
+                    <TabsTrigger value="payments" className="data-[state=active]:bg-[#D4AF37] data-[state=active]:text-black">
                         <CreditCard className="w-4 h-4 mr-2" /> Payments
                     </TabsTrigger>
                 </TabsList>
@@ -305,8 +305,8 @@ export default function VendorSettingsPage() {
                                 )}
                             </div>
 
-                            <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 mt-4">
-                                <p className="text-sm text-amber-400">
+                            <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-lg p-4 mt-4">
+                                <p className="text-sm text-#F7E08B">
                                     <strong>Note:</strong> Payouts are processed every Wednesday for balances above ৳5,000.
                                 </p>
                             </div>
@@ -318,3 +318,4 @@ export default function VendorSettingsPage() {
         </div>
     );
 }
+

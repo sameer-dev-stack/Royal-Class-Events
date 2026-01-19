@@ -264,7 +264,7 @@ export default function EventDashboardPage() {
 
           <div className="flex gap-2 w-full sm:w-auto">
             <Link href={`/seat-builder?eventId=${eventId}`}>
-              <Button className="bg-[linear-gradient(135deg,#fac529,#eab308)] text-black font-bold shadow-lg hover:shadow-amber-500/25 border-0 rounded-lg">
+              <Button className="bg-[linear-gradient(135deg,#fac529,#eab308)] text-black font-bold shadow-lg hover:shadow-[#D4AF37]/25 border-0 rounded-lg">
                 <Grid3X3 className="w-4 h-4 mr-2" />
                 Configure Seating
               </Button>
@@ -323,11 +323,11 @@ export default function EventDashboardPage() {
         )}
 
         {/* Seating Mode Controller */}
-        <Card className="mb-8 border-amber-500/20 bg-amber-500/5 shadow-sm ring-1 ring-amber-500/10">
+        <Card className="mb-8 border-[#D4AF37]/20 bg-[#D4AF37]/5 shadow-sm ring-1 ring-[#D4AF37]/10">
           <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-start gap-3">
-              <div className="p-2 bg-amber-500/10 rounded-lg shrink-0">
-                <Settings className="w-5 h-5 text-amber-500" />
+              <div className="p-2 bg-[#D4AF37]/10 rounded-lg shrink-0">
+                <Settings className="w-5 h-5 text-[#D4AF37]" />
               </div>
               <div className="space-y-0.5">
                 <Label className="text-base font-bold text-foreground">Enable Seat Map</Label>
@@ -337,7 +337,7 @@ export default function EventDashboardPage() {
               </div>
             </div>
             <div className="flex items-center gap-3 bg-zinc-900/50 p-2 px-3 rounded-full border border-white/5">
-              <span className={cn("text-xs font-bold uppercase tracking-wider", !(event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "text-amber-500" : "text-muted-foreground")}>General</span>
+              <span className={cn("text-xs font-bold uppercase tracking-wider", !(event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "text-[#D4AF37]" : "text-muted-foreground")}>General</span>
               <Switch
                 checked={event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING"}
                 onCheckedChange={async (checked) => {
@@ -352,9 +352,9 @@ export default function EventDashboardPage() {
                     toast.error(error.message || "Failed to update seating mode");
                   }
                 }}
-                className="data-[state=checked]:bg-amber-500"
+                className="data-[state=checked]:bg-[#D4AF37]"
               />
-              <span className={cn("text-xs font-bold uppercase tracking-wider", (event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "text-amber-500" : "text-muted-foreground")}>Reserved</span>
+              <span className={cn("text-xs font-bold uppercase tracking-wider", (event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "text-[#D4AF37]" : "text-muted-foreground")}>Reserved</span>
             </div>
           </CardContent>
         </Card>
@@ -416,7 +416,7 @@ export default function EventDashboardPage() {
           <Card className="py-0">
             <CardContent className="p-6 flex items-center gap-3">
               <div className="p-3 bg-amber-100 rounded-lg">
-                <Clock className="w-6 h-6 text-amber-600" />
+                <Clock className="w-6 h-6 text-[#8C7326]" />
               </div>
               <div>
                 <p className="text-2xl font-bold">

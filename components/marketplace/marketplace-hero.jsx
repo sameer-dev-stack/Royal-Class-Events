@@ -40,16 +40,16 @@ export default function MarketplaceHero({ categories, cities }) {
             {/* Gradient Mesh Overlay */}
             {/* Gradient Mesh Overlay - Theme Aware */}
             <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/80 via-zinc-950/60 to-zinc-950 z-10 dark:from-zinc-950/80 dark:to-zinc-950 from-black/60 to-background" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/10 via-transparent to-transparent z-10" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-#D4AF37/10 via-transparent to-transparent z-10" />
 
             {/* Content */}
             <div className="relative z-20 w-full max-w-5xl px-4 text-center">
                 <div className="animate-fade-in-up">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-[0.2em] mb-6 backdrop-blur-sm shadow-[0_0_15px_-3px_rgba(245,158,11,0.2)]">
+                    <span className="inline-block px-4 py-1.5 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-xs font-bold uppercase tracking-[0.2em] mb-6 backdrop-blur-sm shadow-[0_0_15px_-3px_rgba(245,158,11,0.2)]">
                         Premium Event Solutions
                     </span>
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-tight">
-                        Curating <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 drop-shadow-[0_0_10px_rgba(217,119,6,0.5)]">Extraordinary</span>
+                        Curating <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-#F7E08B to-#8C7326 drop-shadow-[0_0_10px_rgba(217,119,6,0.5)]">Extraordinary</span>
                         <br /> Experiences
                     </h1>
                     <p className="text-zinc-300/90 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-light leading-relaxed">
@@ -92,7 +92,7 @@ export default function MarketplaceHero({ categories, cities }) {
                             <Select value={selectedCity} onValueChange={setSelectedCity}>
                                 <SelectTrigger className="h-12 bg-transparent border-0 text-zinc-200 focus:ring-0 focus:ring-offset-0 px-4">
                                     <div className="flex items-center gap-2">
-                                        <MapPin className="w-4 h-4 text-amber-500" />
+                                        <MapPin className="w-4 h-4 text-#D4AF37" />
                                         <SelectValue placeholder="City" />
                                     </div>
                                 </SelectTrigger>
@@ -108,7 +108,7 @@ export default function MarketplaceHero({ categories, cities }) {
                         <div className="w-full md:w-[20%] p-1">
                             <Button
                                 onClick={handleSearch}
-                                className="w-full h-12 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold tracking-wide shadow-lg hover:shadow-amber-500/25 transition-all duration-300"
+                                className="w-full h-12 rounded-full bg-gradient-to-r from-#D4AF37 to-orange-600 hover:from-#8C7326 hover:to-orange-700 text-white font-bold tracking-wide shadow-lg hover:shadow-#D4AF37/25 transition-all duration-300"
                             >
                                 EXPLORE
                             </Button>
@@ -118,7 +118,7 @@ export default function MarketplaceHero({ categories, cities }) {
 
                 {/* Popular Tags - Minimalist Tech */}
                 <div className="mt-8 flex flex-wrap justify-center gap-4 text-xs font-medium text-zinc-400/80 uppercase tracking-widest">
-                    <span className="text-amber-500/80">Trending:</span>
+                    <span className="text-#D4AF37/80">Trending:</span>
                     {["Cyberpunk Decor", "Holographic Stage", "Drone Shows", "Molecular Catering"].map(tag => (
                         <button key={tag} className="hover:text-white hover:shadow-[0_0_10px_rgba(255,255,255,0.3)] transition-all duration-300">
                             {tag}
@@ -129,3 +129,4 @@ export default function MarketplaceHero({ categories, cities }) {
         </div>
     );
 }
+

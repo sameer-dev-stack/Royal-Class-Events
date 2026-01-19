@@ -66,7 +66,7 @@ export default function AdminOrganizerRequestsPage() {
     if (isLoading) {
         return (
             <div className="h-96 flex items-center justify-center">
-                <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
+                <Loader2 className="w-10 h-10 animate-spin text-#D4AF37" />
             </div>
         );
     }
@@ -75,7 +75,7 @@ export default function AdminOrganizerRequestsPage() {
         <div className="space-y-8">
             <div className="flex flex-col gap-2">
                 <h1 className="text-4xl font-black tracking-tighter uppercase italic">
-                    Organizer <span className="text-amber-500">Requests.</span>
+                    Organizer <span className="text-#D4AF37">Requests.</span>
                 </h1>
                 <p className="text-zinc-500">Review and approve applications for organizer status.</p>
             </div>
@@ -95,7 +95,7 @@ export default function AdminOrganizerRequestsPage() {
                                         {/* User Info Section */}
                                         <div className="p-6 md:w-80 bg-zinc-900/80 flex flex-col gap-4">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 flex items-center justify-center text-amber-500 font-bold text-xl uppercase">
+                                                <div className="w-12 h-12 rounded-2xl bg-#D4AF37/20 flex items-center justify-center text-#D4AF37 font-bold text-xl uppercase">
                                                     {req.user?.name?.[0] || <User className="w-6 h-6" />}
                                                 </div>
                                                 <div className="overflow-hidden">
@@ -121,7 +121,7 @@ export default function AdminOrganizerRequestsPage() {
                                         {/* Request Body */}
                                         <div className="flex-1 p-6 space-y-4">
                                             <div className="space-y-2">
-                                                <h4 className="text-[10px] uppercase font-black tracking-widest text-amber-500/80">Application Reason</h4>
+                                                <h4 className="text-[10px] uppercase font-black tracking-widest text-#D4AF37/80">Application Reason</h4>
                                                 <div className="p-4 rounded-xl bg-black/40 border border-zinc-800 italic text-zinc-300 leading-relaxed">
                                                     "{req.reason || "No reason provided"}"
                                                 </div>
@@ -177,3 +177,4 @@ export default function AdminOrganizerRequestsPage() {
         </div>
     );
 }
+

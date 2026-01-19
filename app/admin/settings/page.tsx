@@ -124,7 +124,7 @@ export default function SettingsPage() {
                 <h2 className="text-xl font-medium">Access Denied</h2>
                 <p className="text-zinc-500">Please log in as an administrator to view this page.</p>
                 <Link href="/admin/login">
-                    <Button variant="default" className="bg-amber-500 text-black hover:bg-amber-600">
+                    <Button variant="default" className="bg-#D4AF37 text-black hover:bg-#8C7326">
                         Go to Login
                     </Button>
                 </Link>
@@ -149,10 +149,10 @@ export default function SettingsPage() {
 
             <Tabs defaultValue="config" className="w-full">
                 <TabsList className="bg-zinc-900 border border-zinc-800 p-1 h-12 rounded-2xl mb-8">
-                    <TabsTrigger value="config" className="rounded-xl px-8 data-[state=active]:bg-zinc-800 data-[state=active]:text-amber-500 gap-2 font-bold uppercase text-[10px] tracking-widest">
+                    <TabsTrigger value="config" className="rounded-xl px-8 data-[state=active]:bg-zinc-800 data-[state=active]:text-#D4AF37 gap-2 font-bold uppercase text-[10px] tracking-widest">
                         <ShieldCheck className="w-4 h-4" /> Platform Config
                     </TabsTrigger>
-                    <TabsTrigger value="broadcast" className="rounded-xl px-8 data-[state=active]:bg-zinc-800 data-[state=active]:text-amber-500 gap-2 font-bold uppercase text-[10px] tracking-widest">
+                    <TabsTrigger value="broadcast" className="rounded-xl px-8 data-[state=active]:bg-zinc-800 data-[state=active]:text-#D4AF37 gap-2 font-bold uppercase text-[10px] tracking-widest">
                         <Megaphone className="w-4 h-4" /> Global Broadcast
                     </TabsTrigger>
                 </TabsList>
@@ -161,11 +161,11 @@ export default function SettingsPage() {
                     <div className="grid gap-6 md:grid-cols-2">
                         <Card className="bg-zinc-900 border-zinc-800 shadow-2xl relative overflow-hidden group">
                             <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                                <Percent className="w-32 h-32 text-amber-500 -mr-10 -mt-10 rotate-12" />
+                                <Percent className="w-32 h-32 text-#D4AF37 -mr-10 -mt-10 rotate-12" />
                             </div>
                             <CardHeader>
                                 <CardTitle className="text-white flex items-center gap-2">
-                                    <Badge variant="outline" className="border-amber-500/30 text-amber-500 uppercase text-[10px] px-2 py-0">Finance</Badge>
+                                    <Badge variant="outline" className="border-#D4AF37/30 text-#D4AF37 uppercase text-[10px] px-2 py-0">Finance</Badge>
                                     Revenue Stream
                                 </CardTitle>
                                 <CardDescription className="text-zinc-500">Define the platform commission for every ticket sold.</CardDescription>
@@ -178,7 +178,7 @@ export default function SettingsPage() {
                                             type="number"
                                             value={commission}
                                             onChange={(e) => setCommission(e.target.value)}
-                                            className="bg-zinc-950 border-zinc-800 text-white h-12 text-xl font-bold pr-12 focus:ring-amber-500"
+                                            className="bg-zinc-950 border-zinc-800 text-white h-12 text-xl font-bold pr-12 focus:ring-#D4AF37"
                                         />
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-600 font-bold">%</div>
                                     </div>
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                         <Button
                             onClick={handleSaveConfig}
                             disabled={isSaving}
-                            className="bg-amber-500 hover:bg-amber-600 text-black font-black px-10 h-12 rounded-2xl gap-2 shadow-xl shadow-amber-500/20"
+                            className="bg-#D4AF37 hover:bg-#8C7326 text-black font-black px-10 h-12 rounded-2xl gap-2 shadow-xl shadow-#D4AF37/20"
                         >
                             {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                             Synchronize Core
@@ -233,7 +233,7 @@ export default function SettingsPage() {
                 </TabsContent>
 
                 <TabsContent value="broadcast">
-                    <Card className="bg-zinc-900 border-zinc-800 shadow-2xl border-t-2 border-t-amber-500">
+                    <Card className="bg-zinc-900 border-zinc-800 shadow-2xl border-t-2 border-t-#D4AF37">
                         <CardHeader>
                             <CardTitle className="text-white flex items-center gap-2 uppercase tracking-tighter italic">Telepathic Dispatcher</CardTitle>
                             <CardDescription className="text-zinc-500">Send an urgent real-time notification to specific user segments.</CardDescription>
@@ -247,7 +247,7 @@ export default function SettingsPage() {
                                             placeholder="System Maintenance, New Feature, etc."
                                             value={broadcastTitle}
                                             onChange={(e) => setBroadcastTitle(e.target.value)}
-                                            className="bg-zinc-950 border-zinc-800 text-white h-11 focus:ring-amber-500"
+                                            className="bg-zinc-950 border-zinc-800 text-white h-11 focus:ring-#D4AF37"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -257,7 +257,7 @@ export default function SettingsPage() {
                                             placeholder="Detailed instructions for the audience..."
                                             value={broadcastMessage}
                                             onChange={(e) => setBroadcastMessage(e.target.value)}
-                                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-white resize-none h-32 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                                            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-white resize-none h-32 focus:outline-none focus:ring-1 focus:ring-#D4AF37"
                                         />
                                     </div>
                                 </div>
@@ -276,7 +276,7 @@ export default function SettingsPage() {
                                                     <div className="flex items-center gap-2"><Briefcase className="w-3 h-3 text-blue-500" /> Organizers</div>
                                                 </SelectItem>
                                                 <SelectItem value="attendee">
-                                                    <div className="flex items-center gap-2"><UserCheck className="w-3 h-3 text-amber-500" /> Attendees</div>
+                                                    <div className="flex items-center gap-2"><UserCheck className="w-3 h-3 text-#D4AF37" /> Attendees</div>
                                                 </SelectItem>
                                                 <SelectItem value="admin">
                                                     <div className="flex items-center gap-2"><ShieldCheck className="w-3 h-3 text-red-500" /> Admin Staff</div>
@@ -296,7 +296,7 @@ export default function SettingsPage() {
                         </CardContent>
                         <CardFooter className="bg-zinc-950/20 py-6 border-t border-zinc-900 flex justify-between items-center">
                             <div className="flex items-center gap-2 opacity-30 grayscale group-hover:grayscale-0 transition-all">
-                                <Megaphone className="w-4 h-4 text-amber-500" />
+                                <Megaphone className="w-4 h-4 text-#D4AF37" />
                                 <span className="text-[9px] font-black uppercase tracking-widest">Signal Ready</span>
                             </div>
                             <Button
@@ -314,3 +314,4 @@ export default function SettingsPage() {
         </div>
     );
 }
+

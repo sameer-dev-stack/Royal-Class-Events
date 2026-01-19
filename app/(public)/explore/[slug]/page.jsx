@@ -37,7 +37,7 @@ export default function DynamicExplorePage() {
   if (isLoading || !allEvents) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-amber-500" />
+        <Loader2 className="w-10 h-10 animate-spin text-[#D4AF37]" />
       </div>
     );
   }
@@ -79,7 +79,7 @@ export default function DynamicExplorePage() {
                 </div>
              </div>
              {filteredEvents.length > 0 && (
-                <Badge variant="outline" className="text-amber-500 border-amber-500/20 bg-amber-500/10">
+                <Badge variant="outline" className="text-[#D4AF37] border-[#D4AF37]/20 bg-[#D4AF37]/10">
                   {filteredEvents.length} Exclusive Event{filteredEvents.length !== 1 ? "s" : ""}
                 </Badge>
              )}
@@ -114,14 +114,14 @@ export default function DynamicExplorePage() {
         {/* Header */}
         <div className="mb-12 border-b border-white/10 pb-6">
             <div className="flex items-center gap-3 mb-2">
-                <Crown className="w-6 h-6 text-amber-500" />
-                <span className="text-amber-500 font-medium tracking-wide uppercase text-sm">
+                <Crown className="w-6 h-6 text-[#D4AF37]" />
+                <span className="text-[#D4AF37] font-medium tracking-wide uppercase text-sm">
                     Exclusive Selection
                 </span>
             </div>
             <div className="flex flex-col md:flex-row md:items-end gap-4">
                 <h1 className="text-4xl md:text-5xl font-bold text-white capitalize">
-                    Events in <span className="text-amber-500">{displayCity}</span>
+                    Events in <span className="text-[#D4AF37]">{displayCity}</span>
                 </h1>
                 <Badge variant="secondary" className="w-fit gap-2 bg-zinc-800 text-gray-300">
                     <MapPin className="w-3 h-3" />

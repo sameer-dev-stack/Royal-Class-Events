@@ -29,9 +29,9 @@ const Step = ({ number, icon: Icon, title, desc }) => (
         className="relative flex flex-col items-center text-center space-y-6"
     >
         <div className="w-20 h-20 rounded-[2rem] bg-zinc-900 border border-white/5 flex items-center justify-center relative group">
-            <div className="absolute inset-0 bg-amber-500/10 rounded-[2rem] scale-0 group-hover:scale-100 transition-transform duration-500" />
-            <Icon className="w-8 h-8 text-amber-500 relative z-10" />
-            <div className="absolute -top-3 -right-3 w-8 h-8 bg-amber-500 text-black text-xs font-black rounded-full flex items-center justify-center border-4 border-zinc-950">
+            <div className="absolute inset-0 bg-#D4AF37/10 rounded-[2rem] scale-0 group-hover:scale-100 transition-transform duration-500" />
+            <Icon className="w-8 h-8 text-#D4AF37 relative z-10" />
+            <div className="absolute -top-3 -right-3 w-8 h-8 bg-#D4AF37 text-black text-xs font-black rounded-full flex items-center justify-center border-4 border-zinc-950">
                 {number}
             </div>
         </div>
@@ -67,7 +67,7 @@ export default function ListEventPage() {
                         transition={{ delay: 0.2 }}
                         className="pt-8"
                     >
-                        <Button asChild className="h-16 px-12 rounded-2xl bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-widest text-lg group">
+                        <Button asChild className="h-16 px-12 rounded-2xl bg-#D4AF37 hover:bg-#8C7326 text-black font-black uppercase tracking-widest text-lg group">
                             <Link href="/create-event">
                                 Start Hosting
                                 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -82,7 +82,7 @@ export default function ListEventPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-3 gap-20 relative">
                         {/* Connector Line (Desktop) */}
-                        <div className="hidden md:block absolute top-10 left-[20%] right-[20%] h-px bg-gradient-to-r from-transparent via-amber-500/20 to-transparent" />
+                        <div className="hidden md:block absolute top-10 left-[20%] right-[20%] h-px bg-gradient-to-r from-transparent via-#D4AF37/20 to-transparent" />
 
                         <Step
                             number="01"
@@ -126,7 +126,7 @@ export default function ListEventPage() {
                                     { icon: Crown, title: "Prestige Brand", desc: "Associate your event with the world's most elite platform." },
                                 ].map((item, i) => (
                                     <div key={i} className="flex gap-6 p-6 rounded-3xl bg-zinc-900 border border-white/5">
-                                        <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-500 shrink-0">
+                                        <div className="w-12 h-12 bg-#D4AF37/10 rounded-2xl flex items-center justify-center text-#D4AF37 shrink-0">
                                             <item.icon className="w-6 h-6" />
                                         </div>
                                         <div className="space-y-1">
@@ -139,7 +139,7 @@ export default function ListEventPage() {
                         </div>
 
                         <div className="relative aspect-square">
-                            <div className="absolute inset-0 bg-amber-500/5 blur-[120px] rounded-full animate-pulse" />
+                            <div className="absolute inset-0 bg-#D4AF37/5 blur-[120px] rounded-full animate-pulse" />
                             <TestimonialCarousel />
                         </div>
                     </div>
@@ -150,7 +150,7 @@ export default function ListEventPage() {
             <section className="py-20 px-6">
                 <motion.div
                     {...fadeIn}
-                    className="max-w-5xl mx-auto p-12 md:p-20 rounded-[4.5rem] bg-gradient-to-br from-amber-500 to-amber-600 text-black text-center space-y-8 relative overflow-hidden"
+                    className="max-w-5xl mx-auto p-12 md:p-20 rounded-[4.5rem] bg-gradient-to-br from-#D4AF37 to-#8C7326 text-black text-center space-y-8 relative overflow-hidden"
                 >
                     <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-tight italic">
                         Ready to set <br /> the stage?
@@ -169,3 +169,4 @@ export default function ListEventPage() {
         </MarketingLayout>
     );
 }
+

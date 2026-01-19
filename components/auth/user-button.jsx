@@ -50,11 +50,11 @@ export default function UserButton() {
 
     // Visuals depend on View Mode
     const roleStyles = isOrganizerView
-        ? "ring-amber-500/50 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:ring-amber-500 hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]"
+        ? "ring-#D4AF37/50 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:ring-#D4AF37 hover:shadow-[0_0_20px_rgba(245,158,11,0.5)]"
         : "ring-blue-500/30 shadow-[0_0_10px_rgba(59,130,246,0.2)] hover:ring-blue-400 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]";
 
     const badgeLabel = (isOrganizerView && isAdmin) ? "ADMIN" : (isOrganizerView ? "ORGANIZER" : "ATTENDEE");
-    const badgeColor = (isOrganizerView && isAdmin) ? "bg-red-500" : (isOrganizerView ? "bg-amber-500" : "bg-blue-500 text-white");
+    const badgeColor = (isOrganizerView && isAdmin) ? "bg-red-500" : (isOrganizerView ? "bg-#D4AF37" : "bg-blue-500 text-white");
 
     // Get user display info
     const displayName = user.name || user.email?.split("@")[0] || "User";
@@ -93,7 +93,7 @@ export default function UserButton() {
                         <AvatarFallback className={cn(
                             "font-bold text-sm transition-colors",
                             isOrganizerView
-                                ? "bg-amber-500/10 text-amber-500 group-hover:bg-amber-500/20"
+                                ? "bg-#D4AF37/10 text-#D4AF37 group-hover:bg-#D4AF37/20"
                                 : "bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20"
                         )}>
                             {initials}
@@ -139,7 +139,7 @@ export default function UserButton() {
                         </>
                     )}
 
-                    <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
+                    <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-#D4AF37/10 focus:text-#D4AF37 transition-colors">
                         <Link href="/my-tickets" className="flex items-center w-full px-2">
                             <Ticket className="w-4 h-4 mr-3 opacity-70" />
                             <span className="text-sm font-medium italic tracking-tight">My Tickets</span>
@@ -149,14 +149,14 @@ export default function UserButton() {
                     {/* Show Organizer Actions only in Organizer View */}
                     {isOrganizerView && (
                         <>
-                            <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
+                            <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-#D4AF37/10 focus:text-#D4AF37 transition-colors">
                                 <Link href="/dashboard" className="flex items-center w-full px-2">
                                     <LayoutDashboard className="w-4 h-4 mr-3 opacity-70" />
                                     <span className="text-sm font-medium italic tracking-tight">Dashboard</span>
                                 </Link>
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
+                            <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-#D4AF37/10 focus:text-#D4AF37 transition-colors">
                                 <Link href="/my-events" className="flex items-center w-full px-2">
                                     <Building className="w-4 h-4 mr-3 opacity-70" />
                                     <span className="text-sm font-medium italic tracking-tight">My Events</span>
@@ -165,7 +165,7 @@ export default function UserButton() {
                         </>
                     )}
 
-                    <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-amber-500/10 focus:text-amber-500 transition-colors">
+                    <DropdownMenuItem asChild className="rounded-lg h-10 cursor-pointer focus:bg-#D4AF37/10 focus:text-#D4AF37 transition-colors">
                         <Link href="/account/profile" className="flex items-center w-full px-2">
                             <Settings className="w-4 h-4 mr-3 opacity-70" />
                             <span className="text-sm font-medium italic tracking-tight">Account Settings</span>
@@ -189,3 +189,4 @@ export default function UserButton() {
         </DropdownMenu>
     );
 }
+

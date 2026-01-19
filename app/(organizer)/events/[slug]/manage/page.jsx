@@ -32,7 +32,7 @@ export default function EventManagePage() {
     const { data: event, isLoading } = useConvexQuery(api.events.getEventBySlug, { slug });
 
     if (isLoading || isRoleLoading) {
-        return <div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-amber-500" /></div>;
+        return <div className="flex h-screen items-center justify-center"><Loader2 className="w-10 h-10 animate-spin text-[#D4AF37]" /></div>;
     }
 
     if (!event) {
@@ -66,7 +66,7 @@ export default function EventManagePage() {
             description: "Edit title, date, location, and description.",
             icon: Edit3,
             link: `/events/${slug}/edit`,
-            color: "text-amber-500"
+            color: "text-[#D4AF37]"
         },
         {
             title: "Venue & Layout",
@@ -80,7 +80,7 @@ export default function EventManagePage() {
             description: "Arrange seats and set pricing for individual spots.",
             icon: Grid3X3,
             link: `/seat-builder?eventId=${event._id}`,
-            color: "text-amber-500"
+            color: "text-[#D4AF37]"
         },
         {
             title: "Attendees",
@@ -114,7 +114,7 @@ export default function EventManagePage() {
             <div className="space-y-2">
                 <div className="flex items-center gap-3">
                     <h1 className="text-4xl font-black tracking-tight">{event.title?.en || (typeof event.title === "string" ? event.title : "Untitled Event")}</h1>
-                    <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                    <Badge variant="outline" className="bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20">
                         {event.status?.current || 'Draft'}
                     </Badge>
                 </div>
@@ -134,7 +134,7 @@ export default function EventManagePage() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <p className="text-muted-foreground text-sm">{section.description}</p>
-                            <Button asChild className="w-full bg-secondary hover:bg-secondary/80 text-foreground group-hover:bg-amber-500 group-hover:text-black transition-colors">
+                            <Button asChild className="w-full bg-secondary hover:bg-secondary/80 text-foreground group-hover:bg-[#D4AF37] group-hover:text-black transition-colors">
                                 <Link href={section.link}>Manage {section.title.split(' ')[0]}</Link>
                             </Button>
                         </CardContent>

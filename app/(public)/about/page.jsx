@@ -34,7 +34,7 @@ const TeamMember = ({ name, role, image }) => (
             />
         </div>
         <h3 className="text-xl font-bold text-foreground mb-1">{name}</h3>
-        <p className="text-amber-500 text-xs font-bold uppercase tracking-widest">{role}</p>
+        <p className="text-#D4AF37 text-xs font-bold uppercase tracking-widest">{role}</p>
     </motion.div>
 );
 
@@ -45,7 +45,7 @@ export default function AboutPage() {
             <section className="relative pt-32 pb-20 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto text-center relative z-10">
                     <motion.div {...fadeIn}>
-                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-xs font-bold uppercase tracking-widest mb-6">
+                        <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 text-xs font-bold uppercase tracking-widest mb-6">
                             Our Legacy
                         </span>
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-8 leading-[0.9]">
@@ -60,7 +60,7 @@ export default function AboutPage() {
                 </div>
 
                 {/* Background Glow */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full bg-amber-500/5 blur-[120px] rounded-full pointer-events-none" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full bg-#D4AF37/5 blur-[120px] rounded-full pointer-events-none" />
             </section>
 
             {/* Our Story / Timeline Section */}
@@ -68,7 +68,7 @@ export default function AboutPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid lg:grid-cols-2 gap-16 items-center">
                         <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
-                            <div className="inline-flex p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-500 mb-6">
+                            <div className="inline-flex p-3 rounded-2xl bg-#D4AF37/10 border border-#D4AF37/20 text-#D4AF37 mb-6">
                                 <History className="w-6 h-6" />
                             </div>
                             <h2 className="text-4xl font-black mb-6 tracking-tight italic">Our Story</h2>
@@ -115,7 +115,7 @@ export default function AboutPage() {
                             viewport={{ once: true }}
                             className="p-10 rounded-3xl bg-card/50 border border-border space-y-6"
                         >
-                            <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                            <div className="w-14 h-14 rounded-2xl bg-#D4AF37/10 flex items-center justify-center text-#D4AF37">
                                 <Target className="w-8 h-8" />
                             </div>
                             <h3 className="text-3xl font-black italic">The Mission</h3>
@@ -130,9 +130,9 @@ export default function AboutPage() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.2 }}
-                            className="p-10 rounded-3xl bg-amber-500/5 border border-amber-500/10 space-y-6"
+                            className="p-10 rounded-3xl bg-#D4AF37/5 border border-#D4AF37/10 space-y-6"
                         >
-                            <div className="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center text-amber-500">
+                            <div className="w-14 h-14 rounded-2xl bg-#D4AF37/20 flex items-center justify-center text-#D4AF37">
                                 <Eye className="w-8 h-8" />
                             </div>
                             <h3 className="text-3xl font-black italic">The Vision</h3>
@@ -157,7 +157,7 @@ export default function AboutPage() {
                         ].map((stat, i) => (
                             <div key={i} className="space-y-2">
                                 <p className="text-3xl md:text-5xl font-black text-foreground">{stat.val}</p>
-                                <p className="text-amber-500/70 text-xs font-bold uppercase tracking-widest">{stat.label}</p>
+                                <p className="text-#D4AF37/70 text-xs font-bold uppercase tracking-widest">{stat.label}</p>
                             </div>
                         ))}
                     </div>
@@ -183,3 +183,4 @@ export default function AboutPage() {
         </div>
     );
 }
+

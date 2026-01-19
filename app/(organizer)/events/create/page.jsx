@@ -35,9 +35,10 @@ export default function SimpleCreateEventPage() {
     return (
         <div className="flex h-screen items-center justify-center">
             <div className="text-center space-y-4">
-                <Loader2 className="w-10 h-10 animate-spin text-amber-500 mx-auto" />
+                <Loader2 className="w-10 h-10 animate-spin text-#D4AF37 mx-auto" />
                 <p className="text-muted-foreground font-medium">Redirecting to event creator...</p>
             </div>
         </div>
     );
 }
+

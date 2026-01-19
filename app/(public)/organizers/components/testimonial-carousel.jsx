@@ -52,11 +52,11 @@ export default function TestimonialCarousel() {
                                     <CardContent className="flex flex-col items-center justify-center p-12 text-center space-y-6">
                                         <div className="flex gap-1">
                                             {[...Array(t.rating)].map((_, j) => (
-                                                <Star key={j} className="w-4 h-4 fill-amber-500 text-amber-500" />
+                                                <Star key={j} className="w-4 h-4 fill-#D4AF37 text-#D4AF37" />
                                             ))}
                                         </div>
 
-                                        <Quote className="w-12 h-12 text-amber-500/20" />
+                                        <Quote className="w-12 h-12 text-#D4AF37/20" />
 
                                         <p className="text-xl md:text-2xl font-light italic leading-relaxed text-zinc-200">
                                             "{t.quote}"
@@ -72,9 +72,10 @@ export default function TestimonialCarousel() {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <CarouselPrevious className="hidden md:flex border-white/10 hover:bg-amber-500 hover:text-black transition-all" />
-                <CarouselNext className="hidden md:flex border-white/10 hover:bg-amber-500 hover:text-black transition-all" />
+                <CarouselPrevious className="hidden md:flex border-white/10 hover:bg-#D4AF37 hover:text-black transition-all" />
+                <CarouselNext className="hidden md:flex border-white/10 hover:bg-#D4AF37 hover:text-black transition-all" />
             </Carousel>
         </div>
     );
 }
+

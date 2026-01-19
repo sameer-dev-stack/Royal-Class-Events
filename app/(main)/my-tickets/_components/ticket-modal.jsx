@@ -52,7 +52,7 @@ export default function TicketModal({ isOpen, onClose, registration, event }) {
                                 {eventTitle}
                             </DialogTitle>
 
-                            <div className="flex items-center gap-2 text-amber-500 text-sm font-medium mb-6">
+                            <div className="flex items-center gap-2 text-#D4AF37 text-sm font-medium mb-6">
                                 <Calendar className="w-4 h-4" />
                                 <span>{format(eventStartDate, "EEEE, MMMM do, yyyy")}</span>
                             </div>
@@ -129,3 +129,4 @@ export default function TicketModal({ isOpen, onClose, registration, event }) {
         </Dialog>
     );
 }
+

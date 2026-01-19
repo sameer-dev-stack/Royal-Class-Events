@@ -180,3 +180,57 @@
 [02:13:30.108] Server  LOG     ✓ Compiled in 445ms
 [02:13:37.929] Server  LOG     ✓ Compiled in 868ms
 [02:13:47.130] Server  LOG     ✓ Finished filesystem cache database compaction in 11.5s
+[02:14:03.971] Server  LOG     ✓ Finished filesystem cache database compaction in 15.6s
+[02:14:04.165] Server  LOG     ✓ Finished writing to filesystem cache in 13.2s
+[02:14:15.558] Server  LOG     ✓ Compiled in 467ms
+[02:14:23.670] Server  LOG     ✓ Compiled in 498ms
+[02:15:17.851] Server  LOG     ✓ Compiled in 340ms
+[02:15:25.097] Server  LOG     ✓ Compiled in 518ms
+[02:15:32.535] Server  LOG     ✓ Compiled in 630ms
+[02:15:44.713] Server  LOG     ✓ Finished filesystem cache database compaction in 16.9s
+[02:15:45.514] Server  LOG     ✓ Finished writing to filesystem cache in 11.0s
+[02:20:25.095] Server  LOG     ✓ Compiled in 900ms
+[02:20:26.103] Server  LOG     ✓ Compiled in 1001ms
+[02:20:27.260] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Meskat\Documents\Royal-Class-Events-main\app\globals.css:1:1: Cannot apply unknown utility class `via-#D4AF37`
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (C:\Users\Meskat\Documents\Royal-Class-Events-main\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.js [Server Component]
+[02:25:40.525] Server  LOG     ✓ Compiled in 64ms
+[02:25:41.267] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Meskat\Documents\Royal-Class-Events-main\app\globals.css:1:1: Cannot apply unknown utility class `via-#D4AF37`
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (C:\Users\Meskat\Documents\Royal-Class-Events-main\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.js [Server Component]
+[02:34:43.257] Browser ERROR   ./app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: tailwindcss: C:\Users\Meskat\Documents\Royal-Class-Events-main\app\globals.css:1:1: Cannot apply unknown utility class `via-#D4AF37`
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Root.error (turbopack:///[project]/node_modules/postcss/lib/node.js:146:32)]
+    [at Object.Once (C:\Users\Meskat\Documents\Royal-Class-Events-main\node_modules\@tailwindcss\postcss\dist\index.js:10:6912)]
+    [at async LazyResult.runAsync (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:293:11)]
+    [at async transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:34)]
+    [at async run (turbopack:///[turbopack-node]/ipc/evaluate.ts:92:23)]
+
+Import trace:
+  Client Component Browser:
+    ./app/globals.css [Client Component Browser]
+    ./app/layout.js [Server Component]

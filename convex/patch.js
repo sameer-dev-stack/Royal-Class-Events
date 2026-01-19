@@ -24,7 +24,7 @@ export const addSeatMapConfig = mutation({
                     {
                         id: "VIP", // This ID needs to match a Ticket Tier ID or Name for the price lookup to work in our simplified component
                         name: "VIP",
-                        color: "#FBB03B", // Gold
+                        color: "#D4AF37", // Gold
                         price: 5000
                     },
                     {
@@ -53,3 +53,4 @@ export const listEvents = query({
         return await ctx.db.query("events").take(5);
     }
 });
+

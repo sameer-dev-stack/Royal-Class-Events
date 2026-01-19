@@ -24,7 +24,7 @@ const SeatViewer = dynamic(() => import("@/components/seat-engine/SeatViewer"), 
     loading: () => (
         <div className="w-full h-full flex items-center justify-center bg-zinc-950">
             <div className="text-center space-y-4">
-                <div className="w-16 h-16 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mx-auto" />
+                <div className="w-16 h-16 border-4 border-#D4AF37/20 border-t-#D4AF37 rounded-full animate-spin mx-auto" />
                 <p className="text-zinc-500 font-medium text-sm">Loading Seat Map...</p>
             </div>
         </div>
@@ -92,7 +92,7 @@ export default function BookingModal({
                 {/* Header */}
                 <DialogHeader className="px-6 py-4 border-b border-zinc-800 bg-zinc-900 shrink-0 flex flex-row items-center justify-between space-y-0">
                     <DialogTitle className="text-xl font-bold text-white flex items-center gap-3">
-                        <span className="bg-amber-500/10 text-amber-500 px-2.5 py-1 rounded-md text-xs uppercase tracking-wider font-bold shadow-sm border border-amber-500/20">
+                        <span className="bg-#D4AF37/10 text-#D4AF37 px-2.5 py-1 rounded-md text-xs uppercase tracking-wider font-bold shadow-sm border border-#D4AF37/20">
                             Booking
                         </span>
                         <span className="truncate">{eventTitle || "Select Your Seats"}</span>
@@ -122,8 +122,8 @@ export default function BookingModal({
                             <div className="w-full h-full flex items-center justify-center p-6 sm:p-12">
                                 <div className="max-w-md w-full bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 space-y-8 animate-in fade-in zoom-in duration-300">
                                     <div className="text-center space-y-2">
-                                        <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                            <ShoppingCart className="w-8 h-8 text-amber-500" />
+                                        <div className="w-16 h-16 bg-#D4AF37/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                            <ShoppingCart className="w-8 h-8 text-#D4AF37" />
                                         </div>
                                         <h3 className="text-2xl font-bold text-white">General Admission</h3>
                                         <p className="text-zinc-400">Select the number of tickets you'd like to purchase.</p>
@@ -155,7 +155,7 @@ export default function BookingModal({
 
                                     <div className="bg-zinc-950/50 rounded-2xl p-4 border border-zinc-800 flex justify-between items-center">
                                         <span className="text-zinc-400 font-medium">Price per ticket</span>
-                                        <span className="text-xl font-bold text-amber-500">৳{basePrice}</span>
+                                        <span className="text-xl font-bold text-#D4AF37">৳{basePrice}</span>
                                     </div>
 
                                     <p className="text-xs text-center text-zinc-500 uppercase tracking-widest font-bold">
@@ -177,7 +177,7 @@ export default function BookingModal({
                                         onClick={() => setMapEnabled(true)}
                                         className="absolute inset-0 z-20 bg-black/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-6 text-center lg:hidden cursor-pointer group"
                                     >
-                                        <div className="bg-amber-500 text-black px-6 py-3 rounded-full font-bold shadow-2xl transform transition-transform group-active:scale-95 flex items-center gap-2">
+                                        <div className="bg-#D4AF37 text-black px-6 py-3 rounded-full font-bold shadow-2xl transform transition-transform group-active:scale-95 flex items-center gap-2">
                                             <MapPin className="w-5 h-5" />
                                             Tap to Explore Map
                                         </div>
@@ -190,8 +190,8 @@ export default function BookingModal({
                         ) : (
                             <div className="flex items-center justify-center h-full p-4">
                                 <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 max-w-sm text-center space-y-4 shadow-lg">
-                                    <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto">
-                                        <Armchair className="w-8 h-8 text-amber-500" />
+                                    <div className="w-16 h-16 bg-#D4AF37/10 rounded-full flex items-center justify-center mx-auto">
+                                        <Armchair className="w-8 h-8 text-#D4AF37" />
                                     </div>
                                     <div className="space-y-2">
                                         <h3 className="text-xl font-bold text-white">No Seat Layout</h3>
@@ -219,7 +219,7 @@ export default function BookingModal({
                     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 p-4 border-t border-zinc-800 bg-zinc-900 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] pb-[calc(1rem+env(safe-area-inset-bottom))]">
                         <Button
                             onClick={() => setIsMobileCheckoutOpen(true)}
-                            className="w-full h-14 bg-amber-500 hover:bg-amber-600 text-black font-black text-lg rounded-2xl shadow-xl active:scale-[0.98] transition-all"
+                            className="w-full h-14 bg-#D4AF37 hover:bg-#8C7326 text-black font-black text-lg rounded-2xl shadow-xl active:scale-[0.98] transition-all"
                         >
                             {cartItems.length > 0 ? (
                                 <div className="flex items-center justify-between w-full px-4">
@@ -257,3 +257,4 @@ export default function BookingModal({
         </Dialog>
     );
 }
+

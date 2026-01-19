@@ -112,7 +112,7 @@ export const ASSET_LIBRARY = [
         icon: Armchair,
         width: 140,
         height: 100,
-        color: '#f59e0b',
+        color: '#D4AF37',
         description: "Private luxury seating"
     },
     {
@@ -156,3 +156,4 @@ export const ASSET_LIBRARY = [
         description: "Dead kill / Blocked view"
     }
 ];
+

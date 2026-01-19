@@ -100,7 +100,7 @@ const SERVICES_DATA = {
                     ].map((item, i) => (
                         <div key={i} className="bg-zinc-900/50 border border-white/5 rounded-3xl p-8 text-center space-y-4">
                             <div className="aspect-square bg-white/5 rounded-2xl flex items-center justify-center">
-                                <Smartphone className="w-12 h-12 text-amber-500/20" />
+                                <Smartphone className="w-12 h-12 text-[#D4AF37]/20" />
                             </div>
                             <h4 className="text-xl font-bold">{item.name}</h4>
                             <p className="text-sm text-muted-foreground">{item.desc}</p>
@@ -144,7 +144,7 @@ const SERVICES_DATA = {
                     <div className="space-y-4">
                         {["Real-time Headcount", "Audience Demographics", "Revenue Benchmarking"].map((item, i) => (
                             <div key={i} className="flex items-center gap-3">
-                                <CheckCircle2 className="w-5 h-5 text-amber-500" />
+                                <CheckCircle2 className="w-5 h-5 text-[#D4AF37]" />
                                 <span className="font-bold text-sm tracking-widest uppercase">{item}</span>
                             </div>
                         ))}
@@ -153,21 +153,21 @@ const SERVICES_DATA = {
                 <div className="relative aspect-video bg-zinc-900 border border-white/10 rounded-[2rem] p-4 shadow-3xl">
                     <div className="w-full h-full bg-zinc-950 rounded-xl overflow-hidden p-6 space-y-6">
                         <div className="flex justify-between items-center">
-                            <div className="w-24 h-2 bg-amber-500/20 rounded-full" />
-                            <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500">
+                            <div className="w-24 h-2 bg-[#D4AF37]/20 rounded-full" />
+                            <div className="w-12 h-12 rounded-full bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37]">
                                 <BarChart3 className="w-6 h-6" />
                             </div>
                         </div>
                         <div className="grid grid-cols-4 gap-4 items-end h-[100px]">
                             {[40, 70, 45, 90].map((h, i) => (
-                                <div key={i} style={{ height: `${h}%` }} className="bg-amber-500/40 rounded-t-md" />
+                                <div key={i} style={{ height: `${h}%` }} className="bg-[#D4AF37]/40 rounded-t-md" />
                             ))}
                         </div>
                         <div className="space-y-2">
                             <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                                <div className="w-[75%] h-full bg-amber-500" />
+                                <div className="w-[75%] h-full bg-[#D4AF37]" />
                             </div>
-                            <div className="flex justify-between text-[10px] font-black uppercase text-amber-500/50">
+                            <div className="flex justify-between text-[10px] font-black uppercase text-[#D4AF37]/50">
                                 <span>Capacity</span>
                                 <span>75% Reached</span>
                             </div>
@@ -189,7 +189,7 @@ export default function ServicePage({ params: paramsPromise }) {
             <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">
                 <h1 className="text-4xl font-black italic mb-4">Service Not Found</h1>
                 <p className="text-muted-foreground mb-8">The requested royal service does not exist.</p>
-                <a href="/services" className="text-amber-500 font-bold hover:underline">Return to Hub</a>
+                <a href="/services" className="text-[#D4AF37] font-bold hover:underline">Return to Hub</a>
             </div>
         );
     }

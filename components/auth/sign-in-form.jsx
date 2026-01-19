@@ -59,8 +59,8 @@ export default function SignInForm() {
             <div className="bg-card/80 backdrop-blur-xl border border-border rounded-2xl shadow-2xl p-8">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-500/10 rounded-full border border-amber-500/20 mb-4">
-                        <Crown className="w-7 h-7 text-amber-500" />
+                    <div className="inline-flex items-center justify-center w-14 h-14 bg-#D4AF37/10 rounded-full border border-#D4AF37/20 mb-4">
+                        <Crown className="w-7 h-7 text-#D4AF37" />
                     </div>
                     <h1 className="text-2xl font-bold">Welcome Back</h1>
                     <p className="text-muted-foreground mt-2">Sign in to your account</p>
@@ -146,7 +146,7 @@ export default function SignInForm() {
 
                     <Button
                         type="submit"
-                        className="w-full h-11 bg-amber-500 hover:bg-amber-600 text-black font-semibold"
+                        className="w-full h-11 bg-#D4AF37 hover:bg-#8C7326 text-black font-semibold"
                         disabled={isLoading}
                     >
                         {isLoading ? (
@@ -163,7 +163,7 @@ export default function SignInForm() {
                 {/* Footer */}
                 <p className="text-center text-sm text-muted-foreground mt-6">
                     Don&apos;t have an account?{" "}
-                    <Link href="/sign-up" className="text-amber-500 hover:underline font-medium">
+                    <Link href="/sign-up" className="text-#D4AF37 hover:underline font-medium">
                         Get Started
                     </Link>
                 </p>
@@ -171,3 +171,4 @@ export default function SignInForm() {
         </div>
     );
 }
+

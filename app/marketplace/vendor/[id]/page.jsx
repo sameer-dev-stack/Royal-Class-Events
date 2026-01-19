@@ -44,7 +44,7 @@ export default function VendorProfilePage() {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin" />
                     <p className="text-muted-foreground">Loading vendor profile...</p>
                 </div>
             </div>
@@ -60,7 +60,7 @@ export default function VendorProfilePage() {
                     <p className="text-muted-foreground">
                         This vendor profile doesn't exist or is no longer available.
                     </p>
-                    <Button asChild className="bg-amber-500 hover:bg-amber-600 text-black">
+                    <Button asChild className="bg-[#D4AF37] hover:bg-[#8C7326] text-black">
                         <Link href="/marketplace">Browse Vendors</Link>
                     </Button>
                 </div>
@@ -134,7 +134,7 @@ export default function VendorProfilePage() {
                                             className="object-cover"
                                         />
                                     ) : (
-                                        <div className="w-full h-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center">
+                                        <div className="w-full h-full bg-gradient-to-br from-[#D4AF37] to-[#8C7326] flex items-center justify-center">
                                             <span className="text-3xl md:text-4xl font-black text-black">
                                                 {name?.charAt(0)}
                                             </span>
@@ -142,7 +142,7 @@ export default function VendorProfilePage() {
                                     )}
                                 </div>
                                 {verified && (
-                                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center border-2 border-background">
+                                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center border-2 border-background">
                                         <CheckCircle2 className="w-4 h-4 text-black" />
                                     </div>
                                 )}
@@ -155,7 +155,7 @@ export default function VendorProfilePage() {
                                         {name}
                                     </h1>
                                     {verified && (
-                                        <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full">
+                                        <span className="px-2 py-0.5 bg-[#D4AF37]/20 text-[#F7E08B] text-xs font-bold rounded-full">
                                             VERIFIED
                                         </span>
                                     )}
@@ -163,12 +163,12 @@ export default function VendorProfilePage() {
 
                                 <div className="flex items-center gap-4 flex-wrap text-sm text-muted-foreground">
                                     <span className="flex items-center gap-1.5">
-                                        <MapPin className="w-4 h-4 text-amber-500" />
+                                        <MapPin className="w-4 h-4 text-[#D4AF37]" />
                                         {location?.city}, {location?.country}
                                     </span>
                                     {rating > 0 && (
                                         <span className="flex items-center gap-1.5">
-                                            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                            <Star className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]" />
                                             {rating.toFixed(1)} ({reviewCount} reviews)
                                         </span>
                                     )}
@@ -202,7 +202,7 @@ export default function VendorProfilePage() {
                                 transition={{ delay: 0.1 }}
                             >
                                 <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-amber-500" />
+                                    <Sparkles className="w-5 h-5 text-[#D4AF37]" />
                                     About
                                 </h2>
                                 <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
@@ -218,7 +218,7 @@ export default function VendorProfilePage() {
                                     transition={{ delay: 0.2 }}
                                 >
                                     <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                                        <Users className="w-5 h-5 text-amber-500" />
+                                        <Users className="w-5 h-5 text-[#D4AF37]" />
                                         Portfolio
                                     </h2>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -267,7 +267,7 @@ export default function VendorProfilePage() {
                                     transition={{ delay: 0.3 }}
                                 >
                                     <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                                        <Clock className="w-5 h-5 text-amber-500" />
+                                        <Clock className="w-5 h-5 text-[#D4AF37]" />
                                         Services & Packages
                                     </h2>
                                     <div className="grid md:grid-cols-2 gap-6">
@@ -294,7 +294,7 @@ export default function VendorProfilePage() {
                                     transition={{ delay: 0.4 }}
                                 >
                                     <h2 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
-                                        <Star className="w-5 h-5 text-amber-500" />
+                                        <Star className="w-5 h-5 text-[#D4AF37]" />
                                         Recent Reviews
                                     </h2>
                                     <div className="space-y-4">
@@ -329,7 +329,7 @@ export default function VendorProfilePage() {
                                                                     <Star
                                                                         key={i}
                                                                         className={`w-4 h-4 ${i < review.rating
-                                                                            ? "text-amber-500 fill-amber-500"
+                                                                            ? "text-[#D4AF37] fill-[#D4AF37]"
                                                                             : "text-zinc-700"
                                                                             }`}
                                                                     />
@@ -340,7 +340,7 @@ export default function VendorProfilePage() {
                                                             {review.comment}
                                                         </p>
                                                         {review.response && (
-                                                            <div className="mt-3 pl-4 border-l-2 border-amber-500/30">
+                                                            <div className="mt-3 pl-4 border-l-2 border-[#D4AF37]/30">
                                                                 <p className="text-xs text-muted-foreground mb-1">
                                                                     Vendor Response:
                                                                 </p>
@@ -369,7 +369,7 @@ export default function VendorProfilePage() {
                                 {/* Starting Price */}
                                 <div className="mb-6 pb-6 border-b border-border/50">
                                     <p className="text-sm text-muted-foreground mb-1">Starting from</p>
-                                    <p className="text-3xl font-black text-amber-500">
+                                    <p className="text-3xl font-black text-[#D4AF37]">
                                         {formatPrice(startingPrice)}
                                     </p>
                                 </div>
@@ -379,7 +379,7 @@ export default function VendorProfilePage() {
                                     {contact?.email && (
                                         <a
                                             href={`mailto:${contact.email}`}
-                                            className="flex items-center gap-3 text-muted-foreground hover:text-amber-500 transition-colors"
+                                            className="flex items-center gap-3 text-muted-foreground hover:text-[#D4AF37] transition-colors"
                                         >
                                             <Mail className="w-5 h-5 text-muted-foreground" />
                                             <span className="text-sm truncate">{contact.email}</span>
@@ -388,7 +388,7 @@ export default function VendorProfilePage() {
                                     {contact?.phone && (
                                         <a
                                             href={`tel:${contact.phone}`}
-                                            className="flex items-center gap-3 text-muted-foreground hover:text-amber-500 transition-colors"
+                                            className="flex items-center gap-3 text-muted-foreground hover:text-[#D4AF37] transition-colors"
                                         >
                                             <Phone className="w-5 h-5 text-muted-foreground" />
                                             <span className="text-sm">{contact.phone}</span>
@@ -399,7 +399,7 @@ export default function VendorProfilePage() {
                                             href={contact.website}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-3 text-muted-foreground hover:text-amber-500 transition-colors"
+                                            className="flex items-center gap-3 text-muted-foreground hover:text-[#D4AF37] transition-colors"
                                         >
                                             <Globe className="w-5 h-5 text-muted-foreground" />
                                             <span className="text-sm truncate">{contact.website}</span>
@@ -410,7 +410,7 @@ export default function VendorProfilePage() {
                                             href={`https://instagram.com/${contact.instagram}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="flex items-center gap-3 text-muted-foreground hover:text-amber-500 transition-colors"
+                                            className="flex items-center gap-3 text-muted-foreground hover:text-[#D4AF37] transition-colors"
                                         >
                                             <Instagram className="w-5 h-5 text-muted-foreground" />
                                             <span className="text-sm">@{contact.instagram}</span>
@@ -421,7 +421,7 @@ export default function VendorProfilePage() {
                                 {/* CTA Button */}
                                 <Button
                                     onClick={() => setIsRFQModalOpen(true)}
-                                    className="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transition-all rounded-xl"
+                                    className="w-full h-14 bg-gradient-to-r from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-amber-700 text-black font-bold text-lg shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transition-all rounded-xl"
                                 >
                                     <MessageSquare className="w-5 h-5 mr-2" />
                                     Request Quote

@@ -171,7 +171,7 @@ export default function MyTicketsPage() {
               setCurrentTicketIndex(0);
             }}
             className={cn(
-              "group relative flex flex-col bg-card/40 backdrop-blur-md rounded-3xl border border-white/5 hover:border-amber-500/30 transition-all cursor-pointer overflow-hidden shadow-xl",
+              "group relative flex flex-col bg-card/40 backdrop-blur-md rounded-3xl border border-white/5 hover:border-#D4AF37/30 transition-all cursor-pointer overflow-hidden shadow-xl",
               isHistoryTab && "grayscale-[0.5] opacity-80"
             )}
           >
@@ -261,7 +261,7 @@ export default function MyTicketsPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
               placeholder="Search by event name..."
-              className="pl-12 h-14 bg-card/40 border-white/5 rounded-2xl focus:ring-amber-500/50"
+              className="pl-12 h-14 bg-card/40 border-white/5 rounded-2xl focus:ring-#D4AF37/50"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -487,3 +487,4 @@ export default function MyTicketsPage() {
     </div>
   );
 }
+

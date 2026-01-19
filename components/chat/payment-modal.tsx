@@ -57,8 +57,8 @@ export function PaymentModal({
         <Dialog open={isOpen} onOpenChange={(open) => !open && !isSubmitting && onClose()}>
             <DialogContent className="bg-background border-border text-foreground max-w-md rounded-[2rem] overflow-hidden p-0 gap-0 shadow-2xl">
                 <DialogHeader className="p-8 pb-4 text-center">
-                    <div className="mx-auto w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center mb-4 border border-amber-500/20">
-                        <ShieldCheck className="w-8 h-8 text-amber-500" />
+                    <div className="mx-auto w-16 h-16 rounded-2xl bg-#D4AF37/10 flex items-center justify-center mb-4 border border-#D4AF37/20">
+                        <ShieldCheck className="w-8 h-8 text-#D4AF37" />
                     </div>
                     <DialogTitle className="text-2xl font-black text-foreground tracking-tight">
                         Secure Booking
@@ -101,7 +101,7 @@ export function PaymentModal({
                         disabled={isSubmitting}
                         variant="default"
                         size="lg"
-                        className="w-full h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-black text-lg rounded-2xl shadow-xl shadow-amber-500/10 transition-all active:scale-95"
+                        className="w-full h-14 bg-gradient-to-r from-#D4AF37 to-#8C7326 hover:from-#8C7326 hover:to-amber-700 text-black font-black text-lg rounded-2xl shadow-xl shadow-#D4AF37/10 transition-all active:scale-95"
                     >
                         {isSubmitting ? (
                             <>
@@ -120,3 +120,4 @@ export function PaymentModal({
         </Dialog>
     );
 }
+

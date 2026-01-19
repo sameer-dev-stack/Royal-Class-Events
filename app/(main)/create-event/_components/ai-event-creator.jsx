@@ -54,11 +54,11 @@ export default function AIEventCreator({ onEventGenerated }) {
           Generate with AI
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] border-amber-500/20 bg-background/95 backdrop-blur-xl">
+      <DialogContent className="sm:max-w-[500px] border-#D4AF37/20 bg-background/95 backdrop-blur-xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <Sparkles className="w-5 h-5 text-amber-500 fill-amber-500/20" />
-            <span className="bg-gradient-to-r from-amber-500 to-purple-600 bg-clip-text text-transparent font-bold">
+            <Sparkles className="w-5 h-5 text-#D4AF37 fill-#D4AF37/20" />
+            <span className="bg-gradient-to-r from-#D4AF37 to-purple-600 bg-clip-text text-transparent font-bold">
               AI Event Assistant
             </span>
           </DialogTitle>
@@ -74,7 +74,7 @@ export default function AIEventCreator({ onEventGenerated }) {
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="e.g., A luxury wine tasting evening in South Mumbai with jazz music..."
               rows={5}
-              className="resize-none bg-secondary/30 border-primary/10 focus-visible:ring-amber-500/50"
+              className="resize-none bg-secondary/30 border-primary/10 focus-visible:ring-#D4AF37/50"
             />
             <div className="flex flex-wrap gap-2">
               <span className="text-xs text-muted-foreground font-medium mr-1">Try asking for:</span>
@@ -82,7 +82,7 @@ export default function AIEventCreator({ onEventGenerated }) {
                 <button
                   key={suggestion}
                   onClick={() => setPrompt(prev => prev ? prev + " " + suggestion : "Create a " + suggestion)}
-                  className="text-xs px-2 py-1 rounded-full bg-secondary hover:bg-amber-500/10 hover:text-amber-600 transition-colors border border-border/50"
+                  className="text-xs px-2 py-1 rounded-full bg-secondary hover:bg-#D4AF37/10 hover:text-#8C7326 transition-colors border border-border/50"
                 >
                   {suggestion}
                 </button>
@@ -101,7 +101,7 @@ export default function AIEventCreator({ onEventGenerated }) {
             <Button
               onClick={generateEvent}
               disabled={loading || !prompt.trim()}
-              className="flex-1 gap-2 bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-600 hover:to-purple-700 text-white border-0 shadow-lg shadow-amber-500/20"
+              className="flex-1 gap-2 bg-gradient-to-r from-#D4AF37 to-purple-600 hover:from-#8C7326 hover:to-purple-700 text-white border-0 shadow-lg shadow-#D4AF37/20"
             >
               {loading ? (
                 <>
@@ -121,3 +121,4 @@ export default function AIEventCreator({ onEventGenerated }) {
     </Dialog>
   );
 }
+

@@ -179,7 +179,7 @@ export default function ChatPage() {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+                    <div className="w-12 h-12 border-4 border-[#D4AF37]/30 border-t-[#D4AF37] rounded-full animate-spin" />
                     <p className="text-muted-foreground">Loading conversation...</p>
                 </div>
             </div>
@@ -193,7 +193,7 @@ export default function ChatPage() {
                 <div className="text-center space-y-4">
                     <h1 className="text-2xl font-bold text-foreground">Conversation Not Found</h1>
                     <p className="text-muted-foreground">This conversation doesn't exist or you don't have access.</p>
-                    <Button asChild className="bg-amber-500 hover:bg-amber-600 text-black">
+                    <Button asChild className="bg-[#D4AF37] hover:bg-[#8C7326] text-black">
                         <Link href="/messages">Back to Messages</Link>
                     </Button>
                 </div>
@@ -229,7 +229,7 @@ export default function ChatPage() {
                                 className={cn(
                                     "flex items-center gap-3 p-3 rounded-xl transition-colors",
                                     conv.leadId === leadId
-                                        ? "bg-amber-500/10 border border-amber-500/30"
+                                        ? "bg-[#D4AF37]/10 border border-[#D4AF37]/30"
                                         : "hover:bg-muted"
                                 )}
                             >
@@ -252,7 +252,7 @@ export default function ChatPage() {
                                     <div className="flex items-center justify-between">
                                         <span className={cn(
                                             "font-medium truncate",
-                                            conv.leadId === leadId ? "text-amber-600 dark:text-amber-400" : "text-foreground"
+                                            conv.leadId === leadId ? "text-[#8C7326] dark:text-[#F7E08B]" : "text-foreground"
                                         )}>
                                             {conv.otherParty?.name}
                                         </span>
@@ -373,7 +373,7 @@ export default function ChatPage() {
                                             className={cn(
                                                 "max-w-[70%] px-4 py-3 rounded-2xl",
                                                 msg.isSelf
-                                                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black rounded-br-md"
+                                                    ? "bg-gradient-to-r from-[#D4AF37] to-[#8C7326] text-black rounded-br-md"
                                                     : "bg-muted text-foreground rounded-bl-md"
                                             )}
                                         >
@@ -390,8 +390,8 @@ export default function ChatPage() {
                                             </p>
                                         </div>
                                         {msg.isSelf && (
-                                            <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mb-5">
-                                                <span className="text-xs font-bold text-amber-500">
+                                            <div className="w-8 h-8 rounded-full bg-[#D4AF37]/20 flex items-center justify-center flex-shrink-0 mb-5">
+                                                <span className="text-xs font-bold text-[#D4AF37]">
                                                     {user?.name?.charAt(0) || "Y"}
                                                 </span>
                                             </div>
@@ -413,7 +413,7 @@ export default function ChatPage() {
                                 type="button"
                                 variant="outline"
                                 onClick={() => setShowOfferModal(true)}
-                                className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10 hover:border-amber-500/50"
+                                className="border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/10 hover:border-[#D4AF37]/50"
                             >
                                 <FileText className="w-4 h-4 mr-2" />
                                 Create Offer
@@ -423,13 +423,13 @@ export default function ChatPage() {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Type your message..."
-                            className="flex-1 bg-muted/50 border-input focus:border-amber-500/50 text-foreground"
+                            className="flex-1 bg-muted/50 border-input focus:border-[#D4AF37]/50 text-foreground"
                             disabled={isSending}
                         />
                         <Button
                             type="submit"
                             disabled={!message.trim() || isSending}
-                            className="bg-amber-500 hover:bg-amber-600 text-black px-6"
+                            className="bg-[#D4AF37] hover:bg-[#8C7326] text-black px-6"
                         >
                             {isSending ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -493,7 +493,7 @@ export default function ChatPage() {
                             <span className={cn(
                                 "px-3 py-1 rounded-full text-xs font-bold uppercase",
                                 lead.status === "new" && "bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400",
-                                lead.status === "contacted" && "bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400",
+                                lead.status === "contacted" && "bg-[#D4AF37]/10 text-[#8C7326] dark:bg-[#D4AF37]/20 dark:text-[#F7E08B]",
                                 lead.status === "quoted" && "bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400",
                                 lead.status === "booked" && "bg-green-500/10 text-green-600 dark:bg-green-500/20 dark:text-green-400",
                                 lead.status === "declined" && "bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400"
@@ -508,8 +508,8 @@ export default function ChatPage() {
 
                             <div className="space-y-3">
                                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                                    <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                                        <Calendar className="w-5 h-5 text-amber-500" />
+                                    <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
+                                        <Calendar className="w-5 h-5 text-[#D4AF37]" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Event Date</p>
@@ -522,8 +522,8 @@ export default function ChatPage() {
                                 </div>
 
                                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                                    <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                                        <Users className="w-5 h-5 text-amber-500" />
+                                    <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
+                                        <Users className="w-5 h-5 text-[#D4AF37]" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Guests</p>
@@ -534,8 +534,8 @@ export default function ChatPage() {
                                 </div>
 
                                 <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-xl">
-                                    <div className="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                                        <DollarSign className="w-5 h-5 text-amber-500" />
+                                    <div className="w-10 h-10 bg-[#D4AF37]/10 rounded-lg flex items-center justify-center">
+                                        <DollarSign className="w-5 h-5 text-[#D4AF37]" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-muted-foreground">Budget</p>
@@ -585,7 +585,7 @@ export default function ChatPage() {
                                 <h4 className="text-sm font-semibold text-foreground">Quick Actions</h4>
                                 <Button
                                     variant="outline"
-                                    className="w-full border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+                                    className="w-full border-[#D4AF37]/30 text-[#F7E08B] hover:bg-[#D4AF37]/10"
                                 >
                                     <CheckCircle2 className="w-4 h-4 mr-2" />
                                     Mark as Quoted
@@ -605,7 +605,7 @@ export default function ChatPage() {
                                     <h4 className="text-sm font-semibold text-foreground">Actions</h4>
                                     <Button
                                         onClick={() => setIsReviewOpen(true)}
-                                        className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
+                                        className="w-full bg-gradient-to-r from-[#D4AF37] to-orange-600 hover:from-[#8C7326] hover:to-orange-700 text-white"
                                     >
                                         <Star className="w-4 h-4 mr-2 fill-current" />
                                         Leave a Review

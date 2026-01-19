@@ -122,7 +122,7 @@ export default function EventDetailPage() {
 
         <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-4 max-w-2xl">
-            <Badge className="bg-amber-500 text-black font-bold uppercase tracking-wider px-3 py-1">
+            <Badge className="bg-[#D4AF37] text-black font-bold uppercase tracking-wider px-3 py-1">
               {event.type}
             </Badge>
             <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-none">
@@ -130,11 +130,11 @@ export default function EventDetailPage() {
             </h1>
             <div className="flex flex-wrap items-center gap-6 text-white/80 font-medium">
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-amber-500" />
+                <Calendar className="w-5 h-5 text-[#D4AF37]" />
                 <span>{format(startDate, "EEEE, MMMM do, yyyy")}</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-amber-500" />
+                <MapPin className="w-5 h-5 text-[#D4AF37]" />
                 <span>{event.locationConfiguration?.venueName || "Online Event"}</span>
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function EventDetailPage() {
             {canManageEvent && (
               <Button
                 onClick={() => router.push(`/dashboard`)}
-                className="bg-amber-500 hover:bg-amber-600 text-black font-bold px-6 h-12 rounded-full"
+                className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold px-6 h-12 rounded-full"
               >
                 Manage Event
               </Button>
@@ -167,8 +167,8 @@ export default function EventDetailPage() {
           {/* About Section */}
           <section className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                <Info className="w-5 h-5 text-amber-500" />
+              <div className="p-2 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/20">
+                <Info className="w-5 h-5 text-[#D4AF37]" />
               </div>
               <h2 className="text-3xl font-bold tracking-tight">About this <span className="text-gradient-gold">Experience</span></h2>
             </div>
@@ -180,7 +180,7 @@ export default function EventDetailPage() {
           {/* Details Grid */}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="p-6 rounded-2xl border border-white/5 bg-card/40 backdrop-blur-sm space-y-4">
-              <div className="flex items-center gap-3 text-amber-500">
+              <div className="flex items-center gap-3 text-[#D4AF37]">
                 <Clock className="w-5 h-5" />
                 <h3 className="font-bold uppercase tracking-wider text-sm">Timing</h3>
               </div>
@@ -189,7 +189,7 @@ export default function EventDetailPage() {
               </p>
             </div>
             <div className="p-6 rounded-2xl border border-white/5 bg-card/40 backdrop-blur-sm space-y-4">
-              <div className="flex items-center gap-3 text-amber-500">
+              <div className="flex items-center gap-3 text-[#D4AF37]">
                 <ShieldCheck className="w-5 h-5" />
                 <h3 className="font-bold uppercase tracking-wider text-sm">Verified Venue</h3>
               </div>
@@ -202,7 +202,7 @@ export default function EventDetailPage() {
 
         {/* Sidebar / CTA */}
         <div className="space-y-6">
-          <div className="sticky top-32 p-8 rounded-3xl border border-amber-500/20 bg-card/60 backdrop-blur-xl shadow-2xl space-y-8">
+          <div className="sticky top-32 p-8 rounded-3xl border border-[#D4AF37]/20 bg-card/60 backdrop-blur-xl shadow-2xl space-y-8">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">Entry Passes</p>
               <div className="flex items-baseline gap-2">
@@ -232,7 +232,7 @@ export default function EventDetailPage() {
               </div>
               <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-amber-400 to-amber-600 rounded-full transition-all duration-1000"
+                  className="h-full bg-gradient-to-r from-[#F7E08B] to-[#8C7326] rounded-full transition-all duration-1000"
                   style={{ width: `${Math.min(100, ((event.analytics?.registrations || 0) / (event.capacityConfig?.totalCapacity || event.capacity || 100)) * 100)}%` }}
                 />
               </div>
@@ -250,7 +250,7 @@ export default function EventDetailPage() {
                 <Button
                   disabled={isPast || isFull || canManageEvent}
                   onClick={handleRegister}
-                  className="w-full h-12 rounded-xl border border-amber-500/30 text-amber-500 hover:bg-amber-500/10 font-bold"
+                  className="w-full h-12 rounded-xl border border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/10 font-bold"
                   variant="outline"
                 >
                   Purchase Another Ticket
@@ -260,7 +260,7 @@ export default function EventDetailPage() {
               <Button
                 disabled={isPast || isFull || canManageEvent}
                 onClick={handleRegister}
-                className="w-full h-14 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:shadow-[0_0_45px_rgba(245,158,11,0.4)] transition-all transform hover:-translate-y-1"
+                className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-amber-700 text-black font-bold text-lg border-none shadow-[0_0_30px_rgba(245,158,11,0.2)] hover:shadow-[0_0_45px_rgba(245,158,11,0.4)] transition-all transform hover:-translate-y-1"
               >
                 {isPast ? "Event Ended" : isFull ? "Sold Out" : canManageEvent ? "Host View" : "Pick Your Seats"}
               </Button>

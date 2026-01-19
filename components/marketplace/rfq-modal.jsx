@@ -75,7 +75,7 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[500px] bg-background border-border text-foreground">
                 <DialogHeader>
-                    <DialogTitle className="text-xl font-bold text-amber-500">
+                    <DialogTitle className="text-xl font-bold text-#D4AF37">
                         Contact {supplierName}
                     </DialogTitle>
                     <DialogDescription className="text-muted-foreground">
@@ -146,7 +146,7 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
                             placeholder={`Hi ${supplierName}, I love your work! Is this date available?`}
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            className="w-full h-32 px-3 py-2 bg-card border border-input rounded-md text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                            className="w-full h-32 px-3 py-2 bg-card border border-input rounded-md text-foreground placeholder:text-muted-foreground resize-none focus:outline-none focus:ring-2 focus:ring-#D4AF37/50"
                             required
                             minLength={10}
                         />
@@ -154,7 +154,7 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
 
                     <Button
                         type="submit"
-                        className="w-full h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-base shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] transition-all"
+                        className="w-full h-12 bg-gradient-to-r from-#D4AF37 to-#8C7326 hover:from-#8C7326 hover:to-amber-700 text-black font-bold text-base shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] transition-all"
                         disabled={loading}
                     >
                         {loading ? (
@@ -174,3 +174,4 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
         </Dialog>
     );
 }
+

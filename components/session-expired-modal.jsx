@@ -56,7 +56,7 @@ export default function SessionExpiredModal({ isOpen, onClose, eventId }) {
                 </DialogHeader>
 
                 <div className="space-y-4 mt-4">
-                    <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-lg">
+                    <div className="p-4 bg-#D4AF37/5 border border-#D4AF37/20 rounded-lg">
                         <p className="text-sm text-muted-foreground">
                             <strong className="text-foreground">What happened?</strong>
                             <br />
@@ -69,7 +69,7 @@ export default function SessionExpiredModal({ isOpen, onClose, eventId }) {
                     <div className="flex flex-col gap-3">
                         <Button
                             onClick={handleRetry}
-                            className="w-full bg-[#FBB03B] hover:bg-[#FBB03B]/90 text-black font-bold"
+                            className="w-full bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black font-bold"
                         >
                             <RefreshCcw className="w-4 h-4 mr-2" />
                             Try Again
@@ -94,3 +94,4 @@ export default function SessionExpiredModal({ isOpen, onClose, eventId }) {
         </Dialog>
     );
 }
+

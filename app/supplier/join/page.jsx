@@ -196,11 +196,11 @@ export default function SupplierJoinPage() {
             <div className="w-full max-w-2xl">
                 {/* Header */}
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 mb-6 shadow-lg shadow-amber-500/20">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#F7E08B] to-[#D4AF37] mb-6 shadow-lg shadow-[#D4AF37]/20">
                         <Store className="w-8 h-8 text-black" />
                     </div>
                     <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                        Join the <span className="text-amber-500">Royal Marketplace</span>
+                        Join the <span className="text-[#D4AF37]">Royal Marketplace</span>
                     </h1>
                     <p className="text-zinc-400">
                         Grow your business with premium clients.
@@ -217,13 +217,13 @@ export default function SupplierJoinPage() {
                                     className={cn(
                                         "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all",
                                         step >= s.id
-                                            ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20"
+                                            ? "bg-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/20"
                                             : "bg-zinc-800 text-zinc-500"
                                     )}
                                 >
                                     {s.id}
                                 </div>
-                                <span className={cn("text-xs font-medium", step >= s.id ? "text-amber-500" : "text-zinc-600")}>
+                                <span className={cn("text-xs font-medium", step >= s.id ? "text-[#D4AF37]" : "text-zinc-600")}>
                                     {s.title}
                                 </span>
                             </div>
@@ -254,7 +254,7 @@ export default function SupplierJoinPage() {
                                                 className={cn(
                                                     "p-3 rounded-xl border text-sm font-medium transition-all",
                                                     formData.categories.includes(cat)
-                                                        ? "bg-amber-500 text-black border-amber-500"
+                                                        ? "bg-[#D4AF37] text-black border-[#D4AF37]"
                                                         : "bg-zinc-800/50 text-zinc-400 border-zinc-700 hover:border-zinc-600"
                                                 )}
                                             >
@@ -382,7 +382,7 @@ export default function SupplierJoinPage() {
                                 type="button"
                                 onClick={handleNext}
                                 disabled={!isStepValid()}
-                                className="bg-amber-500 hover:bg-amber-600 text-black px-8"
+                                className="bg-[#D4AF37] hover:bg-#8C7326 text-black px-8"
                             >
                                 Next
                                 <ChevronRight className="w-4 h-4 ml-2" />
@@ -392,7 +392,7 @@ export default function SupplierJoinPage() {
                                 type="button"
                                 onClick={handleFinalSubmit}
                                 disabled={loading}
-                                className="bg-amber-500 hover:bg-amber-600 text-black px-8 font-bold shadow-lg shadow-amber-500/10 active:scale-95 transition-all"
+                                className="bg-[#D4AF37] hover:bg-#8C7326 text-black px-8 font-bold shadow-lg shadow-[#D4AF37]/10 active:scale-95 transition-all"
                             >
                                 {loading ? (
                                     <Loader2 className="w-4 h-4 animate-spin mr-2" />

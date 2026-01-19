@@ -78,7 +78,7 @@ export default function AdminUsersPage() {
                                         <div className="col-span-5 flex items-center gap-3">
                                             <Avatar className="w-8 h-8">
                                                 <AvatarImage src={user.profile?.avatarUrl} />
-                                                <AvatarFallback className="bg-amber-500/20 text-amber-500 text-xs">
+                                                <AvatarFallback className="bg-#D4AF37/20 text-#D4AF37 text-xs">
                                                     {(user.profile?.displayName || "U").charAt(0).toUpperCase()}
                                                 </AvatarFallback>
                                             </Avatar>
@@ -91,7 +91,7 @@ export default function AdminUsersPage() {
                                         {/* Role */}
                                         <div className="col-span-3">
                                             {user.roles?.includes("super_admin") ? (
-                                                <Badge className="bg-amber-500 text-black hover:bg-amber-400">Super Admin</Badge>
+                                                <Badge className="bg-#D4AF37 text-black hover:bg-#F7E08B">Super Admin</Badge>
                                             ) : (
                                                 <span className="text-sm text-zinc-400">User</span>
                                             )}
@@ -138,3 +138,4 @@ export default function AdminUsersPage() {
         </div>
     );
 }
+

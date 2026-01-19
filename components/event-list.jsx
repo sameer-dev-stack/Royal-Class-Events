@@ -95,7 +95,7 @@ export default function EventList() {
             <Crown className="w-6 h-6 text-[#D4AF37]" />
             <h2 className="text-3xl font-bold text-foreground">Upcoming Events</h2>
           </div>
-          <Link href="/explore" className="text-[#D4AF37] hover:text-amber-400 flex items-center gap-2 text-sm font-medium">
+          <Link href="/explore" className="text-[#D4AF37] hover:text-#F7E08B flex items-center gap-2 text-sm font-medium">
             View All <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

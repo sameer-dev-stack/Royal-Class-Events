@@ -110,7 +110,7 @@ export default function RegisterModal({ isOpen, onClose, event }) {
               <div className="pt-4 flex flex-col gap-3">
                 <Button
                   type="submit"
-                  className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-black font-bold text-lg"
+                  className="w-full h-12 bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold text-lg"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (

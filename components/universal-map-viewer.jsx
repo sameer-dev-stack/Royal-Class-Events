@@ -42,7 +42,7 @@ export default function UniversalMapViewer({ imageUrl }) {
                                     {/* Zone B: Gold Circle */}
                                     <circle
                                         cx="520" cy="350" r="60"
-                                        className="fill-amber-500/30 stroke-amber-400 stroke-2"
+                                        className="fill-#D4AF37/30 stroke-#F7E08B stroke-2"
                                     />
                                     {/* Zone C: Blue Oval */}
                                     <ellipse
@@ -80,3 +80,4 @@ export default function UniversalMapViewer({ imageUrl }) {
         </div>
     );
 }
+
