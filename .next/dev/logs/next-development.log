@@ -169,3 +169,7 @@
 [02:06:08.635] Server  LOG     ✓ Finished filesystem cache database compaction in 29.1s
 [02:06:11.233] Server  LOG     ✓ Compiled in 524ms
 [02:06:26.689] Server  LOG     ✓ Finished filesystem cache database compaction in 12.8s
+[02:08:48.317] Server  LOG     ✓ Compiled in 453ms
+[02:09:11.295] Server  LOG     ✓ Compiled in 369ms
+[02:09:19.048] Server  LOG     ✓ Compiled in 430ms
+[02:09:37.880] Server  LOG     ✓ Finished filesystem cache database compaction in 15.7s

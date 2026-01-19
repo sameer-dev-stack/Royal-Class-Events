@@ -58,7 +58,7 @@ export default function Toolbox() {
                         className={cn(
                             "relative w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200 group",
                             isActive
-                                ? "bg-amber-500 text-black shadow-lg shadow-amber-500/20"
+                                ? "bg-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/20"
                                 : "bg-zinc-800/50 text-zinc-400 hover:text-white hover:bg-zinc-700/50"
                         )}
                     >
@@ -72,7 +72,7 @@ export default function Toolbox() {
 
                         {/* Active indicator */}
                         {isActive && (
-                            <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-amber-500 rounded-full blur-[2px]" />
+                            <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-[#D4AF37] rounded-full blur-[2px]" />
                         )}
                     </button>
                 );

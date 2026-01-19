@@ -97,7 +97,7 @@ export default function PropertiesPanel() {
                             onChange={(e) =>
                                 updateCanvasSettings({ gridSize: parseInt(e.target.value) || 20 })
                             }
-                            className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none"
+                            className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-[#D4AF37]/50 focus:outline-none"
                         />
                     </div>
 
@@ -112,7 +112,7 @@ export default function PropertiesPanel() {
                             }
                             className={cn(
                                 "w-10 h-6 rounded-full transition-colors relative",
-                                canvasSettings.showGrid ? "bg-amber-500" : "bg-zinc-700"
+                                canvasSettings.showGrid ? "bg-[#D4AF37]" : "bg-zinc-700"
                             )}
                         >
                             <div
@@ -135,7 +135,7 @@ export default function PropertiesPanel() {
                             }
                             className={cn(
                                 "w-10 h-6 rounded-full transition-colors relative",
-                                canvasSettings.snapToGrid ? "bg-amber-500" : "bg-zinc-700"
+                                canvasSettings.snapToGrid ? "bg-[#D4AF37]" : "bg-zinc-700"
                             )}
                         >
                             <div
@@ -207,7 +207,7 @@ export default function PropertiesPanel() {
                                 value={selectedElement.name || ""}
                                 onChange={(e) => updateElement(selectedElement.id, { name: e.target.value })}
                                 placeholder={isRectangle ? "Section Name" : "Shape Name"}
-                                className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none"
+                                className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-[#D4AF37]/50 focus:outline-none"
                             />
                         </div>
                     )}
@@ -227,14 +227,14 @@ export default function PropertiesPanel() {
 
                     {/* Category Selection */}
                     {(isBulk || selectedElement.type === TOOL_TYPES.RECTANGLE || selectedElement.type === TOOL_TYPES.CURVE) && (
-                        <div className="p-3 bg-amber-500/[0.03] border border-amber-500/10 rounded-xl space-y-2">
+                        <div className="p-3 bg-[#D4AF37]/[0.03] border border-[#D4AF37]/10 rounded-xl space-y-2">
                             <label className="text-[10px] text-zinc-500 uppercase tracking-widest block font-semibold">
                                 {isBulk ? "Bulk Category" : "Pricing Category"}
                             </label>
                             <select
                                 value={isBulk ? "" : (seatConfig?.categoryId || "")}
                                 onChange={(e) => handleSeatConfigChange("categoryId", e.target.value)}
-                                className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none appearance-none cursor-pointer"
+                                className="w-full px-3 py-2 bg-zinc-900/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-[#D4AF37]/50 focus:outline-none appearance-none cursor-pointer"
                             >
                                 <option value="">{isBulk ? "Choose Category..." : "No Category (Free/GA)"}</option>
                                 {useSeatEngine.getState().categories.map((cat) => (
@@ -247,7 +247,7 @@ export default function PropertiesPanel() {
                             {!isBulk && seatConfig?.categoryId && (
                                 <div className="flex items-center justify-between px-2 py-1.5 bg-zinc-900/50 rounded-md border border-zinc-800/50">
                                     <span className="text-[10px] text-zinc-500">Price Tier</span>
-                                    <span className="text-[10px] text-amber-500 font-bold">
+                                    <span className="text-[10px] text-[#D4AF37] font-bold">
                                         ${useSeatEngine.getState().categories.find(c => c.id === seatConfig.categoryId)?.price || 0}
                                     </span>
                                 </div>
@@ -260,7 +260,7 @@ export default function PropertiesPanel() {
                         <div className="p-3 bg-zinc-800/30 border border-zinc-700/30 rounded-xl space-y-3">
                             <div className="flex items-center justify-between">
                                 <label className="text-[10px] text-zinc-500 uppercase tracking-widest block font-semibold">Table Capacity</label>
-                                <span className="text-xs font-bold text-amber-500">{seatConfig?.capacity ?? 4} seats</span>
+                                <span className="text-xs font-bold text-[#D4AF37]">{seatConfig?.capacity ?? 4} seats</span>
                             </div>
                             <input
                                 type="range"
@@ -269,7 +269,7 @@ export default function PropertiesPanel() {
                                 step="1"
                                 value={seatConfig?.capacity ?? 4}
                                 onChange={(e) => handleSeatConfigChange("capacity", parseInt(e.target.value))}
-                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
                             />
                             <div className="flex justify-between text-[8px] text-zinc-600 font-mono">
                                 <span>1</span>
@@ -284,7 +284,7 @@ export default function PropertiesPanel() {
                         <div className="p-3 bg-zinc-800/30 border border-zinc-700/30 rounded-xl">
                             <label className="text-[10px] text-zinc-500 uppercase tracking-widest block mb-1">Asset Class</label>
                             <div className="flex items-center gap-2 text-white text-sm font-medium">
-                                <LayoutGrid className="w-4 h-4 text-amber-500" />
+                                <LayoutGrid className="w-4 h-4 text-[#D4AF37]" />
                                 {selectedElement.assetType || "Custom Asset"}
                             </div>
                         </div>
@@ -349,7 +349,7 @@ export default function PropertiesPanel() {
                                         type="number"
                                         value={Math.round(selectedElement.x)}
                                         onChange={(e) => handleChange("x", e.target.value)}
-                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none"
+                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-[#D4AF37]/50 focus:outline-none"
                                     />
                                 </div>
                                 <div>
@@ -358,7 +358,7 @@ export default function PropertiesPanel() {
                                         type="number"
                                         value={Math.round(selectedElement.y)}
                                         onChange={(e) => handleChange("y", e.target.value)}
-                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none"
+                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-[#D4AF37]/50 focus:outline-none"
                                     />
                                 </div>
                             </div>
@@ -377,7 +377,7 @@ export default function PropertiesPanel() {
                                         type="number"
                                         value={Math.round(selectedElement.width)}
                                         onChange={(e) => handleChange("width", e.target.value)}
-                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none"
+                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-[#D4AF37]/50 focus:outline-none"
                                     />
                                 </div>
                                 <div>
@@ -386,7 +386,7 @@ export default function PropertiesPanel() {
                                         type="number"
                                         value={Math.round(selectedElement.height)}
                                         onChange={(e) => handleChange("height", e.target.value)}
-                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none"
+                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-zinc-700/50 rounded-lg text-sm text-white focus:border-[#D4AF37]/50 focus:outline-none"
                                     />
                                 </div>
                             </div>
@@ -405,7 +405,7 @@ export default function PropertiesPanel() {
                                     max="360"
                                     value={selectedElement.rotation || 0}
                                     onChange={(e) => handleChange("rotation", e.target.value)}
-                                    className="flex-1 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                    className="flex-1 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
                                 />
                                 <span className="text-xs text-zinc-400 w-10 text-right">
                                     {Math.round(selectedElement.rotation || 0)}°
@@ -417,7 +417,7 @@ export default function PropertiesPanel() {
                         {isRectangle && (
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2 text-zinc-500">
-                                    <RotateCw className="w-3 h-3 text-amber-500/70" />
+                                    <RotateCw className="w-3 h-3 text-[#D4AF37]/70" />
                                     <span className="text-xs uppercase tracking-wider">Curvature (Arc)</span>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -427,7 +427,7 @@ export default function PropertiesPanel() {
                                         max="100"
                                         value={seatConfig?.curvature || 0}
                                         onChange={(e) => handleSeatConfigChange("curvature", parseInt(e.target.value))}
-                                        className="flex-1 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                        className="flex-1 h-2 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
                                     />
                                     <span className="text-xs text-zinc-400 w-10 text-right">
                                         {seatConfig?.curvature || 0}%
@@ -447,7 +447,7 @@ export default function PropertiesPanel() {
                         <div className="h-px bg-zinc-800/50 my-2" />
 
                         <div className="space-y-3">
-                            <div className="flex items-center gap-2 text-amber-500">
+                            <div className="flex items-center gap-2 text-[#D4AF37]">
                                 <LayoutGrid className="w-3 h-3" />
                                 <span className="text-xs uppercase tracking-wider font-medium">
                                     Seating Configuration
@@ -460,7 +460,7 @@ export default function PropertiesPanel() {
                                     <label className="text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-1">
                                         <Rows3 className="w-3 h-3" /> Rows
                                     </label>
-                                    <span className="text-xs font-bold text-amber-500">{seatConfig.rowCount}</span>
+                                    <span className="text-xs font-bold text-[#D4AF37]">{seatConfig.rowCount}</span>
                                 </div>
                                 <input
                                     type="range"
@@ -468,7 +468,7 @@ export default function PropertiesPanel() {
                                     max="50"
                                     value={seatConfig.rowCount}
                                     onChange={(e) => handleSeatConfigChange("rowCount", parseInt(e.target.value))}
-                                    className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                    className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
                                 />
                                 <div className="flex justify-between text-[8px] text-zinc-600 font-mono">
                                     <span>1</span>
@@ -483,7 +483,7 @@ export default function PropertiesPanel() {
                                     <label className="text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-1">
                                         <Columns3 className="w-3 h-3" /> Columns
                                     </label>
-                                    <span className="text-xs font-bold text-amber-500">{seatConfig.colCount}</span>
+                                    <span className="text-xs font-bold text-[#D4AF37]">{seatConfig.colCount}</span>
                                 </div>
                                 <input
                                     type="range"
@@ -491,7 +491,7 @@ export default function PropertiesPanel() {
                                     max="50"
                                     value={seatConfig.colCount}
                                     onChange={(e) => handleSeatConfigChange("colCount", parseInt(e.target.value))}
-                                    className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                    className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-[#D4AF37]"
                                 />
                                 <div className="flex justify-between text-[8px] text-zinc-600 font-mono">
                                     <span>1</span>
@@ -511,7 +511,7 @@ export default function PropertiesPanel() {
                                         className={cn(
                                             "px-3 py-2 text-xs rounded-lg border transition-colors",
                                             seatConfig.seatNaming === SEAT_NAMING.ALPHABETICAL
-                                                ? "bg-amber-500/20 border-amber-500/50 text-amber-400"
+                                                ? "bg-[#D4AF37]/20 border-[#D4AF37]/50 text-[#D4AF37]"
                                                 : "bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:border-zinc-600"
                                         )}
                                     >
@@ -522,7 +522,7 @@ export default function PropertiesPanel() {
                                         className={cn(
                                             "px-3 py-2 text-xs rounded-lg border transition-colors",
                                             seatConfig.seatNaming === SEAT_NAMING.NUMERICAL
-                                                ? "bg-amber-500/20 border-amber-500/50 text-amber-400"
+                                                ? "bg-[#D4AF37]/20 border-[#D4AF37]/50 text-[#D4AF37]"
                                                 : "bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:border-zinc-600"
                                         )}
                                     >
@@ -539,7 +539,7 @@ export default function PropertiesPanel() {
                                         onClick={() => handleSeatConfigChange("showLabels", !seatConfig.showLabels)}
                                         className={cn(
                                             "w-8 h-5 rounded-full transition-colors relative",
-                                            seatConfig.showLabels ? "bg-amber-500" : "bg-zinc-700"
+                                            seatConfig.showLabels ? "bg-[#D4AF37]" : "bg-zinc-700"
                                         )}
                                     >
                                         <div
@@ -553,10 +553,10 @@ export default function PropertiesPanel() {
                             </div>
 
                             {/* Total Seats Display */}
-                            <div className="px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                            <div className="px-3 py-2 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-lg">
                                 <div className="flex items-center justify-between text-xs">
                                     <span className="text-zinc-400">Total Seats</span>
-                                    <span className="text-amber-400 font-bold">{totalSeats}</span>
+                                    <span className="text-[#D4AF37] font-bold">{totalSeats}</span>
                                 </div>
                             </div>
                         </div>

@@ -2806,9 +2806,24 @@
     border-style: none;
   }
 
+  .border-\[\#D4AF37\]\/10 {
+    border-color: #d4af371a;
+    border-color: lab(73.2932% 5.13336 62.8195 / .1);
+  }
+
   .border-\[\#D4AF37\]\/20 {
     border-color: #d4af3733;
     border-color: lab(73.2932% 5.13336 62.8195 / .2);
+  }
+
+  .border-\[\#D4AF37\]\/30 {
+    border-color: #d4af374d;
+    border-color: lab(73.2932% 5.13339 62.8195 / .3);
+  }
+
+  .border-\[\#D4AF37\]\/50 {
+    border-color: #d4af3780;
+    border-color: lab(73.2932% 5.13339 62.8195 / .5);
   }
 
   .border-\[\#FBB03B\] {
@@ -3440,6 +3455,16 @@
   .bg-\[\#D4AF37\]\/10 {
     background-color: #d4af371a;
     background-color: lab(73.2932% 5.13336 62.8195 / .1);
+  }
+
+  .bg-\[\#D4AF37\]\/20 {
+    background-color: #d4af3733;
+    background-color: lab(73.2932% 5.13336 62.8195 / .2);
+  }
+
+  .bg-\[\#D4AF37\]\/\[0\.03\] {
+    background-color: #d4af3708;
+    background-color: lab(73.2932% 5.13339 62.8195 / .03);
   }
 
   .bg-\[\#E2126D\] {
@@ -5849,6 +5874,11 @@
     color: #d4af37;
   }
 
+  .text-\[\#D4AF37\]\/70 {
+    color: #d4af37b3;
+    color: lab(73.2932% 5.13339 62.8195 / .7);
+  }
+
   .text-\[\#FBB03B\] {
     color: #fbb03b;
   }
@@ -6431,6 +6461,10 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  .accent-\[\#D4AF37\] {
+    accent-color: #d4af37;
+  }
+
   .accent-\[\#FBB03B\] {
     accent-color: #fbb03b;
   }
@@ -6647,6 +6681,16 @@
   .ring-2 {
     --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+
+  .shadow-\[\#D4AF37\]\/20 {
+    --tw-shadow-color: #d4af3733;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .shadow-\[\#D4AF37\]\/20 {
+      --tw-shadow-color: color-mix(in oklab, lab(73.2932% 5.13336 62.8195 / .2) var(--tw-shadow-alpha), transparent);
+    }
   }
 
   .shadow-\[\#FBB03B\]\/5 {
@@ -8802,6 +8846,11 @@
     .hover\:\[animation-play-state\:paused\]:hover {
       animation-play-state: paused;
     }
+  }
+
+  .focus\:border-\[\#D4AF37\]\/50:focus {
+    border-color: #d4af3780;
+    border-color: lab(73.2932% 5.13339 62.8195 / .5);
   }
 
   .focus\:border-\[\#FBB03B\]:focus {
