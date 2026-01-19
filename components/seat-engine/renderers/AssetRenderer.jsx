@@ -139,11 +139,64 @@ export default function AssetRenderer({ element, width, height }) {
         );
     }
 
-    // 7. Standard Table
+    // 7. Standard Table WITH CHAIRS
     if (type === 'TABLE' || type === 'RECT_TABLE') {
         const isRound = type === 'TABLE';
+        const capacity = element.seatConfig?.capacity || 6;
+        const chairRadius = Math.min(width, height) * 0.08;
+        const chairs = [];
+
+        if (isRound) {
+            // Round Table: Chairs in a circle around the table
+            const tableRadius = Math.min(width, height) / 2;
+            const chairDistance = tableRadius + chairRadius + 5;
+            for (let i = 0; i < capacity; i++) {
+                const angle = (i / capacity) * Math.PI * 2 - Math.PI / 2;
+                const cx = width / 2 + Math.cos(angle) * chairDistance;
+                const cy = height / 2 + Math.sin(angle) * chairDistance;
+                chairs.push(
+                    <Circle key={`chair-${i}`} x={cx} y={cy} radius={chairRadius} fill="#D4AF37" stroke="#451a03" strokeWidth={1} />
+                );
+            }
+        } else {
+            // Rectangular Table: Chairs along edges
+            const padding = 10;
+            const topBottom = Math.floor(capacity / 2);
+            const leftRight = capacity - topBottom * 2 > 0 ? 1 : 0;
+
+            // Top edge
+            for (let i = 0; i < Math.ceil(topBottom / 2); i++) {
+                const cx = padding + chairRadius + ((width - padding * 2 - chairRadius * 2) / Math.max(1, Math.ceil(topBottom / 2) - 1)) * i;
+                chairs.push(
+                    <Circle key={`top-${i}`} x={cx} y={-chairRadius - 5} radius={chairRadius} fill="#D4AF37" stroke="#451a03" strokeWidth={1} />
+                );
+            }
+            // Bottom edge
+            for (let i = 0; i < Math.floor(topBottom / 2); i++) {
+                const cx = padding + chairRadius + ((width - padding * 2 - chairRadius * 2) / Math.max(1, Math.floor(topBottom / 2) - 1)) * i;
+                chairs.push(
+                    <Circle key={`bottom-${i}`} x={cx} y={height + chairRadius + 5} radius={chairRadius} fill="#D4AF37" stroke="#451a03" strokeWidth={1} />
+                );
+            }
+            // Left edge
+            if (leftRight > 0) {
+                chairs.push(
+                    <Circle key="left" x={-chairRadius - 5} y={height / 2} radius={chairRadius} fill="#D4AF37" stroke="#451a03" strokeWidth={1} />
+                );
+            }
+            // Right edge
+            if (capacity > topBottom + leftRight) {
+                chairs.push(
+                    <Circle key="right" x={width + chairRadius + 5} y={height / 2} radius={chairRadius} fill="#D4AF37" stroke="#451a03" strokeWidth={1} />
+                );
+            }
+        }
+
         return (
             <Group>
+                {/* Chairs rendered first (behind table) */}
+                {chairs}
+                {/* Table Surface */}
                 <Rect
                     width={width}
                     height={height}
