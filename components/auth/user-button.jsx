@@ -68,15 +68,17 @@ export default function UserButton() {
 
     const handleViewSwitch = () => {
         const newMode = isOrganizerView ? "attendee" : "organizer";
+
+        // Navigate FIRST to prevent flash of "Access Denied" on dashboard
+        if (newMode === "organizer") {
+            router.replace("/dashboard");
+        } else {
+            router.replace("/"); // Redirect home immediately
+        }
+
+        // Then update state (after navigation started)
         setViewMode(newMode);
         toast.success(`Switched to ${newMode === "organizer" ? "Organizer" : "Attendee"} View`);
-
-        // Optional: Redirect if switching to organizer view
-        if (newMode === "organizer") {
-            router.push("/dashboard");
-        } else {
-            router.push("/");
-        }
     };
 
     return (
