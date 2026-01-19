@@ -147,6 +147,7 @@ const handleDragEndGlobal = (e, updateElement) => {
 function SceneElement({ element, isSelected, onSelect, onChange, scale, draggable }) {
     const shapeRef = useRef(null);
     const updateElement = useSeatEngine(state => state.updateElement);
+    const [isDragging, setIsDragging] = useState(false);
 
     return (
         <Group
@@ -160,9 +161,15 @@ function SceneElement({ element, isSelected, onSelect, onChange, scale, draggabl
                 y: Math.round(pos.y / GRID_SIZE) * GRID_SIZE
             })}
             onClick={onSelect}
-            onDragStart={(e) => handleDragStartGlobal(e, element, isSelected)}
+            onDragStart={(e) => {
+                setIsDragging(true);
+                handleDragStartGlobal(e, element, isSelected);
+            }}
             onDragMove={handleDragMoveGlobal}
-            onDragEnd={(e) => handleDragEndGlobal(e, updateElement)}
+            onDragEnd={(e) => {
+                setIsDragging(false);
+                handleDragEndGlobal(e, updateElement);
+            }}
             onTransformEnd={() => {
                 const node = shapeRef.current;
                 const scaleX = node.scaleX();
@@ -460,7 +467,7 @@ export default function CanvasStage() {
                     if (e.target === stageRef.current) setStagePosition(e.target.x(), e.target.y(), stageConfig.scale);
                 }}
             >
-                <Layer>
+                <Layer perfectDrawEnabled={false}>
                     {/* Ghost Asset for Drag Over */}
                     {draggingAsset && (
                         <Group x={ghostPos.x} y={ghostPos.y} opacity={0.6}>
