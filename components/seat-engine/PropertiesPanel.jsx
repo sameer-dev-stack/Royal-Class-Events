@@ -453,39 +453,49 @@ export default function PropertiesPanel() {
                                 </span>
                             </div>
 
-                            {/* Row Count */}
-                            <div className="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label className="text-[10px] text-zinc-600 mb-1 flex items-center gap-1">
+                            {/* Row Count Slider */}
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-1">
                                         <Rows3 className="w-3 h-3" /> Rows
                                     </label>
-                                    <input
-                                        type="number"
-                                        min={1}
-                                        max={50}
-                                        value={seatConfig.rowCount}
-                                        onChange={(e) => {
-                                            const val = Math.max(1, Math.min(50, parseInt(e.target.value) || 1));
-                                            handleSeatConfigChange("rowCount", val);
-                                        }}
-                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-amber-500/30 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none"
-                                    />
+                                    <span className="text-xs font-bold text-amber-500">{seatConfig.rowCount}</span>
                                 </div>
-                                <div>
-                                    <label className="text-[10px] text-zinc-600 mb-1 flex items-center gap-1">
+                                <input
+                                    type="range"
+                                    min="1"
+                                    max="50"
+                                    value={seatConfig.rowCount}
+                                    onChange={(e) => handleSeatConfigChange("rowCount", parseInt(e.target.value))}
+                                    className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                />
+                                <div className="flex justify-between text-[8px] text-zinc-600 font-mono">
+                                    <span>1</span>
+                                    <span>25</span>
+                                    <span>50</span>
+                                </div>
+                            </div>
+
+                            {/* Column Count Slider */}
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <label className="text-[10px] text-zinc-500 uppercase tracking-widest flex items-center gap-1">
                                         <Columns3 className="w-3 h-3" /> Columns
                                     </label>
-                                    <input
-                                        type="number"
-                                        min={1}
-                                        max={50}
-                                        value={seatConfig.colCount}
-                                        onChange={(e) => {
-                                            const val = Math.max(1, Math.min(50, parseInt(e.target.value) || 1));
-                                            handleSeatConfigChange("colCount", val);
-                                        }}
-                                        className="w-full px-3 py-2 bg-zinc-800/50 border border-amber-500/30 rounded-lg text-sm text-white focus:border-amber-500/50 focus:outline-none"
-                                    />
+                                    <span className="text-xs font-bold text-amber-500">{seatConfig.colCount}</span>
+                                </div>
+                                <input
+                                    type="range"
+                                    min="1"
+                                    max="50"
+                                    value={seatConfig.colCount}
+                                    onChange={(e) => handleSeatConfigChange("colCount", parseInt(e.target.value))}
+                                    className="w-full h-1.5 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                                />
+                                <div className="flex justify-between text-[8px] text-zinc-600 font-mono">
+                                    <span>1</span>
+                                    <span>25</span>
+                                    <span>50</span>
                                 </div>
                             </div>
 
