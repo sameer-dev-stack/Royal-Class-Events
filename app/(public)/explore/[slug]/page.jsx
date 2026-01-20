@@ -36,7 +36,7 @@ export default function DynamicExplorePage() {
   // We show the loader if it is loading OR if the data hasn't arrived yet
   if (isLoading || !allEvents) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
         <Loader2 className="w-10 h-10 animate-spin text-[#D4AF37]" />
       </div>
     );
@@ -64,17 +64,17 @@ export default function DynamicExplorePage() {
   // --- RENDER: CATEGORY VIEW ---
   if (isCategory) {
     return (
-      <div className="min-h-screen bg-black pt-24 pb-12 px-6">
+      <div className="min-h-screen bg-background pt-24 pb-12 px-6">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <div className="mb-12 border-b border-white/10 pb-6">
+          <div className="mb-12 border-b border-border pb-6">
             <div className="flex items-center gap-3 mb-4">
               <span className="text-6xl">{categoryInfo.icon}</span>
               <div>
-                <h1 className="text-4xl md:text-6xl font-bold text-white">
+                <h1 className="text-4xl md:text-6xl font-bold text-foreground">
                   {categoryInfo.label}
                 </h1>
-                <p className="text-lg text-gray-400 mt-2">
+                <p className="text-lg text-muted-foreground mt-2">
                   {categoryInfo.description}
                 </p>
               </div>
@@ -110,10 +110,10 @@ export default function DynamicExplorePage() {
   const displayState = state || "Bangladesh";
 
   return (
-    <div className="min-h-screen bg-black pt-24 pb-12 px-6">
+    <div className="min-h-screen bg-background pt-24 pb-12 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-12 border-b border-white/10 pb-6">
+        <div className="mb-12 border-b border-border pb-6">
           <div className="flex items-center gap-3 mb-2">
             <Crown className="w-6 h-6 text-[#D4AF37]" />
             <span className="text-[#D4AF37] font-medium tracking-wide uppercase text-sm">
@@ -121,10 +121,10 @@ export default function DynamicExplorePage() {
             </span>
           </div>
           <div className="flex flex-col md:flex-row md:items-end gap-4">
-            <h1 className="text-4xl md:text-5xl font-bold text-white capitalize">
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground capitalize">
               Events in <span className="text-[#D4AF37]">{displayCity}</span>
             </h1>
-            <Badge variant="secondary" className="w-fit gap-2 bg-zinc-800 text-gray-300">
+            <Badge variant="secondary" className="w-fit gap-2 bg-accent text-muted-foreground">
               <MapPin className="w-3 h-3" />
               {displayState}
             </Badge>
@@ -153,14 +153,14 @@ export default function DynamicExplorePage() {
 // Helper Component for "No Events"
 function EmptyState({ message }) {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-white/10 rounded-3xl bg-zinc-900/30">
-      <div className="w-20 h-20 bg-zinc-900 rounded-full flex items-center justify-center mb-6 shadow-xl shadow-black">
-        <CalendarX className="w-10 h-10 text-gray-600" />
+    <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-border rounded-3xl bg-card">
+      <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6 shadow-xl shadow-black">
+        <CalendarX className="w-10 h-10 text-muted-foreground" />
       </div>
-      <h2 className="text-2xl font-bold text-white mb-2">
+      <h2 className="text-2xl font-bold text-foreground mb-2">
         No Events Currently
       </h2>
-      <p className="text-gray-400 max-w-md">
+      <p className="text-muted-foreground max-w-md">
         {message} <br />
         Please check back later or host your own private event.
       </p>
