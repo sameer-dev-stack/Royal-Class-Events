@@ -391,14 +391,6 @@ export const store = mutation({
   args: { role: v.optional(v.string()) },
   handler: async (ctx, args) => {
     let identity = await ctx.auth.getUserIdentity();
-    if (!identity && process.env.NODE_ENV === "development") {
-      identity = {
-        subject: "mock-user-id-12345",
-        tokenIdentifier: "mock-user-id-12345",
-        name: "Test User",
-        email: "test@example.com",
-      };
-    }
     if (!identity) {
       console.log("Store: No identity found. Skipping sync.");
       return null;

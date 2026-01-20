@@ -100,7 +100,8 @@ export default function EventDetailPage() {
     );
   }
 
-  const isOwner = isAuthenticated && user?._id && event.ownerId && user._id === event.ownerId;
+  // Robust ownership check - compare as strings to handle Convex ID types
+  const isOwner = isAuthenticated && user?._id && event.ownerId && String(user._id) === String(event.ownerId);
   const isAdmin = isAuthenticated && (user?.role === "admin" || user?.roles?.some(r => r.key === "admin"));
   const canManageEvent = isOwner || isAdmin;
   const startDate = event.timeConfiguration?.startDateTime ? new Date(event.timeConfiguration.startDateTime) : new Date();

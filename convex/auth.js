@@ -23,13 +23,8 @@ export async function getAuthenticatedUser(ctx, token) {
     if (!user) {
         let identity = await ctx.auth.getUserIdentity();
 
-        // Mock fallback for development
-        if (!identity && process.env.NODE_ENV === "development") {
-            const mockId = "mock-user-id-12345";
-            identity = { subject: mockId, tokenIdentifier: mockId };
-        }
-
         if (!identity) return null;
+
 
         const externalId = identity.subject || identity.tokenIdentifier;
         user = await ctx.db
