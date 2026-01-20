@@ -336,7 +336,7 @@ export default function MyTicketsPage() {
 
       {/* Ticket Group Modal with Navigation */}
       <Dialog open={!!selectedGroup} onOpenChange={() => setSelectedGroup(null)}>
-        <DialogContent className="sm:max-w-md bg-zinc-950 border-white/10 p-0 overflow-hidden outline-none">
+        <DialogContent className="sm:max-w-md bg-background border-border p-0 overflow-hidden outline-none">
           {selectedGroup && selectedTicket && (
             <div className="flex flex-col">
               {/* Top Banner & Header */}
@@ -347,7 +347,7 @@ export default function MyTicketsPage() {
                   fill
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
 
                 <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
                   <Button
@@ -369,7 +369,7 @@ export default function MyTicketsPage() {
 
               {/* Multi-Ticket Navigator (Tabs-like buttons) */}
               <div className="px-8 pb-8 -mt-12 relative z-10 space-y-6">
-                <div className="bg-zinc-900 rounded-3xl p-6 border border-white/5 shadow-2xl space-y-6">
+                <div className="bg-card rounded-3xl p-6 border border-border shadow-2xl space-y-6">
                   {/* Navigation for multiple tickets */}
                   {totalTickets > 1 && (
                     <div className="flex items-center justify-between pb-4">
@@ -378,7 +378,7 @@ export default function MyTicketsPage() {
                         size="icon"
                         disabled={currentTicketIndex === 0}
                         onClick={prevTicket}
-                        className="h-10 w-10 rounded-full bg-white/5 hover:bg-white/10 disabled:opacity-30"
+                        className="h-10 w-10 rounded-full bg-accent/50 hover:bg-accent disabled:opacity-30"
                       >
                         <ChevronLeft className="w-6 h-6" />
                       </Button>
@@ -400,7 +400,7 @@ export default function MyTicketsPage() {
                         size="icon"
                         disabled={currentTicketIndex === totalTickets - 1}
                         onClick={nextTicket}
-                        className="h-10 w-10 rounded-full bg-white/5 hover:bg-white/10 disabled:opacity-30"
+                        className="h-10 w-10 rounded-full bg-accent/50 hover:bg-accent disabled:opacity-30"
                       >
                         <ChevronRight className="w-6 h-6" />
                       </Button>
@@ -408,28 +408,28 @@ export default function MyTicketsPage() {
                   )}
 
                   <div className="text-center space-y-2">
-                    <DialogTitle className="text-2xl font-black text-white leading-tight">
+                    <DialogTitle className="text-2xl font-black text-foreground leading-tight">
                       {selectedGroup.event?.title?.en || selectedGroup.event?.title}
                     </DialogTitle>
                     <p className="text-[#D4AF37] font-bold uppercase tracking-[0.2em] text-[10px]">Secure Digital Pass</p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 py-6 border-y border-white/5">
+                  <div className="grid grid-cols-2 gap-4 py-6 border-y border-border">
                     <div className="space-y-1">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Date</p>
-                      <p className="font-bold text-sm text-white">
+                      <p className="font-bold text-sm text-foreground">
                         {format(new Date(selectedGroup.event?.timeConfiguration?.startDateTime), "MMM do, yyyy")}
                       </p>
                     </div>
                     <div className="space-y-1 text-right">
-                      <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Ticket ID</p>
+                      <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Ticket ID</p>
                       <p className="font-bold text-sm text-[#D4AF37] font-mono tracking-tighter">
                         {selectedTicket.registrationNumber}
                       </p>
                     </div>
                     <div className="space-y-1 col-span-2">
                       <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Venue & Seat</p>
-                      <p className="font-bold text-sm text-white line-clamp-1">
+                      <p className="font-bold text-sm text-foreground line-clamp-1">
                         {selectedGroup.event?.locationConfiguration?.venueName}
                         {selectedTicket.seatNumber && <span className="text-[#D4AF37] ml-2"> - {selectedTicket.seatNumber}</span>}
                       </p>
