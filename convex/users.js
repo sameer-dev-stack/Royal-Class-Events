@@ -331,6 +331,53 @@ export const resolveOrganizerUpgrade = mutation({
   },
 });
 
+/**
+ * upgradeToOrganizer: Allows a user to self-upgrade to organizer role.
+ * This is used when an attendee wants to start hosting events.
+ */
+export const upgradeToOrganizer = mutation({
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) throw new Error("Not authenticated");
+
+    // Check if already an organizer
+    if (user.role === "organizer" || user.role === "admin") {
+      return { success: true, message: "Already an organizer", role: user.role };
+    }
+
+    const now = Date.now();
+
+    // Lookup organizer role document
+    const roleDoc = await ctx.db
+      .query("roles")
+      .withIndex("by_key", (q) => q.eq("key", "organizer"))
+      .first();
+
+    if (!roleDoc) {
+      throw new Error("Organizer role not found in system. Please contact support.");
+    }
+
+    const currentRoles = user.roles || [];
+    const hasRole = currentRoles.some(r => r.roleId === roleDoc._id);
+
+    // Add organizer role if not already present
+    const newRoles = hasRole ? currentRoles : [...currentRoles, {
+      roleId: roleDoc._id,
+      assignedBy: user._id,
+      assignedAt: now,
+    }];
+
+    await ctx.db.patch(user._id, {
+      role: "organizer",
+      roles: newRoles,
+      updatedAt: now,
+    });
+
+    return { success: true, message: "Successfully upgraded to Organizer!", role: "organizer" };
+  },
+});
+
 export const completeOnboarding = mutation({
   args: {
     location: v.object({
