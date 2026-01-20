@@ -31,10 +31,8 @@ export default function HeaderActions() {
     const eventId = searchParams.get("eventId") || TEST_EVENT_ID;
 
     const handleBack = () => {
-        if (window.history.length > 2) {
-            window.history.back();
-        } else if (eventId && eventId !== TEST_EVENT_ID) {
-            window.location.href = `/my-events/${eventId}`; // Force reload to refresh data
+        if (eventId && eventId !== TEST_EVENT_ID) {
+            window.location.href = `/my-events/${eventId}`; // Redirect to dashboard to see Draft status
         } else {
             window.location.href = '/my-events';
         }

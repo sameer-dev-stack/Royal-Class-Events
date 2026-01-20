@@ -3,6 +3,35 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 // Create a new event (Enterprise Schema Compatible)
+export const publishEvent = mutation({
+  args: {
+    eventId: v.id("events"),
+    token: v.optional(v.string())
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) throw new Error("Not logged in");
+
+    const event = await ctx.db.get(args.eventId);
+    if (!event || event.ownerId !== user._id) {
+      // Check admin
+      const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+      if (!isAdmin) throw new Error("Unauthorized");
+    }
+
+    await ctx.db.patch(args.eventId, {
+      status: {
+        ...event.status,
+        current: "published",
+        changedAt: Date.now(),
+        changedBy: user._id
+      }
+    });
+
+    return { success: true };
+  }
+});
+
 export const createEvent = mutation({
   args: {
     // Basic Info

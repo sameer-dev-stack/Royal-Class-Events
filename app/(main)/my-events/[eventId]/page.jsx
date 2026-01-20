@@ -22,6 +22,7 @@ import {
   Grid3X3,
   Settings,
   Edit3,
+  Rocket,
 } from "lucide-react";
 import Link from "next/link";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
@@ -72,6 +73,23 @@ export default function EventDashboardPage() {
   const { mutate: updateSeatingMode } = useConvexMutation(
     api.events_seating.updateSeatingMode
   );
+
+  // Publish event mutation
+  const { mutate: publishEvent, isLoading: isPublishing } = useConvexMutation(api.events.publishEvent);
+
+  const handlePublish = async () => {
+    const confirmed = window.confirm("Are you sure you want to publish this event? It will become visible to all users.");
+    if (!confirmed) return;
+
+    try {
+      await publishEvent({ eventId, token });
+      toast.success("Event Published Successfully! 🚀");
+      // Optional: Refresh or reload to update status UI
+      window.location.reload();
+    } catch (error) {
+      toast.error(error.message || "Failed to publish event");
+    }
+  };
 
   const handleDelete = async () => {
     const confirmed = window.confirm(
@@ -263,6 +281,16 @@ export default function EventDashboardPage() {
           </div>
 
           <div className="flex gap-2 w-full sm:w-auto">
+            {event.status?.current === "draft" && (
+              <Button
+                onClick={handlePublish}
+                disabled={isPublishing}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold shadow-lg shadow-green-500/20 border-0 rounded-lg animate-pulse"
+              >
+                {isPublishing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Rocket className="w-4 h-4 mr-2" />}
+                Publish Event
+              </Button>
+            )}
             <Link href={`/seat-builder?eventId=${eventId}`}>
               <Button className="bg-[linear-gradient(135deg,#fac529,#eab308)] text-black font-bold shadow-lg hover:shadow-[#D4AF37]/25 border-0 rounded-lg">
                 <Grid3X3 className="w-4 h-4 mr-2" />

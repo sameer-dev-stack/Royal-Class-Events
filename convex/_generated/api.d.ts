@@ -22,6 +22,7 @@ import type * as communications from "../communications.js";
 import type * as conversations from "../conversations.js";
 import type * as create_dummy_event from "../create_dummy_event.js";
 import type * as dashboard from "../dashboard.js";
+import type * as debug from "../debug.js";
 import type * as events from "../events.js";
 import type * as events_seating from "../events_seating.js";
 import type * as explore from "../explore.js";
@@ -78,6 +79,7 @@ declare const fullApi: ApiFromModules<{
   conversations: typeof conversations;
   create_dummy_event: typeof create_dummy_event;
   dashboard: typeof dashboard;
+  debug: typeof debug;
   events: typeof events;
   events_seating: typeof events_seating;
   explore: typeof explore;
