@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -192,6 +193,19 @@ export default function EventsPage() {
                         <p className="text-xs text-zinc-500 mt-1">Total across all events</p>
                     </CardContent>
                     <div className="h-1 bg-blue-500/20 w-full" />
+                </Card>
+
+                {/* NEW: Pending Approval Card */}
+                <Card className="bg-zinc-900/50 border-zinc-800 shadow-xl overflow-hidden group border-amber-500/30">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-sm font-medium text-zinc-400">Pending Approval</CardTitle>
+                        <AlertTriangle className="w-5 h-5 text-amber-500 group-hover:scale-110 transition-transform" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-3xl font-black text-amber-500">{summary.pendingCount || 0}</div>
+                        <p className="text-xs text-zinc-500 mt-1">Awaiting admin review</p>
+                    </CardContent>
+                    <div className="h-1 bg-amber-500/20 w-full" />
                 </Card>
             </div>
 

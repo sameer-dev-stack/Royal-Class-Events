@@ -177,6 +177,7 @@ export const getAllEvents = query({
 
         let liveCount = 0;
         let draftCount = 0;
+        let pendingCount = 0;
         let totalRevenue = 0;
 
         const enriched = await Promise.all(events.map(async (e) => {
@@ -191,7 +192,8 @@ export const getAllEvents = query({
             }
 
             const statusStr = e.status?.current || (typeof e.status === 'string' ? e.status : "draft");
-            if (statusStr === 'published') liveCount++;
+            if (statusStr === 'published' || statusStr === 'active') liveCount++;
+            else if (statusStr === 'waiting_approval') pendingCount++;
             else draftCount++;
 
             // Get revenue for this event
@@ -222,6 +224,7 @@ export const getAllEvents = query({
                 totalRevenue,
                 liveCount,
                 draftCount,
+                pendingCount,
                 totalCount: events.length
             }
         };
