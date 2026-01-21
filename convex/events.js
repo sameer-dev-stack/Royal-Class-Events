@@ -1,6 +1,7 @@
 import { internal, api } from "./_generated/api";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
+import { isEventVisible } from "./utils";
 
 // Create a new event (Enterprise Schema Compatible)
 export const publishEvent = mutation({
@@ -772,33 +773,18 @@ export const getPublicEvents = query({
       .order("asc")
       .collect();
 
+
+
     return events.filter((e) => {
-      // 1. Resolve status safely from all possible structures
-      let resolvedStatus = "";
-      if (typeof e.status === "string") {
-        resolvedStatus = e.status;
-      } else if (e.status && typeof e.status === "object" && e.status.current) {
-        resolvedStatus = e.status.current;
-      } else if (e.statusMetadata && e.statusMetadata.current) {
-        resolvedStatus = e.statusMetadata.current;
-      }
+      const show = isEventVisible(e);
 
-      // 2. Strict whitelist: Only "published" or "active"
-      const isPublished = (resolvedStatus === "published") || (resolvedStatus === "active");
-
-      // 3. Date check: Ensure event is not in the deep past
-      const startTime = e.timeConfiguration?.startDateTime || e.startDate || 0;
-      const isNotPast = startTime > Date.now() - (48 * 60 * 60 * 1000); // 48h grace for timezone diff
-
-      const shouldShow = isPublished && isNotPast;
-
-      // DEBUG: Log matches for the specific event causing issues
+      // LOGGING: Remove this once verified
       const title = e.title?.en || e.title || "";
-      if (typeof title === "string" && title.toLowerCase().includes("test for approval")) {
-        console.log(`FILTER: Event '${title}' | Status: [${resolvedStatus}] | isPublished: ${isPublished} | isNotPast: ${isNotPast} | shouldShow: ${shouldShow}`);
+      if (typeof title === "string" && (title.toLowerCase().includes("test for approval") || title.toLowerCase().includes("test event"))) {
+        console.log(`FILTER: Event '${title}' | show: ${show}`);
       }
 
-      return shouldShow;
+      return show;
     });
   },
 });

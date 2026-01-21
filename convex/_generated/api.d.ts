@@ -37,6 +37,7 @@ import type * as notifications from "../notifications.js";
 import type * as patch from "../patch.js";
 import type * as pricing from "../pricing.js";
 import type * as registrations from "../registrations.js";
+import type * as reproduction from "../reproduction.js";
 import type * as rfqs from "../rfqs.js";
 import type * as roles from "../roles.js";
 import type * as search from "../search.js";
@@ -94,6 +95,7 @@ declare const fullApi: ApiFromModules<{
   patch: typeof patch;
   pricing: typeof pricing;
   registrations: typeof registrations;
+  reproduction: typeof reproduction;
   rfqs: typeof rfqs;
   roles: typeof roles;
   search: typeof search;

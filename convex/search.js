@@ -1,5 +1,6 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { isEventVisible } from "./utils";
 
 // Search events by title
 export const searchEvents = query({
@@ -21,7 +22,7 @@ export const searchEvents = query({
       .filter((q) => q.gte(q.field("startDate"), now))
       .take(args.limit ?? 5);
 
-    return searchResults;
+    return searchResults.filter(isEventVisible);
   },
 });
 
@@ -39,13 +40,12 @@ export const getFilteredEvents = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    // Get all published events
+    // Get all events and filter by visibility helper
     const allEvents = await ctx.db
       .query("events")
-      .filter((q) => q.eq(q.field("status"), "published"))
       .collect();
 
-    let filteredEvents = allEvents;
+    let filteredEvents = allEvents.filter(isEventVisible);
 
     // Apply filters
     if (args.category && args.category !== "all") {

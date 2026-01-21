@@ -41,3 +41,30 @@ export async function getSystemSettings(ctx) {
         maintenance_mode: false
     });
 }
+
+/**
+ * Shared helper to check if an event is publicly visible
+ */
+export function isEventVisible(event) {
+    if (!event) return false;
+
+    // 1. Resolve status safely
+    let resolvedStatus = "";
+    if (typeof event.status === "string") {
+        resolvedStatus = event.status;
+    } else if (event.status && typeof event.status === "object" && event.status.current) {
+        resolvedStatus = event.status.current;
+    } else if (event.statusMetadata && event.statusMetadata.current) {
+        resolvedStatus = event.statusMetadata.current;
+    }
+
+    // 2. Strict whitelist: Only "published" or "active"
+    const isPublished = (resolvedStatus === "published") || (resolvedStatus === "active");
+
+    // 3. Date check: Ensure event is not in the deep past
+    const startTime = event.timeConfiguration?.startDateTime || event.startDate || 0;
+    // Give 48h grace for timezones/same-day displays
+    const isNotPast = startTime > Date.now() - (48 * 60 * 60 * 1000);
+
+    return isPublished && isNotPast;
+}

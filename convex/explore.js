@@ -1,5 +1,6 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { isEventVisible } from "./utils";
 
 // Helper to get start date safely
 const getStartDate = (event) => {
@@ -29,6 +30,7 @@ export const getFeaturedEvents = query({
 
     // Sort by registration count for featured
     const featured = events
+      .filter(isEventVisible) // ENSURE VISIBILITY
       .sort((a, b) => getRegCount(b) - getRegCount(a))
       .slice(0, args.limit ?? 3);
 
@@ -68,7 +70,7 @@ export const getEventsByLocation = query({
       });
     }
 
-    return events.slice(0, args.limit ?? 4);
+    return events.filter(isEventVisible).slice(0, args.limit ?? 4);
   },
 });
 
@@ -87,6 +89,7 @@ export const getPopularEvents = query({
 
     // Sort by registration count
     const popular = events
+      .filter(isEventVisible) // ENSURE VISIBILITY
       .sort((a, b) => getRegCount(b) - getRegCount(a))
       .slice(0, args.limit ?? 6);
 
@@ -119,7 +122,7 @@ export const getEventsByCategory = query({
       .filter((q) => q.gte(q.field("timeConfiguration.startDateTime"), now))
       .collect();
 
-    const filtered = events.filter(e => e.eventSubType === args.category);
+    const filtered = events.filter(e => e.eventSubType === args.category && isEventVisible(e));
 
     return filtered.slice(0, args.limit ?? 12);
   },
@@ -137,7 +140,7 @@ export const getCategoryCounts = query({
 
     // Count events by category (eventSubType)
     const counts = {};
-    events.forEach((event) => {
+    events.filter(isEventVisible).forEach((event) => {
       const cat = event.eventSubType || "Uncategorized";
       counts[cat] = (counts[cat] || 0) + 1;
     });

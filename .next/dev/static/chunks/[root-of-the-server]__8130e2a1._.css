@@ -3322,6 +3322,11 @@
     background-color: #8c7326;
   }
 
+  .bg-\[\#8C7326\]\/5 {
+    background-color: #8c73260d;
+    background-color: lab(49.7893% 3.84229 44.2575 / .05);
+  }
+
   .bg-\[\#22c55e\] {
     background-color: #22c55e;
   }
