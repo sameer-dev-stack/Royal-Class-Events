@@ -792,3 +792,22 @@ export const getPublicEvents = query({
 export const by_start_date = getPublicEvents;
 
 export const getOrganizerEvents = getMyEvents;
+
+// DIAGNOSTIC: Inspect 'Test' event status
+export const inspectTestEvent = query({
+  args: {},
+  handler: async (ctx) => {
+    const events = await ctx.db.query("events").collect();
+    return events
+      .filter(e => {
+        const t = (e.title?.en || e.title || "").toString().toLowerCase();
+        return t === "test";
+      })
+      .map(e => ({
+        id: e._id,
+        status: e.status,
+        statusMetadata: e.statusMetadata,
+        isVisible: isEventVisible(e)
+      }));
+  },
+});
