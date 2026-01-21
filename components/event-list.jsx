@@ -48,7 +48,29 @@ export default function EventList() {
   }, {});
 
   // 4. Get Upcoming Events (Top 6)
+  // 4. Get Upcoming Events (Top 6)
+  // Client-side fail-safe: Ensure only "published" or "active" events are shown
   const upcomingEvents = events
+    .filter((e) => {
+      // Resolve status safely
+      let resolvedStatus = "";
+      if (typeof e.status === "string") {
+        resolvedStatus = e.status;
+      } else if (e.status && typeof e.status === "object" && e.status.current) {
+        resolvedStatus = e.status.current;
+      } else if (e.statusMetadata && e.statusMetadata.current) {
+        resolvedStatus = e.statusMetadata.current;
+      }
+
+      const isPublished = (resolvedStatus === "published") || (resolvedStatus === "active");
+
+      // DEBUG LOG for user
+      if ((e.title?.en || e.title || "").toLowerCase().includes("test")) {
+        console.warn(`[EventList] Checked '${e.title?.en || e.title}': Status='${resolvedStatus}', Visible=${isPublished}`);
+      }
+
+      return isPublished;
+    })
     .filter((e) => (e.timeConfiguration?.startDateTime || e.startDate) > Date.now())
     .slice(0, 6);
 
