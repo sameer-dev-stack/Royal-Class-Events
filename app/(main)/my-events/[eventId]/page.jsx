@@ -23,6 +23,7 @@ import {
   Settings,
   Edit3,
   Rocket,
+  CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
 import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
@@ -83,7 +84,8 @@ export default function EventDashboardPage() {
 
     try {
       await publishEvent({ eventId, token });
-      toast.success("Event Published Successfully! 🚀");
+      const message = "Event submitted for review! An admin will check it shortly. 🚀";
+      toast.success(message);
       // Optional: Refresh or reload to update status UI
       window.location.reload();
     } catch (error) {
@@ -285,10 +287,30 @@ export default function EventDashboardPage() {
               <Button
                 onClick={handlePublish}
                 disabled={isPublishing}
-                className="bg-green-600 hover:bg-green-700 text-white font-bold shadow-lg shadow-green-500/20 border-0 rounded-lg animate-pulse"
+                className="bg-[#D4AF37] hover:bg-[#F7E08B] text-black font-bold shadow-lg shadow-[#D4AF37]/20 border-0 rounded-lg animate-pulse"
               >
                 {isPublishing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Rocket className="w-4 h-4 mr-2" />}
-                Publish Event
+                Submit for Review
+              </Button>
+            )}
+
+            {event.status?.current === "waiting_approval" && (
+              <Button
+                disabled
+                className="bg-blue-500/10 border border-blue-500/20 text-blue-500 font-bold rounded-lg cursor-not-allowed"
+              >
+                <Clock className="w-4 h-4 mr-2" />
+                Review Pending
+              </Button>
+            )}
+
+            {event.status?.current === "published" && (
+              <Button
+                disabled
+                className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 font-bold rounded-lg cursor-not-allowed"
+              >
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+                Live
               </Button>
             )}
             <Link href={`/seat-builder?eventId=${eventId}`}>

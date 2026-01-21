@@ -19,14 +19,19 @@ export const publishEvent = mutation({
       if (!isAdmin) throw new Error("Unauthorized");
     }
 
+    const statusToSet = isAdmin ? "published" : "waiting_approval";
+
     await ctx.db.patch(args.eventId, {
       status: {
         ...event.status,
-        current: "published",
+        current: statusToSet,
         changedAt: Date.now(),
         changedBy: user._id
       }
     });
+
+    // Also patch top-level status for easier querying
+    await ctx.db.patch(args.eventId, { status: statusToSet });
 
     return { success: true };
   }
@@ -768,9 +773,10 @@ export const getPublicEvents = query({
       .collect();
 
     // Filter for published events and ensure they aren't in the past
-    // We handle legacy data by checking if status.current exists and equals "published"
+    // STRICT FILTER: Only "published" or "active". Explicitly exclude "waiting_approval".
     const publicEvents = events.filter((e) => {
-      const isPublished = (e.status?.current === "published") || (e.status === "published") || (e.status === "active");
+      const status = e.status?.current || e.status;
+      const isPublished = (status === "published") || (status === "active");
       const isNotPast = (e.timeConfiguration?.startDateTime || e.startDate || 0) > Date.now() - (24 * 60 * 60 * 1000); // Allow same day
       return isPublished && isNotPast;
     });

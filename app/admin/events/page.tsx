@@ -216,6 +216,7 @@ export default function EventsPage() {
                             <SelectItem value="all">All Status</SelectItem>
                             <SelectItem value="published">Published</SelectItem>
                             <SelectItem value="draft">Draft</SelectItem>
+                            <SelectItem value="waiting_approval">Pending Review</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -284,10 +285,12 @@ export default function EventsPage() {
                                             variant="outline"
                                             className={`text-[9px] uppercase font-black px-1.5 py-0 border-none ${event.status === 'published'
                                                 ? 'bg-emerald-500/10 text-emerald-500'
-                                                : 'bg-zinc-800 text-zinc-500'
+                                                : event.status === 'waiting_approval'
+                                                    ? 'bg-blue-500/10 text-blue-500'
+                                                    : 'bg-zinc-800 text-zinc-500'
                                                 }`}
                                         >
-                                            {event.status}
+                                            {event.status === 'waiting_approval' ? 'Pending' : event.status}
                                         </Badge>
                                     </div>
                                 </TableCell>
@@ -306,6 +309,16 @@ export default function EventsPage() {
                                                 <Eye className="mr-3 h-4 w-4 text-blue-500" />
                                                 <span className="font-medium">Preview Event</span>
                                             </DropdownMenuItem>
+
+                                            {event.status === "waiting_approval" && (
+                                                <DropdownMenuItem
+                                                    className="hover:bg-zinc-900 cursor-pointer focus:bg-zinc-900 rounded-lg py-2.5 transition-colors"
+                                                    onClick={() => handleToggleStatus(event._id, "waiting_approval")}
+                                                >
+                                                    <CheckCircle2 className="mr-3 h-4 w-4 text-emerald-500" />
+                                                    <span className="font-bold text-emerald-500">Approve Event</span>
+                                                </DropdownMenuItem>
+                                            )}
 
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
