@@ -13,27 +13,26 @@ export const publishEvent = mutation({
     if (!user) throw new Error("Not logged in");
 
     const event = await ctx.db.get(args.eventId);
-    if (!event || event.ownerId !== user._id) {
-      // Check admin
-      const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
-      if (!isAdmin) throw new Error("Unauthorized");
+    const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+
+    if (!event || (event.ownerId !== user._id && !isAdmin)) {
+      throw new Error("Unauthorized");
     }
 
-    const statusToSet = isAdmin ? "published" : "waiting_approval";
+    // Force all submissions to go through approval, even for admins.
+    // This ensures the moderation workflow is always exercised.
+    const statusToSet = "waiting_approval";
 
     await ctx.db.patch(args.eventId, {
-      status: {
-        ...event.status,
+      status: statusToSet, // Flat string for easy querying
+      statusMetadata: {
         current: statusToSet,
         changedAt: Date.now(),
-        changedBy: user._id
+        changedBy: user._id,
       }
     });
 
-    // Also patch top-level status for easier querying
-    await ctx.db.patch(args.eventId, { status: statusToSet });
-
-    return { success: true };
+    return { success: true, status: statusToSet };
   }
 });
 
@@ -495,7 +494,8 @@ export const getOrganizerStats = query({
       revenue += rev;
       ticketsSold += tix;
 
-      if (event.status?.current === "published") {
+      const status = event.status?.current || event.status;
+      if (status === "published" || status === "active") {
         activeEvents++;
       }
     }
@@ -772,16 +772,34 @@ export const getPublicEvents = query({
       .order("asc")
       .collect();
 
-    // Filter for published events and ensure they aren't in the past
-    // STRICT FILTER: Only "published" or "active". Explicitly exclude "waiting_approval".
-    const publicEvents = events.filter((e) => {
-      const status = e.status?.current || e.status;
-      const isPublished = (status === "published") || (status === "active");
-      const isNotPast = (e.timeConfiguration?.startDateTime || e.startDate || 0) > Date.now() - (24 * 60 * 60 * 1000); // Allow same day
-      return isPublished && isNotPast;
-    });
+    return events.filter((e) => {
+      // 1. Resolve status safely from all possible structures
+      let resolvedStatus = "";
+      if (typeof e.status === "string") {
+        resolvedStatus = e.status;
+      } else if (e.status && typeof e.status === "object" && e.status.current) {
+        resolvedStatus = e.status.current;
+      } else if (e.statusMetadata && e.statusMetadata.current) {
+        resolvedStatus = e.statusMetadata.current;
+      }
 
-    return publicEvents;
+      // 2. Strict whitelist: Only "published" or "active"
+      const isPublished = (resolvedStatus === "published") || (resolvedStatus === "active");
+
+      // 3. Date check: Ensure event is not in the deep past
+      const startTime = e.timeConfiguration?.startDateTime || e.startDate || 0;
+      const isNotPast = startTime > Date.now() - (48 * 60 * 60 * 1000); // 48h grace for timezone diff
+
+      const shouldShow = isPublished && isNotPast;
+
+      // DEBUG: Log matches for the specific event causing issues
+      const title = e.title?.en || e.title || "";
+      if (typeof title === "string" && title.toLowerCase().includes("test for approval")) {
+        console.log(`FILTER: Event '${title}' | Status: [${resolvedStatus}] | isPublished: ${isPublished} | isNotPast: ${isNotPast} | shouldShow: ${shouldShow}`);
+      }
+
+      return shouldShow;
+    });
   },
 });
 
