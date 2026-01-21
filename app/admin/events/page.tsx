@@ -2,7 +2,9 @@
 
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -52,6 +54,7 @@ import {
 export default function EventsPage() {
     const { token } = useAuthStore();
     const router = useRouter();
+    const { isAdmin } = useUserRoles();
     const [isMounted, setIsMounted] = useState(false);
 
     // 1. Wait for Hydration
@@ -59,9 +62,11 @@ export default function EventsPage() {
         setIsMounted(true);
     }, []);
 
-    // 2. Query only if Mounted and Token exists
+    // 2. Query only if Mounted and Token exists AND isAdmin
+    const shouldFetch = isMounted && token && isAdmin;
+
     const data = useQuery(api.admin.getAllEvents,
-        isMounted && token ? { token } : "skip"
+        shouldFetch ? { token } : "skip"
     );
     const deleteEvent = useMutation(api.admin.adminDeleteEvent);
     const toggleStatus = useMutation(api.admin.adminToggleEventStatus);

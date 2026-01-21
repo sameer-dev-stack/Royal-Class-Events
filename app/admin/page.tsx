@@ -3,6 +3,7 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Calendar, BarChart3, DollarSign, Activity, TrendingUp } from "lucide-react";
 
@@ -19,6 +20,7 @@ import { useEffect, useState } from "react";
 
 export default function AdminDashboard() {
     const { token } = useAuthStore();
+    const { isAdmin } = useUserRoles();
     const [isMounted, setIsMounted] = useState(false);
 
     // 1. Wait for Hydration
@@ -26,12 +28,15 @@ export default function AdminDashboard() {
         setIsMounted(true);
     }, []);
 
-    // 2. Query only if Mounted and Token exists
+    // 2. Query only if Mounted and Token exists AND isAdmin
+    // This prevents "Access Denied" errors from crashing the UI before redirect
+    const shouldFetch = isMounted && token && isAdmin;
+
     const stats = useQuery(api.admin.getAdminStats,
-        isMounted && token ? { token } : "skip"
+        shouldFetch ? { token } : "skip"
     );
     const analyticsData = useQuery(api.admin.getAnalyticsData,
-        isMounted && token ? { token } : "skip"
+        shouldFetch ? { token } : "skip"
     );
 
     if (!isMounted) return null;

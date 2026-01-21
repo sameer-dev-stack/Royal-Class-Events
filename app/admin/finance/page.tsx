@@ -2,7 +2,9 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +17,9 @@ import { OverviewChart } from "@/components/admin/overview-chart";
 
 export default function FinancePage() {
     const { token } = useAuthStore();
-    const transactions = useQuery(api.finance.getFinancials, { token: token || undefined });
-    const analyticsData = useQuery(api.admin.getAnalyticsData, { token: token || undefined });
+    const { isAdmin } = useUserRoles();
+    const transactions = useQuery(api.finance.getFinancials, isAdmin && token ? { token } : "skip");
+    const analyticsData = useQuery(api.admin.getAnalyticsData, isAdmin && token ? { token } : "skip");
     const [searchTerm, setSearchTerm] = useState("");
 
     if (!transactions) return <div className="text-zinc-400 p-10 animate-pulse">Loading financials...</div>;
