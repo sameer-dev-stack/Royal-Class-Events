@@ -781,12 +781,6 @@ export const getPublicEvents = query({
       return isPublished && isNotPast;
     });
 
-    // DEBUG FALLBACK: If no published events found, return all events to avoid "Coming Soon" during dev
-    if (publicEvents.length === 0 && events.length > 0) {
-      console.log("No published events found, returning raw list for debugging.");
-      return events.slice(0, 10);
-    }
-
     return publicEvents;
   },
 });
