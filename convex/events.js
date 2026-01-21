@@ -780,7 +780,7 @@ export const getPublicEvents = query({
 
       // LOGGING: Remove this once verified
       const title = e.title?.en || e.title || "";
-      if (typeof title === "string" && (title.toLowerCase().includes("test for approval") || title.toLowerCase().includes("test event"))) {
+      if (typeof title === "string" && title.toLowerCase().includes("test")) {
         console.log(`FILTER: Event '${title}' | show: ${show}`);
       }
 
