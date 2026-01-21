@@ -327,4 +327,12 @@ src/
 ---
 
 ## 🚀 Final Status
-**Handover Status: Vendor Ecosystem & Service Infrastructure Complete (Phases 1-40 Complete)**
+**Handover Status: Event Moderation & Visibility Complete (Phases 1-41 Complete)**
+
+### Phase 41: Event Moderation & Visibility (Critical Security Update)
+- **✅ Mandatory Moderation Workflow**
+  - All new events (including Admin submissions) are forced into `waiting_approval` status.
+  - Updated `isEventVisible` across all queries (`getPublicEvents`, `search`, `explore`) to strictly filter only `published` or `active` events.
+  - **Admin Panel Upgrade:** Enhanced `app/admin/events/page.tsx` with "Pending Approval" cards and one-click "Approve" workflow.
+  - **Client-Side Fail-Safe:** Implemented a strict filter in `EventList.jsx` to prevent any unapproved events from leaking due to stale cache.
+
