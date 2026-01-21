@@ -778,10 +778,19 @@ export const getPublicEvents = query({
     return events.filter((e) => {
       const show = isEventVisible(e);
 
-      // LOGGING: Remove this once verified
+      // DETAILED LOGGING: Debug Test/Test2 events
       const title = e.title?.en || e.title || "";
       if (typeof title === "string" && title.toLowerCase().includes("test")) {
-        console.log(`FILTER: Event '${title}' | show: ${show}`);
+        // Resolve status for logging
+        let resolvedStatus = "";
+        if (typeof e.status === "string") {
+          resolvedStatus = e.status;
+        } else if (e.status && typeof e.status === "object" && e.status.current) {
+          resolvedStatus = e.status.current;
+        } else if (e.statusMetadata && e.statusMetadata.current) {
+          resolvedStatus = e.statusMetadata.current;
+        }
+        console.log(`[DEBUG] Event '${title}' | resolvedStatus: '${resolvedStatus}' | isVisible: ${show} | rawStatus: ${JSON.stringify(e.status)}`);
       }
 
       return show;
