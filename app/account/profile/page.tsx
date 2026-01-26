@@ -17,8 +17,7 @@ import {
     ShieldCheck,
     CheckCircle2
 } from "lucide-react";
-import { useMutation, useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import { toast } from "sonner";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
@@ -36,12 +35,10 @@ const profileSchema = z.object({
 
 export default function ProfileSettingsPage() {
     const router = useRouter();
-    const { token, user, updateUser, role } = useAuthStore();
+    const { supabase } = useSupabase();
+    const { user, updateUser, role } = useAuthStore();
     const [isSaving, setIsSaving] = useState(false);
     const [isUpgrading, setIsUpgrading] = useState(false);
-
-    const updateProfile = useMutation(api.users.updateProfile);
-    const upgradeToOrganizer = useMutation(api.users.upgradeToOrganizer);
 
     const {
         register,
@@ -52,7 +49,7 @@ export default function ProfileSettingsPage() {
         resolver: zodResolver(profileSchema),
         defaultValues: {
             name: user?.name || "",
-            bio: user?.profile?.bio || "",
+            bio: user?.metadata?.bio || "",
         },
     });
 
@@ -60,27 +57,40 @@ export default function ProfileSettingsPage() {
         if (user) {
             reset({
                 name: user.name || "",
-                bio: user.profile?.bio || "",
+                bio: user.metadata?.bio || "",
             });
         }
     }, [user, reset]);
 
     const onSubmit = async (data) => {
-        if (!token) return;
+        if (!user?.id) return;
         setIsSaving(true);
         try {
-            const result = await updateProfile({
-                token,
+            const { error } = await supabase
+                .from('profiles')
+                .update({
+                    full_name: data.name,
+                    metadata: {
+                        ...user.metadata,
+                        bio: data.bio
+                    }
+                })
+                .eq('id', user.id);
+
+            if (error) throw error;
+
+            updateUser({
                 name: data.name,
-                bio: data.bio,
+                metadata: {
+                    ...user.metadata,
+                    bio: data.bio
+                }
             });
 
-            if (result.success) {
-                updateUser({ name: data.name, profile: { ...user.profile, bio: data.bio } });
-                toast.success("Profile updated successfully", {
-                    className: "bg-zinc-900 border-[#D4AF37]/50 text-[#D4AF37] font-bold",
-                });
-            }
+            toast.success("Profile updated successfully", {
+                className: "bg-zinc-900 border-[#D4AF37]/50 text-[#D4AF37] font-bold",
+            });
+
         } catch (error) {
             console.error("Update error:", error);
             toast.error("Failed to update profile");
@@ -89,56 +99,35 @@ export default function ProfileSettingsPage() {
         }
     };
 
-    const handleUpgrade = async () => {
-        const currentToken = useAuthStore.getState().token;
-        if (!currentToken) {
-            toast.error("Authentication session missing. Please sign in again.");
-            return;
-        }
-
-        setIsUpgrading(true);
-        try {
-            const result = await upgradeToOrganizer({ token: currentToken });
-            if (result.success && result.user) {
-                // 1. Instant State Update (Optimistic/Immediate)
-                updateUser(result.user);
-
-                toast.success("Account Upgraded to Organizer!", {
-                    icon: <Crown className="w-5 h-5 text-[#D4AF37]" />,
-                    className: "bg-zinc-900 border-[#D4AF37]/50 text-[#D4AF37] font-bold",
-                });
-
-                // 2. Smooth Redirect to Dashboard
-                setTimeout(() => {
-                    router.push("/dashboard");
-                }, 800);
-            } else {
-                toast.error(result.message || "Upgrade failed");
-            }
-        } catch (error) {
-            console.error("Upgrade error:", error);
-            toast.error("Upgrade failed. Please check your connection.");
-        } finally {
-            setIsUpgrading(false);
-        }
+    const handleUpgrade = () => {
+        router.push("/account/organizer-request");
     };
 
     const initials = user?.name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "RC";
     const isOrganizer = role === "organizer";
-    const roleColor = isOrganizer ? "#D4AF37" : "blue-500";
-    const borderColor = isOrganizer ? "border-[#D4AF37] shadow-[#D4AF37]/20" : "border-blue-500 shadow-blue-500/20";
+    const isAdmin = role === "admin" || role === "superuser";
+
+    // Theme Colors
+    const roleColor = isAdmin ? "text-red-500" : isOrganizer ? "text-[#D4AF37]" : "text-blue-500";
+    const roleBg = isAdmin ? "bg-red-500/10 border-red-500/20" : isOrganizer ? "bg-[#D4AF37]/10 border-[#D4AF37]/20" : "bg-blue-500/10 border-blue-500/20";
+    const borderColor = isAdmin ? "border-red-500 shadow-red-500/20" : isOrganizer ? "border-[#D4AF37] shadow-[#D4AF37]/20" : "border-blue-500 shadow-blue-500/20";
+    const gradientColor = isAdmin ? "from-red-500/20" : isOrganizer ? "from-[#D4AF37]/20" : "from-blue-500/20";
 
     return (
         <div className="max-w-3xl space-y-10">
             {/* Profile Header Card */}
             <section className="relative overflow-hidden p-8 rounded-3xl bg-card border border-border space-y-8 group shadow-sm">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/5 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2" />
+                <div className={cn(
+                    "absolute top-0 right-0 w-64 h-64 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2",
+                    isAdmin ? "bg-red-500/5" : "bg-[#D4AF37]/5"
+                )} />
 
                 <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
                     <div className="relative group/avatar">
                         <div className={cn(
                             "absolute inset-0 bg-gradient-to-tr rounded-full blur-xl group-hover/avatar:blur-2xl transition-all",
-                            isOrganizer ? "from-[#D4AF37]/20 to-white/10" : "from-blue-500/20 to-white/10"
+                            gradientColor,
+                            "to-white/10"
                         )} />
                         <Avatar className={cn(
                             "w-32 h-32 border-4 bg-muted shadow-2xl relative transition-all duration-500",
@@ -147,12 +136,12 @@ export default function ProfileSettingsPage() {
                             <AvatarImage src={user?.image} />
                             <AvatarFallback className={cn(
                                 "bg-muted text-3xl font-black transition-colors",
-                                isOrganizer ? "text-[#D4AF37]" : "text-blue-500"
+                                roleColor
                             )}>{initials}</AvatarFallback>
                         </Avatar>
                         <button className={cn(
                             "absolute bottom-0 right-0 w-10 h-10 text-primary-foreground rounded-xl border-4 border-card flex items-center justify-center hover:scale-110 transition-transform",
-                            isOrganizer ? "bg-[#D4AF37]" : "bg-blue-500"
+                            isAdmin ? "bg-red-500" : isOrganizer ? "bg-[#D4AF37]" : "bg-blue-500"
                         )}>
                             <Camera className="w-4 h-4" />
                         </button>
@@ -161,7 +150,11 @@ export default function ProfileSettingsPage() {
                     <div className="text-center md:text-left space-y-2">
                         <h2 className="text-3xl font-black italic tracking-tight text-foreground">{user?.name}</h2>
                         <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                            <span className="px-3 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                            <span className={cn(
+                                "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border",
+                                roleColor,
+                                roleBg
+                            )}>
                                 <Crown className="w-3 h-3" />
                                 {role?.toUpperCase() || "ATTENDEE"}
                             </span>
@@ -182,10 +175,16 @@ export default function ProfileSettingsPage() {
                             <div className="space-y-2">
                                 <label className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Full Name</label>
                                 <div className="relative group">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-[#D4AF37] transition-colors" />
+                                    <User className={cn(
+                                        "absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground transition-colors",
+                                        isAdmin ? "group-focus-within:text-red-500" : "group-focus-within:text-[#D4AF37]"
+                                    )} />
                                     <Input
                                         {...register("name")}
-                                        className="h-14 pl-12 rounded-2xl bg-background border-border focus:border-[#D4AF37]/50 transition-all font-medium text-foreground"
+                                        className={cn(
+                                            "h-14 pl-12 rounded-2xl bg-background border-border transition-all font-medium text-foreground",
+                                            isAdmin ? "focus:border-red-500/50" : "focus:border-[#D4AF37]/50"
+                                        )}
                                         placeholder="Enter your name"
                                     />
                                     {errors.name && <p className="text-xs text-red-500 mt-1 ml-1">{errors.name.message}</p>}
@@ -213,7 +212,10 @@ export default function ProfileSettingsPage() {
                             <label className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Bio / Narrative</label>
                             <Textarea
                                 {...register("bio")}
-                                className="min-h-[120px] rounded-2xl bg-background border-border focus:border-[#D4AF37]/50 transition-all resize-none p-4 font-medium text-foreground"
+                                className={cn(
+                                    "min-h-[120px] rounded-2xl bg-background border-border transition-all resize-none p-4 font-medium text-foreground",
+                                    isAdmin ? "focus:border-red-500/50" : "focus:border-[#D4AF37]/50"
+                                )}
                                 placeholder="Tell the Royal community about yourself..."
                             />
                             {errors.bio && <p className="text-xs text-red-500 mt-1 ml-1">{errors.bio.message}</p>}
@@ -224,7 +226,10 @@ export default function ProfileSettingsPage() {
                         <Button
                             type="submit"
                             disabled={isSaving || !isDirty}
-                            className="h-14 px-10 rounded-2xl bg-[#D4AF37] hover:bg-[#8C7326] text-black font-black uppercase tracking-widest text-xs gap-2 group shadow-xl shadow-[#D4AF37]/10 disabled:opacity-50"
+                            className={cn(
+                                "h-14 px-10 rounded-2xl text-black font-black uppercase tracking-widest text-xs gap-2 group shadow-xl disabled:opacity-50",
+                                isAdmin ? "bg-red-500 hover:bg-red-600 shadow-red-500/10 text-white" : "bg-[#D4AF37] hover:bg-[#8C7326] shadow-[#D4AF37]/10"
+                            )}
                         >
                             {isSaving ? (
                                 <RefreshCw className="w-4 h-4 animate-spin" />
@@ -237,8 +242,8 @@ export default function ProfileSettingsPage() {
                 </form>
             </Card>
 
-            {/* Upgrade Bridge */}
-            {role !== "organizer" && (
+            {/* Upgrade Bridge - Only show if not Organizer AND not Admin */}
+            {role !== "organizer" && role !== "admin" && (
                 <motion.section
                     whileHover={{ scale: 1.01 }}
                     className="relative overflow-hidden p-8 md:p-12 rounded-3xl bg-gradient-to-br from-[#D4AF37]/10 via-card to-card border border-[#D4AF37]/20 shadow-lg group"

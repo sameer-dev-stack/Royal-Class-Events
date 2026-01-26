@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Star, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,15 +22,19 @@ export default function ReviewModal({
     supplierId,
     supplierName
 }) {
-    const { token } = useAuthStore();
+    const { user } = useAuthStore();
+    const { supabase } = useSupabase();
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const submitReview = useMutation(api.suppliers.submitReview);
-
     const handleSubmit = async () => {
+        if (!user) {
+            toast.error("Please login to submit a review.");
+            return;
+        }
+
         if (rating === 0) {
             toast.error("Please select a star rating.");
             return;
@@ -45,14 +48,18 @@ export default function ReviewModal({
         setIsSubmitting(true);
 
         try {
-            const result = await submitReview({
-                token,
-                supplierId,
-                rating,
-                comment: comment.trim(),
-            });
+            const { error } = await supabase
+                .from('supplier_reviews')
+                .insert({
+                    supplier_id: supplierId,
+                    user_id: user.id,
+                    rating,
+                    comment: comment.trim(),
+                });
 
-            toast.success(result.message);
+            if (error) throw error;
+
+            toast.success("Review submitted successfully!");
             onOpenChange(false);
             setRating(0);
             setComment("");
@@ -91,8 +98,8 @@ export default function ReviewModal({
                                 >
                                     <Star
                                         className={`w-10 h-10 transition-colors ${star <= (hoverRating || rating)
-                                                ? "fill-[#F7E08B] text-[#F7E08B]"
-                                                : "text-zinc-600"
+                                            ? "fill-[#F7E08B] text-[#F7E08B]"
+                                            : "text-zinc-600"
                                             }`}
                                     />
                                 </button>

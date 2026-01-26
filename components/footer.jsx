@@ -28,6 +28,7 @@ export default function Footer() {
 
 
 
+
       {/* 3. BOTTOM SECTION: Socials & Support (Visible on all pages) */}
       <div className="bg-gray-100 dark:bg-zinc-950/50 border-t border-gray-200 dark:border-white/5 py-8">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">

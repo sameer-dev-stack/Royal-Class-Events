@@ -6,17 +6,32 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Toaster } from "sonner";
 import ChatBot from "@/components/chat-bot";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
+import { useEffect, useState } from "react";
 import { useUserRoles } from "@/hooks/use-user-roles";
 import { Hammer, ShieldAlert, AlertCircle } from "lucide-react";
 
 export default function LayoutWrapper({ children }) {
     const pathname = usePathname();
+    const { supabase } = useSupabase();
     const { isAdmin, isLoading: rolesLoading } = useUserRoles();
-    const settings = useQuery(api.settings.getPublicSettings);
+    const [settings, setSettings] = useState(null);
 
-    const isMaintenance = settings?.maintenance_mode;
+    useEffect(() => {
+        async function fetchSettings() {
+            const { data } = await supabase
+                .from('system_settings')
+                .select('*')
+                .eq('key', 'maintenance_mode')
+                .single();
+
+            if (data) setSettings(data.value);
+        }
+        fetchSettings();
+    }, [supabase]);
+
+    const isMaintenance = settings === true || settings === 'true';
+
     const isPublicPath = useMemo(() => {
         if (!pathname) return true;
         return !pathname.startsWith("/admin");

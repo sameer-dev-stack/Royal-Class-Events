@@ -4,11 +4,12 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Search, MapPin, Calendar, Loader2, X, ChevronDown, Crosshair } from "lucide-react";
-import { State, City, Country } from "country-state-city";
+import { City, Country } from "country-state-city";
 import { format } from "date-fns";
-import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
+import useAuthStore from "@/hooks/use-auth-store";
 import { createLocationSlug } from "@/lib/location-utils";
+import { bdDistricts, allBdCities } from "@/lib/bd-locations"; // Custom Data
 import { getCategoryIcon } from "@/lib/data";
 
 import { Input } from "@/components/ui/input";
@@ -17,20 +18,47 @@ import { cn } from "@/lib/utils";
 
 export default function SearchLocationBar() {
   const router = useRouter();
+  const { supabase } = useSupabase();
+  const { user, updateUser } = useAuthStore();
 
-  // --- Global State ---
-  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
-  const { mutate: updateLocation } = useConvexMutation(api.users.completeOnboarding);
+  // --- Auth & Profile State ---
+  const currentUser = user;
 
   // --- Event Search State ---
   const [eventQuery, setEventQuery] = useState("");
   const [showEventResults, setShowEventResults] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
   const eventSearchRef = useRef(null);
 
-  const { data: searchResults, isLoading: searchLoading } = useConvexQuery(
-    api.search.searchEvents,
-    eventQuery.trim().length >= 2 ? { query: eventQuery, limit: 5 } : "skip"
-  );
+  // --- Search Logic (Supabase) ---
+  useEffect(() => {
+    if (eventQuery.trim().length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    const delayDebounceFn = setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .select('*')
+          .ilike('title', `%${eventQuery}%`)
+          .limit(5);
+
+        if (!error) {
+          setSearchResults(data);
+        }
+      } catch (err) {
+        console.error("Search failed:", err);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [eventQuery, supabase]);
 
   // --- Location State ---
   const [locationOpen, setLocationOpen] = useState(false);
@@ -39,28 +67,35 @@ export default function SearchLocationBar() {
   const [isLocating, setIsLocating] = useState(false);
   const locationRef = useRef(null);
 
-  // --- Data Preparation (Bangladesh Only) ---
-  // --- Data Preparation (International) ---
+  // --- Data Preparation ---
   const allCountries = useMemo(() => Country.getAllCountries(), []);
 
   // --- Location Picker State ---
   const [viewMode, setViewMode] = useState("countries"); // "countries" | "cities"
-  const [selectedCountryCode, setSelectedCountryCode] = useState("BD"); // Default BD for now, or match user
+  const [selectedCountryCode, setSelectedCountryCode] = useState("BD"); // Default BD
 
+  // Enhanced City Getter
   const currentCities = useMemo(() => {
     if (!selectedCountryCode) return [];
+
+    // Custom Logic for Bangladesh
+    if (selectedCountryCode === "BD") {
+      return allBdCities.map(city => ({ name: city }));
+    }
+
+    // Fallback to library for other countries
     return City.getCitiesOfCountry(selectedCountryCode);
   }, [selectedCountryCode]);
 
   // Set initial location from user profile
   useEffect(() => {
-    if (currentUser?.location?.country) {
-      // Try to find code from name if stored as name
-      const c = allCountries.find(c => c.name === currentUser.location.country);
+    if (currentUser?.metadata?.location?.country) {
+      // Logic for country matching
+      const c = allCountries.find(c => c.name === currentUser.metadata.location.country);
       if (c) setSelectedCountryCode(c.isoCode);
     }
-    if (currentUser?.location?.city) {
-      setSelectedCity(currentUser.location.city);
+    if (currentUser?.metadata?.location?.city) {
+      setSelectedCity(currentUser.metadata.location.city);
     }
   }, [currentUser, allCountries]);
 
@@ -77,17 +112,32 @@ export default function SearchLocationBar() {
     router.push(`/events/${slug}`);
   };
 
-  const handleLocationSelect = async (city, divisionName) => {
-    setSelectedCity(city.name);
+  const handleLocationSelect = async (cityData, divisionName) => {
+    const cityName = cityData.name;
+    setSelectedCity(cityName);
     setLocationOpen(false);
 
-    // Optional: Update backend user profile
+    // Update Supabase profile
     if (currentUser) {
       try {
-        await updateLocation({
-          location: { city: city.name, state: divisionName, country: "Bangladesh" },
-          interests: currentUser.interests || [],
-        });
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            metadata: {
+              ...currentUser.metadata,
+              location: { city: cityName, state: divisionName, country: "Bangladesh" }
+            }
+          })
+          .eq('id', currentUser.id);
+
+        if (!error) {
+          updateUser({
+            metadata: {
+              ...currentUser.metadata,
+              location: { city: cityName, state: divisionName, country: "Bangladesh" }
+            }
+          });
+        }
       } catch (err) {
         console.error(err);
       }
@@ -95,7 +145,7 @@ export default function SearchLocationBar() {
 
     // Navigate
     const countryName = allCountries.find(c => c.isoCode === selectedCountryCode)?.name || divisionName || "International";
-    const slug = createLocationSlug(city.name, countryName);
+    const slug = createLocationSlug(cityName, countryName);
     router.push(`/explore/${slug}`);
   };
 
@@ -110,13 +160,11 @@ export default function SearchLocationBar() {
     navigator.geolocation.getCurrentPosition(async (position) => {
       try {
         const { latitude, longitude } = position.coords;
-        // Using BigDataCloud's free reverse geocoding API (client-side)
         const response = await fetch(
           `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
         );
         const data = await response.json();
 
-        // data format: { city, countryName, countryCode, principalSubdivision }
         const city = data.city || data.locality;
         const countryCode = data.countryCode;
         const countryName = data.countryName;
@@ -126,15 +174,25 @@ export default function SearchLocationBar() {
           setSelectedCountryCode(countryCode);
           setLocationOpen(false);
 
-          // Update backend if possible
           if (currentUser) {
-            updateLocation({
-              location: { city, state: data.principalSubdivision, country: countryName },
-              interests: currentUser.interests || [],
+            await supabase
+              .from('profiles')
+              .update({
+                metadata: {
+                  ...currentUser.metadata,
+                  location: { city, state: data.principalSubdivision, country: countryName }
+                }
+              })
+              .eq('id', currentUser.id);
+
+            updateUser({
+              metadata: {
+                ...currentUser.metadata,
+                location: { city, state: data.principalSubdivision, country: countryName }
+              }
             });
           }
 
-          // Navigate
           const slug = createLocationSlug(city, countryName);
           router.push(`/explore/${slug}`);
         } else {
@@ -155,7 +213,7 @@ export default function SearchLocationBar() {
 
   const handleCountrySelect = (countryCode) => {
     setSelectedCountryCode(countryCode);
-    setLocationSearch(""); // Clear search
+    setLocationSearch("");
     setViewMode("cities");
   };
 
@@ -164,7 +222,6 @@ export default function SearchLocationBar() {
     setLocationSearch("");
   };
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (eventSearchRef.current && !eventSearchRef.current.contains(event.target)) {
@@ -186,7 +243,6 @@ export default function SearchLocationBar() {
       <div className="relative flex-1" ref={eventSearchRef}>
         <div className="relative group">
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
-            {/* Sparkles Icon like the screenshot */}
             <Search className="w-4 h-4" />
           </div>
           <input
@@ -210,14 +266,13 @@ export default function SearchLocationBar() {
               <div>
                 {searchResults?.length > 0 ? searchResults.map(event => (
                   <div
-                    key={event._id}
+                    key={event.id}
                     onClick={() => handleEventClick(event.slug)}
                     className="px-4 py-3 hover:bg-white/5 cursor-pointer flex items-center gap-3 border-b border-white/5 last:border-0"
                   >
-                    <div className="text-xl">{getCategoryIcon(event.eventSubType || event.category)}</div>
                     <div>
-                      <p className="text-sm font-medium text-black dark:text-white">{event.title?.en || event.title}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{event.metadata?.legacyProps?.city || event.city} • {format(new Date(event.timeConfiguration?.startDateTime || event.startDate), "MMM d")}</p>
+                      <p className="text-sm font-medium text-black dark:text-white">{event.title}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{event.start_date ? format(new Date(event.start_date), "MMM d") : "TBD"}</p>
                     </div>
                   </div>
                 )) : (
@@ -229,7 +284,7 @@ export default function SearchLocationBar() {
         )}
       </div>
 
-      {/* 2. RIGHT SIDE: LOCATION PICKER (The "Dubai" button style) */}
+      {/* 2. RIGHT SIDE: LOCATION PICKER */}
       <div className="relative shrink-0" ref={locationRef}>
         <button
           onClick={() => setLocationOpen(!locationOpen)}
@@ -240,10 +295,8 @@ export default function SearchLocationBar() {
           <ChevronDown className="w-3 h-3 text-gray-500 dark:text-gray-400" />
         </button>
 
-        {/* Location Dropdown (International) */}
         {locationOpen && (
           <div className="absolute top-full right-0 mt-2 w-72 bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-            {/* Search Input inside dropdown */}
             <div className="p-3 border-b border-black/10 dark:border-white/5 sticky top-0 bg-white dark:bg-zinc-900 z-10 space-y-2">
               <button
                 onClick={handleGeolocation}
@@ -274,10 +327,7 @@ export default function SearchLocationBar() {
               </div>
             </div>
 
-            {/* Scrollable List */}
-            <div className="max-h-[300px] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent">
-
-              {/* VIEW: COUNTRIES */}
+            <div className="max-h-[300px] overflow-y-auto p-2">
               {viewMode === "countries" && (
                 <div className="space-y-0.5">
                   {allCountries
@@ -303,7 +353,7 @@ export default function SearchLocationBar() {
                 </div>
               )}
 
-              {/* VIEW: CITIES */}
+              {/* Enhanced City List using custom data for BD */}
               {viewMode === "cities" && (
                 <div className="space-y-0.5">
                   {currentCities.length > 0 ? (
@@ -331,13 +381,6 @@ export default function SearchLocationBar() {
                   )}
                 </div>
               )}
-
-              {/* Empty State */}
-              {(viewMode === "countries" && locationSearch && allCountries.filter(c => c.name.toLowerCase().includes(locationSearch.toLowerCase())).length === 0) && (
-                <div className="p-4 text-center text-xs text-gray-500">
-                  No countries found
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -346,3 +389,4 @@ export default function SearchLocationBar() {
     </div>
   );
 }
+

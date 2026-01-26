@@ -1,22 +1,44 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { CATEGORIES } from "@/lib/data";
 import EventCard from "./event-card";
 import EventCardSkeleton from "./event-card-skeleton";
 import { Loader2, Crown, ArrowRight, CalendarX } from "lucide-react";
 import Link from "next/link";
-
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSupabase } from "@/components/providers/supabase-provider";
 
 export default function EventList() {
   const router = useRouter();
-  // 1. Fetch only public, published events from database
-  const events = useQuery(api.events.getPublicEvents);
+  const { supabase } = useSupabase();
+  const [events, setEvents] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // 1. Fetch public, published events from Supabase
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .select('*')
+          .in('status', ['published', 'active'])
+          .order('start_date', { ascending: true });
+
+        if (error) throw error;
+        setEvents(data || []);
+      } catch (err) {
+        console.error("Failed to fetch public events:", err);
+        setEvents([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchEvents();
+  }, [supabase]);
 
   // 2. Loading State
-  if (!events) {
+  if (isLoading || !events) {
     return (
       <div className="space-y-16">
         <section>
@@ -42,36 +64,13 @@ export default function EventList() {
 
   // 3. Calculate Real Counts for each Category
   const categoryCounts = events.reduce((acc, event) => {
-    const cat = event.eventSubType || event.category;
+    const cat = event.category || event.event_type; // Match Supabase column naming
     acc[cat] = (acc[cat] || 0) + 1;
     return acc;
   }, {});
 
-  // 4. Get Upcoming Events (Top 6)
-  // 4. Get Upcoming Events (Top 6)
-  // Client-side fail-safe: Ensure only "published" or "active" events are shown
   const upcomingEvents = events
-    .filter((e) => {
-      // Resolve status safely
-      let resolvedStatus = "";
-      if (typeof e.status === "string") {
-        resolvedStatus = e.status;
-      } else if (e.status && typeof e.status === "object" && e.status.current) {
-        resolvedStatus = e.status.current;
-      } else if (e.statusMetadata && e.statusMetadata.current) {
-        resolvedStatus = e.statusMetadata.current;
-      }
-
-      const isPublished = (resolvedStatus === "published") || (resolvedStatus === "active");
-
-      // DEBUG LOG for user
-      if ((e.title?.en || e.title || "").toLowerCase().includes("test")) {
-        console.warn(`[EventList] Checked '${e.title?.en || e.title}': Status='${resolvedStatus}', Visible=${isPublished}`);
-      }
-
-      return isPublished;
-    })
-    .filter((e) => (e.timeConfiguration?.startDateTime || e.startDate) > Date.now())
+    .filter((e) => new Date(e.start_date) > new Date())
     .slice(0, 6);
 
   return (
@@ -126,9 +125,9 @@ export default function EventList() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {upcomingEvents.map((event) => (
               <EventCard
-                key={event._id}
+                key={event.id}
                 event={event}
-                onClick={() => router.push(`/events/${event.slug || event._id}`)}
+                onClick={() => router.push(`/events/${event.slug || event.id}`)}
               />
             ))}
           </div>

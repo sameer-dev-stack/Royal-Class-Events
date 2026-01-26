@@ -71,7 +71,7 @@ export default function LandingPage() {
             <div className="relative z-20 rounded-3xl border border-border bg-card/60 backdrop-blur-md p-4 shadow-2xl transform rotate-y-[-10deg] hover:rotate-y-0 transition-all duration-700 ease-out animate-float">
               <div className="relative aspect-[4/5] rounded-2xl overflow-hidden">
                 <Image
-                  src="/hero_image.jpeg"
+                  src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1280&q=80"
                   alt="Royal Class Event"
                   width={700}
                   height={875}
@@ -131,46 +131,32 @@ export default function LandingPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            <div className="max-w-xl mx-auto">
               {/* Attendee Path */}
               <div className="group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-[#D4AF37]/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(212,175,55,0.1)] overflow-hidden">
                 <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-[#D4AF37]/5 rounded-full blur-3xl group-hover:bg-[#D4AF37]/10 transition-colors" />
-                <div className="relative z-10 space-y-6">
-                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20 group-hover:scale-110 transition-transform duration-500">
+                <div className="relative z-10 space-y-6 text-center sm:text-left">
+                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20 group-hover:scale-110 transition-transform duration-500 mx-auto sm:mx-0">
                     <Ticket className="w-8 h-8 text-[#D4AF37]" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold mb-2 text-foreground">Browse as Attendee</h3>
+                    <h3 className="text-2xl font-bold mb-2 text-foreground">Explore Royal Experiences</h3>
                     <p className="text-muted-foreground leading-relaxed font-light">
-                      Browse exclusive events, secure your tickets, and manage your premium passes in one place.
+                      Discover the most exclusive galas, VIP soirees, and premium events curated for the inner circle.
                     </p>
                   </div>
-                  <Link href="/explore?role=attendee" className="block" suppressHydrationWarning>
-                    <Button variant="outline" className="w-full h-12 rounded-xl hover:bg-[#D4AF37] hover:text-black hover:border-none transition-all font-bold gap-2">
-                      Browse <ArrowRight className="w-4 h-4" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Organizer Path */}
-              <div className="group relative p-8 rounded-3xl border border-border bg-card/40 backdrop-blur-sm hover:border-[#D4AF37]/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(212,175,55,0.1)] overflow-hidden">
-                <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-colors" />
-                <div className="relative z-10 space-y-6">
-                  <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center border border-[#D4AF37]/20 group-hover:scale-110 transition-transform duration-500">
-                    <Building className="w-8 h-8 text-[#D4AF37]" />
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Link href="/sign-up?role=attendee" className="flex-1" suppressHydrationWarning>
+                      <Button className="w-full h-12 rounded-xl bg-gradient-to-r from-[#F7E08B] via-[#D4AF37] to-[#8C7326] hover:brightness-110 text-black font-bold border-none shadow-lg transition-all">
+                        Sign Up as Attendee
+                      </Button>
+                    </Link>
+                    <Link href="/sign-in" className="flex-1" suppressHydrationWarning>
+                      <Button variant="outline" className="w-full h-12 rounded-xl hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] border-[#D4AF37]/30 font-bold">
+                        Sign In
+                      </Button>
+                    </Link>
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2 text-foreground">Join as Organizer</h3>
-                    <p className="text-muted-foreground leading-relaxed font-light">
-                      Create luxury events, manage guest lists, and track real-time analytics with your host dashboard.
-                    </p>
-                  </div>
-                  <Link href="/create-event?role=organizer" className="block" suppressHydrationWarning>
-                    <Button className="w-full h-12 rounded-xl bg-gradient-to-r from-[#F7E08B] via-[#D4AF37] to-[#8C7326] hover:brightness-110 text-black font-bold shadow-lg shadow-[#D4AF37]/20 transition-all transform group-hover:-translate-y-1 border-none">
-                      Start Hosting <ArrowRight className="w-4 h-4" />
-                    </Button>
-                  </Link>
                 </div>
               </div>
             </div>

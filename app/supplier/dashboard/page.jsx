@@ -1,11 +1,12 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import useAuthStore from "@/hooks/use-auth-store";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useSupabase } from "@/components/providers/supabase-provider";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import {
     Users,
     Eye,
@@ -21,15 +22,82 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function SupplierDashboardPage() {
-    const { token } = useAuthStore();
+    const { supabase } = useSupabase();
+    const { user, isVendor, isLoading: isAuthLoading } = useUserRoles();
+    const [stats, setStats] = useState({ totalLeads: 0, newLeads: 0, profileViews: 0, totalRevenue: 0, activeBookings: 0 });
+    const [recentLeads, setRecentLeads] = useState([]);
+    const [recentBookings, setRecentBookings] = useState([]);
+    const [isLoadingData, setIsLoadingData] = useState(true);
 
-    const data = useQuery(
-        api.suppliers.getDashboardStats,
-        token ? { token } : "skip"
-    );
+    useEffect(() => {
+        if (!user || !isVendor) return;
+
+        async function loadDashboardData() {
+            try {
+                // 0. Get Supplier ID for this user
+                const { data: supplier } = await supabase
+                    .from('suppliers')
+                    .select('id')
+                    .eq('user_id', user.id)
+                    .single();
+
+                if (!supplier) return;
+                const supplierId = supplier.id;
+
+                // 1. Fetch Stats (Counts from service_requests)
+                const { count: totalLeads } = await supabase
+                    .from('service_requests')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('vendor_id', user.id);
+
+                const { count: newLeads } = await supabase
+                    .from('service_requests')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('vendor_id', user.id)
+                    .eq('status', 'pending');
+
+                // 2. Fetch Marketplace Bookings & Revenue
+                const { data: bookings } = await supabase
+                    .from('marketplace_bookings')
+                    .select('*, customer:profiles(full_name), service:supplier_services(name)')
+                    .eq('supplier_id', supplierId)
+                    .order('created_at', { ascending: false });
+
+                const totalRevenue = bookings?.reduce((acc, curr) =>
+                    curr.status === 'confirmed' || curr.status === 'completed' ? acc + Number(curr.total_amount) : acc, 0) || 0;
+
+                setStats({
+                    totalLeads: totalLeads || 0,
+                    newLeads: newLeads || 0,
+                    profileViews: 124,
+                    totalRevenue: totalRevenue,
+                    activeBookings: bookings?.filter(b => b.status === 'confirmed').length || 0
+                });
+
+                setRecentBookings(bookings?.slice(0, 5) || []);
+
+                // 3. Fetch Recent Requests (Leads)
+                const { data: requests, error } = await supabase
+                    .from('service_requests')
+                    .select('*, events(title, start_date)')
+                    .eq('vendor_id', user.id)
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (error) throw error;
+                setRecentLeads(requests || []);
+
+            } catch (err) {
+                console.error("Dashboard data load failed:", err);
+            } finally {
+                setIsLoadingData(false);
+            }
+        }
+        loadDashboardData();
+    }, [user, isVendor, supabase]);
 
     // 1. Loading State
-    if (data === undefined) {
+    if (isAuthLoading || isLoadingData) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
@@ -37,7 +105,7 @@ export default function SupplierDashboardPage() {
         );
     }
 
-    if (!data?.isSupplier) {
+    if (!isVendor) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center space-y-4 max-w-md mx-auto p-8 rounded-3xl bg-card border border-border">
@@ -52,36 +120,40 @@ export default function SupplierDashboardPage() {
         );
     }
 
-    const { stats, recentLeads } = data;
+
 
     const statCards = [
         {
-            title: "Total Leads",
-            value: stats.totalLeads,
-            icon: Users,
+            title: "Total Revenue",
+            value: `৳ ${stats.totalRevenue.toLocaleString()}`,
+            icon: DollarSign,
             color: "text-[#D4AF37]",
+            subtitle: "Total earnings"
+        },
+        {
+            title: "Active Bookings",
+            value: stats.activeBookings,
+            icon: Calendar,
+            color: "text-[#D4AF37]",
+            subtitle: "In progress"
         },
         {
             title: "New Requests",
             value: stats.newLeads,
             icon: Sparkles,
             color: "text-[#D4AF37]",
-        },
-        {
-            title: "Profile Views",
-            value: stats.profileViews,
-            icon: Eye,
-            color: "text-[#D4AF37]",
+            subtitle: "Pending inquiries"
         },
     ];
 
     const getStatusStyle = (status) => {
         const styles = {
-            new: "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20",
-            contacted: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-            quoted: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-            booked: "bg-green-500/10 text-green-400 border-green-500/20",
-            declined: "bg-red-500/10 text-red-400 border-red-500/20",
+            pending: "bg-amber-500/10 text-amber-500 border-amber-500/20",
+            awaiting_payment: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",
+            confirmed: "bg-green-500/10 text-green-400 border-green-500/20",
+            completed: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+            cancelled: "bg-red-500/10 text-red-400 border-red-500/20",
+            disputed: "bg-rose-500/10 text-rose-500 border-rose-500/20",
         };
         return styles[status] || "bg-zinc-500/10 text-zinc-400 border-zinc-500/20";
     };
@@ -129,16 +201,84 @@ export default function SupplierDashboardPage() {
                 ))}
             </div>
 
-            {/* Recent Leads */}
+            {/* Recent Bookings (NEW) */}
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-foreground">Recent Leads</h2>
+                    <h2 className="text-xl font-bold text-foreground">Recent Bookings (Transactional)</h2>
                     <Button asChild variant="ghost" className="text-[#D4AF37] hover:text-[#8C7326] dark:hover:text-[#F7E08B] hover:bg-[#D4AF37]/5">
-                        <Link href="/messages">View All Messages</Link>
+                        <Link href="/supplier/bookings">Manage All Bookings</Link>
                     </Button>
                 </div>
 
                 <div className="bg-card border border-border rounded-3xl overflow-hidden backdrop-blur-sm shadow-xl">
+                    {recentBookings.length === 0 ? (
+                        <div className="p-16 text-center space-y-4">
+                            <Calendar className="w-12 h-12 mx-auto text-muted-foreground opacity-20" />
+                            <p className="text-muted-foreground">No bookings recorded yet.</p>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-muted/30">
+                                    <tr className="border-b border-border text-muted-foreground text-[10px] font-black uppercase tracking-widest">
+                                        <th className="px-8 py-5">Service / Client</th>
+                                        <th className="px-6 py-5">Date & Time</th>
+                                        <th className="px-6 py-5 text-right">Amount</th>
+                                        <th className="px-6 py-5 text-center">Status</th>
+                                        <th className="px-8 py-5 text-center">Escrow</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border/20">
+                                    {recentBookings.map((booking) => (
+                                        <tr key={booking.id} className="group hover:bg-muted/5 transition-colors">
+                                            <td className="px-8 py-5">
+                                                <div className="font-bold text-foreground">{booking.service?.name}</div>
+                                                <div className="text-xs text-muted-foreground">{booking.customer?.full_name}</div>
+                                            </td>
+                                            <td className="px-6 py-5">
+                                                <div className="text-sm font-medium text-foreground/90">
+                                                    {format(new Date(booking.start_time), "MMM d, yyyy")}
+                                                </div>
+                                                <div className="text-[10px] text-muted-foreground uppercase">{format(new Date(booking.start_time), "p")}</div>
+                                            </td>
+                                            <td className="px-6 py-5 text-right font-black text-[#D4AF37]">
+                                                ৳ {Number(booking.total_amount).toLocaleString()}
+                                            </td>
+                                            <td className="px-6 py-5 text-center">
+                                                <span className={cn(
+                                                    "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter border",
+                                                    getStatusStyle(booking.status)
+                                                )}>
+                                                    {booking.status.replace('_', ' ')}
+                                                </span>
+                                            </td>
+                                            <td className="px-8 py-5 text-center">
+                                                <span className={cn(
+                                                    "text-[10px] font-bold uppercase tracking-widest",
+                                                    booking.escrow_status === 'held' ? "text-green-500" : "text-zinc-500"
+                                                )}>
+                                                    {booking.escrow_status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Recent Leads (Inquiries) */}
+            <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-foreground">Inquiries (Leads)</h2>
+                    <Button asChild variant="ghost" className="text-muted-foreground hover:text-foreground">
+                        <Link href="/messages">View Messages</Link>
+                    </Button>
+                </div>
+
+                <div className="bg-card border border-border rounded-3xl overflow-hidden">
                     {recentLeads.length === 0 ? (
                         <div className="p-16 text-center space-y-6">
                             <div className="w-20 h-20 bg-[#D4AF37]/10 rounded-full flex items-center justify-center mx-auto">
@@ -171,21 +311,21 @@ export default function SupplierDashboardPage() {
                                 </thead>
                                 <tbody className="divide-y divide-border/20">
                                     {recentLeads.map((lead) => (
-                                        <tr key={lead._id} className="group hover:bg-muted/10 transition-colors">
+                                        <tr key={lead.id} className="group hover:bg-muted/10 transition-colors">
                                             <td className="px-8 py-5">
-                                                <div className="font-semibold text-foreground">{lead.clientName}</div>
-                                                <div className="text-xs text-muted-foreground mt-1">Inquiry received</div>
+                                                <div className="font-semibold text-foreground">{lead.events?.title || "Private Event"}</div>
+                                                <div className="text-xs text-muted-foreground mt-1">{lead.service_type}</div>
                                             </td>
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-2 text-foreground/80">
                                                     <Calendar className="w-4 h-4 text-muted-foreground" />
-                                                    {lead.eventDate ? format(new Date(lead.eventDate), "MMM d, yyyy") : "—"}
+                                                    {lead.events?.start_date ? format(new Date(lead.events.start_date), "MMM d, yyyy") : "—"}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 text-foreground/80 font-medium">
                                                 <div className="flex items-center gap-1">
                                                     <DollarSign className="w-4 h-4 text-muted-foreground" />
-                                                    {lead.budget ? lead.budget.toLocaleString() : "—"}
+                                                    {lead.details?.budget || "—"}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-5 text-center">
@@ -198,7 +338,7 @@ export default function SupplierDashboardPage() {
                                             </td>
                                             <td className="px-8 py-5 text-right">
                                                 <Button asChild size="sm" variant="ghost" className="h-9 w-9 p-0 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] transition-all rounded-xl border border-border hover:border-[#D4AF37]/30">
-                                                    <Link href={`/messages/${lead._id}`}>
+                                                    <Link href={`/messages/${lead.id}`}>
                                                         <ArrowUpRight className="w-4 h-4" />
                                                     </Link>
                                                 </Button>

@@ -26,8 +26,9 @@ import {
   CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
-import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
-import { api } from "@/convex/_generated/api";
+import { useEventDashboard } from "@/hooks/use-event-dashboard";
+import { useEventRegistrations } from "@/hooks/use-event-registrations";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import { toast } from "sonner";
 import useAuthStore from "@/hooks/use-auth-store";
 
@@ -39,6 +40,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -53,43 +62,38 @@ export default function EventDashboardPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showQRScanner, setShowQRScanner] = useState(false);
-  const { token } = useAuthStore();
+  const { supabase } = useSupabase();
+  const { user } = useAuthStore();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [isUpdatingMode, setIsUpdatingMode] = useState(false);
 
-  // Fetch event dashboard data
-  const { data: dashboardData, isLoading } = useConvexQuery(
-    api.dashboard.getEventDashboard,
-    { eventId, token }
-  );
+  // Fetch event dashboard data (Supabase)
+  const { data: dashboardData, isLoading } = useEventDashboard(eventId);
 
-  // Fetch registrations
-  const { data: registrations, isLoading: loadingRegistrations } =
-    useConvexQuery(api.registrations.getEventRegistrations, { eventId, token });
-
-  // Delete event mutation
-  const { mutate: deleteEvent, isLoading: isDeleting } = useConvexMutation(
-    api.dashboard.deleteEvent
-  );
-
-  // Update seating mode mutation
-  const { mutate: updateSeatingMode } = useConvexMutation(
-    api.events_seating.updateSeatingMode
-  );
-
-  // Publish event mutation
-  const { mutate: publishEvent, isLoading: isPublishing } = useConvexMutation(api.events.publishEvent);
+  // Fetch registrations (Supabase)
+  const { data: registrations, isLoading: loadingRegistrations } = useEventRegistrations(eventId);
 
   const handlePublish = async () => {
     const confirmed = window.confirm("Are you sure you want to publish this event? It will become visible to all users.");
     if (!confirmed) return;
 
+    setIsPublishing(true);
     try {
-      await publishEvent({ eventId, token });
-      const message = "Event submitted for review! An admin will check it shortly. 🚀";
-      toast.success(message);
-      // Optional: Refresh or reload to update status UI
+      const { error } = await supabase
+        .from('events')
+        .update({ status: 'waiting_approval' })
+        .eq('id', eventId);
+
+      if (error) throw error;
+
+      toast.success("Event submitted for review! An admin will check it shortly. 🚀");
       window.location.reload();
     } catch (error) {
+      console.error("Publish Error:", error);
       toast.error(error.message || "Failed to publish event");
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -100,12 +104,22 @@ export default function EventDashboardPage() {
 
     if (!confirmed) return;
 
+    setIsDeleting(true);
     try {
-      await deleteEvent({ eventId, token });
+      const { error } = await supabase
+        .from('events')
+        .delete()
+        .eq('id', eventId);
+
+      if (error) throw error;
+
       toast.success("Event deleted successfully");
       router.push("/my-events");
     } catch (error) {
+      console.error("Delete Error:", error);
       toast.error(error.message || "Failed to delete event");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -202,15 +216,25 @@ export default function EventDashboardPage() {
   }
 
   const { event, stats } = dashboardData;
-  const eventTitle = event.title?.en || (typeof event.title === "string" ? event.title : "Untitled Event");
-  const eventCoverImage = event.content?.coverImage?.url || event.coverImage;
-  const eventCategory = event.eventSubType || event.category;
-  const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate;
-  const eventLocationType = event.locationConfig?.type || event.locationType;
-  const eventCity = event.metadata?.legacyProps?.city || event.city;
-  const eventState = event.metadata?.legacyProps?.state || event.state;
-  const eventCountry = event.metadata?.legacyProps?.country || event.country;
-  const eventTicketType = event.financials?.pricingModel || event.ticketType;
+  const eventTitle = event.title || "Untitled Event";
+  const eventCoverImage = event.cover_image;
+  const eventCategory = event.category;
+  const eventStartDate = event.start_date;
+  const eventLocationType = event.seating_mode === 'GENERAL' ? 'physical' : 'virtual'; // Example logic or use event columns
+  const eventCity = event.city;
+  const eventState = ""; // Adjust if state is added
+  const eventCountry = "Bangladesh";
+  const eventTicketType = event.ticket_price > 0 ? "paid" : "free";
+
+  // Safe Date Formatter
+  const safeFormat = (dateStr, formatStr) => {
+    try {
+      if (!dateStr) return "N/A";
+      return format(new Date(dateStr), formatStr);
+    } catch (e) {
+      return "N/A";
+    }
+  };
 
   // Filter registrations based on active tab and search
   const filteredRegistrations = registrations?.filter((reg) => {
@@ -266,7 +290,7 @@ export default function EventDashboardPage() {
               </Badge>
               <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
-                <span>{format(eventStartDate, "PPP")}</span>
+                <span>{safeFormat(eventStartDate, "PPP")}</span>
               </div>
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
@@ -282,80 +306,120 @@ export default function EventDashboardPage() {
             </div>
           </div>
 
-          <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            {/* 1. SEATING TOGGLE (Integrated) */}
+            <div className="flex items-center gap-2 bg-zinc-900/40 backdrop-blur-md p-1.5 px-3 rounded-full border border-white/5 shadow-sm mr-2">
+              <Settings className="w-3.5 h-3.5 text-[#D4AF37]" />
+              <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Seat Map</Label>
+              <Switch
+                checked={event.seating_mode === "RESERVED" || event.seating_mode === "RESERVED_SEATING"}
+                onCheckedChange={async (checked) => {
+                  try {
+                    const { error } = await supabase
+                      .from('events')
+                      .update({ seating_mode: checked ? "RESERVED" : "GENERAL" })
+                      .eq('id', eventId);
+
+                    if (error) throw error;
+
+                    toast.success(`Seating mode changed to ${checked ? "Reserved" : "General"}`);
+                    window.location.reload();
+                  } catch (error) {
+                    console.error("Update Seating Error:", error);
+                    toast.error(error.message || "Failed to update seating mode");
+                  }
+                }}
+                className="h-4 w-7 data-[state=checked]:bg-[#D4AF37]"
+              />
+            </div>
+
+            {/* 2. PRIMARY ACTIONS */}
             {event.status?.current === "draft" && (
               <Button
                 onClick={handlePublish}
                 disabled={isPublishing}
-                className="bg-[#D4AF37] hover:bg-[#F7E08B] text-black font-bold shadow-lg shadow-[#D4AF37]/20 border-0 rounded-lg animate-pulse"
+                className="bg-[#D4AF37] hover:bg-[#F7E08B] text-black font-bold shadow-lg shadow-[#D4AF37]/20 border-0 rounded-xl px-6 h-10 transition-all hover:scale-105"
               >
                 {isPublishing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Rocket className="w-4 h-4 mr-2" />}
-                Submit for Review
+                Publish Event
               </Button>
             )}
 
             {event.status?.current === "waiting_approval" && (
               <Button
                 disabled
-                className="bg-blue-500/10 border border-blue-500/20 text-blue-500 font-bold rounded-lg cursor-not-allowed"
+                className="bg-blue-500/10 border border-blue-500/20 text-blue-500 font-bold rounded-lg cursor-not-allowed h-10"
               >
                 <Clock className="w-4 h-4 mr-2" />
-                Review Pending
+                Pending Review
               </Button>
             )}
 
             {event.status?.current === "published" && (
               <Button
                 disabled
-                className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 font-bold rounded-lg cursor-not-allowed"
+                className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 font-bold rounded-lg cursor-not-allowed h-10"
               >
                 <CheckCircle2 className="w-4 h-4 mr-2" />
-                Live
+                Event Live
               </Button>
             )}
-            <Link href={`/seat-builder?eventId=${eventId}`}>
-              <Button className="bg-[linear-gradient(135deg,#fac529,#eab308)] text-black font-bold shadow-lg hover:shadow-[#D4AF37]/25 border-0 rounded-lg">
-                <Grid3X3 className="w-4 h-4 mr-2" />
-                Configure Seating
+
+            <div className="flex items-center gap-1.5 bg-zinc-900/40 backdrop-blur-md p-1 rounded-xl border border-white/5">
+              <Link href={`/seat-builder?eventId=${eventId}`}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-lg"
+                  title="Configure Seating"
+                >
+                  <Grid3X3 className="w-4 h-4" />
+                </Button>
+              </Link>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push(`/events/${event.slug}/edit`)}
+                className="h-9 w-9 text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg"
+                title="Edit Details"
+              >
+                <Edit3 className="w-4 h-4" />
               </Button>
-            </Link>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.push(`/events/${event.slug}/edit`)}
-              className="gap-2 flex-1"
-            >
-              <Edit3 className="w-4 h-4" />
-              Edit
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.push(`/events/${event.slug}`)}
-              className="gap-2 flex-1"
-            >
-              <Eye className="w-4 h-4" />
-              View
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => router.push(`/my-events/${eventId}/analytics`)}
-              className="gap-2 flex-1 bg-purple-500/10 text-purple-400 border-purple-500/50 hover:bg-purple-500/20"
-            >
-              <TrendingUp className="w-4 h-4" />
-              Analytics
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="text-red-500 hover:text-red-600 gap-2 flex-1"
-            >
-              <Trash2 className="w-4 h-4" />
-              {isDeleting ? "Deleting..." : "Delete"}
-            </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push(`/events/${event.slug}`)}
+                className="h-9 w-9 text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg"
+                title="View Page"
+              >
+                <Eye className="w-4 h-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => router.push(`/my-events/${eventId}/analytics`)}
+                className="h-9 w-9 text-zinc-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg"
+                title="Deep Analytics"
+              >
+                <TrendingUp className="w-4 h-4" />
+              </Button>
+
+              <div className="w-px h-4 bg-white/10 mx-1" />
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className="h-9 w-9 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg"
+                title="Delete Event"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -363,123 +427,73 @@ export default function EventDashboardPage() {
         {stats.isEventToday && !stats.isEventPast && (
           <Button
             size="lg"
-            // variant="outline"
-            className="mb-8 w-full gap-2 h-10 bg-linear-to-r from-orange-500 via-pink-500 to-red-500 text-white hover:scale-[1.02]"
+            className="mb-8 w-full gap-2 h-12 bg-zinc-900/50 backdrop-blur-md border border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all duration-500 font-bold tracking-widest"
             onClick={() => setShowQRScanner(true)}
           >
-            <QrCode className="w-6 h-6" />
-            Scan QR Code to Check-In
+            <QrCode className="w-5 h-5" />
+            OPEN SECURITY SCANNR
           </Button>
         )}
 
-        {/* Seating Mode Controller */}
-        <Card className="mb-8 border-[#D4AF37]/20 bg-[#D4AF37]/5 shadow-sm ring-1 ring-[#D4AF37]/10">
-          <CardContent className="p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-[#D4AF37]/10 rounded-lg shrink-0">
-                <Settings className="w-5 h-5 text-[#D4AF37]" />
+        {/* Glass & Gold Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+          {/* Capacity */}
+          <Card className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+            <CardContent className="p-7 flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-[#D4AF37]/10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
+                <Users className="w-6 h-6 text-[#D4AF37]" />
               </div>
-              <div className="space-y-0.5">
-                <Label className="text-base font-bold text-foreground">Enable Seat Map</Label>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Turn on for stadium/theater style seating. Turn off for standing/open events.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-zinc-900/50 p-2 px-3 rounded-full border border-white/5">
-              <span className={cn("text-xs font-bold uppercase tracking-wider", !(event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "text-[#D4AF37]" : "text-muted-foreground")}>General</span>
-              <Switch
-                checked={event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING"}
-                onCheckedChange={async (checked) => {
-                  try {
-                    await updateSeatingMode({
-                      eventId,
-                      seatingMode: checked ? "RESERVED" : "GENERAL",
-                      token
-                    });
-                    toast.success(`Seating mode changed to ${checked ? "Reserved" : "General"}`);
-                  } catch (error) {
-                    toast.error(error.message || "Failed to update seating mode");
-                  }
-                }}
-                className="data-[state=checked]:bg-[#D4AF37]"
-              />
-              <span className={cn("text-xs font-bold uppercase tracking-wider", (event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") ? "text-[#D4AF37]" : "text-muted-foreground")}>Reserved</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <Card className="py-0">
-            <CardContent className="p-6 flex items-center gap-3">
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <Users className="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold">
-                  {stats.totalRegistrations}/{stats.capacity}
-                </p>
-                <p className="text-sm text-muted-foreground">Capacity</p>
-              </div>
+              <p className="text-4xl font-black text-white tracking-tighter">
+                {stats.totalRegistrations}<span className="text-lg text-zinc-500 font-medium ml-1">/{stats.capacity}</span>
+              </p>
+              <p className="text-[10px] font-black text-[#D4AF37]/70 uppercase tracking-[0.2em] mt-2">Registration Goal</p>
             </CardContent>
           </Card>
 
-          <Card className="py-0">
-            <CardContent className="p-6 flex items-center gap-3">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+          {/* Check-ins */}
+          <Card className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+            <CardContent className="p-7 flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-4">
+                <CheckCircle className="w-6 h-6 text-emerald-500" />
               </div>
-              <div>
-                <p className="text-2xl font-bold">{stats.checkedInCount}</p>
-                <p className="text-sm text-muted-foreground">Checked In</p>
-              </div>
+              <p className="text-4xl font-black text-white tracking-tighter">
+                {stats.checkedInCount}
+              </p>
+              <p className="text-[10px] font-black text-emerald-500/70 uppercase tracking-[0.2em] mt-2">Gate Check-ins</p>
             </CardContent>
           </Card>
 
-          {eventTicketType === "paid" ? (
-            <Card className="py-0">
-              <CardContent className="p-6 flex items-center gap-3">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">৳{stats.totalRevenue}</p>
-                  <p className="text-sm text-muted-foreground">Revenue</p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="py-0">
-              <CardContent className="p-6 flex items-center gap-3">
-                <div className="p-3 bg-orange-100 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.checkInRate}%</p>
-                  <p className="text-sm text-muted-foreground">Check-in Rate</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          {/* Revenue/Rate */}
+          <Card className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+            <CardContent className="p-7 flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-4">
+                <TrendingUp className="w-6 h-6 text-blue-500" />
+              </div>
+              <p className="text-4xl font-black text-white tracking-tighter">
+                {eventTicketType === "paid" ? `৳${stats.totalRevenue}` : `${stats.checkInRate}%`}
+              </p>
+              <p className="text-[10px] font-black text-blue-500/70 uppercase tracking-[0.2em] mt-2">
+                {eventTicketType === "paid" ? "Event Revenue" : "Presence Rate"}
+              </p>
+            </CardContent>
+          </Card>
 
-          <Card className="py-0">
-            <CardContent className="p-6 flex items-center gap-3">
-              <div className="p-3 bg-[#F7E08B] rounded-lg">
+          {/* Time Left */}
+          <Card className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+            <CardContent className="p-7 flex flex-col items-center text-center">
+              <div className="w-12 h-12 bg-[#F7E08B]/10 rounded-2xl flex items-center justify-center mb-4">
                 <Clock className="w-6 h-6 text-[#8C7326]" />
               </div>
-              <div>
-                <p className="text-2xl font-bold">
-                  {stats.isEventPast
-                    ? "Ended"
-                    : stats.hoursUntilEvent > 24
-                      ? `${Math.floor(stats.hoursUntilEvent / 24)}d`
-                      : `${stats.hoursUntilEvent}h`}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {stats.isEventPast ? "Event Over" : "Time Left"}
-                </p>
-              </div>
+              <p className="text-4xl font-black text-white tracking-tighter">
+                {stats.isEventPast
+                  ? "END"
+                  : stats.hoursUntilEvent > 24
+                    ? `${Math.floor(stats.hoursUntilEvent / 24)}d`
+                    : `${stats.hoursUntilEvent}h`}
+              </p>
+              <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mt-2">
+                {stats.isEventPast ? "Status: Ended" : "Time to Launch"}
+              </p>
             </CardContent>
           </Card>
         </div>

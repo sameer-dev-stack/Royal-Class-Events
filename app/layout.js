@@ -2,9 +2,10 @@ export const dynamic = "force-dynamic";
 import LayoutWrapper from "@/components/layout-wrapper";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { ConvexClientProvider } from "@/components/convex-client-provider";
+import SupabaseProvider from "@/components/providers/supabase-provider";
 import { AuthProvider } from "../components/auth/auth-provider";
 import { SessionProvider } from "../components/auth/session-provider";
+import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { Outfit } from "next/font/google";
 
 const outfit = Outfit({ subsets: ["latin"] });
@@ -29,9 +30,11 @@ export default function RootLayout({ children }) {
         >
           <SessionProvider>
             <ConvexClientProvider>
-              <AuthProvider>
-                <LayoutWrapper>{children}</LayoutWrapper>
-              </AuthProvider>
+              <SupabaseProvider>
+                <AuthProvider>
+                  <LayoutWrapper>{children}</LayoutWrapper>
+                </AuthProvider>
+              </SupabaseProvider>
             </ConvexClientProvider>
           </SessionProvider>
         </ThemeProvider>

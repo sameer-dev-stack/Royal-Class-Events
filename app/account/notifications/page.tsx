@@ -5,8 +5,61 @@ import { motion } from "framer-motion";
 import { Bell, Mail, MessageSquare, Globe } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
+import { useSupabase } from "@/components/providers/supabase-provider";
+import useAuthStore from "@/hooks/use-auth-store";
+import { toast } from "sonner";
 
 export default function NotificationsSettingsPage() {
+    const { supabase } = useSupabase();
+    const { user, updateUser } = useAuthStore();
+    const [settings, setSettings] = React.useState({
+        email: true,
+        push: false,
+        marketplace: true,
+        messages: true
+    });
+    const [loadingKey, setLoadingKey] = React.useState(null);
+
+    // Load initial settings from metadata
+    React.useEffect(() => {
+        if (user?.metadata?.notifications) {
+            setSettings(prev => ({ ...prev, ...user.metadata.notifications }));
+        }
+    }, [user]);
+
+    const handleToggle = async (key) => {
+        if (!user) return;
+        const newValue = !settings[key];
+        setSettings(prev => ({ ...prev, [key]: newValue })); // Optimistic update
+        setLoadingKey(key);
+
+        try {
+            const updatedMetadata = {
+                ...user.metadata,
+                notifications: {
+                    ...settings,
+                    [key]: newValue
+                }
+            };
+
+            const { error } = await supabase
+                .from('profiles')
+                .update({ metadata: updatedMetadata })
+                .eq('id', user.id);
+
+            if (error) throw error;
+
+            updateUser({ metadata: updatedMetadata });
+            toast.success("Settings saved");
+        } catch (error) {
+            console.error("Failed to save setting:", error);
+            toast.error("Failed to save changes");
+            setSettings(prev => ({ ...prev, [key]: !newValue })); // Revert on error
+        } finally {
+            setLoadingKey(null);
+        }
+    };
+
     return (
         <div className="max-w-3xl space-y-8">
             <div className="space-y-2">
@@ -16,12 +69,12 @@ export default function NotificationsSettingsPage() {
 
             <div className="grid gap-4">
                 {[
-                    { icon: Mail, title: "Email Notifications", desc: "Product updates, events you follow, and more.", checked: true },
-                    { icon: Bell, title: "Push Notifications", desc: "Real-time alerts for ticket sales and reminders.", checked: false },
-                    { icon: Globe, title: "Marketplace Alerts", desc: "Updates from suppliers you've inquired with.", checked: true },
-                    { icon: MessageSquare, title: "Direct Messages", desc: "Notifications for new chat messages.", checked: true }
-                ].map((item, i) => (
-                    <Card key={i} className="p-6 rounded-3xl bg-card border border-border flex items-center justify-between shadow-sm">
+                    { key: "email", icon: Mail, title: "Email Notifications", desc: "Product updates, events you follow, and more." },
+                    { key: "push", icon: Bell, title: "Push Notifications", desc: "Real-time alerts for ticket sales and reminders." },
+                    { key: "marketplace", icon: Globe, title: "Marketplace Alerts", desc: "Updates from suppliers you've inquired with." },
+                    { key: "messages", icon: MessageSquare, title: "Direct Messages", desc: "Notifications for new chat messages." }
+                ].map((item) => (
+                    <Card key={item.key} className="p-6 rounded-3xl bg-card border border-border flex items-center justify-between shadow-sm">
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center text-muted-foreground group-hover:text-[#D4AF37] transition-colors">
                                 <item.icon className="w-5 h-5" />
@@ -31,7 +84,12 @@ export default function NotificationsSettingsPage() {
                                 <p className="text-xs text-muted-foreground max-w-xs">{item.desc}</p>
                             </div>
                         </div>
-                        <Switch checked={item.checked} className="data-[state=checked]:bg-[#D4AF37]" />
+                        <Switch
+                            checked={settings[item.key]}
+                            onCheckedChange={() => handleToggle(item.key)}
+                            disabled={loadingKey === item.key}
+                            className="data-[state=checked]:bg-[#D4AF37]"
+                        />
                     </Card>
                 ))}
             </div>

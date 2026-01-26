@@ -1,13 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Calendar, MapPin, Users, ArrowRight, Loader2 } from "lucide-react";
 import { format } from "date-fns";
-import { useConvexQuery } from "@/hooks/use-convex-query";
-import { api } from "@/convex/_generated/api";
 import { createLocationSlug } from "@/lib/location-utils";
 import Image from "next/image";
+import { useSupabase } from "@/components/providers/supabase-provider";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,32 +27,66 @@ export default function ExplorePage() {
   const router = useRouter();
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
 
-  // Fetch current user for location
-  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
+  const { supabase } = useSupabase();
+  const [featuredEvents, setFeaturedEvents] = useState([]);
+  const [localEvents, setLocalEvents] = useState([]);
+  const [popularEvents, setPopularEvents] = useState([]);
+  const [categoryCounts, setCategoryCounts] = useState({});
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch events
-  const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(
-    api.explore.getFeaturedEvents,
-    { limit: 3 }
-  );
+  useEffect(() => {
+    async function loadData() {
+      try {
+        // 1. Get Current User (for location)
+        const { data: { session } } = await supabase.auth.getSession();
+        let city = "Gurugram";
+        let state = "Haryana";
 
-  const { data: localEvents, isLoading: loadingLocal } = useConvexQuery(
-    api.explore.getEventsByLocation,
-    {
-      city: currentUser?.location?.city || "Gurugram",
-      state: currentUser?.location?.state || "Haryana",
-      limit: 4,
+        if (session) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+
+          if (profile) {
+            setCurrentUser(profile);
+            // city = profile.city || city;
+            // state = profile.state || state;
+          }
+        }
+
+        // 2. Fetch Events (Published/Active only)
+        const { data: events, error } = await supabase
+          .from('events')
+          .select('*')
+          .in('status', ['published', 'active'])
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        // 3. Process Logic locally (Simulating backend sorts/limits for now)
+        setFeaturedEvents(events.slice(0, 3));
+        setPopularEvents(events.slice(0, 6));
+        setLocalEvents(events.slice(0, 4)); // In reality, filter by city
+
+        // 4. Calculate Category Counts
+        const counts = events.reduce((acc, event) => {
+          const cat = event.category || event.event_type;
+          acc[cat] = (acc[cat] || 0) + 1;
+          return acc;
+        }, {});
+        setCategoryCounts(counts);
+
+      } catch (err) {
+        console.error("Discovery load failed:", err);
+      } finally {
+        setIsLoading(false);
+      }
     }
-  );
-
-  const { data: popularEvents, isLoading: loadingPopular } = useConvexQuery(
-    api.explore.getPopularEvents,
-    { limit: 6 }
-  );
-
-  const { data: categoryCounts } = useConvexQuery(
-    api.explore.getCategoryCounts
-  );
+    loadData();
+  }, [supabase]);
 
   const handleEventClick = (slug) => {
     router.push(`/events/${slug}`);
@@ -75,9 +108,6 @@ export default function ExplorePage() {
     ...cat,
     count: categoryCounts?.[cat.id] || 0,
   }));
-
-  // Loading state
-  const isLoading = loadingFeatured || loadingLocal || loadingPopular;
 
   if (isLoading) {
     return (
@@ -148,17 +178,17 @@ export default function ExplorePage() {
           >
             <CarouselContent>
               {featuredEvents.map((event) => {
-                const displayImage = event.content?.coverImage?.url || event.coverImage || getMockImage(event.eventSubType || event.category);
-                const eventTitle = event.title?.en || event.title;
-                const eventDescription = event.description?.en || event.description;
-                const eventCity = event.metadata?.legacyProps?.city || event.city;
-                const eventState = event.metadata?.legacyProps?.state || event.state;
-                const eventCountry = event.metadata?.legacyProps?.country || event.country;
-                const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate;
-                const eventRegistrations = event.analytics?.registrations || event.registrationCount;
+                const displayImage = event.cover_image || "/hero_image.jpeg";
+                const eventTitle = event.title;
+                const eventDescription = event.description;
+                const eventCity = "Gurugram"; // Fallback for seeds
+                const eventState = "Haryana";
+                const eventCountry = "India";
+                const eventStartDate = event.start_date;
+                const eventRegistrations = 0; // Default
 
                 return (
-                  <CarouselItem key={event._id}>
+                  <CarouselItem key={event.id}>
                     <div
                       className="relative h-[400px] rounded-xl overflow-hidden cursor-pointer"
                       onClick={() => handleEventClick(event.slug)}
@@ -233,7 +263,7 @@ export default function ExplorePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {localEvents.map((event) => (
               <EventCard
-                key={event._id}
+                key={event.id}
                 event={event}
                 variant="compact"
                 onClick={() => handleEventClick(event.slug)}
@@ -280,7 +310,7 @@ export default function ExplorePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {popularEvents.map((event) => (
               <EventCard
-                key={event._id}
+                key={event.id}
                 event={event}
                 variant="list"
                 onClick={() => handleEventClick(event.slug)}
@@ -290,10 +320,7 @@ export default function ExplorePage() {
         </div>
       )}
 
-      {/* Empty State */}
-      {!loadingFeatured &&
-        !loadingLocal &&
-        !loadingPopular &&
+      {!isLoading &&
         (!featuredEvents || featuredEvents.length === 0) &&
         (!localEvents || localEvents.length === 0) &&
         (!popularEvents || popularEvents.length === 0) && (

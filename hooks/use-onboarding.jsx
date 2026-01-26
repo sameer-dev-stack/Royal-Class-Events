@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useConvexQuery } from "./use-convex-query";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
+import useAuthStore from "@/hooks/use-auth-store";
 
 // Pages that require onboarding (attendee-centered)
 const ATTENDEE_PAGES = ["/explore", "/events", "/my-tickets", "/profile"];
@@ -12,37 +12,63 @@ export function useOnboarding() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-
-  const { data: currentUser, isLoading } = useConvexQuery(
-    api.users.getCurrentUser
-  );
+  const { supabase } = useSupabase();
+  const { user, isAuthenticated, updateUser } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (isLoading || !currentUser) return;
+    if (!isAuthenticated || !user) {
+      setIsLoading(false);
+      return;
+    }
 
-    // Check if user hasn't completed onboarding
-    if (!currentUser?.metadata?.hasCompletedOnboarding) {
-      // Check if current page requires onboarding
+    // Check if user hasn't completed onboarding in their profile
+    // Note: In Supabase, this is stored in public.profiles.metadata OR a dedicated column
+    // For now, checking user.metadata from our Auth Store hydration
+
+    // Explicitly check for true string or boolean in both metadata sources
+    const hasCompleted =
+      user?.metadata?.has_completed_onboarding === true ||
+      user?.metadata?.has_completed_onboarding === "true" ||
+      user?.profile?.metadata?.has_completed_onboarding === true ||
+      user?.profile?.metadata?.has_completed_onboarding === "true";
+
+    if (!hasCompleted) {
       const requiresOnboarding = ATTENDEE_PAGES.some((page) =>
         pathname.startsWith(page)
       );
 
       if (requiresOnboarding) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setShowOnboarding(true);
       }
+    } else {
+      setShowOnboarding(false);
     }
-  }, [currentUser, pathname, isLoading]);
+    setIsLoading(false);
+  }, [user, pathname, isAuthenticated]);
 
-  const handleOnboardingComplete = () => {
+  const handleOnboardingComplete = async () => {
     setShowOnboarding(false);
-    // Refresh to get updated user data
+
+    // 1. Update Local Store Immediately (Optimistic)
+    const newMetadata = { ...user.metadata, has_completed_onboarding: true };
+    updateUser({ metadata: newMetadata });
+
+    // 2. Update Supabase profile
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        metadata: newMetadata
+      })
+      .eq('id', user.id);
+
+    if (error) console.error("Failed to update onboarding status:", error);
+
     router.refresh();
   };
 
   const handleOnboardingSkip = () => {
     setShowOnboarding(false);
-    // Redirect back to homepage if they skip
     router.push("/");
   };
 
@@ -51,6 +77,8 @@ export function useOnboarding() {
     setShowOnboarding,
     handleOnboardingComplete,
     handleOnboardingSkip,
-    needsOnboarding: currentUser && !currentUser.metadata?.hasCompletedOnboarding,
+    needsOnboarding: user && !user.metadata?.has_completed_onboarding,
+    isLoading
   };
 }
+

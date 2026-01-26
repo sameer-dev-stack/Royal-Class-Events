@@ -18,15 +18,15 @@ export default function EventCard({
   action = null, // "event" | "ticket" | null
   className = "",
 }) {
-  const displayImage = event.content?.coverImage?.url || event.coverImage || getMockImage(event.eventSubType || event.category);
-  const eventTitle = event.title?.en || event.title;
-  const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate;
-  const eventCity = event.metadata?.legacyProps?.city || event.city;
-  const eventCategory = event.eventSubType || event.category;
-  const isFree = (event.financials?.pricingModel === "free") || (event.ticketType === "free");
-  const eventCapacity = event.capacityConfig?.totalCapacity || event.capacity;
-  const eventRegistrations = event.analytics?.registrations || event.registrationCount || 0;
-  const isOnline = (event.locationConfig?.type === "virtual") || (event.locationType === "online");
+  const displayImage = event.cover_image || event.content?.coverImage?.url || event.coverImage || getMockImage(event.category || event.event_type);
+  const eventTitle = event.title;
+  const eventStartDate = event.start_date || event.timeConfiguration?.startDateTime || event.startDate;
+  const eventCity = event.city || "Gurugram";
+  const eventCategory = event.category || event.event_type;
+  const isFree = (event.financials?.pricingModel === "free") || (event.ticket_price === 0);
+  const eventCapacity = event.capacity || 100;
+  const eventRegistrations = 0; // Analytics not yet in schema
+  const isOnline = event.location_type === "online";
 
   // List variant
   if (variant === "list") {
@@ -166,7 +166,7 @@ export default function EventCard({
                     className="gap-2 text-gray-500 hover:text-red-500 hover:bg-red-500/10"
                     onClick={(e) => {
                       e.stopPropagation();
-                      onDelete(event._id);
+                      onDelete(event.id || event._id);
                     }}
                   >
                     {action === "event" ? (

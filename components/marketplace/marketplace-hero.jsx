@@ -18,13 +18,13 @@ const HERO_IMAGE = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30
 
 export default function MarketplaceHero({ categories, cities }) {
     const router = useRouter();
-    const [selectedCity, setSelectedCity] = useState("Dhaka");
+    const [selectedCity, setSelectedCity] = useState("all");
     const [selectedCategory, setSelectedCategory] = useState("all");
     const [searchQuery, setSearchQuery] = useState("");
 
     const handleSearch = () => {
         const queryParams = new URLSearchParams();
-        if (selectedCity) queryParams.set("city", selectedCity);
+        if (selectedCity && selectedCity !== "all") queryParams.set("city", selectedCity);
         if (selectedCategory && selectedCategory !== "all") queryParams.set("category", selectedCategory);
         if (searchQuery) queryParams.set("query", searchQuery);
         router.push(`/marketplace?${queryParams.toString()}`);
@@ -75,7 +75,9 @@ export default function MarketplaceHero({ categories, cities }) {
                         {/* Category Dropdown */}
                         <div className="w-full md:w-[25%] relative border-b md:border-b-0 md:border-r border-white/10">
                             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                                <SelectTrigger className="h-12 bg-transparent border-0 text-zinc-200 focus:ring-0 focus:ring-offset-0 px-4">
+                                <SelectTrigger
+                                    className="h-12 bg-transparent border-0 text-zinc-200 focus:ring-0 focus:ring-offset-0 px-4"
+                                >
                                     <SelectValue placeholder="Service Type" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-popover border-border text-popover-foreground">
@@ -90,13 +92,16 @@ export default function MarketplaceHero({ categories, cities }) {
                         {/* City Dropdown */}
                         <div className="w-full md:w-[25%] relative">
                             <Select value={selectedCity} onValueChange={setSelectedCity}>
-                                <SelectTrigger className="h-12 bg-transparent border-0 text-zinc-200 focus:ring-0 focus:ring-offset-0 px-4">
+                                <SelectTrigger
+                                    className="h-12 bg-transparent border-0 text-zinc-200 focus:ring-0 focus:ring-offset-0 px-4"
+                                >
                                     <div className="flex items-center gap-2">
                                         <MapPin className="w-4 h-4 text-[#D4AF37]" />
                                         <SelectValue placeholder="City" />
                                     </div>
                                 </SelectTrigger>
                                 <SelectContent className="bg-popover border-border text-popover-foreground">
+                                    <SelectItem value="all">All Cities</SelectItem>
                                     {cities.map(c => (
                                         <SelectItem key={c} value={c}>{c}</SelectItem>
                                     ))}

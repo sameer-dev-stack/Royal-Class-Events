@@ -6,11 +6,16 @@ import { MapPin, Star, Heart, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function SupplierCard({ supplier }) {
-    const { _id, name, rating, reviewCount, location, startingPrice, coverUrl, categories, serviceImages, views } = supplier;
-    const displayImage = coverUrl || serviceImages?.[0] || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2098&auto=format&fit=crop";
+    const { id, name, rating, review_count, location, cover_url, categories, views, contact_info } = supplier;
+
+    // In Postgres schema, starting price might come from a separate service query or a joined field.
+    // For now, we'll keep the prop or default to "Custom Pricing".
+    const startingPrice = supplier.starting_price || supplier.startingPrice;
+
+    const displayImage = cover_url || supplier.coverUrl || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2098&auto=format&fit=crop";
 
     return (
-        <Link href={`/marketplace/vendor/${_id}`} className="group block h-full">
+        <Link href={`/marketplace/vendor/${id}`} className="group block h-full">
             <div className="relative h-full bg-card/60 backdrop-blur-md rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_0_30px_-5px_rgba(245,158,11,0.3)] hover:-translate-y-1 flex flex-col group border border-border hover:border-[#D4AF37]/30">
 
                 {/* Image Section */}
@@ -30,7 +35,7 @@ export default function SupplierCard({ supplier }) {
                         {rating > 0 && (
                             <div className="bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-lg">
                                 <Star className="w-3 h-3 text-[#D4AF37] fill-[#D4AF37]" />
-                                {rating.toFixed(1)} <span className="text-zinc-400 font-normal">({reviewCount})</span>
+                                {Number(rating).toFixed(1)} <span className="text-zinc-400 font-normal">({review_count || 0})</span>
                             </div>
                         )}
                         {!rating && (
@@ -78,7 +83,7 @@ export default function SupplierCard({ supplier }) {
                         <div className="flex flex-col">
                             <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Starting from</span>
                             <span className="text-lg font-bold text-foreground">
-                                {startingPrice ? `৳ ${startingPrice.toLocaleString()}` : "Custom Pricing"}
+                                {startingPrice ? `৳ ${Number(startingPrice).toLocaleString()}` : "Custom Pricing"}
                             </span>
                         </div>
 

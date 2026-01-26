@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
-import { api } from "@/convex/_generated/api";
+import React, { useState, useEffect, useCallback } from "react";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -12,16 +11,42 @@ import { Loader2, Crown, CheckCircle2, XCircle, Clock, ShieldCheck } from "lucid
 import { motion } from "framer-motion";
 
 export default function OrganizerRequestPage() {
-    const { token, user } = useAuthStore();
+    const { supabase } = useSupabase();
+    const { user } = useAuthStore();
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { data: request, isLoading: isRequestLoading } = useConvexQuery(
-        api.users.getMyUpgradeRequest,
-        { token }
-    );
+    const [request, setRequest] = useState(null);
+    const [isLoadingRequest, setIsLoadingRequest] = useState(true);
 
-    const { mutate: submitRequest } = useConvexMutation(api.users.requestOrganizerUpgrade);
+    const fetchRequest = useCallback(async () => {
+        if (!user?.id) return;
+        setIsLoadingRequest(true);
+        try {
+            const { data, error } = await supabase
+                .from('organizer_requests')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+
+            if (error && error.code !== 'PGRST116') { // PGRST116 is "Row not found"
+                console.error("Error fetching request:", error);
+            } else if (data) {
+                setRequest(data);
+            }
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLoadingRequest(false);
+        }
+    }, [user, supabase]);
+
+    useEffect(() => {
+        fetchRequest();
+    }, [fetchRequest]);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,12 +57,20 @@ export default function OrganizerRequestPage() {
 
         setIsSubmitting(true);
         try {
-            const res = await submitRequest({ token, reason });
-            if (res.success) {
-                toast.success(res.message);
-            } else {
-                toast.error(res.message);
-            }
+            const { error } = await supabase
+                .from('organizer_requests')
+                .insert({
+                    user_id: user.id,
+                    reason: reason,
+                    status: 'pending'
+                });
+
+            if (error) throw error;
+
+            toast.success("Request submitted successfully!");
+            setReason("");
+            fetchRequest(); // Refresh state
+
         } catch (error) {
             console.error(error);
             toast.error("Failed to submit request");
@@ -46,7 +79,7 @@ export default function OrganizerRequestPage() {
         }
     };
 
-    if (isRequestLoading) {
+    if (isLoadingRequest) {
         return (
             <div className="h-48 flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
@@ -96,10 +129,12 @@ export default function OrganizerRequestPage() {
                                 <ShieldCheck className="w-5 h-5 text-[#D4AF37]" />
                                 Current Request Status
                             </CardTitle>
-                            <div className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-2 ${request.status === 'pending' ? 'bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20' :
+                            <div className={
+                                `px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest flex items-center gap-2 
+                                ${request.status === 'pending' ? 'bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20' :
                                     request.status === 'approved' ? 'bg-green-500/10 text-green-500 border border-green-500/20' :
-                                        'bg-red-500/10 text-red-500 border border-red-500/20'
-                                }`}>
+                                        'bg-red-500/10 text-red-500 border border-red-500/20'}`
+                            }>
                                 {request.status === 'pending' && <Clock className="w-3 h-3" />}
                                 {request.status === 'approved' && <CheckCircle2 className="w-3 h-3" />}
                                 {request.status === 'rejected' && <XCircle className="w-3 h-3" />}
@@ -121,10 +156,10 @@ export default function OrganizerRequestPage() {
                             </div>
                         )}
 
-                        {request.status === 'rejected' && request.rejectionReason && (
+                        {request.status === 'rejected' && request.rejection_reason && (
                             <div className="p-4 rounded-2xl bg-red-500/5 border border-red-500/20">
                                 <p className="text-xs font-black uppercase tracking-widest text-red-500 mb-2">Feedback from Admin</p>
-                                <p className="text-sm">{request.rejectionReason}</p>
+                                <p className="text-sm">{request.rejection_reason}</p>
                             </div>
                         )}
                     </CardContent>
@@ -133,7 +168,7 @@ export default function OrganizerRequestPage() {
                             <Button
                                 variant="outline"
                                 className="w-full rounded-2xl"
-                                onClick={() => setReason("")} // Allow re-submission in a way if needed, or just status reset logic
+                                onClick={() => setReason("") || setRequest(null)} // Allow reset
                             >
                                 Try Again later or Contact Support
                             </Button>

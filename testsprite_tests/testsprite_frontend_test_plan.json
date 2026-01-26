@@ -1,0 +1,388 @@
+[
+  {
+    "id": "TC001",
+    "title": "Real-time Seating Arrangement Sync",
+    "description": "Verify that seating arrangements created by one organizer are synchronized in real-time across all connected clients with correct rendering, zoom, and pan.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as an organizer on two different clients."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to the /seat-builder page on both clients."
+      },
+      {
+        "type": "action",
+        "description": "On client A, drag and drop tables and chairs to create a seating layout on the infinite canvas."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that the seating layout changes appear in real-time on client B exactly as configured."
+      },
+      {
+        "type": "action",
+        "description": "Use zoom and pan controls on client A to adjust the view."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that zoom and pan adjustments do not interfere with real-time synchronization and seating arrangement accuracy on client B."
+      },
+      {
+        "type": "action",
+        "description": "Verify that seating arrangement persists after page refresh on both clients."
+      },
+      {
+        "type": "assertion",
+        "description": "Check that saved layout is intact and consistent with previous session."
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Seating Builder Edge Case: Infinite Canvas Boundaries",
+    "description": "Test the seating engine's ability to handle extensive seating layouts by dragging and dropping seats beyond typical canvas boundaries.",
+    "category": "functional",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as organizer and navigate to /seat-builder."
+      },
+      {
+        "type": "action",
+        "description": "Drag tables and chairs continuously towards the edges of the canvas to test infinite canvas limits."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the canvas expands dynamically without rendering or performance issues."
+      },
+      {
+        "type": "action",
+        "description": "Move elements back towards the center and verify no data loss occurs."
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure all seating elements maintain their positions accurately."
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Complete Vendor Onboarding Flow Success",
+    "description": "Verify that a new vendor can successfully complete the five-step onboarding process including category selection, business details, location entry, legal document upload, and bank verification.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to supplier registration at /supplier/join."
+      },
+      {
+        "type": "action",
+        "description": "Select vendor category and proceed."
+      },
+      {
+        "type": "action",
+        "description": "Fill out business details form with valid data."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify form accepts valid data and enables next step."
+      },
+      {
+        "type": "action",
+        "description": "Enter valid location information."
+      },
+      {
+        "type": "assertion",
+        "description": "Check location validation succeeds."
+      },
+      {
+        "type": "action",
+        "description": "Upload all required legal document files with supported formats."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify upload success messages and file preview."
+      },
+      {
+        "type": "action",
+        "description": "Provide bank details and complete verification step."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify bank verification status is successful."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm submission and application completion with success confirmation."
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Vendor Onboarding Validation Errors",
+    "description": "Test onboarding flow validation by providing invalid inputs and missing required documents to verify proper error handling.",
+    "category": "error handling",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Start vendor onboarding at /supplier/join."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to proceed without selecting a vendor category."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that appropriate validation error is displayed preventing progression."
+      },
+      {
+        "type": "action",
+        "description": "Input invalid business details such as invalid email and phone formats."
+      },
+      {
+        "type": "assertion",
+        "description": "Check form validation shows correct input error messages."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to upload unsupported file format for legal documents."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify upload is rejected with clear error notification."
+      },
+      {
+        "type": "action",
+        "description": "Try to proceed without uploading required legal and financial documents."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm system prevents progression and highlights missing uploads."
+      },
+      {
+        "type": "action",
+        "description": "Provide incomplete or invalid bank details."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify bank verification fails with descriptive error."
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Admin Portal Vendor Approval Workflow",
+    "description": "Verify that an admin can review vendor applications with document previews, change application statuses (approve/reject), and audit logs are recorded.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as admin user and navigate to /admin/vendors."
+      },
+      {
+        "type": "action",
+        "description": "Select a pending vendor application."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that all submitted documents are displayed in review modals."
+      },
+      {
+        "type": "action",
+        "description": "Change vendor application status to approved."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm status transition is successful and reflected in list."
+      },
+      {
+        "type": "action",
+        "description": "Repeat for rejection flow with reason input."
+      },
+      {
+        "type": "assertion",
+        "description": "Ensure application is marked as rejected with reason visible."
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /admin/audit."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify audit logs include the status changes with timestamps and admin user identities."
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Marketplace Service Discovery and Booking",
+    "description": "Verify event organizers can search for services, view accurate availability, book services with escrow simulations, and see vendor revenue updates.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Log in as organizer and navigate to /marketplace."
+      },
+      {
+        "type": "action",
+        "description": "Perform service search using keywords and filters."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that search results display accurate and relevant services."
+      },
+      {
+        "type": "action",
+        "description": "View detailed service information including availability."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm availability data matches backend state."
+      },
+      {
+        "type": "action",
+        "description": "Book a service using escrow payment option and schedule time slots."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify booking confirmation is received with escrow simulated hold."
+      },
+      {
+        "type": "action",
+        "description": "Log in as vendor and check revenue dashboard updates."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the vendor revenue reflects the recent booking."
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Marketplace Booking with Unavailable Service",
+    "description": "Test booking attempt for a service that is no longer available or fully booked to validate error handling.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Search and select a service with no available slots."
+      },
+      {
+        "type": "action",
+        "description": "Attempt to book the fully booked service."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that booking is blocked with an appropriate error message indicating unavailability."
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Ticket Scanner QR Code Check-in Success",
+    "description": "Verify the QR code based ticket scanner successfully reads valid tickets and registers attendee check-ins preventing duplicates.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /scanner as event staff."
+      },
+      {
+        "type": "action",
+        "description": "Scan a valid attendee QR code."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm check-in is registered with attendee details displayed."
+      },
+      {
+        "type": "action",
+        "description": "Scan the same QR code again."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that duplicate check-in is prevented with a warning or error."
+      },
+      {
+        "type": "action",
+        "description": "Scan an invalid or expired QR code."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify system rejects the code with an appropriate error message."
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "AI Event Copilot Suggestion Accuracy and Application",
+    "description": "Verify the AI-powered event planning assistant generates relevant suggestions which users can preview and selectively apply with smooth UI interaction.",
+    "category": "functional",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Create or edit an event and access the AI Event Copilot panel."
+      },
+      {
+        "type": "action",
+        "description": "Trigger the AI analysis by interacting with element having data-testid='ai-check-score'."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that AI generates multiple actionable event planning suggestions."
+      },
+      {
+        "type": "action",
+        "description": "Preview detailed descriptions of suggested improvements without applying them."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm UI responsiveness and clarity during preview."
+      },
+      {
+        "type": "action",
+        "description": "Select and apply one or more AI suggestions to the event plan."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the event plan updates accordingly and changes persist."
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "AI Event Copilot No Suggestions Handling",
+    "description": "Verify system behavior when AI Event Copilot is triggered but no relevant suggestions are generated.",
+    "category": "error handling",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Access AI Event Copilot panel on an event with minimal or perfect data."
+      },
+      {
+        "type": "action",
+        "description": "Trigger analysis using data-testid='ai-check-score'."
+      },
+      {
+        "type": "assertion",
+        "description": "Verify that a user-friendly message indicates no suggestions are available."
+      },
+      {
+        "type": "assertion",
+        "description": "Confirm UI remains stable without errors or crashes."
+      }
+    ]
+  }
+]

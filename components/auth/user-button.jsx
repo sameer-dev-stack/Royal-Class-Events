@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function UserButton() {
+    const { supabase } = useSupabase();
     const { logout, user, isAuthenticated, role, viewMode, setViewMode } = useAuthStore();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -27,13 +28,15 @@ export default function UserButton() {
     const handleSignOut = async () => {
         setIsLoading(true);
         try {
-            // 1. Clear NextAuth session
-            await signOut({ redirect: false });
+            // 1. Sign out from Supabase
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+
             // 2. Clear local Zustand store
             logout();
 
             router.push("/");
-            router.refresh(); // Refresh to clear any server-component state
+            router.refresh();
             toast.success("Signed out successfully");
         } catch (error) {
             console.error("Logout error:", error);
@@ -58,7 +61,7 @@ export default function UserButton() {
 
     // Get user display info
     const displayName = user.name || user.email?.split("@")[0] || "User";
-    const avatarUrl = user.image || null;
+    const avatarUrl = user.image || user.user_metadata?.avatar_url || null; // Fallback for Supabase metadata
     const initials = displayName
         .split(" ")
         .map((n) => n[0])

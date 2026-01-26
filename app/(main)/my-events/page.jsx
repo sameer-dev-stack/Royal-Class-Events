@@ -4,11 +4,10 @@ import { useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
 import { useUserRoles } from "@/hooks/use-user-roles";
-import useAuthStore from "@/hooks/use-auth-store";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import { toast } from "sonner";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,7 +16,6 @@ import EventCard from "@/components/event-card";
 
 export default function MyEventsPage() {
   const router = useRouter();
-  const { token } = useAuthStore();
 
   // Role Check
   const { isOrganizer, isAdmin, isLoading: isRoleLoading, user } = useUserRoles();
@@ -29,11 +27,34 @@ export default function MyEventsPage() {
     }
   }, [isRoleLoading, user, isOrganizer, isAdmin, router]);
 
-  // If loading or not authorized, show loader (same as data loading below)
-  const isAuthorized = user && (isOrganizer || isAdmin);
+  // Supabase State
+  const { supabase } = useSupabase();
+  const [events, setEvents] = useState([]);
+  const [isLoadingEvents, setIsLoadingEvents] = useState(true);
 
-  const { data: events, isLoading } = useConvexQuery(api.events.getMyEvents, { token });
-  const { mutate: deleteEvent } = useConvexMutation(api.events.deleteEvent);
+  // Fetch Events
+  useEffect(() => {
+    if (!user) return; // Wait for role check
+
+    async function loadEvents() {
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .select('*')
+          .eq('owner_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setEvents(data || []);
+      } catch (err) {
+        console.error("Failed to load events", err);
+        toast.error("Could not load your events");
+      } finally {
+        setIsLoadingEvents(false);
+      }
+    }
+    loadEvents();
+  }, [user, supabase]);
 
   const handleDelete = async (eventId) => {
     const confirmed = window.confirm(
@@ -43,8 +64,16 @@ export default function MyEventsPage() {
     if (!confirmed) return;
 
     try {
-      await deleteEvent({ eventId, token });
+      const { error } = await supabase
+        .from('events')
+        .delete()
+        .eq('id', eventId);
+
+      if (error) throw error;
+
       toast.success("Event deleted successfully");
+      // Optimistic update
+      setEvents(prev => prev.filter(e => e.id !== eventId));
     } catch (error) {
       toast.error(error.message || "Failed to delete event");
     }
@@ -56,7 +85,10 @@ export default function MyEventsPage() {
     router.push(`/my-events/${eventId}`);
   };
 
-  if (isLoading || isRoleLoading || !isAuthorized) {
+  // If loading or not authorized, show loader
+  const isAuthorized = user && (isOrganizer || isAdmin);
+
+  if (isLoadingEvents || isRoleLoading || !isAuthorized) {
     return (
       <div className="min-h-screen pb-20 px-4">
         <div className="max-w-7xl mx-auto">
@@ -114,11 +146,11 @@ export default function MyEventsPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events?.map((event) => (
               <EventCard
-                key={event._id}
+                key={event.id}
                 event={event}
                 action="event"
-                onClick={() => handleEventClick(event._id)}
-                onDelete={handleDelete}
+                onClick={() => handleEventClick(event.id)}
+                onDelete={() => handleDelete(event.id)}
               />
             ))}
           </div>

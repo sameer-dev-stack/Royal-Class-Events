@@ -45,8 +45,8 @@ export default function MockSSLCommerzPage() {
             // Small artificial delay for "Processing"
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Call our success API to validate the payment in Convex
-            const response = await fetch("/api/sslcommerz/success", {
+            // Call our success API to validate the payment in Supabase
+            const response = await fetch("/api/payment/sslcommerz/success", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

@@ -16,9 +16,8 @@ import {
     Clock,
     Check,
 } from "lucide-react";
-import { useConvexQuery, useConvexMutation } from "@/hooks/use-convex-query";
-import { useStoreUser } from "@/hooks/use-store-user";
-import { api } from "@/convex/_generated/api";
+import { useEffect, useState } from "react";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -57,14 +56,44 @@ export default function CheckoutPage() {
     });
     const [errors, setErrors] = useState({});
 
-    const { userId } = useStoreUser();
+    const { supabase } = useSupabase();
+    const [user, setUser] = useState(null);
+    const [event, setEvent] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);
 
-    // Fetch event data
-    const { data: event, isLoading } = useConvexQuery(
-        api.events.getEventBySlug,
-        eventId ? { slug: eventId } : "skip"
-    );
+    // 1. Fetch Auth State
+    useEffect(() => {
+        async function getAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) setUser(session.user);
+        }
+        getAuth();
+    }, [supabase]);
+
+    // 2. Fetch Event Data
+    useEffect(() => {
+        if (!eventId) return;
+        async function fetchEvent() {
+            setIsLoading(true);
+            try {
+                const { data, error } = await supabase
+                    .from('events')
+                    .select('*')
+                    .eq('slug', eventId)
+                    .single();
+
+                if (error) throw error;
+                setEvent(data);
+            } catch (err) {
+                console.error("Checkout event fetch failed:", err);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchEvent();
+    }, [eventId, supabase]);
+
 
     const eventTitle = event?.title?.en || event?.title || "Sample Event";
 
@@ -229,14 +258,13 @@ export default function CheckoutPage() {
             return;
         }
 
-        if (!userId) {
+        if (!user) {
             toast.error("Please sign in to complete your booking.");
             return;
         }
 
-        if (!event || !event._id) {
+        if (!event || !event.id) {
             toast.error("Event data not loaded. Please wait or refresh.");
-            console.error("Checkout Error: Event data missing", { event, eventId });
             return;
         }
 
@@ -246,30 +274,19 @@ export default function CheckoutPage() {
             return;
         }
 
-        setIsProcessing(true);
-        toast.loading("Initiating secure payment...");
-
-        console.log("Initiating Checkout with Data:", {
-            amount: total,
-            eventId: event._id,
-            userId: userId,
-            attendeeName: attendeeInfo.fullName,
-            attendeeEmail: attendeeInfo.email,
-        });
-
         try {
-            const response = await fetch("/api/sslcommerz/init", {
+            const response = await fetch("/api/payment/sslcommerz/init", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     amount: total,
-                    eventId: event._id,
-                    userId: userId,
+                    eventId: event.id,
+                    userId: user.id,
                     attendeeName: attendeeInfo.fullName,
                     attendeeEmail: attendeeInfo.email,
                     ticketQuantity: tickets.reduce((sum, t) => sum + t.quantity, 0),
-                    tickets: tickets.map(t => t.details || t), // Send full details
-                    seatIds: seatIds, // Send seatIds to API
+                    tickets: tickets.map(t => t.details || t),
+                    seatIds: seatIds,
                 }),
             });
 
@@ -343,10 +360,10 @@ export default function CheckoutPage() {
                         {/* Event Info Card */}
                         <Card className="p-6 bg-card border-border">
                             <div className="flex gap-4">
-                                {event?.coverImage && (
+                                {event?.cover_image && (
                                     <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
                                         <Image
-                                            src={event.coverImage}
+                                            src={event.cover_image}
                                             alt={eventTitle}
                                             fill
                                             className="object-cover"
@@ -360,7 +377,7 @@ export default function CheckoutPage() {
                                     <div className="space-y-1 text-sm text-muted-foreground">
                                         <div className="flex items-center gap-2">
                                             <Calendar className="w-4 h-4" />
-                                            <span>{event?.startDate ? format(new Date(event.startDate), "PPP") : "TBD"}</span>
+                                            <span>{event?.start_date ? format(new Date(event.start_date), "PPP") : "TBD"}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <MapPin className="w-4 h-4" />
@@ -565,7 +582,7 @@ export default function CheckoutPage() {
                             <div className="mb-6">
                                 <h4 className="font-semibold mb-3 text-foreground">Payment Method</h4>
                                 <div className="grid grid-cols-3 gap-3">
-                                    {["bkash", "nagad", "card"].map((method) => (
+                                    {["stripe", "bkash", "nagad"].map((method) => (
                                         <button
                                             key={method}
                                             onClick={() => setSelectedPayment(method)}
@@ -575,9 +592,9 @@ export default function CheckoutPage() {
                                                 }`}
                                         >
                                             <div className="text-sm font-medium text-foreground capitalize">
+                                                {method === "stripe" && "Stripe (International)"}
                                                 {method === "bkash" && "bKash"}
                                                 {method === "nagad" && "Nagad"}
-                                                {method === "card" && "Card"}
                                             </div>
                                             {selectedPayment === method && (
                                                 <Check className="absolute top-2 right-2 w-4 h-4 text-[#D4AF37]" />

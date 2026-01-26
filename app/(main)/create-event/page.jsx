@@ -9,11 +9,9 @@ import * as z from "zod";
 import { format } from "date-fns";
 import { State, City, Country } from "country-state-city";
 import { CalendarIcon, Loader2, Sparkles, Crown, Upload, Image as ImageIcon } from "lucide-react";
-import { useConvexMutation, useConvexQuery } from "@/hooks/use-convex-query";
 import { useUserRoles } from "@/hooks/use-user-roles";
-import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import useAuthStore from "@/hooks/use-auth-store";
+import { useSupabase } from "@/components/providers/supabase-provider";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,14 +80,15 @@ export default function CreateEventPage() {
   // TODO: Implement Pro subscription check with Supabase/Stripe
   const hasPro = false;
 
-  // Role Check
-  const { token } = useAuthStore();
+  // Supabase
+  const { supabase } = useSupabase();
   const { isOrganizer, isAdmin, isLoading: isRoleLoading, user } = useUserRoles();
+  const [isCreating, setIsCreating] = useState(false);
+  const [isUpgrading, setIsUpgrading] = useState(false);
 
-  const { mutate: createEvent, isLoading: isCreating } = useConvexMutation(api.events.createEvent);
-  const { mutate: generateUploadUrl } = useConvexMutation(api.files.generateUploadUrl);
-  const { mutate: createVenueDesign } = useConvexMutation(api.venueDesigns.create);
-  const { mutate: upgradeToOrganizer, isLoading: isUpgrading } = useConvexMutation(api.users.upgradeToOrganizer);
+  // Listing data (Templates/MyDesigns) - Static or fetched if tables exist
+  const [templates, setTemplates] = useState([]);
+  const [myDesigns, setMyDesigns] = useState([]);
 
   const currentUser = user; // Alias for existing code compatibility
 
@@ -118,8 +117,7 @@ export default function CreateEventPage() {
     },
   });
 
-  const { data: templates } = useConvexQuery(api.venueDesigns.listTemplates, { token });
-  const { data: myDesigns } = useConvexQuery(api.venueDesigns.listMyDesigns, { token });
+
 
   const themeColor = watch("themeColor");
   const ticketType = watch("ticketType");
@@ -196,14 +194,23 @@ export default function CreateEventPage() {
           <div className="flex flex-col gap-3">
             <Button
               onClick={async () => {
+                setIsUpgrading(true);
                 try {
-                  await upgradeToOrganizer({ token });
+                  const { error } = await supabase
+                    .from('profiles')
+                    .update({ role: 'organizer' })
+                    .eq('id', user.id);
+
+                  if (error) throw error;
+
                   toast.success("Account upgraded! Redirecting...");
                   setTimeout(() => {
                     window.location.reload();
                   }, 1000);
                 } catch (e) {
                   toast.error("Failed to upgrade: " + e.message);
+                } finally {
+                  setIsUpgrading(false);
                 }
               }}
               disabled={isUpgrading}
@@ -231,28 +238,8 @@ export default function CreateEventPage() {
   };
 
   const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    try {
-      const postUrl = await generateUploadUrl();
-      const result = await fetch(postUrl, {
-        method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
-      });
-      const { storageId } = await result.json();
-      setValue("coverImage", storageId);
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-      toast.success("Image uploaded successfully!");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to upload image");
-    } finally {
-      setIsUploading(false);
-    }
+    // Note: Supabase Storage logic placeholder
+    toast.error("Image upload to Supabase Storage coming soon. Use Unsplash for now!");
   };
 
   const combineDateTime = (date, time) => {
@@ -263,7 +250,12 @@ export default function CreateEventPage() {
     return d;
   };
 
+  const generateSlug = (title) => {
+    return title.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
+  };
+
   const onSubmit = async (data) => {
+    setIsCreating(true);
     try {
       const start = combineDateTime(data.startDate, data.startTime);
       const end = combineDateTime(data.endDate, data.endTime);
@@ -272,50 +264,52 @@ export default function CreateEventPage() {
         toast.error("Please select both date and time.");
         return;
       }
-      if (end.getTime() <= start.getTime()) {
-        toast.error("End date/time must be after start date/time.");
-        return;
-      }
 
-      await createEvent({
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        tags: [data.category],
-        startDate: start.getTime(),
-        endDate: end.getTime(),
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        locationType: data.locationType,
-        venue: data.venue || undefined,
-        address: data.address || undefined,
-        city: data.city,
-        state: data.state || undefined,
-        country: countries.find(c => c.isoCode === data.country)?.name || data.country,
-        capacity: data.capacity,
-        ticketType: data.ticketType,
-        ticketPrice: data.ticketPrice || undefined,
-        coverImage: data.coverImage || undefined,
-        themeColor: data.themeColor,
-        venueDesignId: undefined, // Venue design is handled later from dashboard
-        seatingMode: data.seatingMode,
-        hasPro,
-        token,
-      });
+      const slug = `${generateSlug(data.title)}-${Math.random().toString(36).substring(2, 7)}`;
 
-      toast.success("Event created successfully! 🎉");
-      router.push("/my-events");
+      const { data: newEvent, error } = await supabase
+        .from('events')
+        .insert([{
+          title: data.title,
+          slug: slug,
+          description: data.description,
+          status: 'draft', // Modern flow: Start as draft
+          start_date: start.toISOString(),
+          end_date: end.toISOString(),
+          owner_id: user.id,
+          category: data.category,
+          capacity: data.capacity,
+          ticket_price: data.ticketType === 'free' ? 0 : (data.ticketPrice || 0),
+          cover_image: data.coverImage,
+          seating_mode: data.seatingMode || 'venue',
+          city: data.city,
+          address: data.address
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast.success("Event created as draft! Redirecting to setup...");
+      router.push(`/my-events/${newEvent.id}`);
     } catch (error) {
+      console.error("Submission Error:", error);
+      if (error.details) console.error("Error Details:", error.details);
+      if (error.hint) console.error("Error Hint:", error.hint);
+      if (error.code) console.error("Error Code:", error.code);
       toast.error(error.message || "Failed to create event");
+    } finally {
+      setIsCreating(false);
     }
   };
 
   const handleAIGenerate = (generatedData) => {
-    setValue("title", generatedData.title);
-    setValue("description", generatedData.description);
-    setValue("category", generatedData.category);
-    setValue("capacity", generatedData.suggestedCapacity);
-    setValue("ticketType", generatedData.suggestedTicketType);
-    toast.success("Event details filled!");
+    if (generatedData.title) setValue("title", generatedData.title);
+    if (generatedData.description) setValue("description", generatedData.description);
+    if (generatedData.category) setValue("category", generatedData.category);
+    if (generatedData.suggestedCapacity) setValue("capacity", generatedData.suggestedCapacity);
+    if (generatedData.suggestedTicketType) setValue("ticketType", generatedData.suggestedTicketType);
+    toast.success("AI suggestions applied to form!");
   };
 
   // --- ERROR HANDLER FOR DEBUGGING ---
@@ -390,47 +384,44 @@ export default function CreateEventPage() {
   const handleSaveAndBuild = async () => {
     const title = watch("title");
     const startDate = watch("startDate");
-    const seatingMode = watch("seatingMode");
 
     if (!title || !startDate) {
       toast.error("Please provide at least a Title and Start Date to save a draft.");
       return;
     }
 
+    setIsCreating(true);
     try {
-      const draftStart = startDate.getTime();
-      // Default to 2 hours duration for draft
-      const draftEnd = draftStart + (2 * 60 * 60 * 1000);
+      const slug = `${generateSlug(title)}-${Math.random().toString(36).substring(2, 7)}`;
+      const start = startDate.toISOString();
+      const end = new Date(startDate.getTime() + (2 * 60 * 60 * 1000)).toISOString(); // 2h default
 
-      const eventId = await createEvent({
-        title: title,
-        description: watch("description") || "Draft Event Description",
-        category: watch("category") || "music", // Default category
-        tags: ["draft"],
-        startDate: draftStart,
-        endDate: draftEnd,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        locationType: watch("locationType") || "physical",
-        venue: watch("venue"),
-        address: watch("address"),
-        city: watch("city") || "Dhaka",
-        state: watch("state"),
-        country: watch("country") || "Bangladesh",
-        capacity: watch("capacity") || 100,
-        ticketType: watch("ticketType") || "free",
-        ticketPrice: watch("ticketPrice"),
-        themeColor: watch("themeColor") || "#d97706",
-        seatingMode: "RESERVED", // Explicitly set for this flow
-        token,
-        hasPro,
-      });
+      const { data: newEvent, error } = await supabase
+        .from('events')
+        .insert([{
+          title: title,
+          slug: slug,
+          description: watch("description") || "Initial draft",
+          status: 'draft',
+          start_date: start,
+          end_date: end,
+          owner_id: user.id,
+          category: watch("category") || 'other',
+          seating_mode: 'venue', // Force for bridge flow
+          capacity: watch("capacity") || 100
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
 
       toast.success("Draft saved! Opening Seat Builder...");
-      // Redirect to seat builder with the new event ID
-      router.push(`/seat-builder?eventId=${eventId}`);
+      router.push(`/seat-builder?eventId=${newEvent.id}`);
     } catch (error) {
       console.error("Failed to save draft:", error);
-      toast.error("Failed to save draft. Please ensure you are logged in as an Organizer.");
+      toast.error("Failed to save draft.");
+    } finally {
+      setIsCreating(false);
     }
   };
 

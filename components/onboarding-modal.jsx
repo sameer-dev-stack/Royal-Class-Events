@@ -3,10 +3,9 @@
 import { useState, useMemo, useEffect } from "react";
 import { MapPin, Heart, ArrowRight, ArrowLeft, Crown } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useConvexMutation } from "@/hooks/use-convex-query";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import { toast } from "sonner";
-import { State, City } from "country-state-city";
+import { bdDivisions, bdDistricts } from "@/lib/bd-locations"; // Custom Data
 import {
   Dialog,
   DialogContent,
@@ -29,55 +28,49 @@ import { CATEGORIES } from "@/lib/data";
 import useAuthStore from "@/hooks/use-auth-store";
 
 export default function OnboardingModal({ isOpen, onClose, onComplete }) {
-  const { token } = useAuthStore();
+  const { supabase } = useSupabase();
+  const { user, updateUser } = useAuthStore();
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
-  const [selectedRole, setSelectedRole] = useState(null); // 'attendee' or 'organizer'
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Detect role from URL or localStorage on mount
   useEffect(() => {
     if (isOpen) {
-      // First check URL params
       const roleParam = searchParams.get("role");
       if (roleParam === "organizer" || roleParam === "attendee") {
         setSelectedRole(roleParam);
-        setStep(2); // Automatically skip to interests selection
+        setStep(2);
         return;
       }
 
-      // Then check localStorage (set by role-specific sign-up pages)
       const pendingRole = localStorage.getItem("pendingRole");
       if (pendingRole === "organizer" || pendingRole === "attendee") {
         setSelectedRole(pendingRole);
-        setStep(2); // Automatically skip to interests selection
-        // Clear it so it doesn't persist for future logins
+        setStep(2);
         localStorage.removeItem("pendingRole");
       }
     }
   }, [isOpen, searchParams]);
+
   const [selectedInterests, setSelectedInterests] = useState([]);
   const [location, setLocation] = useState({
-    state: "",
-    city: "",
+    state: "", // Will store Division
+    city: "", // Will store District
     country: "Bangladesh",
   });
 
-  const { mutate: completeOnboarding, isLoading } = useConvexMutation(
-    api.users.completeOnboarding
-  );
-
-  // Get Bangladesh states
-  const indianStates = useMemo(() => {
-    return State.getStatesOfCountry("BD");
+  // Use Custom Data for "States" (Divisions)
+  const bangladeshDivisions = useMemo(() => {
+    return bdDivisions.map(div => ({ name: div, isoCode: div }));
   }, []);
 
-  // Get cities based on selected state
+  // Use Custom Data for "Cities" (Districts)
   const cities = useMemo(() => {
     if (!location.state) return [];
-    const selectedState = indianStates.find((s) => s.name === location.state);
-    if (!selectedState) return [];
-    return City.getCitiesOfState("BD", selectedState.isoCode);
-  }, [location.state, indianStates]);
+    const districts = bdDistricts[location.state] || [];
+    return districts.map(dist => ({ name: dist }));
+  }, [location.state]);
 
   const toggleInterest = (categoryId) => {
     setSelectedInterests((prev) =>
@@ -97,7 +90,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
       return;
     }
     if (step === 3 && (!location.city || !location.state)) {
-      toast.error("Please select both state and city");
+      toast.error("Please select both Division and District");
       return;
     }
     if (step < 3) {
@@ -108,24 +101,43 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
   };
 
   const handleComplete = async () => {
-    console.log("Starting onboarding completion...");
+    setIsLoading(true);
     try {
-      await completeOnboarding({
+      const onboardingData = {
         location: {
           city: location.city,
           state: location.state,
           country: location.country,
         },
         interests: selectedInterests,
+        has_completed_onboarding: true
+      };
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          role: selectedRole,
+          metadata: { ...user?.metadata, ...onboardingData }
+        })
+        .eq('id', user.id);
+
+      if (profileError) throw profileError;
+
+      updateUser({
         role: selectedRole,
-        token,
+        metadata: { ...user?.metadata, ...onboardingData }
       });
-      console.log("Mutation successful");
+
       toast.success("Welcome to Royal Class Events! 🎉");
-      onComplete();
+      onComplete(); // Note: This might be async but we don't await it here to avoid blocking UI
     } catch (error) {
-      console.error("Onboarding failed:", error);
+      console.error("Onboarding failed detailed:", error);
+      console.error("Error message:", error.message);
+      console.error("Error details:", error.details);
+      console.error("Error hint:", error.hint);
       toast.error("Failed to complete onboarding: " + (error.message || "Unknown error"));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,12 +145,12 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl bg-background border-border">
         <DialogHeader>
           <div className="mb-4">
             <Progress value={progress} className="h-1" />
           </div>
-          <DialogTitle className="flex items-center gap-2 text-2xl">
+          <DialogTitle className="flex items-center gap-2 text-2xl text-foreground">
             {step === 1 ? (
               <>
                 <Crown className="w-6 h-6 text-[#D4AF37]" />
@@ -166,7 +178,6 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
         </DialogHeader>
 
         <div className="py-4">
-          {/* Step 1: Role Selection */}
           {step === 1 && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <button
@@ -179,7 +190,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                 <div className="w-12 h-12 rounded-full bg-[#F7E08B] dark:bg-[#8C7326]/30 flex items-center justify-center mb-4">
                   <Heart className="w-6 h-6 text-[#8C7326] dark:text-[#F7E08B]" />
                 </div>
-                <h3 className="text-lg font-bold mb-2">Discover Events</h3>
+                <h3 className="text-lg font-bold mb-2 text-foreground">Discover Events</h3>
                 <p className="text-muted-foreground text-sm">
                   I want to browse events, buy tickets, and attend experiences.
                 </p>
@@ -195,7 +206,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                 <div className="w-12 h-12 rounded-full bg-[#F7E08B] dark:bg-[#8C7326]/30 flex items-center justify-center mb-4">
                   <Crown className="w-6 h-6 text-[#8C7326] dark:text-[#F7E08B]" />
                 </div>
-                <h3 className="text-lg font-bold mb-2">Host Events</h3>
+                <h3 className="text-lg font-bold mb-2 text-foreground">Host Events</h3>
                 <p className="text-muted-foreground text-sm">
                   I want to create events, manage tickets, and track analytics.
                 </p>
@@ -203,7 +214,6 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
             </div>
           )}
 
-          {/* Step 2: Select Interests */}
           {step === 2 && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[400px] overflow-y-auto p-2">
@@ -217,7 +227,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                       }`}
                   >
                     <div className="text-2xl mb-2">{category.icon}</div>
-                    <div className="text-sm font-medium">{category.label}</div>
+                    <div className="text-sm font-medium text-foreground">{category.label}</div>
                   </button>
                 ))}
               </div>
@@ -239,23 +249,22 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
             </div>
           )}
 
-          {/* Step 3: Location */}
           {step === 3 && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="state">State</Label>
+                  <Label htmlFor="state">Division</Label>
                   <Select
                     value={location.state}
                     onValueChange={(value) => {
                       setLocation({ ...location, state: value, city: "" });
                     }}
                   >
-                    <SelectTrigger id="state" className="h-11 w-full">
-                      <SelectValue placeholder="Select state" />
+                    <SelectTrigger id="state" className="h-11 w-full bg-background border-input text-foreground">
+                      <SelectValue placeholder="Select Division" />
                     </SelectTrigger>
                     <SelectContent>
-                      {indianStates.map((state) => (
+                      {bangladeshDivisions.map((state) => (
                         <SelectItem key={state.isoCode} value={state.name}>
                           {state.name}
                         </SelectItem>
@@ -265,7 +274,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="city">City</Label>
+                  <Label htmlFor="city">District</Label>
                   <Select
                     value={location.city}
                     onValueChange={(value) =>
@@ -273,10 +282,10 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                     }
                     disabled={!location.state}
                   >
-                    <SelectTrigger id="city" className="h-11 w-full">
+                    <SelectTrigger id="city" className="h-11 w-full bg-background border-input text-foreground">
                       <SelectValue
                         placeholder={
-                          location.state ? "Select city" : "State first"
+                          location.state ? "Select District" : "Division first"
                         }
                       />
                     </SelectTrigger>
@@ -289,7 +298,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                         ))
                       ) : (
                         <SelectItem value="no-cities" disabled>
-                          No cities available
+                          No districts available
                         </SelectItem>
                       )}
                     </SelectContent>
@@ -302,7 +311,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                   <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-[#D4AF37] mt-0.5" />
                     <div>
-                      <p className="font-medium">Your location</p>
+                      <p className="font-medium text-foreground">Your location</p>
                       <p className="text-sm text-muted-foreground">
                         {location.city}, {location.state}, {location.country}
                       </p>
@@ -314,13 +323,13 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex gap-3 pt-4">
           {step > 1 && (
             <Button
               variant="outline"
               onClick={() => setStep(step - 1)}
               className="gap-2"
+              disabled={isLoading}
             >
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -329,7 +338,7 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
           <Button
             onClick={handleNext}
             disabled={isLoading}
-            className="flex-1 gap-2"
+            className="flex-1 gap-2 bg-[#D4AF37] hover:bg-[#8C7326] text-black"
           >
             {isLoading
               ? "Completing..."
@@ -343,4 +352,5 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
     </Dialog>
   );
 }
+
 

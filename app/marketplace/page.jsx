@@ -1,8 +1,8 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import MarketplaceHero from "@/components/marketplace/marketplace-hero";
 import SupplierCard from "@/components/marketplace/supplier-card";
 import { Loader2, ArrowRight, Sparkles, SearchX } from "lucide-react";
@@ -25,32 +25,102 @@ const CATEGORY_IMAGES = {
     "Entertainment": "https://images.unsplash.com/photo-1493225255756-d95298119351?w=800&q=80",
 };
 
-// Default categories for fallback
 const DEFAULT_CATEGORIES = ["Venue", "Catering", "Tech & AV", "Security", "Logistics", "Photography", "Decor", "Entertainment"];
 
 export default function MarketplacePage() {
+    const { supabase } = useSupabase();
     const searchParams = useSearchParams();
 
-    // Search Filters
+    // Filters
     const category = searchParams.get("category");
     const city = searchParams.get("city");
     const query = searchParams.get("query");
     const isSearching = !!(category || city || query);
 
-    // Queries
-    const featuredSuppliers = useQuery(api.suppliers.getFeaturedSuppliers, { limit: 6 });
-    const searchResults = useQuery(api.suppliers.searchSuppliers, isSearching ? {
-        category: category !== "all" ? category : undefined,
-        city: city || undefined,
-        query: query || undefined,
-        limit: 50
-    } : "skip");
+    // State
+    const [featuredSuppliers, setFeaturedSuppliers] = useState([]);
+    const [searchResults, setSearchResults] = useState(undefined);
+    const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+    const [cities, setCities] = useState(["Dhaka", "Chittagong"]);
+    const [isLoadingFeatured, setIsLoadingFeatured] = useState(true);
 
-    const dbCategories = useQuery(api.suppliers.getCategories);
-    const cities = useQuery(api.suppliers.getCities) || ["Dhaka", "Chittagong"];
+    // 1. Initial Data Fetch (Featured & Metadata)
+    useEffect(() => {
+        async function fetchInitialData() {
+            try {
+                // Fetch Featured Suppliers
+                const { data: featured, error: featuredError } = await supabase
+                    .from('suppliers')
+                    .select('*')
+                    .eq('status', 'active')
+                    .order('rating', { ascending: false })
+                    .limit(6);
 
-    // Merge DB categories with default categories
-    const categories = dbCategories?.length > 0 ? dbCategories : DEFAULT_CATEGORIES;
+                if (!featuredError) setFeaturedSuppliers(featured);
+
+                // Fetch Categories (Dynamic from existing data)
+                const { data: allSuppliers } = await supabase
+                    .from('suppliers')
+                    .select('categories, location')
+                    .eq('status', 'active');
+
+                if (allSuppliers) {
+                    const uniqueCats = new Set([...DEFAULT_CATEGORIES]);
+                    const uniqueCities = new Set(["Dhaka", "Chittagong", "Sylhet", "Rajshahi"]);
+
+                    allSuppliers.forEach(s => {
+                        s.categories?.forEach(c => uniqueCats.add(c));
+                        if (s.location?.city) uniqueCities.add(s.location.city);
+                    });
+
+                    setCategories(Array.from(uniqueCats).sort());
+                    setCities(Array.from(uniqueCities).sort());
+                }
+
+            } catch (err) {
+                console.error("Marketplace data fetch error:", err);
+            } finally {
+                setIsLoadingFeatured(false);
+            }
+        }
+        fetchInitialData();
+    }, [supabase]);
+
+    // 2. Search Results Fetch
+    useEffect(() => {
+        if (!isSearching) {
+            setSearchResults(undefined);
+            return;
+        }
+
+        async function performSearch() {
+            try {
+                let q = supabase
+                    .from('suppliers')
+                    .select('*')
+                    .eq('status', 'active');
+
+                if (category && category !== "all") {
+                    q = q.contains('categories', [category]);
+                }
+
+                if (city) {
+                    q = q.filter('location->>city', 'eq', city);
+                }
+
+                if (query) {
+                    q = q.ilike('name', `%${query}%`);
+                }
+
+                const { data, error } = await q.limit(50);
+                if (!error) setSearchResults(data || []);
+            } catch (err) {
+                console.error("Search failed:", err);
+                setSearchResults([]);
+            }
+        }
+        performSearch();
+    }, [category, city, query, isSearching, supabase]);
 
     return (
         <div className="min-h-screen bg-background text-foreground selection:bg-[#D4AF37]/30">
@@ -102,7 +172,7 @@ export default function MarketplacePage() {
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {searchResults.map((supplier) => (
-                                    <div key={supplier._id} className="h-[400px]">
+                                    <div key={supplier.id} className="h-[400px]">
                                         <SupplierCard supplier={supplier} />
                                     </div>
                                 ))}
@@ -168,14 +238,14 @@ export default function MarketplacePage() {
                                 </Link>
                             </div>
 
-                            {featuredSuppliers === undefined ? (
+                            {isLoadingFeatured ? (
                                 <div className="flex justify-center py-12">
                                     <Loader2 className="w-8 h-8 animate-spin text-[#D4AF37]" />
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {featuredSuppliers.map((supplier) => (
-                                        <div key={supplier._id} className="h-[400px]">
+                                        <div key={supplier.id} className="h-[400px]">
                                             <SupplierCard supplier={supplier} />
                                         </div>
                                     ))}

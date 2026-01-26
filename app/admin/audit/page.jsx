@@ -1,8 +1,8 @@
 "use client";
 
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import useAuthStore from "@/hooks/use-auth-store";
+import { useState, useEffect } from "react";
+import { useSupabase } from "@/components/providers/supabase-provider";
+import { useUserRoles } from "@/hooks/use-user-roles";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,15 +15,12 @@ import {
     Filter,
     UserCircle,
     Activity,
-    AlertCircle,
     Info,
     Trash2,
-    Edit3,
-    UserPlus,
-    Lock
+    Lock,
+    Loader2
 } from "lucide-react";
 import { format } from "date-fns";
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -40,44 +37,72 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export default function AuditPage() {
-    const { token } = useAuthStore();
+    const { supabase } = useSupabase();
+    const { isAdmin, isLoading: isRoleLoading } = useUserRoles();
+    const [logs, setLogs] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [actionFilter, setActionFilter] = useState("all");
     const [searchTerm, setSearchTerm] = useState("");
 
-    const logs = useQuery(api.audit.getAuditLogs, {
-        actionType: actionFilter,
-        token: token || undefined
-    });
+    useEffect(() => {
+        if (!isRoleLoading && isAdmin) {
+            fetchLogs();
+        }
+    }, [isRoleLoading, isAdmin, actionFilter]);
 
-    const filteredLogs = logs?.filter(log => {
-        const adminMatch = log.adminName.toLowerCase().includes(searchTerm.toLowerCase());
-        const targetMatch = log.targetId?.toLowerCase().includes(searchTerm.toLowerCase());
+    const fetchLogs = async () => {
+        setIsLoading(true);
+        try {
+            let query = supabase
+                .from('audit_logs')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (actionFilter !== "all") {
+                query = query.eq('action', actionFilter);
+            }
+
+            const { data, error } = await query.limit(100);
+
+            if (error) throw error;
+            setLogs(data || []);
+        } catch (error) {
+            console.error("Error fetching audit logs:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const filteredLogs = logs.filter(log => {
+        const adminMatch = (log.admin_name || "").toLowerCase().includes(searchTerm.toLowerCase());
+        const targetMatch = (log.target_id || "").toLowerCase().includes(searchTerm.toLowerCase());
         return adminMatch || targetMatch;
     });
 
-    if (logs === undefined) {
-        return <div className="text-zinc-400 p-10 animate-pulse">Scanning audit database...</div>;
-    }
-
-    const getActionBadge = (action: string) => {
+    const getActionBadge = (action) => {
         switch (action) {
             case 'USER_STATUS_CHANGE':
             case 'USER_STATUS_CHANGE_V2':
-                return <Badge className="bg-red-500/10 text-red-500 border-red-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><ShieldAlert className="w-3 h-3" /> Moderation</Badge>;
+                return <Badge variant="default" className="bg-red-500/10 text-red-500 border-red-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><ShieldAlert className="w-3 h-3" /> Moderation</Badge>;
             case 'USER_ROLE_CHANGE':
-                return <Badge className="bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><CrownIcon className="w-3 h-3" /> Promotion</Badge>;
+            case 'ADMIN_ASSIGNMENT':
+                return <Badge variant="default" className="bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><CrownIcon className="w-3 h-3" /> Promotion</Badge>;
             case 'EVENT_DELETE':
-                return <Badge className="bg-rose-600/10 text-rose-500 border-rose-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><Trash2 className="w-3 h-3" /> Suppression</Badge>;
+                return <Badge variant="default" className="bg-rose-600/10 text-rose-500 border-rose-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><Trash2 className="w-3 h-3" /> Suppression</Badge>;
             case 'EVENT_STATUS_TOGGLE':
-                return <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><Activity className="w-3 h-3" /> Visibility</Badge>;
+                return <Badge variant="default" className="bg-blue-500/10 text-blue-500 border-blue-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><Activity className="w-3 h-3" /> Visibility</Badge>;
             case 'VENDOR_PAYOUT_PROCESSED':
-                return <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><ShieldCheck className="w-3 h-3" /> Disbursement</Badge>;
+                return <Badge variant="default" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><ShieldCheck className="w-3 h-3" /> Disbursement</Badge>;
             default:
-                return <Badge className="bg-zinc-800 text-zinc-400 border-zinc-700 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><Info className="w-3 h-3" /> General</Badge>;
+                return <Badge variant="default" className="bg-zinc-800 text-zinc-400 border-zinc-700 gap-1.5 px-3 py-1 font-black uppercase text-[10px] tracking-widest"><Info className="w-3 h-3" /> General</Badge>;
         }
     };
+
+    if (isRoleLoading) return null;
+    if (!isAdmin) return <div className="p-20 text-center text-zinc-500">Unauthorized Access</div>;
 
     return (
         <div className="space-y-8 text-white max-w-7xl mx-auto pb-10">
@@ -89,7 +114,7 @@ export default function AuditPage() {
                 </div>
                 <div className="flex items-center gap-2 bg-red-500/5 border border-red-500/10 px-4 py-2 rounded-2xl">
                     <Lock className="w-4 h-4 text-red-500/50" />
-                    <span className="text-[10px] font-black uppercase tracking-widest text-red-500/70 italic">End-to-End Encryption</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-red-500/70 italic">Verified Integrity</span>
                 </div>
             </div>
 
@@ -98,6 +123,7 @@ export default function AuditPage() {
                 <div className="relative flex-1 w-full">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
                     <Input
+                        type="text"
                         placeholder="Search by Admin name or Target ID..."
                         className="bg-zinc-950/50 border-zinc-800 text-white pl-10 h-11 focus:ring-red-500"
                         value={searchTerm}
@@ -111,12 +137,12 @@ export default function AuditPage() {
                             <SelectValue placeholder="All Actions" />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
-                            <SelectItem value="all">All Actions</SelectItem>
-                            <SelectItem value="USER_STATUS_CHANGE">Moderation (Ban/Active)</SelectItem>
-                            <SelectItem value="USER_ROLE_CHANGE">Promotions (Roles)</SelectItem>
-                            <SelectItem value="EVENT_STATUS_TOGGLE">Event Visibility</SelectItem>
-                            <SelectItem value="EVENT_DELETE">Event Deletions</SelectItem>
-                            <SelectItem value="VENDOR_PAYOUT_PROCESSED">Finance (Payouts)</SelectItem>
+                            <SelectItem value="all" className="hover:bg-zinc-800">All Actions</SelectItem>
+                            <SelectItem value="USER_STATUS_CHANGE" className="hover:bg-zinc-800">Moderation (Ban/Active)</SelectItem>
+                            <SelectItem value="USER_ROLE_CHANGE" className="hover:bg-zinc-800">Promotions (Roles)</SelectItem>
+                            <SelectItem value="EVENT_STATUS_TOGGLE" className="hover:bg-zinc-800">Event Visibility</SelectItem>
+                            <SelectItem value="EVENT_DELETE" className="hover:bg-zinc-800">Event Deletions</SelectItem>
+                            <SelectItem value="VENDOR_PAYOUT_PROCESSED" className="hover:bg-zinc-800">Finance (Payouts)</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -135,14 +161,21 @@ export default function AuditPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredLogs?.map((log) => (
-                            <TableRow key={log._id} className="border-zinc-800/50 hover:bg-zinc-800/10 transition-all group">
+                        {isLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={5} className="py-20 text-center">
+                                    <Loader2 className="w-8 h-8 animate-spin text-zinc-700 mx-auto" />
+                                    <p className="text-xs text-zinc-500 mt-4 uppercase tracking-widest font-black">Scanning ledger...</p>
+                                </TableCell>
+                            </TableRow>
+                        ) : filteredLogs.map((log) => (
+                            <TableRow key={log.id} className="border-zinc-800/50 hover:bg-zinc-800/10 transition-all group">
                                 <TableCell className="py-5 pl-6">
                                     <div className="flex items-center gap-3">
                                         <div className="p-2 bg-zinc-900 rounded-lg group-hover:bg-zinc-800 transition-colors">
                                             <UserCircle className="w-4 h-4 text-zinc-500" />
                                         </div>
-                                        <span className="font-bold text-white uppercase tracking-tight text-sm">{log.adminName}</span>
+                                        <span className="font-bold text-white uppercase tracking-tight text-sm">{log.admin_name}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -150,19 +183,19 @@ export default function AuditPage() {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-[10px] font-mono text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded border border-zinc-800">
-                                        {log.targetId || "N/A"}
+                                        {log.target_id || "N/A"}
                                     </span>
                                 </TableCell>
                                 <TableCell className="text-zinc-600 text-xs font-medium">
                                     <div className="flex items-center gap-2">
                                         <Calendar className="w-3.5 h-3.5 text-zinc-800" />
-                                        {format(new Date(log.timestamp), "MMM d, yyyy • HH:mm:ss")}
+                                        {format(new Date(log.created_at), "MMM d, yyyy • HH:mm:ss")}
                                     </div>
                                 </TableCell>
                                 <TableCell className="text-right pr-6">
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <Button variant="ghost" className="h-9 px-4 text-[10px] font-black uppercase italic tracking-widest text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-lg">
+                                            <Button variant="ghost" size="default" className="h-9 px-4 text-[10px] font-black uppercase italic tracking-widest text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-lg">
                                                 Inspect Payload
                                             </Button>
                                         </DialogTrigger>
@@ -179,7 +212,7 @@ export default function AuditPage() {
                                                 <pre className="text-emerald-500">{JSON.stringify(log.details, null, 2)}</pre>
                                             </div>
                                             <div className="mt-2 text-[10px] text-zinc-700 font-black uppercase text-center">
-                                                Checksum Valid • Hash: {log._id.substring(0, 16)}...
+                                                Registry Integrity Valid • Hash: {log.id?.substring(0, 16)}...
                                             </div>
                                         </DialogContent>
                                     </Dialog>
@@ -188,7 +221,7 @@ export default function AuditPage() {
                         ))}
                     </TableBody>
                 </Table>
-                {filteredLogs?.length === 0 && (
+                {!isLoading && filteredLogs.length === 0 && (
                     <div className="flex flex-col items-center justify-center p-20 text-center">
                         <div className="w-20 h-20 bg-zinc-900/50 rounded-3xl flex items-center justify-center mb-4 border border-zinc-800/50">
                             <Activity className="w-8 h-8 text-zinc-800" />
@@ -202,7 +235,7 @@ export default function AuditPage() {
     );
 }
 
-function CrownIcon({ className }: { className?: string }) {
+function CrownIcon({ className }) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"

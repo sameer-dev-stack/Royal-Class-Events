@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useState, useEffect } from "react";
 import { useParams, notFound } from "next/navigation";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -24,23 +23,81 @@ import {
 import { Button } from "@/components/ui/button";
 import ServiceCard from "@/components/marketplace/service-card";
 import RFQModal from "@/components/marketplace/rfq-modal";
+import MarketplaceBookingModal from "@/components/marketplace/booking-modal";
 
 export default function VendorProfilePage() {
     const params = useParams();
     const supplierId = params?.id;
+    const { supabase } = useSupabase();
     const [isRFQModalOpen, setIsRFQModalOpen] = useState(false);
+    const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+    const [selectedService, setSelectedService] = useState(null);
 
-    // Validate that supplierId looks like a valid Convex ID (alphanumeric, no special chars)
-    const isValidId = supplierId && /^[a-zA-Z0-9]+$/.test(supplierId) && supplierId.length > 10;
+    const [profile, setProfile] = useState(undefined);
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch supplier profile with services and reviews
-    const profile = useQuery(
-        api.suppliers.getProfile,
-        isValidId ? { supplierId } : "skip"
-    );
+    useEffect(() => {
+        if (!supplierId) return;
+
+        async function fetchVendorProfile() {
+            try {
+                // 1. Fetch Basic Supplier Profile
+                const { data: vendor, error: vendorError } = await supabase
+                    .from('suppliers')
+                    .select('*')
+                    .eq('id', supplierId)
+                    .single();
+
+                if (vendorError || !vendor) {
+                    setProfile(null);
+                    return;
+                }
+
+                // 2. Fetch Services
+                const { data: services } = await supabase
+                    .from('supplier_services')
+                    .select('*')
+                    .eq('supplier_id', supplierId)
+                    .eq('is_active', true);
+
+                // 3. Fetch Reviews with Reviewer Info
+                const { data: reviews } = await supabase
+                    .from('supplier_reviews')
+                    .select(`
+                        *,
+                        reviewer:profiles(full_name, avatar_url)
+                    `)
+                    .eq('supplier_id', supplierId)
+                    .order('created_at', { ascending: false });
+
+                // Calculate local starting price if not stored
+                const minPrice = services?.length > 0
+                    ? Math.min(...services.map(s => Number(s.price)))
+                    : null;
+
+                setProfile({
+                    ...vendor,
+                    services: services || [],
+                    reviews: reviews?.map(r => ({
+                        ...r,
+                        reviewerName: r.reviewer?.full_name || "Guest User",
+                        reviewerImage: r.reviewer?.avatar_url
+                    })) || [],
+                    startingPrice: minPrice || vendor.starting_price
+                });
+
+            } catch (err) {
+                console.error("Failed to fetch vendor:", err);
+                setProfile(null);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+        fetchVendorProfile();
+    }, [supplierId, supabase]);
 
     // Loading State
-    if (profile === undefined) {
+    if (isLoading || profile === undefined) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
@@ -51,8 +108,8 @@ export default function VendorProfilePage() {
         );
     }
 
-    // Not Found State (or invalid ID)
-    if (profile === null || !isValidId) {
+    // Not Found State
+    if (profile === null) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="text-center space-y-4">
@@ -73,12 +130,12 @@ export default function VendorProfilePage() {
         description,
         categories,
         location,
-        contact,
-        logoUrl,
-        coverUrl,
+        contact_info: contact,
+        logo_url: logoUrl,
+        cover_url: coverUrl,
         rating,
-        reviewCount,
-        verified,
+        review_count: reviewCount,
+        is_verified: verified,
         portfolios,
         services,
         reviews,
@@ -99,7 +156,6 @@ export default function VendorProfilePage() {
             <div className="min-h-screen bg-background text-foreground">
                 {/* ============== HERO SECTION ============== */}
                 <section className="relative h-[400px] md:h-[500px] overflow-hidden rounded-3xl mx-4 md:mx-6 lg:mx-12 mt-6 shadow-2xl">
-                    {/* Cover Image */}
                     <div className="absolute inset-0">
                         {coverUrl ? (
                             <Image
@@ -112,14 +168,11 @@ export default function VendorProfilePage() {
                         ) : (
                             <div className="w-full h-full bg-gradient-to-br from-zinc-900 to-zinc-800" />
                         )}
-                        {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent" />
                     </div>
 
-                    {/* Hero Content */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
                         <div className="max-w-7xl mx-auto flex items-end gap-6">
-                            {/* Avatar */}
                             <motion.div
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
@@ -148,7 +201,6 @@ export default function VendorProfilePage() {
                                 )}
                             </motion.div>
 
-                            {/* Info */}
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-3 flex-wrap mb-2">
                                     <h1 className="text-2xl md:text-4xl font-black text-foreground truncate">
@@ -166,15 +218,14 @@ export default function VendorProfilePage() {
                                         <MapPin className="w-4 h-4 text-[#D4AF37]" />
                                         {location?.city}, {location?.country}
                                     </span>
-                                    {rating > 0 && (
+                                    {Number(rating) > 0 && (
                                         <span className="flex items-center gap-1.5">
                                             <Star className="w-4 h-4 text-[#D4AF37] fill-[#D4AF37]" />
-                                            {rating.toFixed(1)} ({reviewCount} reviews)
+                                            {Number(rating).toFixed(1)} ({reviewCount} reviews)
                                         </span>
                                     )}
                                 </div>
 
-                                {/* Categories */}
                                 <div className="flex items-center gap-2 mt-3 flex-wrap">
                                     {categories?.slice(0, 4).map((cat) => (
                                         <span
@@ -193,9 +244,7 @@ export default function VendorProfilePage() {
                 {/* ============== MAIN CONTENT ============== */}
                 <section className="max-w-7xl mx-auto px-6 py-12">
                     <div className="grid lg:grid-cols-[1fr_380px] gap-8">
-                        {/* ===== LEFT COLUMN (Main Content) ===== */}
                         <div className="space-y-12">
-                            {/* About Section */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -210,7 +259,6 @@ export default function VendorProfilePage() {
                                 </p>
                             </motion.div>
 
-                            {/* Portfolio Section */}
                             {portfolios && portfolios.length > 0 && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
@@ -259,7 +307,6 @@ export default function VendorProfilePage() {
                                 </motion.div>
                             )}
 
-                            {/* Services Section */}
                             {services && services.length > 0 && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
@@ -273,20 +320,24 @@ export default function VendorProfilePage() {
                                     <div className="grid md:grid-cols-2 gap-6">
                                         {services.map((service, index) => (
                                             <ServiceCard
-                                                key={service._id}
+                                                key={service.id}
+                                                id={service.id}
                                                 title={service.name}
                                                 price={service.price}
                                                 currency={service.currency}
                                                 description={service.description}
                                                 features={service.features}
                                                 featured={index === 0}
+                                                onBook={(svc) => {
+                                                    setSelectedService(svc);
+                                                    setIsBookingModalOpen(true);
+                                                }}
                                             />
                                         ))}
                                     </div>
                                 </motion.div>
                             )}
 
-                            {/* Reviews Section */}
                             {reviews && reviews.length > 0 && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
@@ -300,7 +351,7 @@ export default function VendorProfilePage() {
                                     <div className="space-y-4">
                                         {reviews.map((review) => (
                                             <div
-                                                key={review._id}
+                                                key={review.id}
                                                 className="p-5 bg-card/50 rounded-xl border border-border"
                                             >
                                                 <div className="flex items-start gap-4">
@@ -339,16 +390,6 @@ export default function VendorProfilePage() {
                                                         <p className="text-zinc-400 text-sm leading-relaxed">
                                                             {review.comment}
                                                         </p>
-                                                        {review.response && (
-                                                            <div className="mt-3 pl-4 border-l-2 border-[#D4AF37]/30">
-                                                                <p className="text-xs text-muted-foreground mb-1">
-                                                                    Vendor Response:
-                                                                </p>
-                                                                <p className="text-sm text-zinc-300">
-                                                                    {review.response}
-                                                                </p>
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -358,7 +399,6 @@ export default function VendorProfilePage() {
                             )}
                         </div>
 
-                        {/* ===== RIGHT COLUMN (Sidebar) ===== */}
                         <div className="lg:sticky lg:top-24 h-fit">
                             <motion.div
                                 initial={{ opacity: 0, x: 20 }}
@@ -366,7 +406,6 @@ export default function VendorProfilePage() {
                                 transition={{ delay: 0.2 }}
                                 className="p-6 bg-card/80 backdrop-blur-xl rounded-2xl border border-border/50 shadow-2xl"
                             >
-                                {/* Starting Price */}
                                 <div className="mb-6 pb-6 border-b border-border/50">
                                     <p className="text-sm text-muted-foreground mb-1">Starting from</p>
                                     <p className="text-3xl font-black text-[#D4AF37]">
@@ -374,7 +413,6 @@ export default function VendorProfilePage() {
                                     </p>
                                 </div>
 
-                                {/* Contact Info */}
                                 <div className="space-y-4 mb-6">
                                     {contact?.email && (
                                         <a
@@ -394,31 +432,8 @@ export default function VendorProfilePage() {
                                             <span className="text-sm">{contact.phone}</span>
                                         </a>
                                     )}
-                                    {contact?.website && (
-                                        <a
-                                            href={contact.website}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-3 text-muted-foreground hover:text-[#D4AF37] transition-colors"
-                                        >
-                                            <Globe className="w-5 h-5 text-muted-foreground" />
-                                            <span className="text-sm truncate">{contact.website}</span>
-                                        </a>
-                                    )}
-                                    {contact?.instagram && (
-                                        <a
-                                            href={`https://instagram.com/${contact.instagram}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="flex items-center gap-3 text-muted-foreground hover:text-[#D4AF37] transition-colors"
-                                        >
-                                            <Instagram className="w-5 h-5 text-muted-foreground" />
-                                            <span className="text-sm">@{contact.instagram}</span>
-                                        </a>
-                                    )}
                                 </div>
 
-                                {/* CTA Button */}
                                 <Button
                                     onClick={() => setIsRFQModalOpen(true)}
                                     className="w-full h-14 bg-gradient-to-r from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-[#8C7326] text-black font-bold text-lg shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] transition-all rounded-xl"
@@ -428,7 +443,7 @@ export default function VendorProfilePage() {
                                 </Button>
 
                                 <p className="text-xs text-center text-muted-foreground mt-4">
-                                    Typically responds within 24 hours
+                                    typically responds within 24 hours
                                 </p>
                             </motion.div>
                         </div>
@@ -436,12 +451,18 @@ export default function VendorProfilePage() {
                 </section>
             </div>
 
-            {/* RFQ Modal */}
             <RFQModal
                 isOpen={isRFQModalOpen}
                 onClose={() => setIsRFQModalOpen(false)}
                 supplierId={supplierId}
                 supplierName={name}
+            />
+
+            <MarketplaceBookingModal
+                isOpen={isBookingModalOpen}
+                onClose={() => setIsBookingModalOpen(false)}
+                service={selectedService}
+                supplierId={supplierId}
             />
         </>
     );

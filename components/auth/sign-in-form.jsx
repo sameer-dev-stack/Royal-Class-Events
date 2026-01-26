@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ import { Crown, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SignInForm() {
+    const { supabase } = useSupabase();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -23,14 +24,18 @@ export default function SignInForm() {
         setIsLoading(true);
 
         try {
-            const result = await signIn("credentials", {
+            const { error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
-                redirect: false,
             });
 
-            if (result?.error) {
-                toast.error("Invalid credentials");
+            if (error) {
+                if (error.message.includes("Email not confirmed")) {
+                    toast.error("Please verify your email address before logging in. Check your inbox!");
+                } else {
+                    toast.error(error.message || "Invalid credentials.");
+                }
+                console.error("Login error:", error);
             } else {
                 toast.success("Welcome back!");
                 const redirect = searchParams.get("redirect") || "/explore";
@@ -38,7 +43,8 @@ export default function SignInForm() {
                 router.refresh();
             }
         } catch (error) {
-            toast.error("An error occurred. Please try again.");
+            toast.error("An unexpected error occurred. Please try again.");
+            console.error("Unexpected login error:", error);
         } finally {
             setIsLoading(false);
         }
@@ -47,8 +53,14 @@ export default function SignInForm() {
     const handleGoogleSignIn = async () => {
         setIsLoading(true);
         try {
-            await signIn("google", { callbackUrl: "/explore" });
+            await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback` // Ensure this callback exists/handled
+                }
+            });
         } catch (error) {
+            console.error("Google sign in error:", error);
             toast.error("Failed to sign in with Google");
             setIsLoading(false);
         }

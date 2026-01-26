@@ -1,46 +1,71 @@
 "use client";
 
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import useAuthStore from "@/hooks/use-auth-store";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
 
 export const AuthProvider = ({ children }) => {
-    const { data: session, status } = useSession();
-    const { login, logout, updateUser, token: currentToken } = useAuthStore();
+    const { supabase } = useSupabase();
+    const { login, logout, updateUser } = useAuthStore();
+    const [isLoading, setIsLoading] = useState(true);
 
-    // Fetch real-time user data from Convex when token is available
-    const convexUser = useQuery(api.users.getCurrentUser, { token: currentToken || undefined });
-
-    // Effect 1: Handle NextAuth session lifecycle
     useEffect(() => {
-        if (status === "authenticated" && session?.user) {
-            // Initial sync of NextAuth session to Zustand Store
-            if (session.user.token !== currentToken) {
-                console.log("AuthProvider: Syncing NextAuth session to Zustand Store");
-                login(session.user, session.user.token);
-            }
-        } else if (status === "unauthenticated") {
-            // Clear Zustand to prevent split-state if signed out
-            if (currentToken) {
-                console.log("AuthProvider: NextAuth unauthenticated, clearing Zustand Store");
+        let mounted = true;
+
+        const syncUser = async (session) => {
+            if (!session) {
                 logout();
+                setIsLoading(false);
+                return;
             }
-        }
-    }, [status, session, login, logout, currentToken]);
 
-    // Effect 2: Handle real-time Convex role/data synchronization
-    useEffect(() => {
-        if (convexUser) {
-            console.log("AuthProvider: Syncing Convex data to Zustand Store. Role:", convexUser.role);
-            updateUser({
-                role: convexUser.role,
-                profile: convexUser.profile,
-                name: convexUser.name
-            });
-        }
-    }, [convexUser, updateUser]);
+            try {
+                // Fetch profile from Supabase
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (error) {
+                    console.error("AuthProvider: Sync error:", error);
+                }
+
+                if (mounted) {
+                    // Update Zustand store
+                    login(session.user, session.access_token);
+                    if (profile) {
+                        updateUser({
+                            role: profile.role,
+                            profile: profile,
+                            name: profile.full_name,
+                            metadata: profile.metadata // Sync metadata for onboarding check
+                        });
+                    }
+                    setIsLoading(false);
+                }
+            } catch (err) {
+                console.error("AuthProvider: Critical sync failure:", err);
+                if (mounted) setIsLoading(false);
+            }
+        };
+
+        // Initial check
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            syncUser(session);
+        });
+
+        // Listen for changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            syncUser(session);
+        });
+
+        return () => {
+            mounted = false;
+            subscription.unsubscribe();
+        };
+    }, [supabase, login, logout, updateUser]);
 
     return <>{children}</>;
 };
+

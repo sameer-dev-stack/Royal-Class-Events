@@ -1,8 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useConvexQuery } from "@/hooks/use-convex-query";
-import { api } from "@/convex/_generated/api";
+import { useEventAnalytics } from "@/hooks/use-event-analytics";
 import { ArrowLeft, TrendingUp, Users, Eye, DollarSign, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -27,8 +26,8 @@ export default function EventAnalyticsPage() {
     const router = useRouter();
     const eventId = params.eventId;
 
-    const { data: analyticsData, isLoading } = useConvexQuery(api.pricing.getEventAnalytics, { eventId });
-    const { data: event } = useConvexQuery(api.events.getEvent, { eventId });
+    const { data: analyticsData, isLoading } = useEventAnalytics(eventId);
+    const event = analyticsData?.event;
 
     if (isLoading || !event) {
         return (
@@ -75,7 +74,7 @@ export default function EventAnalyticsPage() {
                         <div className="flex items-center gap-2 text-white/60 mb-2">
                             <Button
                                 variant="ghost"
-                                onClick={() => router.push(`/my-events/${eventId}`)}
+                                onClick={() => router.push(`/ my - events / ${eventId} `)}
                                 className="p-0 hover:bg-transparent hover:text-white"
                             >
                                 <ArrowLeft className="w-4 h-4 mr-2" />
@@ -159,7 +158,7 @@ export default function EventAnalyticsPage() {
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                                     <XAxis dataKey="date" stroke="#888" tickLine={false} axisLine={false} />
-                                    <YAxis stroke="#888" tickLine={false} axisLine={false} tickFormatter={(value) => `৳${value}`} />
+                                    <YAxis stroke="#888" tickLine={false} axisLine={false} tickFormatter={(value) => `৳${value} `} />
                                     <Tooltip
                                         contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }}
                                         itemStyle={{ color: '#fff' }}

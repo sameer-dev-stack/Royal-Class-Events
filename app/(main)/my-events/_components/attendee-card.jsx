@@ -1,27 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { api } from "@/convex/_generated/api";
-import { useConvexMutation } from "@/hooks/use-convex-query";
 import { format } from "date-fns";
 import { CheckCircle, Circle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useSupabase } from "@/components/providers/supabase-provider";
+import { useState } from "react";
 
 // Attendee Card Component
-export function AttendeeCard({ registration, token }) {
-  const { mutate: checkInAttendee, isLoading } = useConvexMutation(
-    api.registrations.checkInAttendee
-  );
+export function AttendeeCard({ registration }) {
+  const { supabase } = useSupabase();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleManualCheckIn = async () => {
+    setIsLoading(true);
     try {
-      const result = await checkInAttendee({ qrCode: registration.qrCode, token });
-      if (result.success) {
-        toast.success("Attendee checked in successfully");
-      } else {
-        toast.error(result.message);
-      }
+      const { error } = await supabase
+        .from('registrations')
+        .update({
+          checked_in: true,
+          checked_in_at: new Date().toISOString()
+        })
+        .eq('id', registration._id);
+
+      if (error) throw error;
+
+      toast.success("Attendee checked in successfully");
+      window.location.reload(); // Refresh to update statistics
     } catch (error) {
+      console.error("Check-in Error:", error);
       toast.error(error.message || "Failed to check in attendee");
+    } finally {
+      setIsLoading(false);
     }
   };
 

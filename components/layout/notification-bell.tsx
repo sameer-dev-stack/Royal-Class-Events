@@ -1,7 +1,6 @@
 "use client";
 
-import { useQuery, useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Bell, Check, ExternalLink, Inbox, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,27 +12,68 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export function NotificationBell() {
-    const { token } = useAuthStore();
+    const { supabase } = useSupabase();
+    const { user } = useAuthStore();
     const router = useRouter();
     const [open, setOpen] = useState(false);
+    const [notifications, setNotifications] = useState<any[] | null>(null);
+    const [unreadCount, setUnreadCount] = useState(0);
 
-    // Using exact schema-specified query names
-    const notifications = useQuery(api.notifications.get, {
-        token: token || undefined
-    });
-    const unreadCount = useQuery(api.notifications.getUnreadCount, {
-        token: token || undefined
-    });
-    const markAsRead = useMutation(api.notifications.markRead);
-    const markAllRead = useMutation(api.notifications.markAllRead);
+    useEffect(() => {
+        if (!user) return;
+
+        // 1. Initial Fetch
+        const fetchNotifications = async () => {
+            const { data, error } = await supabase
+                .from('notifications')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false })
+                .limit(20);
+
+            if (data && !error) {
+                setNotifications(data);
+                setUnreadCount(data.filter(n => !n.is_read).length);
+            }
+        };
+
+        fetchNotifications();
+
+        // 2. Realtime Subscription
+        const channel = supabase
+            .channel(`notifications:${user.id}`)
+            .on(
+                'postgres_changes',
+                {
+                    event: '*',
+                    schema: 'public',
+                    table: 'notifications',
+                    filter: `user_id=eq.${user.id}`,
+                },
+                () => {
+                    // Re-fetch on any change to keep logic simple for now
+                    fetchNotifications();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [user, supabase]);
 
     const handleMarkAllRead = async () => {
+        if (!user) return;
         try {
-            await markAllRead({ token: token || undefined });
+            await supabase
+                .from('notifications')
+                .update({ is_read: true })
+                .eq('user_id', user.id)
+                .eq('is_read', false);
         } catch (err) {
             console.error("Failed to mark all as read", err);
         }
@@ -41,7 +81,11 @@ export function NotificationBell() {
 
     const handleNotificationClick = async (n: any) => {
         try {
-            await markAsRead({ notificationId: n._id, token: token || undefined });
+            await supabase
+                .from('notifications')
+                .update({ is_read: true })
+                .eq('id', n.id);
+
             if (n.link) {
                 router.push(n.link);
                 setOpen(false);
@@ -56,7 +100,7 @@ export function NotificationBell() {
             <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative hover:bg-muted rounded-full transition-all">
                     <Bell className="w-5 h-5 text-muted-foreground hover:text-foreground" />
-                    {unreadCount && unreadCount > 0 ? (
+                    {unreadCount > 0 ? (
                         <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-black text-white ring-2 ring-background">
                             {unreadCount > 9 ? "9+" : unreadCount}
                         </span>
@@ -66,7 +110,7 @@ export function NotificationBell() {
             <PopoverContent className="w-80 p-0 bg-popover border-border shadow-2xl rounded-3xl overflow-hidden" align="end">
                 <div className="flex items-center justify-between p-4 border-b border-border bg-muted/50">
                     <h3 className="font-black text-xs uppercase tracking-widest text-muted-foreground">Notifications</h3>
-                    {unreadCount && unreadCount > 0 && (
+                    {unreadCount > 0 && (
                         <Button
                             variant="ghost"
                             size="sm"
@@ -93,27 +137,27 @@ export function NotificationBell() {
                         <div className="divide-y divide-border">
                             {notifications.map((n) => (
                                 <div
-                                    key={n._id}
+                                    key={n.id}
                                     onClick={() => handleNotificationClick(n)}
                                     className={cn(
                                         "p-4 flex flex-col gap-1 cursor-pointer transition-colors hover:bg-muted/50",
-                                        !n.isRead ? 'bg-[#D4AF37]/5' : ''
+                                        !n.is_read ? 'bg-[#D4AF37]/5' : ''
                                     )}
                                 >
                                     <div className="flex items-start justify-between gap-2">
                                         <h4 className={cn(
                                             "text-xs font-black uppercase tracking-tight",
-                                            !n.isRead ? 'text-foreground' : 'text-muted-foreground'
+                                            !n.is_read ? 'text-foreground' : 'text-muted-foreground'
                                         )}>
                                             {n.title}
                                         </h4>
                                         <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">
-                                            {formatDistanceToNow(new Date(n.timestamp), { addSuffix: true })}
+                                            {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
                                         </span>
                                     </div>
                                     <p className={cn(
                                         "text-[11px] leading-relaxed",
-                                        !n.isRead ? 'text-foreground/80' : 'text-muted-foreground'
+                                        !n.is_read ? 'text-foreground/80' : 'text-muted-foreground'
                                     )}>
                                         {n.message}
                                     </p>
@@ -128,10 +172,11 @@ export function NotificationBell() {
                     )}
                 </ScrollArea>
                 <div className="p-3 border-t border-border bg-muted/30 text-center">
-                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground italic">Secure Ledger Alpha</p>
+                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground italic">Royal Class Events</p>
                 </div>
             </PopoverContent>
         </Popover>
     );
 }
+
 

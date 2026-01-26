@@ -2,10 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import useAuthStore from "@/hooks/use-auth-store";
 import { useState, useEffect } from "react";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import {
     LayoutDashboard,
     MessageSquare,
@@ -29,17 +27,37 @@ const sidebarLinks = [
 
 export default function SupplierLayout({ children }) {
     const pathname = usePathname();
-    const { token, isAuthenticated } = useAuthStore();
+    const { supabase } = useSupabase();
+    const [supplier, setSupplier] = useState(undefined);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
-    }, []);
 
-    const supplier = useQuery(
-        api.suppliers.getMyProfile,
-        token ? { token } : "skip"
-    );
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                setIsAuthenticated(true);
+                // Fetch Vendor Profile
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (profile?.role === 'vendor' || profile?.role === 'admin') {
+                    setSupplier(profile);
+                } else {
+                    setSupplier(null); // Not a vendor
+                }
+            } else {
+                setIsAuthenticated(false);
+                setSupplier(null);
+            }
+        }
+        checkAuth();
+    }, [supabase]);
 
     // 1. Wait for Hydration
     if (!isMounted) return null;
@@ -138,7 +156,7 @@ export default function SupplierLayout({ children }) {
                 {/* Footer */}
                 <div className="p-4 border-t border-border">
                     <Link
-                        href={`/marketplace/vendor/${supplier?._id}`}
+                        href={`/marketplace/vendor/${supplier?.id}`}
                         className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-[#8C7326] dark:hover:text-[#F7E08B] hover:bg-muted/50 transition-colors"
                     >
                         <Store className="w-5 h-5" />

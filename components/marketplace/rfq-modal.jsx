@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -17,8 +16,8 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) {
-    const { token, user } = useAuthStore();
-    const createLead = useMutation(api.leads.createLead);
+    const { user } = useAuthStore();
+    const { supabase } = useSupabase();
     const router = useRouter();
 
     const [loading, setLoading] = useState(false);
@@ -29,7 +28,8 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!token) {
+
+        if (!user) {
             toast.error("Please login to contact vendors");
             router.push("/sign-in");
             return;
@@ -45,24 +45,36 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
 
         setLoading(true);
         try {
-            const leadId = await createLead({
-                supplierId,
-                token,
-                eventDate: date.toISOString(),
-                guestCount: parseInt(guests),
-                budget: parseInt(budget),
-                message,
-            });
+            const { data: lead, error } = await supabase
+                .from('leads')
+                .insert({
+                    supplier_id: supplierId,
+                    user_id: user.id,
+                    status: 'new',
+                    details: {
+                        eventDate: date.getTime(),
+                        guestCount: parseInt(guests),
+                        budget: parseInt(budget),
+                        requirements: message,
+                    },
+                    last_action_at: new Date().toISOString()
+                })
+                .select()
+                .single();
+
+            if (error) throw error;
 
             toast.success("Quote Requested Successfully! 🚀");
             onClose();
+
             // Reset form
             setDate(null);
             setGuests("");
             setBudget("");
             setMessage("");
-            // Redirect to Chat (Phase 32)
-            router.push(`/messages/${leadId}`);
+
+            // Redirect to Chat (or a confirmation page if chat isn't ready)
+            router.push(`/messages?leadId=${lead.id}`);
         } catch (error) {
             console.error(error);
             toast.error(error.message || "Failed to send request");

@@ -3,17 +3,15 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+import { useSupabase } from "@/components/providers/supabase-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Crown, Heart, Mail, Lock, User, Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-
 export default function SignUpForm({ role = null }) {
+    const { supabase } = useSupabase();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [fullName, setFullName] = useState("");
@@ -24,8 +22,6 @@ export default function SignUpForm({ role = null }) {
 
     // Capture referral source from URL (?ref=xyz)
     const referralSource = searchParams.get('ref') || null;
-
-    const registerUser = useMutation(api.users.registerUser);
 
     // Store role in localStorage for onboarding
     useEffect(() => {
@@ -39,24 +35,34 @@ export default function SignUpForm({ role = null }) {
         setIsLoading(true);
 
         try {
-            const result = await registerUser({
-                name: fullName,
+            // 1. Sign up with Supabase
+            const { data: { user }, error } = await supabase.auth.signUp({
                 email,
                 password,
-                role: role || "attendee",
-                referralSource: referralSource
+                options: {
+                    data: {
+                        full_name: fullName,
+                        role: role || "attendee",
+                        referral_source: referralSource
+                    }
+                }
             });
 
-            if (result.success) {
-                toast.success("Account created successfully!");
-                // Redirect to sign-in so NextAuth can establish a session
-                router.push("/sign-in");
-            } else {
-                toast.error(result.error || "Registration failed");
+            if (error) {
+                // Handle specific error codes if needed
+                throw error;
             }
+
+            if (user) {
+                toast.success("Account created successfully!");
+                // If email confirmation is enabled, user might not have a session right away
+                // But generally for email/pass we want to redirect to sign-in or check email
+                router.push("/sign-in?registered=true");
+            }
+
         } catch (error) {
             console.error("Sign-up error:", error);
-            toast.error("An unexpected error occurred during registration.");
+            toast.error(error.message || "Registration failed. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -65,16 +71,22 @@ export default function SignUpForm({ role = null }) {
     const handleGoogleSignUp = async () => {
         setIsLoading(true);
         try {
-            // For sign-up, we still use the "google" provider
-            // The role is stored in localStorage by the useEffect above
-            await signIn("google", { callbackUrl: "/explore" });
+            await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent',
+                    },
+                    redirectTo: `${window.location.origin}/auth/callback` // Ensure this route exists or uses default
+                }
+            });
         } catch (error) {
+            console.error("Google sign up error:", error);
             toast.error("Failed to sign up with Google");
             setIsLoading(false);
         }
     };
-
-    const isOrganizer = role === "organizer";
 
     return (
         <div className="w-full max-w-md mx-auto">
