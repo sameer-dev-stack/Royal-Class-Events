@@ -7,6 +7,7 @@ import { AuthProvider } from "../components/auth/auth-provider";
 import { SessionProvider } from "../components/auth/session-provider";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { Outfit } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
               <SupabaseProvider>
                 <AuthProvider>
                   <LayoutWrapper>{children}</LayoutWrapper>
+                  <Analytics />
                 </AuthProvider>
               </SupabaseProvider>
             </ConvexClientProvider>
