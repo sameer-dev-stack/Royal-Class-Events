@@ -16,7 +16,6 @@ import {
     Clock,
     Check,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useSupabase } from "@/components/providers/supabase-provider";
 import { toast } from "sonner";
 
