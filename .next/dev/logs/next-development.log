@@ -1638,3 +1638,5 @@ Import traces:
 [03:38:47.364] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/about color: rgb(120, 120, 120) color: inherit {"dp":"/about","o":"http://localhost:3000/about","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634668652}
 [03:38:47.537] Browser WARN    Image with src "/hero_image.jpeg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
 [03:38:48.694] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634669996}
+[03:45:44.166] Server  LOG     ✓ Compiled in 572ms
+[03:45:44.194] Server  WARN    ⚠ Duplicate page detected. app\admin\users\page.jsx and app\admin\users\page.tsx resolve to /admin/users
