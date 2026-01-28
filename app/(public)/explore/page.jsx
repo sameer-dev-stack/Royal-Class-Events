@@ -294,17 +294,8 @@ export default function ExplorePage() {
               <div className="text-6xl mb-4">🎉</div>
               <h2 className="text-2xl font-bold">No events yet</h2>
               <p className="text-muted-foreground">
-                Be the first to create an event in your area!
+                There are no experiences matching your search. Please check back later.
               </p>
-              {isMounted && isAuthenticated ? (
-                <Button asChild className="gap-2 bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold">
-                  <Link href="/create-event">Create Event</Link>
-                </Button>
-              ) : (
-                <Button asChild className="gap-2 bg-zinc-800 hover:bg-zinc-700 text-white font-bold border border-white/10">
-                  <Link href="/sign-in">Sign in to Create Event</Link>
-                </Button>
-              )}
             </div>
           </Card>
         )}
