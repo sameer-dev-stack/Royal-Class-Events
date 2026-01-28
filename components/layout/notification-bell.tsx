@@ -95,27 +95,27 @@ export function NotificationBell() {
                         <div className="divide-y divide-border">
                             {notifications.map((n) => (
                                 <div
-                                    key={n.id}
+                                    key={n._id}
                                     onClick={() => handleNotificationClick(n)}
                                     className={cn(
                                         "p-4 flex flex-col gap-1 cursor-pointer transition-colors hover:bg-muted/50",
-                                        !n.is_read ? 'bg-[#D4AF37]/5' : ''
+                                        !n.isRead ? 'bg-[#D4AF37]/5' : ''
                                     )}
                                 >
                                     <div className="flex items-start justify-between gap-2">
                                         <h4 className={cn(
                                             "text-xs font-black uppercase tracking-tight",
-                                            !n.is_read ? 'text-foreground' : 'text-muted-foreground'
+                                            !n.isRead ? 'text-foreground' : 'text-muted-foreground'
                                         )}>
                                             {n.title}
                                         </h4>
                                         <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-tighter">
-                                            {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
+                                            {formatDistanceToNow(new Date(n.timestamp), { addSuffix: true })}
                                         </span>
                                     </div>
                                     <p className={cn(
                                         "text-[11px] leading-relaxed",
-                                        !n.is_read ? 'text-foreground/80' : 'text-muted-foreground'
+                                        !n.isRead ? 'text-foreground/80' : 'text-muted-foreground'
                                     )}>
                                         {n.message}
                                     </p>

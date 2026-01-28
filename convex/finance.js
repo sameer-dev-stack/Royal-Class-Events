@@ -46,7 +46,9 @@ async function getSystemSettings(ctx) {
         ...acc,
         [curr.key]: curr.value
     }), {
-        commission_rate: 10, // Defaults
+        commission_rate: 10, // Platform Fee % - Default 10%
+        vat_rate: 0,          // VAT on Fee % - Default 0%
+        fixed_fee: 0,         // Fixed Fee (৳) - Default 0
         maintenance_mode: false
     });
 }
@@ -517,12 +519,25 @@ export const releaseEscrow = mutation({
         if (!supplier) throw new Error("Supplier not found.");
 
         const systemSettings = await getSystemSettings(ctx);
-        const commissionRateDecimal = systemSettings.commission_rate / 100;
 
+        // Dynamic fee calculation with proper rounding
         const now = Date.now();
         const totalAmount = txn.amount;
-        const commissionAmount = Math.round(totalAmount * commissionRateDecimal);
-        const vendorEarnings = totalAmount - commissionAmount;
+
+        // Platform Fee (e.g., 10% of total)
+        const platformFeePercent = systemSettings.commission_rate;
+        const platformFee = Math.round(totalAmount * (platformFeePercent / 100));
+
+        // VAT on Platform Fee (e.g., 15% of fee, not total)
+        const vatPercent = systemSettings.vat_rate;
+        const vatOnFee = Math.round(platformFee * (vatPercent / 100));
+
+        // Fixed Fee (e.g., ৳50 flat)
+        const fixedFee = Math.round(systemSettings.fixed_fee);
+
+        // Total deductions and vendor earnings
+        const totalDeductions = platformFee + vatOnFee + fixedFee;
+        const vendorEarnings = totalAmount - totalDeductions;
 
         // 1. Mark original escrow as released
         await ctx.db.patch(args.transactionId, {
@@ -532,22 +547,32 @@ export const releaseEscrow = mutation({
                 releasedAt: now,
                 releasedBy: user._id,
                 adminNote: args.note,
-                commissionDeducted: commissionAmount,
+                // Detailed breakdown for audit
+                platformFee,
+                platformFeePercent,
+                vatOnFee,
+                vatPercent,
+                fixedFee,
+                totalDeductions,
                 vendorReceived: vendorEarnings,
             }
         });
 
-        // 2. Create Commission Transaction
+        // 2. Create Commission Transaction (Platform Fee + VAT)
         await ctx.db.insert("transactions", {
             leadId: txn.leadId,
             payerId: txn.payeeId, // From vendor
             payeeId: null, // Platform
-            amount: commissionAmount,
+            amount: platformFee + vatOnFee,
             type: "commission",
             status: "completed",
             timestamp: now,
             metadata: {
-                rate: COMMISSION_RATE,
+                platformFee,
+                platformFeePercent,
+                vatOnFee,
+                vatPercent,
+                fixedFee,
                 sourceTransaction: args.transactionId,
                 releasedBy: user._id,
             },
@@ -563,8 +588,11 @@ export const releaseEscrow = mutation({
             status: "completed",
             timestamp: now,
             metadata: {
-                afterCommission: true,
-                commissionDeducted: commissionAmount,
+                afterDeductions: true,
+                platformFee,
+                vatOnFee,
+                fixedFee,
+                totalDeductions,
                 sourceEscrow: args.transactionId,
             },
         });
@@ -589,11 +617,14 @@ export const releaseEscrow = mutation({
 
         return {
             success: true,
-            message: `Released ৳${totalAmount.toLocaleString()} - Vendor received ৳${vendorEarnings.toLocaleString()} (after 10% commission)`,
+            message: `Released ৳${totalAmount.toLocaleString()} - Vendor received ৳${vendorEarnings.toLocaleString()} (after ৳${totalDeductions} deductions)`,
             breakdown: {
                 total: totalAmount,
-                commission: commissionAmount,
-                vendorEarnings: vendorEarnings,
+                platformFee,
+                vatOnFee,
+                fixedFee,
+                totalDeductions,
+                vendorEarnings,
             }
         };
     }

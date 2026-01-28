@@ -10,6 +10,7 @@
 
 import type * as TEST_INTELLIGENCE from "../TEST_INTELLIGENCE.js";
 import type * as admin from "../admin.js";
+import type * as ai from "../ai.js";
 import type * as audit from "../audit.js";
 import type * as audit_event from "../audit_event.js";
 import type * as auth from "../auth.js";
@@ -75,6 +76,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   TEST_INTELLIGENCE: typeof TEST_INTELLIGENCE;
   admin: typeof admin;
+  ai: typeof ai;
   audit: typeof audit;
   audit_event: typeof audit_event;
   auth: typeof auth;

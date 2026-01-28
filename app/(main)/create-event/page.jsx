@@ -42,6 +42,7 @@ import UnsplashImagePicker from "@/components/unsplash-image-picker";
 import AIEventCreator from "./_components/ai-event-creator";
 import LocationPicker from "@/components/ui/location-picker";
 import AIIntelligencePanel from "@/components/ai-intelligence-panel";
+import { EventCopilot } from "@/components/ai/event-copilot";
 import { CATEGORIES } from "@/lib/data";
 import Image from "next/image";
 
@@ -762,6 +763,17 @@ export default function CreateEventPage() {
         />
       )
       }
+
+      {/* AI Event Copilot */}
+      <EventCopilot
+        eventTitle={watch("title") || ""}
+        eventCategory={watch("category") || ""}
+        eventLocation={watch("location") || ""}
+        eventDate={watch("date") ? new Date(watch("date")).toLocaleDateString() : ""}
+        ticketPrice={watch("price") || 0}
+        capacity={watch("capacity") || 100}
+        onDescriptionGenerated={(desc) => setValue("description", desc)}
+      />
     </div >
   );
 }
