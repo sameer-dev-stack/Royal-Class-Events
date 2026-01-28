@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useAuth } from "@/hooks/use-auth";
+import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
 import {
     Sheet,
@@ -41,7 +41,7 @@ export function EventCopilot({
     onDescriptionGenerated,
     className
 }) {
-    const { token } = useAuth();
+    const { token } = useAuthStore();
     const [isOpen, setIsOpen] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);

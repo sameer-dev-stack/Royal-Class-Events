@@ -4152,3 +4152,1540 @@ Import traces:
     ./app/(main)/create-event/page.jsx [Server Component]
 
 https://nextjs.org/docs/messages/module-not-found
+[04:20:20.647] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:20.647] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:20.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:20.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:20.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:20.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:20.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:20.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:30.639] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:30.640] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:30.644] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:30.644] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:34.652] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:34.652] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:34.652] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:20:34.653] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:44.047] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:44.148] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:44.641] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:44.641] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:44.642] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:44.642] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:44.642] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:44.642] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:45.052] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:45.052] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:45.642] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:45.642] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:45.643] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:45.643] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:45.643] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:45.643] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:53.607] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:53.607] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:53.653] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:53.653] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:53.653] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:53.653] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:53.654] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:24:53.654] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:04.735] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:04.736] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:05.884] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:05.884] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:05.884] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:05.884] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:05.884] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:05.884] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:12.228] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:12.228] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:12.651] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:12.651] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:12.652] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:12.652] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:12.652] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:12.652] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:17.600] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:17.600] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:17.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:17.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:17.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:17.648] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:17.649] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:17.649] Browser ERROR   ./components/ai/event-copilot.jsx:6:1
+Module not found: Can't resolve '@/hooks/use-auth'
+  4 | import { useAction } from "convex/react";
+  5 | import { api } from "@/convex/_generated/api";
+> 6 | import { useAuth } from "@/hooks/use-auth";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import { Button } from "@/components/ui/button";
+  8 | import {
+  9 |     Sheet,
+
+Import map: aliased to relative './hooks/use-auth' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/ai/event-copilot.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Client Component Browser]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./components/ai/event-copilot.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Client Component SSR]
+    ./app/(main)/create-event/page.jsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+[04:25:27.212] Server  LOG     ✓ Compiled in 350ms

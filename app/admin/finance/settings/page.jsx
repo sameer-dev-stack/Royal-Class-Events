@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useAuth } from "@/hooks/use-auth";
+import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { Loader2, Settings, Percent, DollarSign, Save, AlertTriangle } from "luc
 import { toast } from "sonner";
 
 export default function FinanceSettingsPage() {
-    const { token } = useAuth();
+    const { token } = useAuthStore();
 
     // Fetch current settings
     const settings = useQuery(api.settings.getFinanceSettings, { token });
