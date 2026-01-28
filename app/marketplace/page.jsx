@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import MarketplaceHero from "@/components/marketplace/marketplace-hero";
 import SupplierCard from "@/components/marketplace/supplier-card";
 import { Loader2, ArrowRight, Sparkles, SearchX } from "lucide-react";
@@ -13,7 +14,7 @@ import Image from "next/image";
 const CATEGORY_IMAGES = {
     "Venue": "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
     "Catering": "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80",
-    "Photography": "https://images.unsplash.com/photo-1520854221256-17451cc330e7?w=800&q=80",
+    "Photography": "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&q=80",
     "Cinematography": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&q=80",
     "Decor": "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=800&q=80",
     "Makeup": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80",
@@ -21,14 +22,13 @@ const CATEGORY_IMAGES = {
     "Attire": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80",
     "Tech & AV": "https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80",
     "Security": "https://images.unsplash.com/photo-1555952517-2e8e729e0b44?w=800&q=80",
-    "Logistics": "https://images.unsplash.com/photo-1586880244406-556ebe35f288?w=800&q=80",
-    "Entertainment": "https://images.unsplash.com/photo-1493225255756-d95298119351?w=800&q=80",
+    "Logistics": "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=800&q=80",
+    "Entertainment": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
 };
 
 const DEFAULT_CATEGORIES = ["Venue", "Catering", "Tech & AV", "Security", "Logistics", "Photography", "Decor", "Entertainment"];
 
 export default function MarketplacePage() {
-    const { supabase } = useSupabase();
     const searchParams = useSearchParams();
 
     // Filters
@@ -37,90 +37,21 @@ export default function MarketplacePage() {
     const query = searchParams.get("query");
     const isSearching = !!(category || city || query);
 
-    // State
-    const [featuredSuppliers, setFeaturedSuppliers] = useState([]);
-    const [searchResults, setSearchResults] = useState(undefined);
-    const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
-    const [cities, setCities] = useState(["Dhaka", "Chittagong"]);
-    const [isLoadingFeatured, setIsLoadingFeatured] = useState(true);
+    // Convex Queries
+    const featuredSuppliersRaw = useQuery(api.suppliers.list, { limit: 6 });
+    const featuredSuppliers = featuredSuppliersRaw || [];
+    const searchResults = useQuery(
+        api.suppliers.searchSuppliers,
+        isSearching ? {
+            category: category !== "all" ? category : undefined,
+            city: city || undefined,
+            query: query || undefined
+        } : "skip"
+    );
 
-    // 1. Initial Data Fetch (Featured & Metadata)
-    useEffect(() => {
-        async function fetchInitialData() {
-            try {
-                // Fetch Featured Suppliers
-                const { data: featured, error: featuredError } = await supabase
-                    .from('suppliers')
-                    .select('*')
-                    .eq('status', 'active')
-                    .order('rating', { ascending: false })
-                    .limit(6);
-
-                if (!featuredError) setFeaturedSuppliers(featured);
-
-                // Fetch Categories (Dynamic from existing data)
-                const { data: allSuppliers } = await supabase
-                    .from('suppliers')
-                    .select('categories, location')
-                    .eq('status', 'active');
-
-                if (allSuppliers) {
-                    const uniqueCats = new Set([...DEFAULT_CATEGORIES]);
-                    const uniqueCities = new Set(["Dhaka", "Chittagong", "Sylhet", "Rajshahi"]);
-
-                    allSuppliers.forEach(s => {
-                        s.categories?.forEach(c => uniqueCats.add(c));
-                        if (s.location?.city) uniqueCities.add(s.location.city);
-                    });
-
-                    setCategories(Array.from(uniqueCats).sort());
-                    setCities(Array.from(uniqueCities).sort());
-                }
-
-            } catch (err) {
-                console.error("Marketplace data fetch error:", err);
-            } finally {
-                setIsLoadingFeatured(false);
-            }
-        }
-        fetchInitialData();
-    }, [supabase]);
-
-    // 2. Search Results Fetch
-    useEffect(() => {
-        if (!isSearching) {
-            setSearchResults(undefined);
-            return;
-        }
-
-        async function performSearch() {
-            try {
-                let q = supabase
-                    .from('suppliers')
-                    .select('*')
-                    .eq('status', 'active');
-
-                if (category && category !== "all") {
-                    q = q.contains('categories', [category]);
-                }
-
-                if (city) {
-                    q = q.filter('location->>city', 'eq', city);
-                }
-
-                if (query) {
-                    q = q.ilike('name', `%${query}%`);
-                }
-
-                const { data, error } = await q.limit(50);
-                if (!error) setSearchResults(data || []);
-            } catch (err) {
-                console.error("Search failed:", err);
-                setSearchResults([]);
-            }
-        }
-        performSearch();
-    }, [category, city, query, isSearching, supabase]);
+    const isLoadingFeatured = featuredSuppliersRaw === undefined;
+    const categories = DEFAULT_CATEGORIES; // Static for now, can be dynamic later
+    const cities = ["Dhaka", "Chittagong", "Sylhet", "Rajshahi"];
 
     return (
         <div className="min-h-screen bg-background text-foreground selection:bg-[#D4AF37]/30">
@@ -172,7 +103,7 @@ export default function MarketplacePage() {
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {searchResults.map((supplier) => (
-                                    <div key={supplier.id} className="h-[400px]">
+                                    <div key={supplier._id} className="h-[400px]">
                                         <SupplierCard supplier={supplier} />
                                     </div>
                                 ))}
@@ -245,7 +176,7 @@ export default function MarketplacePage() {
                             ) : (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {featuredSuppliers.map((supplier) => (
-                                        <div key={supplier.id} className="h-[400px]">
+                                        <div key={supplier._id} className="h-[400px]">
                                             <SupplierCard supplier={supplier} />
                                         </div>
                                     ))}

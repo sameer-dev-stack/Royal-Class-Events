@@ -2,7 +2,6 @@ export const dynamic = "force-dynamic";
 import LayoutWrapper from "@/components/layout-wrapper";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import SupabaseProvider from "@/components/providers/supabase-provider";
 import { AuthProvider } from "../components/auth/auth-provider";
 import { SessionProvider } from "../components/auth/session-provider";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
@@ -32,13 +31,11 @@ export default function RootLayout({ children }) {
         >
           <SessionProvider>
             <ConvexClientProvider>
-              <SupabaseProvider>
-                <AuthProvider>
-                  <LayoutWrapper>{children}</LayoutWrapper>
-                  <Analytics />
-                  <SpeedInsights />
-                </AuthProvider>
-              </SupabaseProvider>
+              <AuthProvider>
+                <LayoutWrapper>{children}</LayoutWrapper>
+                <Analytics />
+                <SpeedInsights />
+              </AuthProvider>
             </ConvexClientProvider>
           </SessionProvider>
         </ThemeProvider>

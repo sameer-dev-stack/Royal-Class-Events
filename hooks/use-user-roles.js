@@ -1,45 +1,7 @@
-import { createClient } from "@/lib/supabase/client";
-import { useEffect, useState } from "react";
+import useAuthStore from "@/hooks/use-auth-store";
 
 export function useUserRoles() {
-    const supabase = createClient();
-    const [user, setUser] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        let mounted = true;
-
-        async function fetchUser() {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session) {
-                    if (mounted) setIsLoading(false);
-                    return;
-                }
-
-                // Fetch comprehensive profile data
-                const { data: profile, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-
-                if (error) console.error("Error fetching profile:", error);
-
-                if (mounted) {
-                    setUser(profile);
-                    setIsLoading(false);
-                }
-            } catch (err) {
-                console.error("Auth check failed", err);
-                if (mounted) setIsLoading(false);
-            }
-        }
-
-        fetchUser();
-
-        return () => { mounted = false; };
-    }, []);
+    const { user, isLoading } = useAuthStore();
 
     const role = user?.role; // 'admin', 'organizer', 'vendor', 'attendee'
 
@@ -61,7 +23,7 @@ export function useUserRoles() {
 
     return {
         user,
-        isLoading,
+        isLoading: isLoading === undefined ? true : isLoading,
         isAdmin,
         isOrganizer,
         isVendor,

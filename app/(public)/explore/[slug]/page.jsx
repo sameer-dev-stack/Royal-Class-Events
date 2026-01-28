@@ -4,7 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import { Loader2, MapPin, Crown, CalendarX } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { CATEGORIES } from "@/lib/data";
 import { parseLocationSlug } from "@/lib/location-utils";
 import { Badge } from "@/components/ui/badge";
@@ -28,31 +29,9 @@ export default function DynamicExplorePage() {
     notFound();
   }
 
-  const { supabase } = useSupabase();
-  const [allEvents, setAllEvents] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // 3. FETCH DATA
-  useEffect(() => {
-    async function fetchAll() {
-      try {
-        const { data, error } = await supabase
-          .from('events')
-          .select('*')
-          .in('status', ['published', 'active'])
-          .order('start_date', { ascending: true });
-
-        if (error) throw error;
-        setAllEvents(data || []);
-      } catch (err) {
-        console.error("Explore fetch failed:", err);
-        setAllEvents([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchAll();
-  }, [supabase]);
+  // 3. Convex Query
+  const allEvents = useQuery(api.explore.getPopularEvents, { limit: 100 }) || [];
+  const isLoading = allEvents === undefined;
 
   // 4. LOADING STATE
   if (isLoading || !allEvents) {
@@ -112,7 +91,7 @@ export default function DynamicExplorePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredEvents.map((event) => (
                 <EventCard
-                  key={event.id}
+                  key={event._id || event.id}
                   event={event}
                   onClick={() => handleEventClick(event.slug)}
                 />

@@ -3,7 +3,8 @@
 import { useState, useMemo, useEffect } from "react";
 import { MapPin, Heart, ArrowRight, ArrowLeft, Crown } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { bdDivisions, bdDistricts } from "@/lib/bd-locations"; // Custom Data
 import {
@@ -28,8 +29,8 @@ import { CATEGORIES } from "@/lib/data";
 import useAuthStore from "@/hooks/use-auth-store";
 
 export default function OnboardingModal({ isOpen, onClose, onComplete }) {
-  const { supabase } = useSupabase();
-  const { user, updateUser } = useAuthStore();
+  const completeOnboarding = useMutation(api.users.completeOnboarding);
+  const { user, updateUser, token } = useAuthStore();
   const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState(null);
@@ -110,31 +111,25 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
           country: location.country,
         },
         interests: selectedInterests,
-        has_completed_onboarding: true
+        role: selectedRole,
+        token: token
       };
 
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          role: selectedRole,
-          metadata: { ...user?.metadata, ...onboardingData }
-        })
-        .eq('id', user.id);
-
-      if (profileError) throw profileError;
+      await completeOnboarding(onboardingData);
 
       updateUser({
         role: selectedRole,
-        metadata: { ...user?.metadata, ...onboardingData }
+        metadata: {
+          ...user?.metadata,
+          ...onboardingData,
+          hasCompletedOnboarding: true
+        }
       });
 
       toast.success("Welcome to Royal Class Events! 🎉");
-      onComplete(); // Note: This might be async but we don't await it here to avoid blocking UI
+      onComplete();
     } catch (error) {
-      console.error("Onboarding failed detailed:", error);
-      console.error("Error message:", error.message);
-      console.error("Error details:", error.details);
-      console.error("Error hint:", error.hint);
+      console.error("Onboarding failed:", error);
       toast.error("Failed to complete onboarding: " + (error.message || "Unknown error"));
     } finally {
       setIsLoading(false);
@@ -183,8 +178,8 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
               <button
                 onClick={() => setSelectedRole("attendee")}
                 className={`p-6 rounded-xl border-2 text-left transition-all hover:scale-[1.02] ${selectedRole === "attendee"
-                  ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/20"
-                  : "border-border hover:border-[#D4AF37]/50"
+                    ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/20"
+                    : "border-border hover:border-[#D4AF37]/50"
                   }`}
               >
                 <div className="w-12 h-12 rounded-full bg-[#F7E08B] dark:bg-[#8C7326]/30 flex items-center justify-center mb-4">
@@ -199,8 +194,8 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
               <button
                 onClick={() => setSelectedRole("organizer")}
                 className={`p-6 rounded-xl border-2 text-left transition-all hover:scale-[1.02] ${selectedRole === "organizer"
-                  ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/20"
-                  : "border-border hover:border-[#D4AF37]/50"
+                    ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/20"
+                    : "border-border hover:border-[#D4AF37]/50"
                   }`}
               >
                 <div className="w-12 h-12 rounded-full bg-[#F7E08B] dark:bg-[#8C7326]/30 flex items-center justify-center mb-4">
@@ -222,8 +217,8 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
                     key={category.id}
                     onClick={() => toggleInterest(category.id)}
                     className={`p-4 rounded-lg border-2 transition-all hover:scale-105 ${selectedInterests.includes(category.id)
-                      ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/20"
-                      : "border-border hover:border-[#D4AF37]/50"
+                        ? "border-[#D4AF37] bg-[#D4AF37]/10 shadow-lg shadow-[#D4AF37]/20"
+                        : "border-border hover:border-[#D4AF37]/50"
                       }`}
                   >
                     <div className="text-2xl mb-2">{category.icon}</div>
@@ -352,5 +347,3 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }) {
     </Dialog>
   );
 }
-
-

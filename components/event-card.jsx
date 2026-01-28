@@ -19,10 +19,10 @@ export default function EventCard({
   className = "",
 }) {
   const displayImage = event.cover_image || event.content?.coverImage?.url || event.coverImage || getMockImage(event.category || event.event_type);
-  const eventTitle = event.title;
-  const eventStartDate = event.start_date || event.timeConfiguration?.startDateTime || event.startDate;
-  const eventCity = event.city || "Gurugram";
-  const eventCategory = event.category || event.event_type;
+  const eventTitle = event.title?.en || (typeof event.title === 'string' ? event.title : "Untitled Event");
+  const eventStartDate = event.start_date || event.timeConfiguration?.startDateTime || event.startDate || Date.now();
+  const eventCity = event.city || event.metadata?.legacyProps?.city || "Gurugram";
+  const eventCategory = event.category || event.eventSubType || event.event_type || "general";
   const isFree = (event.financials?.pricingModel === "free") || (event.ticket_price === 0);
   const eventCapacity = event.capacity || 100;
   const eventRegistrations = 0; // Analytics not yet in schema

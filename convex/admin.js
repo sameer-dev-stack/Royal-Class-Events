@@ -367,3 +367,66 @@ export const broadcastMessage = mutation({
         return { success: true, count: users.length };
     }
 });
+
+// --- Vendor Management ---
+export const getAllSuppliers = query({
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+        return await ctx.db.query("suppliers").order("desc").collect();
+    }
+});
+
+export const updateSupplierVerification = mutation({
+    args: {
+        supplierId: v.id("suppliers"),
+        verificationStatus: v.string(), // "verified", "rejected", "pending"
+        isVerified: v.boolean(),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        const admin = await checkAdmin(ctx, args.token);
+
+        await ctx.db.patch(args.supplierId, {
+            verificationStatus: args.verificationStatus,
+            verified: args.isVerified
+        });
+
+        await logAdminAction(ctx, admin._id, "SUPPLIER_VERIFICATION_UPDATE", args.supplierId, {
+            status: args.verificationStatus,
+            verified: args.isVerified
+        });
+
+        return { success: true };
+    }
+});
+
+export const getAuditLogs = query({
+    args: {
+        token: v.optional(v.string()),
+        actionFilter: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        await checkAdmin(ctx, args.token);
+
+        let q = ctx.db.query("audit_logs");
+
+        if (args.actionFilter && args.actionFilter !== "all") {
+            q = q.filter((q) => q.eq(q.field("action"), args.actionFilter));
+        }
+
+        const logs = await q.order("desc").take(100);
+
+        // Enrich
+        return await Promise.all(logs.map(async (log) => {
+            const admin = await ctx.db.get(log.adminId);
+            return {
+                ...log,
+                adminName: admin?.name || "Admin",
+                action: log.action,
+                details: log.details || {},
+                timestamp: log.timestamp
+            };
+        }));
+    }
+});

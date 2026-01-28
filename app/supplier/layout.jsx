@@ -3,7 +3,9 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import useAuthStore from "@/hooks/use-auth-store";
 import {
     LayoutDashboard,
     MessageSquare,
@@ -27,37 +29,19 @@ const sidebarLinks = [
 
 export default function SupplierLayout({ children }) {
     const pathname = usePathname();
-    const { supabase } = useSupabase();
-    const [supplier, setSupplier] = useState(undefined);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const { isAuthenticated, user, token } = useAuthStore();
     const [isMounted, setIsMounted] = useState(false);
+
+    // Check if user is a supplier via Convex
+    const supplierProfile = useQuery(
+        api.suppliers.getMyProfile,
+        isAuthenticated && token ? { token } : "skip"
+    );
+    const isVendor = !!supplierProfile;
 
     useEffect(() => {
         setIsMounted(true);
-
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                setIsAuthenticated(true);
-                // Fetch Vendor Profile
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-
-                if (profile?.role === 'vendor' || profile?.role === 'admin') {
-                    setSupplier(profile);
-                } else {
-                    setSupplier(null); // Not a vendor
-                }
-            } else {
-                setIsAuthenticated(false);
-                setSupplier(null);
-            }
-        }
-        checkAuth();
-    }, [supabase]);
+    }, []);
 
     // 1. Wait for Hydration
     if (!isMounted) return null;
@@ -87,7 +71,7 @@ export default function SupplierLayout({ children }) {
     }
 
     // 4. Not a Supplier Check
-    if (supplier === null) {
+    if (!isVendor) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center p-6">
                 <div className="text-center space-y-4 max-w-md">
@@ -123,7 +107,7 @@ export default function SupplierLayout({ children }) {
                                 Vendor Mode
                             </p>
                             <p className="text-sm font-semibold text-foreground truncate max-w-[140px]">
-                                {supplier?.name || "Loading..."}
+                                {supplierProfile?.name || "Loading..."}
                             </p>
                         </div>
                     </div>
@@ -156,7 +140,7 @@ export default function SupplierLayout({ children }) {
                 {/* Footer */}
                 <div className="p-4 border-t border-border">
                     <Link
-                        href={`/marketplace/vendor/${supplier?.id}`}
+                        href={`/marketplace/vendor/${supplierProfile?._id}`}
                         className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-muted-foreground hover:text-[#8C7326] dark:hover:text-[#F7E08B] hover:bg-muted/50 transition-colors"
                     >
                         <Store className="w-5 h-5" />

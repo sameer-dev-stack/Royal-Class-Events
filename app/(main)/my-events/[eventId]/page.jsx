@@ -28,7 +28,8 @@ import {
 import Link from "next/link";
 import { useEventDashboard } from "@/hooks/use-event-dashboard";
 import { useEventRegistrations } from "@/hooks/use-event-registrations";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import useAuthStore from "@/hooks/use-auth-store";
 
@@ -58,21 +59,35 @@ export default function EventDashboardPage() {
   const params = useParams();
   const router = useRouter();
   const eventId = params.eventId;
+  const { token } = useAuthStore();
 
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [showQRScanner, setShowQRScanner] = useState(false);
-  const { supabase } = useSupabase();
+
   const { user } = useAuthStore();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isUpdatingMode, setIsUpdatingMode] = useState(false);
 
-  // Fetch event dashboard data (Supabase)
-  const { data: dashboardData, isLoading } = useEventDashboard(eventId);
+  // Convex Queries
+  const dashboardData = useQuery(
+    api.events.getDashboard,
+    eventId && token ? { eventId, token } : "skip"
+  );
 
-  // Fetch registrations (Supabase)
-  const { data: registrations, isLoading: loadingRegistrations } = useEventRegistrations(eventId);
+  const registrations = useQuery(
+    api.registrations.getEventRegistrations,
+    eventId && token ? { eventId, token } : "skip"
+  );
+
+  const event = dashboardData?.event;
+  const metrics = dashboardData?.metrics;
+  const isLoading = dashboardData === undefined;
+  const loadingRegistrations = registrations === undefined;
+
+  const updateEventStatus = useMutation(api.events.updateStatus);
+  const deleteEvent = useMutation(api.events.deleteEvent);
 
   const handlePublish = async () => {
     const confirmed = window.confirm("Are you sure you want to publish this event? It will become visible to all users.");
@@ -80,15 +95,13 @@ export default function EventDashboardPage() {
 
     setIsPublishing(true);
     try {
-      const { error } = await supabase
-        .from('events')
-        .update({ status: 'waiting_approval' })
-        .eq('id', eventId);
-
-      if (error) throw error;
+      await updateEventStatus({
+        token: token || "",
+        eventId: eventId,
+        status: 'waiting_approval'
+      });
 
       toast.success("Event submitted for review! An admin will check it shortly. 🚀");
-      window.location.reload();
     } catch (error) {
       console.error("Publish Error:", error);
       toast.error(error.message || "Failed to publish event");
@@ -96,6 +109,7 @@ export default function EventDashboardPage() {
       setIsPublishing(false);
     }
   };
+
 
   const handleDelete = async () => {
     const confirmed = window.confirm(
@@ -106,12 +120,10 @@ export default function EventDashboardPage() {
 
     setIsDeleting(true);
     try {
-      const { error } = await supabase
-        .from('events')
-        .delete()
-        .eq('id', eventId);
-
-      if (error) throw error;
+      await deleteEvent({
+        token: token || "",
+        eventId: eventId
+      });
 
       toast.success("Event deleted successfully");
       router.push("/my-events");
@@ -215,16 +227,16 @@ export default function EventDashboardPage() {
     notFound();
   }
 
-  const { event, stats } = dashboardData;
-  const eventTitle = event.title || "Untitled Event";
-  const eventCoverImage = event.cover_image;
-  const eventCategory = event.category;
-  const eventStartDate = event.start_date;
-  const eventLocationType = event.seating_mode === 'GENERAL' ? 'physical' : 'virtual'; // Example logic or use event columns
-  const eventCity = event.city;
-  const eventState = ""; // Adjust if state is added
-  const eventCountry = "Bangladesh";
-  const eventTicketType = event.ticket_price > 0 ? "paid" : "free";
+  const { event: eventData, stats } = dashboardData;
+  const eventTitle = eventData.title?.en || (typeof eventData.title === 'string' ? eventData.title : "Untitled Event");
+  const eventCoverImage = eventData.content?.coverImage?.url || eventData.coverImage || eventData.cover_image || "/hero_placeholder.jpg";
+  const eventCategory = eventData.category || eventData.eventSubType || "general";
+  const eventStartDate = eventData.timeConfiguration?.startDateTime || eventData.startDate || eventData.start_date;
+  const eventLocationType = eventData.locationType || (eventData.seating_mode === 'GENERAL' ? 'physical' : 'virtual');
+  const eventCity = eventData.city || eventData.metadata?.legacyProps?.city || "Unknown";
+  const eventState = eventData.state || eventData.metadata?.legacyProps?.state || "";
+  const eventCountry = eventData.country || eventData.metadata?.legacyProps?.country || "Bangladesh";
+  const eventTicketType = eventData.ticketType || (eventData.ticket_price > 0 ? "paid" : "free");
 
   // Safe Date Formatter
   const safeFormat = (dateStr, formatStr) => {

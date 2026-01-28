@@ -33,11 +33,17 @@ export function PaymentModal({
     const handleConfirm = async () => {
         setIsSubmitting(true);
         try {
-            // Simulate processor latency
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            await onConfirm();
-            toast.success("Payment successful! Funds are held in escrow.");
-            onClose();
+            const result = await onConfirm() as any;
+
+            if (result?.gateway_redirect_url) {
+                toast.success("Redirecting to secure payment gateway...");
+                setTimeout(() => {
+                    window.location.href = result.gateway_redirect_url;
+                }, 1000);
+            } else {
+                toast.success("Payment successful! Funds are held in escrow.");
+                onClose();
+            }
         } catch (error: any) {
             toast.error(error.message || "Payment failed");
         } finally {

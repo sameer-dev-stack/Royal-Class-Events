@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +13,8 @@ import { Crown, Heart, Mail, Lock, User, Loader2, Eye, EyeOff } from "lucide-rea
 import { toast } from "sonner";
 
 export default function SignUpForm({ role = null }) {
-    const { supabase } = useSupabase();
+    const registerMutation = useMutation(api.users.registerUser);
+    const { login } = useAuthStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [fullName, setFullName] = useState("");
@@ -23,43 +26,29 @@ export default function SignUpForm({ role = null }) {
     // Capture referral source from URL (?ref=xyz)
     const referralSource = searchParams.get('ref') || null;
 
-    // Store role in localStorage for onboarding
-    useEffect(() => {
-        if (role) {
-            localStorage.setItem("pendingRole", role);
-        }
-    }, [role]);
-
     const handleSignUp = async (e) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
-            // 1. Sign up with Supabase
-            const { data: { user }, error } = await supabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        full_name: fullName,
-                        role: role || "attendee",
-                        referral_source: referralSource
-                    }
-                }
+            const result = await registerMutation({
+                name: fullName,
+                email: email,
+                password: password,
+                role: role || "attendee",
+                referralSource: referralSource
             });
 
-            if (error) {
-                // Handle specific error codes if needed
-                throw error;
-            }
+            if (result.success) {
+                // Update local auth store (Auto-login after registration)
+                login(result, result.token);
 
-            if (user) {
                 toast.success("Account created successfully!");
-                // If email confirmation is enabled, user might not have a session right away
-                // But generally for email/pass we want to redirect to sign-in or check email
-                router.push("/sign-in?registered=true");
+                router.push("/explore");
+                router.refresh();
+            } else {
+                toast.error(result.error || "Registration failed.");
             }
-
         } catch (error) {
             console.error("Sign-up error:", error);
             toast.error(error.message || "Registration failed. Please try again.");
@@ -69,23 +58,7 @@ export default function SignUpForm({ role = null }) {
     };
 
     const handleGoogleSignUp = async () => {
-        setIsLoading(true);
-        try {
-            await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    queryParams: {
-                        access_type: 'offline',
-                        prompt: 'consent',
-                    },
-                    redirectTo: `${window.location.origin}/auth/callback` // Ensure this route exists or uses default
-                }
-            });
-        } catch (error) {
-            console.error("Google sign up error:", error);
-            toast.error("Failed to sign up with Google");
-            setIsLoading(false);
-        }
+        toast.info("SSO via Convex/Clerk is under configuration.");
     };
 
     return (

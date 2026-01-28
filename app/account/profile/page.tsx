@@ -17,7 +17,8 @@ import {
     ShieldCheck,
     CheckCircle2
 } from "lucide-react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
@@ -35,8 +36,8 @@ const profileSchema = z.object({
 
 export default function ProfileSettingsPage() {
     const router = useRouter();
-    const { supabase } = useSupabase();
-    const { user, updateUser, role } = useAuthStore();
+    const updateProfile = useMutation(api.users.updateProfile);
+    const { user, updateUser, role, token } = useAuthStore();
     const [isSaving, setIsSaving] = useState(false);
     const [isUpgrading, setIsUpgrading] = useState(false);
 
@@ -48,7 +49,7 @@ export default function ProfileSettingsPage() {
     } = useForm({
         resolver: zodResolver(profileSchema),
         defaultValues: {
-            name: user?.name || "",
+            name: user?.full_name || user?.name || "",
             bio: user?.metadata?.bio || "",
         },
     });
@@ -56,28 +57,21 @@ export default function ProfileSettingsPage() {
     useEffect(() => {
         if (user) {
             reset({
-                name: user.name || "",
+                name: user.full_name || user.name || "",
                 bio: user.metadata?.bio || "",
             });
         }
     }, [user, reset]);
 
-    const onSubmit = async (data) => {
-        if (!user?.id) return;
+    const onSubmit = async (data: any) => {
+        if (!user?._id) return;
         setIsSaving(true);
         try {
-            const { error } = await supabase
-                .from('profiles')
-                .update({
-                    full_name: data.name,
-                    metadata: {
-                        ...user.metadata,
-                        bio: data.bio
-                    }
-                })
-                .eq('id', user.id);
-
-            if (error) throw error;
+            await updateProfile({
+                token: token || "",
+                name: data.name,
+                bio: data.bio,
+            });
 
             updateUser({
                 name: data.name,
@@ -91,7 +85,7 @@ export default function ProfileSettingsPage() {
                 className: "bg-zinc-900 border-[#D4AF37]/50 text-[#D4AF37] font-bold",
             });
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("Update error:", error);
             toast.error("Failed to update profile");
         } finally {
@@ -103,7 +97,12 @@ export default function ProfileSettingsPage() {
         router.push("/account/organizer-request");
     };
 
-    const initials = user?.name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "RC";
+    const initials = (user?.full_name || user?.name || "RC")
+        .split(" ")
+        .map(n => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
     const isOrganizer = role === "organizer";
     const isAdmin = role === "admin" || role === "superuser";
 
@@ -133,7 +132,7 @@ export default function ProfileSettingsPage() {
                             "w-32 h-32 border-4 bg-muted shadow-2xl relative transition-all duration-500",
                             borderColor
                         )}>
-                            <AvatarImage src={user?.image} />
+                            <AvatarImage src={user?.avatar_url || user?.image} />
                             <AvatarFallback className={cn(
                                 "bg-muted text-3xl font-black transition-colors",
                                 roleColor
@@ -148,7 +147,7 @@ export default function ProfileSettingsPage() {
                     </div>
 
                     <div className="text-center md:text-left space-y-2">
-                        <h2 className="text-3xl font-black italic tracking-tight text-foreground">{user?.name}</h2>
+                        <h2 className="text-3xl font-black italic tracking-tight text-foreground">{user?.full_name || user?.name}</h2>
                         <div className="flex flex-wrap justify-center md:justify-start gap-2">
                             <span className={cn(
                                 "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 border",

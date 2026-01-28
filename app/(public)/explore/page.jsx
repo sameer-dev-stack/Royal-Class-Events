@@ -2,16 +2,19 @@
 
 import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Calendar, MapPin, Users, ArrowRight, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { createLocationSlug } from "@/lib/location-utils";
 import Image from "next/image";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import useAuthStore from "@/hooks/use-auth-store";
 import {
   Carousel,
   CarouselContent,
@@ -26,67 +29,29 @@ import EventCard from "@/components/event-card";
 export default function ExplorePage() {
   const router = useRouter();
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
-
-  const { supabase } = useSupabase();
-  const [featuredEvents, setFeaturedEvents] = useState([]);
-  const [localEvents, setLocalEvents] = useState([]);
-  const [popularEvents, setPopularEvents] = useState([]);
-  const [categoryCounts, setCategoryCounts] = useState({});
-  const [currentUser, setCurrentUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        // 1. Get Current User (for location)
-        const { data: { session } } = await supabase.auth.getSession();
-        let city = "Gurugram";
-        let state = "Haryana";
+    setIsMounted(true);
+  }, []);
 
-        if (session) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single();
+  const { isAuthenticated, user } = useAuthStore();
 
-          if (profile) {
-            setCurrentUser(profile);
-            // city = profile.city || city;
-            // state = profile.state || state;
-          }
-        }
+  // Convex Queries
+  const allEvents = useQuery(api.explore.getPopularEvents, { limit: 20 }) || [];
+  const isLoading = allEvents === undefined;
 
-        // 2. Fetch Events (Published/Active only)
-        const { data: events, error } = await supabase
-          .from('events')
-          .select('*')
-          .in('status', ['published', 'active'])
-          .order('created_at', { ascending: false });
+  // Derive views from data
+  const featuredEvents = allEvents.slice(0, 3);
+  const localEvents = allEvents.slice(0, 4);
+  const popularEvents = allEvents.slice(0, 6);
 
-        if (error) throw error;
-
-        // 3. Process Logic locally (Simulating backend sorts/limits for now)
-        setFeaturedEvents(events.slice(0, 3));
-        setPopularEvents(events.slice(0, 6));
-        setLocalEvents(events.slice(0, 4)); // In reality, filter by city
-
-        // 4. Calculate Category Counts
-        const counts = events.reduce((acc, event) => {
-          const cat = event.category || event.event_type;
-          acc[cat] = (acc[cat] || 0) + 1;
-          return acc;
-        }, {});
-        setCategoryCounts(counts);
-
-      } catch (err) {
-        console.error("Discovery load failed:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    loadData();
-  }, [supabase]);
+  // Calculate Category Counts
+  const categoryCounts = allEvents.reduce((acc, event) => {
+    const cat = event.category || event.eventType;
+    acc[cat] = (acc[cat] || 0) + 1;
+    return acc;
+  }, {});
 
   const handleEventClick = (slug) => {
     router.push(`/events/${slug}`);
@@ -97,8 +62,8 @@ export default function ExplorePage() {
   };
 
   const handleViewLocalEvents = () => {
-    const city = currentUser?.location?.city || "Gurugram";
-    const state = currentUser?.location?.state || "Haryana";
+    const city = user?.location?.city || "Gurugram";
+    const state = user?.location?.state || "Haryana";
     const slug = createLocationSlug(city, state);
     router.push(`/explore/${slug}`);
   };
@@ -178,17 +143,17 @@ export default function ExplorePage() {
           >
             <CarouselContent>
               {featuredEvents.map((event) => {
-                const displayImage = event.cover_image || "/hero_image.jpeg";
-                const eventTitle = event.title;
-                const eventDescription = event.description;
-                const eventCity = "Gurugram"; // Fallback for seeds
-                const eventState = "Haryana";
-                const eventCountry = "India";
-                const eventStartDate = event.start_date;
-                const eventRegistrations = 0; // Default
+                const displayImage = event.content?.coverImage?.url || event.coverImage || event.cover_image || "/hero_image.jpeg";
+                const eventTitle = event.title?.en || (typeof event.title === 'string' ? event.title : "Untitled Event");
+                const eventDescription = event.description?.en || (typeof event.description === 'string' ? event.description : "No description");
+                const eventCity = event.city || event.metadata?.legacyProps?.city || "Gurugram";
+                const eventState = event.state || event.metadata?.legacyProps?.state || "Haryana";
+                const eventCountry = event.country || event.metadata?.legacyProps?.country || "India";
+                const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate || event.start_date || Date.now();
+                const eventRegistrations = event.analytics?.registrations || 0;
 
                 return (
-                  <CarouselItem key={event.id}>
+                  <CarouselItem key={event._id || event.id}>
                     <div
                       className="relative h-[400px] rounded-xl overflow-hidden cursor-pointer"
                       onClick={() => handleEventClick(event.slug)}
@@ -248,7 +213,7 @@ export default function ExplorePage() {
             <div>
               <h2 className="text-3xl font-bold mb-1">Events Near You</h2>
               <p className="text-muted-foreground">
-                Happening in {currentUser?.location?.city || "your area"}
+                Happening in {user?.location?.city || "your area"}
               </p>
             </div>
             <Button
@@ -263,7 +228,7 @@ export default function ExplorePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {localEvents.map((event) => (
               <EventCard
-                key={event.id}
+                key={event._id || event.id}
                 event={event}
                 variant="compact"
                 onClick={() => handleEventClick(event.slug)}
@@ -310,7 +275,7 @@ export default function ExplorePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {popularEvents.map((event) => (
               <EventCard
-                key={event.id}
+                key={event._id || event.id}
                 event={event}
                 variant="list"
                 onClick={() => handleEventClick(event.slug)}
@@ -331,9 +296,15 @@ export default function ExplorePage() {
               <p className="text-muted-foreground">
                 Be the first to create an event in your area!
               </p>
-              <Button asChild className="gap-2">
-                <a href="/create-event">Create Event</a>
-              </Button>
+              {isMounted && isAuthenticated ? (
+                <Button asChild className="gap-2 bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold">
+                  <Link href="/create-event">Create Event</Link>
+                </Button>
+              ) : (
+                <Button asChild className="gap-2 bg-zinc-800 hover:bg-zinc-700 text-white font-bold border border-white/10">
+                  <Link href="/sign-in">Sign in to Create Event</Link>
+                </Button>
+              )}
             </div>
           </Card>
         )}

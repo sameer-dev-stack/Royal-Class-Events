@@ -2,8 +2,10 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { useUserRoles } from "@/hooks/use-user-roles";
+import useAuthStore from "@/hooks/use-auth-store";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +22,8 @@ import {
     ExternalLink,
     Clock,
     Eye,
-    Landmark
+    Landmark,
+    Loader2
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -32,62 +35,42 @@ import {
     DialogFooter
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 export default function AdminVendorsPage() {
-    const { supabase } = useSupabase();
+    const { token } = useAuthStore();
     const { isAdmin, isLoading: isRoleLoading } = useUserRoles();
-    const [vendors, setVendors] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedVendor, setSelectedVendor] = useState(null);
+    const [selectedVendor, setSelectedVendor] = useState<any>(null);
     const [isReviewOpen, setIsReviewOpen] = useState(false);
 
-    useEffect(() => {
-        if (!isRoleLoading && isAdmin) {
-            fetchVendors();
-        }
-    }, [isRoleLoading, isAdmin]);
+    // Convex queries and mutations
+    const vendorsRaw = useQuery(
+        api.admin.getAllSuppliers,
+        isAdmin && token ? { token } : "skip"
+    );
+    const vendors = vendorsRaw || [];
+    const updateVendorStatus = useMutation(api.admin.updateSupplierVerification);
+    const isLoading = vendorsRaw === undefined;
 
-    const fetchVendors = async () => {
-        setIsLoading(true);
+    const handleVerification = async (vendorId: string, status: string) => {
         try {
-            const { data, error } = await supabase
-                .from('suppliers')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
-            setVendors(data || []);
-        } catch (error) {
-            console.error("Error fetching vendors:", error);
-            toast.error("Failed to load vendors");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleVerification = async (vendorId, status) => {
-        try {
-            const { error } = await supabase
-                .from('suppliers')
-                .update({
-                    verification_status: status,
-                    is_verified: status === 'verified'
-                })
-                .eq('id', vendorId);
-
-            if (error) throw error;
+            await updateVendorStatus({
+                token: token || "",
+                supplierId: vendorId,
+                verificationStatus: status,
+                isVerified: status === 'verified'
+            });
 
             toast.success(`Vendor ${status === 'verified' ? 'approved' : 'rejected'}`);
             setIsReviewOpen(false);
-            fetchVendors();
-        } catch (error) {
+        } catch (error: any) {
             toast.error("Action failed: " + error.message);
         }
     };
 
     const filteredVendors = useMemo(() => {
-        return vendors.filter(v =>
+        return vendors.filter((v: any) =>
             v.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             v.slug?.toLowerCase().includes(searchTerm.toLowerCase())
         );
@@ -95,9 +78,10 @@ export default function AdminVendorsPage() {
 
     const stats = {
         total: vendors.length,
-        pending: vendors.filter(v => v.verification_status === 'pending').length,
-        verified: vendors.filter(v => v.verification_status === 'verified').length
+        pending: vendors.filter((v: any) => v.verificationStatus === 'pending').length,
+        verified: vendors.filter((v: any) => v.verificationStatus === 'verified').length
     };
+
 
     if (isRoleLoading) return null;
     if (!isAdmin) return <div className="p-20 text-center">Unauthorized Access</div>;
@@ -163,7 +147,7 @@ export default function AdminVendorsPage() {
                     </TableHeader>
                     <TableBody>
                         {filteredVendors.map((vendor) => (
-                            <TableRow key={vendor.id} className="border-white/5 hover:bg-white/5 transition-colors group">
+                            <TableRow key={vendor._id} className="border-white/5 hover:bg-white/5 transition-colors group">
                                 <TableCell className="pl-8 py-6">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 border border-white/10 flex items-center justify-center font-black text-[#D4AF37] shadow-lg">
@@ -178,21 +162,21 @@ export default function AdminVendorsPage() {
                                 <TableCell>
                                     <Badge className={cn(
                                         "text-[9px] font-black uppercase tracking-tighter px-3 py-1 border-none",
-                                        vendor.verification_status === 'pending' ? "bg-amber-500/10 text-amber-500" :
-                                            vendor.verification_status === 'verified' ? "bg-emerald-500/10 text-emerald-500" :
+                                        vendor.verificationStatus === 'pending' ? "bg-amber-500/10 text-amber-500" :
+                                            vendor.verificationStatus === 'verified' ? "bg-emerald-500/10 text-emerald-500" :
                                                 "bg-zinc-800 text-zinc-500"
                                     )}>
-                                        {vendor.verification_status || 'Unverified'}
+                                        {vendor.verificationStatus || 'Unverified'}
                                     </Badge>
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-2">
-                                        {vendor.license_url ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <XCircle className="w-4 h-4 text-zinc-700" />}
+                                        {vendor.licenseUrl ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <XCircle className="w-4 h-4 text-zinc-700" />}
                                         <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">License & ID</span>
                                     </div>
                                 </TableCell>
                                 <TableCell className="text-zinc-500 text-xs font-medium">
-                                    {format(new Date(vendor.created_at), "MMM d, yyyy")}
+                                    {format(new Date(vendor._creationTime), "MMM d, yyyy")}
                                 </TableCell>
                                 <TableCell className="text-right pr-8">
                                     <Button
@@ -228,7 +212,7 @@ export default function AdminVendorsPage() {
                         <div className="space-y-6 mt-6">
                             <div className="grid grid-cols-2 gap-4">
                                 <a
-                                    href={selectedVendor.license_url}
+                                    href={selectedVendor.licenseUrl}
                                     target="_blank"
                                     className="p-6 bg-zinc-900 border border-white/5 rounded-2xl flex flex-col items-center gap-3 hover:border-amber-500/50 transition-colors group"
                                 >
@@ -237,7 +221,7 @@ export default function AdminVendorsPage() {
                                     <ExternalLink className="w-4 h-4 text-zinc-600" />
                                 </a>
                                 <a
-                                    href={selectedVendor.id_proof_url}
+                                    href={selectedVendor.idProofUrl}
                                     target="_blank"
                                     className="p-6 bg-zinc-900 border border-white/5 rounded-2xl flex flex-col items-center gap-3 hover:border-blue-500/50 transition-colors group"
                                 >
@@ -255,15 +239,15 @@ export default function AdminVendorsPage() {
                                 <div className="grid grid-cols-2 gap-6 text-sm">
                                     <div>
                                         <p className="text-zinc-500 text-[10px] uppercase font-bold">Bank Name</p>
-                                        <p className="text-white font-medium">{selectedVendor.bank_details?.bank_name || 'Not provided'}</p>
+                                        <p className="text-white font-medium">{selectedVendor.bankDetails?.bankName || 'Not provided'}</p>
                                     </div>
                                     <div>
                                         <p className="text-zinc-500 text-[10px] uppercase font-bold">Account Holder</p>
-                                        <p className="text-white font-medium">{selectedVendor.bank_details?.account_holder || 'Not provided'}</p>
+                                        <p className="text-white font-medium">{selectedVendor.bankDetails?.accountHolder || 'Not provided'}</p>
                                     </div>
                                     <div className="col-span-2">
                                         <p className="text-zinc-500 text-[10px] uppercase font-bold">Account Number</p>
-                                        <p className="text-xl font-black text-white tracking-widest font-mono">{selectedVendor.bank_details?.account_number || 'N/A'}</p>
+                                        <p className="text-xl font-black text-white tracking-widest font-mono">{selectedVendor.bankDetails?.accountNumber || 'N/A'}</p>
                                     </div>
                                 </div>
                             </div>
@@ -271,13 +255,13 @@ export default function AdminVendorsPage() {
                             <DialogFooter className="gap-3 pt-6">
                                 <Button
                                     variant="ghost"
-                                    onClick={() => handleVerification(selectedVendor.id, 'rejected')}
+                                    onClick={() => handleVerification(selectedVendor._id, 'rejected')}
                                     className="text-red-500 hover:bg-red-500/10 rounded-xl uppercase font-black tracking-widest text-[10px]"
                                 >
                                     Reject Application
                                 </Button>
                                 <Button
-                                    onClick={() => handleVerification(selectedVendor.id, 'verified')}
+                                    onClick={() => handleVerification(selectedVendor._id, 'verified')}
                                     className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl uppercase font-black tracking-widest text-[10px] px-8 h-12 shadow-lg shadow-emerald-900/20"
                                 >
                                     Approve & Verify Vendor

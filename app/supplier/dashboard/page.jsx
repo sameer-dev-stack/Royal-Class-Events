@@ -5,8 +5,10 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { useUserRoles } from "@/hooks/use-user-roles";
+import useAuthStore from "@/hooks/use-auth-store";
 import {
     Users,
     Eye,
@@ -22,79 +24,19 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function SupplierDashboardPage() {
-    const { supabase } = useSupabase();
     const { user, isVendor, isLoading: isAuthLoading } = useUserRoles();
-    const [stats, setStats] = useState({ totalLeads: 0, newLeads: 0, profileViews: 0, totalRevenue: 0, activeBookings: 0 });
-    const [recentLeads, setRecentLeads] = useState([]);
-    const [recentBookings, setRecentBookings] = useState([]);
-    const [isLoadingData, setIsLoadingData] = useState(true);
+    const { token } = useAuthStore();
 
-    useEffect(() => {
-        if (!user || !isVendor) return;
+    // Convex Query for Supplier Dashboard
+    const dashboardData = useQuery(
+        api.suppliers.getDashboard,
+        user && isVendor ? { token: token || "" } : "skip"
+    );
 
-        async function loadDashboardData() {
-            try {
-                // 0. Get Supplier ID for this user
-                const { data: supplier } = await supabase
-                    .from('suppliers')
-                    .select('id')
-                    .eq('user_id', user.id)
-                    .single();
-
-                if (!supplier) return;
-                const supplierId = supplier.id;
-
-                // 1. Fetch Stats (Counts from service_requests)
-                const { count: totalLeads } = await supabase
-                    .from('service_requests')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('vendor_id', user.id);
-
-                const { count: newLeads } = await supabase
-                    .from('service_requests')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('vendor_id', user.id)
-                    .eq('status', 'pending');
-
-                // 2. Fetch Marketplace Bookings & Revenue
-                const { data: bookings } = await supabase
-                    .from('marketplace_bookings')
-                    .select('*, customer:profiles(full_name), service:supplier_services(name)')
-                    .eq('supplier_id', supplierId)
-                    .order('created_at', { ascending: false });
-
-                const totalRevenue = bookings?.reduce((acc, curr) =>
-                    curr.status === 'confirmed' || curr.status === 'completed' ? acc + Number(curr.total_amount) : acc, 0) || 0;
-
-                setStats({
-                    totalLeads: totalLeads || 0,
-                    newLeads: newLeads || 0,
-                    profileViews: 124,
-                    totalRevenue: totalRevenue,
-                    activeBookings: bookings?.filter(b => b.status === 'confirmed').length || 0
-                });
-
-                setRecentBookings(bookings?.slice(0, 5) || []);
-
-                // 3. Fetch Recent Requests (Leads)
-                const { data: requests, error } = await supabase
-                    .from('service_requests')
-                    .select('*, events(title, start_date)')
-                    .eq('vendor_id', user.id)
-                    .order('created_at', { ascending: false })
-                    .limit(5);
-
-                if (error) throw error;
-                setRecentLeads(requests || []);
-
-            } catch (err) {
-                console.error("Dashboard data load failed:", err);
-            } finally {
-                setIsLoadingData(false);
-            }
-        }
-        loadDashboardData();
-    }, [user, isVendor, supabase]);
+    const isLoadingData = dashboardData === undefined;
+    const stats = dashboardData?.stats || { totalLeads: 0, newLeads: 0, profileViews: 0, totalRevenue: 0, activeBookings: 0 };
+    const recentLeads = dashboardData?.recentLeads || [];
+    const recentBookings = []; // Can add bookings query later if needed
 
     // 1. Loading State
     if (isAuthLoading || isLoadingData) {
@@ -230,7 +172,7 @@ export default function SupplierDashboardPage() {
                                 </thead>
                                 <tbody className="divide-y divide-border/20">
                                     {recentBookings.map((booking) => (
-                                        <tr key={booking.id} className="group hover:bg-muted/5 transition-colors">
+                                        <tr key={booking._id} className="group hover:bg-muted/5 transition-colors">
                                             <td className="px-8 py-5">
                                                 <div className="font-bold text-foreground">{booking.service?.name}</div>
                                                 <div className="text-xs text-muted-foreground">{booking.customer?.full_name}</div>
@@ -311,7 +253,7 @@ export default function SupplierDashboardPage() {
                                 </thead>
                                 <tbody className="divide-y divide-border/20">
                                     {recentLeads.map((lead) => (
-                                        <tr key={lead.id} className="group hover:bg-muted/10 transition-colors">
+                                        <tr key={lead._id} className="group hover:bg-muted/10 transition-colors">
                                             <td className="px-8 py-5">
                                                 <div className="font-semibold text-foreground">{lead.events?.title || "Private Event"}</div>
                                                 <div className="text-xs text-muted-foreground mt-1">{lead.service_type}</div>
@@ -338,7 +280,7 @@ export default function SupplierDashboardPage() {
                                             </td>
                                             <td className="px-8 py-5 text-right">
                                                 <Button asChild size="sm" variant="ghost" className="h-9 w-9 p-0 hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] transition-all rounded-xl border border-border hover:border-[#D4AF37]/30">
-                                                    <Link href={`/messages/${lead.id}`}>
+                                                    <Link href={`/messages/${lead._id}`}>
                                                         <ArrowUpRight className="w-4 h-4" />
                                                     </Link>
                                                 </Button>

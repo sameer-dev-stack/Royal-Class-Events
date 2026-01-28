@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "convex/react";
+import { useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import useAuthStore from "@/hooks/use-auth-store";
@@ -15,8 +15,8 @@ export function PaymentModal({ isOpen, onClose, eventId, amount, guestDetails, s
     const [errorMsg, setErrorMsg] = useState("");
     const router = useRouter();
 
-    // Mutation
-    const bookSeats = useMutation(api.registrations.bookSeats);
+    // Switchboard OS Action
+    const initiatePayment = useAction(api.payments.initiateSbosPayment);
 
     const { token: storeToken } = useAuthStore(); // Get auth token (hook imported from store not context)
     const { clearCart } = useBookingStore(); // Use global store for cart
@@ -41,26 +41,29 @@ export function PaymentModal({ isOpen, onClose, eventId, amount, guestDetails, s
             // 1. Simulate Gateway Delay (2 seconds)
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // 2. Call Backend
-            const result = await bookSeats({
+            // 2. Call Backend Action
+            const result = await initiatePayment({
                 eventId,
                 seatIds,
                 amount,
-                token: activeToken || undefined, // Pass token if logged in
+                token: activeToken || undefined,
                 guestName: guestDetails.name,
                 guestEmail: guestDetails.email,
-                guestPhone: guestDetails.phone
+                guestPhone: guestDetails.phone,
+                attendeeDetails: guestDetails.attendees,
+                couponCode: guestDetails.couponCode,
+                success_url: `${window.location.origin}/my-tickets?payment=success`,
+                failure_url: `${window.location.origin}/explore?payment=failed`
             });
 
-            if (result.success) {
+            if (result.success && result.gateway_redirect_url) {
                 setStatus("success");
-                clearCart(); // Clear the cart immediately on success
-                // Redirect after short delay
+                clearCart();
+
+                // Redirect to Switchboard OS
                 setTimeout(() => {
-                    onClose();
-                    toast.success("Booking Confirmed! Check your email.");
-                    router.push("/my-tickets"); // Actually redirect
-                }, 2000);
+                    window.location.href = result.gateway_redirect_url;
+                }, 1500);
             }
         } catch (err) {
             console.error(err);

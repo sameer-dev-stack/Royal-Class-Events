@@ -6,7 +6,7 @@ import { MapPin, Star, Heart, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function SupplierCard({ supplier }) {
-    const { id, name, rating, review_count, location, cover_url, categories, views, contact_info } = supplier;
+    const { _id: id, name, rating, review_count, location, cover_url, categories, views, contact_info } = supplier;
 
     // In Postgres schema, starting price might come from a separate service query or a joined field.
     // For now, we'll keep the prop or default to "Custom Pricing".

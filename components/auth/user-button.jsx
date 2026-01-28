@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,8 +19,8 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function UserButton() {
-    const { supabase } = useSupabase();
-    const { logout, user, isAuthenticated, role, viewMode, setViewMode } = useAuthStore();
+    const { logout, user, isAuthenticated, role, viewMode, setViewMode, token } = useAuthStore();
+    const convexLogout = useMutation(api.users.logout);
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -28,9 +29,8 @@ export default function UserButton() {
     const handleSignOut = async () => {
         setIsLoading(true);
         try {
-            // 1. Sign out from Supabase
-            const { error } = await supabase.auth.signOut();
-            if (error) throw error;
+            // 1. Sign out from Convex (Revoke token)
+            await convexLogout({ token: token });
 
             // 2. Clear local Zustand store
             logout();

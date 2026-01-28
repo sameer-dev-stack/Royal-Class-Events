@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Star, Loader2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,8 +23,8 @@ export default function ReviewModal({
     supplierId,
     supplierName
 }) {
-    const { user } = useAuthStore();
-    const { supabase } = useSupabase();
+    const { user, token } = useAuthStore();
+    const submitReview = useMutation(api.suppliers.submitReview);
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [comment, setComment] = useState("");
@@ -48,16 +49,12 @@ export default function ReviewModal({
         setIsSubmitting(true);
 
         try {
-            const { error } = await supabase
-                .from('supplier_reviews')
-                .insert({
-                    supplier_id: supplierId,
-                    user_id: user.id,
-                    rating,
-                    comment: comment.trim(),
-                });
-
-            if (error) throw error;
+            await submitReview({
+                token: token,
+                supplierId: supplierId,
+                rating: rating,
+                comment: comment.trim(),
+            });
 
             toast.success("Review submitted successfully!");
             onOpenChange(false);

@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +13,8 @@ import { Crown, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SignInForm() {
-    const { supabase } = useSupabase();
+    const loginMutation = useMutation(api.users.login);
+    const { login } = useAuthStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -24,46 +27,32 @@ export default function SignInForm() {
         setIsLoading(true);
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+            const result = await loginMutation({
+                email: email,
+                password: password,
             });
 
-            if (error) {
-                if (error.message.includes("Email not confirmed")) {
-                    toast.error("Please verify your email address before logging in. Check your inbox!");
-                } else {
-                    toast.error(error.message || "Invalid credentials.");
-                }
-                console.error("Login error:", error);
-            } else {
+            if (result.success) {
+                // Update local auth store
+                login(result, result.token);
+
                 toast.success("Welcome back!");
                 const redirect = searchParams.get("redirect") || "/explore";
                 router.push(redirect);
                 router.refresh();
+            } else {
+                toast.error(result.error || "Invalid credentials.");
             }
         } catch (error) {
-            toast.error("An unexpected error occurred. Please try again.");
-            console.error("Unexpected login error:", error);
+            toast.error(error.message || "An unexpected error occurred. Please try again.");
+            console.error("Login error:", error);
         } finally {
             setIsLoading(false);
         }
     };
 
     const handleGoogleSignIn = async () => {
-        setIsLoading(true);
-        try {
-            await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: `${window.location.origin}/auth/callback` // Ensure this callback exists/handled
-                }
-            });
-        } catch (error) {
-            console.error("Google sign in error:", error);
-            toast.error("Failed to sign in with Google");
-            setIsLoading(false);
-        }
+        toast.info("SSO via Convex/Clerk is under configuration.");
     };
 
     return (

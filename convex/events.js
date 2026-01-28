@@ -546,6 +546,59 @@ export const deleteEvent = mutation({
   },
 });
 
+// Update event status (for publish flow) - Force Sync
+export const updateStatus = mutation({
+  args: {
+    eventId: v.string(),
+    status: v.string(),
+    token: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) throw new Error("Not logged in");
+
+    // Normalize ID
+    const normalizedId = ctx.db.normalizeId("events", args.eventId);
+    let event = null;
+
+    if (normalizedId) {
+      event = await ctx.db.get(normalizedId);
+    }
+
+    if (!event) {
+      event = await ctx.db
+        .query("events")
+        .withIndex("by_slug", (q) => q.eq("slug", args.eventId))
+        .unique();
+    }
+
+    if (!event) throw new Error("Event not found");
+
+    const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin" || r.permissions.includes("*"));
+
+    if (event.ownerId !== user._id && !isAdmin) {
+      throw new Error("Unauthorized");
+    }
+
+    const now = Date.now();
+
+    await ctx.db.patch(event._id, {
+      status: {
+        current: args.status,
+        changedAt: now,
+        changedBy: user._id,
+      },
+      statusMetadata: {
+        current: args.status,
+        changedAt: now,
+        changedBy: user._id,
+      }
+    });
+
+    return { success: true, status: args.status };
+  },
+});
+
 export const updateEvent = mutation({
   args: {
     eventId: v.id("events"),
@@ -793,6 +846,7 @@ export const getPublicEvents = query({
         console.log(`[DEBUG] Event '${title}' | resolvedStatus: '${resolvedStatus}' | isVisible: ${show} | rawStatus: ${JSON.stringify(e.status)}`);
       }
 
+
       return show;
     });
   },
@@ -801,6 +855,140 @@ export const getPublicEvents = query({
 export const by_start_date = getPublicEvents;
 
 export const getOrganizerEvents = getMyEvents;
+
+// Get Dashboard Data for Event Management
+export const getDashboard = query({
+  args: {
+    eventId: v.string(),
+    token: v.optional(v.string())
+  },
+  handler: async (ctx, args) => {
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) return null;
+
+    // Normalize and get event
+    const normalizedId = ctx.db.normalizeId("events", args.eventId);
+    let event = null;
+
+    if (normalizedId) {
+      event = await ctx.db.get(normalizedId);
+    }
+
+    if (!event) {
+      // Try by slug
+      event = await ctx.db
+        .query("events")
+        .withIndex("by_slug", (q) => q.eq("slug", args.eventId))
+        .unique();
+    }
+
+    if (!event) return null;
+
+    // Check authorization
+    const isAdmin = user.role === "admin" || user.roles?.some(r => r.key === "admin");
+    if (event.ownerId !== user._id && !isAdmin) {
+      return null;
+    }
+
+    // Get registrations for this event
+    const registrations = await ctx.db
+      .query("registrations")
+      .withIndex("by_event", (q) => q.eq("eventId", event._id))
+      .collect();
+
+    // Compute stats
+    const now = Date.now();
+    const startTime = event.timeConfiguration?.startDateTime || event.startDate || now;
+    const capacity = event.capacityConfig?.totalCapacity || event.capacity || 100;
+    const totalRegistrations = registrations.filter(r => r.status === "confirmed").length;
+    const checkedInCount = registrations.filter(r => r.checkedIn && r.status === "confirmed").length;
+    const pendingCount = totalRegistrations - checkedInCount;
+    const checkInRate = totalRegistrations > 0 ? Math.round((checkedInCount / totalRegistrations) * 100) : 0;
+
+    const hoursUntilEvent = Math.max(0, Math.floor((startTime - now) / (1000 * 60 * 60)));
+    const isEventToday = new Date(startTime).toDateString() === new Date().toDateString();
+    const isEventPast = startTime < now;
+
+    // Calculate revenue
+    const ticketPrice = event.metadata?.legacyProps?.ticketPrice || 0;
+    const totalRevenue = totalRegistrations * ticketPrice;
+
+    // Map to frontend-compatible format
+    const mappedEvent = {
+      ...event,
+      title: event.title?.en || event.title || "Untitled Event",
+      description: event.description?.en || event.description || "",
+      cover_image: event.content?.coverImage?.url || "",
+      category: event.eventSubType || event.metadata?.categories?.[0] || "general",
+      start_date: event.timeConfiguration?.startDateTime || event.startDate,
+      end_date: event.timeConfiguration?.endDateTime || event.endDate,
+      ticket_price: ticketPrice,
+      city: event.metadata?.legacyProps?.city || "",
+      seating_mode: event.seatingMode || "GENERAL",
+    };
+
+    return {
+      event: mappedEvent,
+      stats: {
+        capacity,
+        totalRegistrations,
+        checkedInCount,
+        pendingCount,
+        checkInRate,
+        hoursUntilEvent,
+        isEventToday,
+        isEventPast,
+        totalRevenue
+      }
+    };
+  },
+});
+
+export const getBySlug = query({
+  args: { slug: v.string() },
+  handler: async (ctx, args) => {
+    let event = await ctx.db
+      .query("events")
+      .withIndex("by_slug", (q) => q.eq("slug", args.slug))
+      .unique();
+
+    if (!event) {
+      // Fallback: Check if it's an ID
+      const eventId = ctx.db.normalizeId("events", args.slug);
+      if (eventId) {
+        event = await ctx.db.get(eventId);
+      }
+    }
+
+    if (!event) return null;
+
+    // Check if event is actually visible
+    if (!isEventVisible(event)) {
+      // Not visible but might be accessed by owner? 
+      // For a public getBySlug, we might want to hide it if not published.
+      // However, often users want to preview their events.
+      // Let's stick to isEventVisible for now or check auth.
+    }
+
+    // Map to frontend-compatible format
+    const ticketPrice = event.metadata?.legacyProps?.ticketPrice || 0;
+
+    return {
+      ...event,
+      title: event.title?.en || event.title || "Untitled Event",
+      description: event.description?.en || event.description || "",
+      cover_image: event.content?.coverImage?.url || event.cover_image || "/hero_placeholder.jpg",
+      category: event.eventSubType || event.metadata?.categories?.[0] || "general",
+      start_date: event.timeConfiguration?.startDateTime || event.startDate || event.start_date,
+      end_date: event.timeConfiguration?.endDateTime || event.endDate || event.end_date,
+      ticket_price: ticketPrice,
+      city: event.metadata?.legacyProps?.city || event.city || "",
+      seating_mode: event.seatingMode || "GENERAL",
+      venue_layout: event.venueLayout,
+      type: event.eventSubType || event.eventType || "Event",
+    };
+  },
+});
 
 // DIAGNOSTIC: Inspect 'Test' event status
 export const inspectTestEvent = query({

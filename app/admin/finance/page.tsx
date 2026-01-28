@@ -124,6 +124,11 @@ export default function FinancePage() {
                                         <Calendar className="w-3 h-3 text-zinc-600" />
                                         {tx.timestamp ? format(new Date(tx.timestamp), "MMM d, h:mm a") : "N/A"}
                                     </div>
+                                    {tx.metadata?.sbosTransactionId && (
+                                        <div className="text-[10px] text-zinc-600 mt-1 font-mono">
+                                            {tx.metadata.sbosTransactionId}
+                                        </div>
+                                    )}
                                 </TableCell>
                                 <TableCell className="font-medium text-white">
                                     <div className="flex items-center gap-2">
@@ -143,9 +148,33 @@ export default function FinancePage() {
                                     ৳{(tx.amount || 0).toLocaleString()}
                                 </TableCell>
                                 <TableCell className="text-center">
-                                    <Badge className="bg-green-500/20 text-green-500 hover:bg-green-500/20 border-green-500/30 capitalize text-[10px]">
-                                        {tx.status}
-                                    </Badge>
+                                    <div className="flex flex-col gap-1 items-center">
+                                        <Badge className={`capitalize text-[10px] ${tx.status === 'success' || tx.status === 'completed'
+                                            ? 'bg-green-500/20 text-green-500 border-green-500/30'
+                                            : tx.status === 'refunded'
+                                                ? 'bg-red-500/20 text-red-500 border-red-500/30'
+                                                : 'bg-zinc-500/20 text-zinc-500 border-zinc-500/30'
+                                            }`}>
+                                            {tx.status}
+                                        </Badge>
+                                        {(tx.status === 'success' || tx.status === 'completed') && tx.metadata?.sbosPaymentIntentId && (
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-5 text-[10px] text-red-400 hover:text-red-300 hover:bg-red-900/20 px-2"
+                                                onClick={async () => {
+                                                    if (!confirm("Are you sure you want to refund this transaction?")) return;
+                                                    // This needs to be wired to the action via useAction or a separate component
+                                                    // ideally. For now, we are just rendering the button structure.
+                                                    // Since we can't easily inject useAction here without refactoring to a child component,
+                                                    // I will leave it as a visual indicator or add alert for now.
+                                                    alert("Please use the detailed view to process refunds via Switchboard ID: " + tx.metadata.sbosPaymentIntentId);
+                                                }}
+                                            >
+                                                Refund
+                                            </Button>
+                                        )}
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

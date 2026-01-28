@@ -72,6 +72,7 @@ export default function ChatBot() {
               ? "bg-destructive hover:bg-destructive/90 rotate-90"
               : "bg-gradient-to-br from-[#D4AF37] to-[#8C7326] hover:from-[#8C7326] hover:to-[#8C7326] hover:scale-110 shadow-[0_0_30px_rgba(217,119,6,0.5)]"
           )}
+          aria-label={isOpen ? "Close Assistant" : "Open Assistant"}
         >
           {isOpen ? <X className="h-7 w-7 text-white" /> : <MessageSquare className="h-7 w-7 text-white" />}
         </Button>
@@ -172,6 +173,7 @@ export default function ChatBot() {
                   size="icon"
                   disabled={!input.trim() || isLoading}
                   className="absolute right-1.5 h-9 w-9 rounded-xl bg-[#8C7326] hover:bg-[#8C7326] text-white shadow-lg"
+                  aria-label="Send message to concierge"
                 >
                   {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                 </Button>

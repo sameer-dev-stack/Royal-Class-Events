@@ -630,10 +630,10 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$motion$2
 ;
 function EventCard({ event, onClick, onDelete, variant = "grid", action = null, className = "" }) {
     const displayImage = event.cover_image || event.content?.coverImage?.url || event.coverImage || (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$data$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getMockImage"])(event.category || event.event_type);
-    const eventTitle = event.title;
-    const eventStartDate = event.start_date || event.timeConfiguration?.startDateTime || event.startDate;
-    const eventCity = event.city || "Gurugram";
-    const eventCategory = event.category || event.event_type;
+    const eventTitle = event.title?.en || (typeof event.title === 'string' ? event.title : "Untitled Event");
+    const eventStartDate = event.start_date || event.timeConfiguration?.startDateTime || event.startDate || Date.now();
+    const eventCity = event.city || event.metadata?.legacyProps?.city || "Gurugram";
+    const eventCategory = event.category || event.eventSubType || event.event_type || "general";
     const isFree = event.financials?.pricingModel === "free" || event.ticket_price === 0;
     const eventCapacity = event.capacity || 100;
     const eventRegistrations = 0; // Analytics not yet in schema
@@ -1000,6 +1000,7 @@ __turbopack_context__.s([
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/calendar.js [app-client] (ecmascript) <export default as Calendar>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$map$2d$pin$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MapPin$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/map-pin.js [app-client] (ecmascript) <export default as MapPin>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$users$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Users$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/users.js [app-client] (ecmascript) <export default as Users>");
@@ -1007,11 +1008,14 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/date-fns/format.js [app-client] (ecmascript) <locals>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$location$2d$utils$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/location-utils.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/image.js [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$providers$2f$supabase$2d$provider$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/providers/supabase-provider.jsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/node_modules/convex/dist/esm/react/index.js [app-client] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/convex/dist/esm/react/client.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/convex/_generated/api.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$badge$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/badge.jsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/button.jsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/card.jsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/skeleton.jsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$hooks$2f$use$2d$auth$2d$store$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/hooks/use-auth-store.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$carousel$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/components/ui/carousel.jsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$data$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/lib/data.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$embla$2d$carousel$2d$autoplay$2f$esm$2f$embla$2d$carousel$2d$autoplay$2e$esm$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/embla-carousel-autoplay/esm/embla-carousel-autoplay.esm.js [app-client] (ecmascript)");
@@ -1034,6 +1038,9 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
+;
+;
+;
 function ExplorePage() {
     _s();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
@@ -1041,61 +1048,28 @@ function ExplorePage() {
         delay: 2000,
         stopOnInteraction: true
     }));
-    const { supabase } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$providers$2f$supabase$2d$provider$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSupabase"])();
-    const [featuredEvents, setFeaturedEvents] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    const [localEvents, setLocalEvents] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    const [popularEvents, setPopularEvents] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
-    const [categoryCounts, setCategoryCounts] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({});
-    const [currentUser, setCurrentUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
+    const [isMounted, setIsMounted] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "ExplorePage.useEffect": ()=>{
-            async function loadData() {
-                try {
-                    // 1. Get Current User (for location)
-                    const { data: { session } } = await supabase.auth.getSession();
-                    let city = "Gurugram";
-                    let state = "Haryana";
-                    if (session) {
-                        const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
-                        if (profile) {
-                            setCurrentUser(profile);
-                        // city = profile.city || city;
-                        // state = profile.state || state;
-                        }
-                    }
-                    // 2. Fetch Events (Published/Active only)
-                    const { data: events, error } = await supabase.from('events').select('*').in('status', [
-                        'published',
-                        'active'
-                    ]).order('created_at', {
-                        ascending: false
-                    });
-                    if (error) throw error;
-                    // 3. Process Logic locally (Simulating backend sorts/limits for now)
-                    setFeaturedEvents(events.slice(0, 3));
-                    setPopularEvents(events.slice(0, 6));
-                    setLocalEvents(events.slice(0, 4)); // In reality, filter by city
-                    // 4. Calculate Category Counts
-                    const counts = events.reduce({
-                        "ExplorePage.useEffect.loadData.counts": (acc, event)=>{
-                            const cat = event.category || event.event_type;
-                            acc[cat] = (acc[cat] || 0) + 1;
-                            return acc;
-                        }
-                    }["ExplorePage.useEffect.loadData.counts"], {});
-                    setCategoryCounts(counts);
-                } catch (err) {
-                    console.error("Discovery load failed:", err);
-                } finally{
-                    setIsLoading(false);
-                }
-            }
-            loadData();
+            setIsMounted(true);
         }
-    }["ExplorePage.useEffect"], [
-        supabase
-    ]);
+    }["ExplorePage.useEffect"], []);
+    const { isAuthenticated, user } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$hooks$2f$use$2d$auth$2d$store$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"])();
+    // Convex Queries
+    const allEvents = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useQuery"])(__TURBOPACK__imported__module__$5b$project$5d2f$convex$2f$_generated$2f$api$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["api"].explore.getPopularEvents, {
+        limit: 20
+    }) || [];
+    const isLoading = allEvents === undefined;
+    // Derive views from data
+    const featuredEvents = allEvents.slice(0, 3);
+    const localEvents = allEvents.slice(0, 4);
+    const popularEvents = allEvents.slice(0, 6);
+    // Calculate Category Counts
+    const categoryCounts = allEvents.reduce((acc, event)=>{
+        const cat = event.category || event.eventType;
+        acc[cat] = (acc[cat] || 0) + 1;
+        return acc;
+    }, {});
     const handleEventClick = (slug)=>{
         router.push(`/events/${slug}`);
     };
@@ -1103,8 +1077,8 @@ function ExplorePage() {
         router.push(`/explore/${categoryId}`);
     };
     const handleViewLocalEvents = ()=>{
-        const city = currentUser?.location?.city || "Gurugram";
-        const state = currentUser?.location?.state || "Haryana";
+        const city = user?.location?.city || "Gurugram";
+        const state = user?.location?.state || "Haryana";
         const slug = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$location$2d$utils$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["createLocationSlug"])(city, state);
         router.push(`/explore/${slug}`);
     };
@@ -1124,20 +1098,20 @@ function ExplorePage() {
                             className: "h-16 w-3/4 md:w-1/2 mx-auto"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 117,
+                            lineNumber: 82,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                             className: "h-6 w-2/3 md:w-1/3 mx-auto"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 118,
+                            lineNumber: 83,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(public)/explore/page.jsx",
-                    lineNumber: 116,
+                    lineNumber: 81,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1146,12 +1120,12 @@ function ExplorePage() {
                         className: "w-full h-[400px] rounded-xl"
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 123,
+                        lineNumber: 88,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/(public)/explore/page.jsx",
-                    lineNumber: 122,
+                    lineNumber: 87,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1167,33 +1141,33 @@ function ExplorePage() {
                                             className: "h-10 w-48"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/explore/page.jsx",
-                                            lineNumber: 130,
+                                            lineNumber: 95,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                             className: "h-4 w-32"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/explore/page.jsx",
-                                            lineNumber: 131,
+                                            lineNumber: 96,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(public)/explore/page.jsx",
-                                    lineNumber: 129,
+                                    lineNumber: 94,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                     className: "h-10 w-24"
                                 }, void 0, false, {
                                     fileName: "[project]/app/(public)/explore/page.jsx",
-                                    lineNumber: 133,
+                                    lineNumber: 98,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 128,
+                            lineNumber: 93,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1210,38 +1184,38 @@ function ExplorePage() {
                                             className: "h-40 w-full rounded-lg"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/explore/page.jsx",
-                                            lineNumber: 138,
+                                            lineNumber: 103,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                             className: "h-4 w-3/4"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/explore/page.jsx",
-                                            lineNumber: 139,
+                                            lineNumber: 104,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$skeleton$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Skeleton"], {
                                             className: "h-4 w-1/2"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/explore/page.jsx",
-                                            lineNumber: 140,
+                                            lineNumber: 105,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, i, true, {
                                     fileName: "[project]/app/(public)/explore/page.jsx",
-                                    lineNumber: 137,
+                                    lineNumber: 102,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 135,
+                            lineNumber: 100,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(public)/explore/page.jsx",
-                    lineNumber: 127,
+                    lineNumber: 92,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1251,7 +1225,7 @@ function ExplorePage() {
                             className: "h-10 w-64 mb-6"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 148,
+                            lineNumber: 113,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1265,24 +1239,24 @@ function ExplorePage() {
                                     className: "h-24 rounded-lg"
                                 }, i, false, {
                                     fileName: "[project]/app/(public)/explore/page.jsx",
-                                    lineNumber: 151,
+                                    lineNumber: 116,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 149,
+                            lineNumber: 114,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(public)/explore/page.jsx",
-                    lineNumber: 147,
+                    lineNumber: 112,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/app/(public)/explore/page.jsx",
-            lineNumber: 114,
+            lineNumber: 79,
             columnNumber: 7
         }, this);
     }
@@ -1296,7 +1270,7 @@ function ExplorePage() {
                         children: "Discover Events"
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 163,
+                        lineNumber: 128,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1304,13 +1278,13 @@ function ExplorePage() {
                         children: "Explore featured events, find what's happening locally, or browse events everywhere"
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 164,
+                        lineNumber: 129,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(public)/explore/page.jsx",
-                lineNumber: 162,
+                lineNumber: 127,
                 columnNumber: 7
             }, this),
             featuredEvents && featuredEvents.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1325,14 +1299,14 @@ function ExplorePage() {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$carousel$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CarouselContent"], {
                             children: featuredEvents.map((event)=>{
-                                const displayImage = event.cover_image || "/hero_image.jpeg";
-                                const eventTitle = event.title;
-                                const eventDescription = event.description;
-                                const eventCity = "Gurugram"; // Fallback for seeds
-                                const eventState = "Haryana";
-                                const eventCountry = "India";
-                                const eventStartDate = event.start_date;
-                                const eventRegistrations = 0; // Default
+                                const displayImage = event.content?.coverImage?.url || event.coverImage || event.cover_image || "/hero_image.jpeg";
+                                const eventTitle = event.title?.en || (typeof event.title === 'string' ? event.title : "Untitled Event");
+                                const eventDescription = event.description?.en || (typeof event.description === 'string' ? event.description : "No description");
+                                const eventCity = event.city || event.metadata?.legacyProps?.city || "Gurugram";
+                                const eventState = event.state || event.metadata?.legacyProps?.state || "Haryana";
+                                const eventCountry = event.country || event.metadata?.legacyProps?.country || "India";
+                                const eventStartDate = event.timeConfiguration?.startDateTime || event.startDate || event.start_date || Date.now();
+                                const eventRegistrations = event.analytics?.registrations || 0;
                                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$carousel$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CarouselItem"], {
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "relative h-[400px] rounded-xl overflow-hidden cursor-pointer",
@@ -1346,14 +1320,14 @@ function ExplorePage() {
                                                 priority: true
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                                lineNumber: 196,
+                                                lineNumber: 161,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "absolute inset-0 bg-gradient-to-r from-black/60 to-black/30"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                                lineNumber: 203,
+                                                lineNumber: 168,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1369,7 +1343,7 @@ function ExplorePage() {
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                        lineNumber: 205,
+                                                        lineNumber: 170,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -1377,7 +1351,7 @@ function ExplorePage() {
                                                         children: eventTitle
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                        lineNumber: 208,
+                                                        lineNumber: 173,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1385,7 +1359,7 @@ function ExplorePage() {
                                                         children: eventDescription
                                                     }, void 0, false, {
                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                        lineNumber: 211,
+                                                        lineNumber: 176,
                                                         columnNumber: 25
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1398,7 +1372,7 @@ function ExplorePage() {
                                                                         className: "w-4 h-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                        lineNumber: 216,
+                                                                        lineNumber: 181,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1406,13 +1380,13 @@ function ExplorePage() {
                                                                         children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$date$2d$fns$2f$format$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$locals$3e$__["format"])(eventStartDate, "PPP")
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                        lineNumber: 217,
+                                                                        lineNumber: 182,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                lineNumber: 215,
+                                                                lineNumber: 180,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1422,7 +1396,7 @@ function ExplorePage() {
                                                                         className: "w-4 h-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                        lineNumber: 222,
+                                                                        lineNumber: 187,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1430,13 +1404,13 @@ function ExplorePage() {
                                                                         children: eventCity
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                        lineNumber: 223,
+                                                                        lineNumber: 188,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                lineNumber: 221,
+                                                                lineNumber: 186,
                                                                 columnNumber: 27
                                                             }, this),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1446,7 +1420,7 @@ function ExplorePage() {
                                                                         className: "w-4 h-4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                        lineNumber: 226,
+                                                                        lineNumber: 191,
                                                                         columnNumber: 29
                                                                     }, this),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1457,67 +1431,67 @@ function ExplorePage() {
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                        lineNumber: 227,
+                                                                        lineNumber: 192,
                                                                         columnNumber: 29
                                                                     }, this)
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                                                lineNumber: 225,
+                                                                lineNumber: 190,
                                                                 columnNumber: 27
                                                             }, this)
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                                        lineNumber: 214,
+                                                        lineNumber: 179,
                                                         columnNumber: 25
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                                lineNumber: 204,
+                                                lineNumber: 169,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                        lineNumber: 192,
+                                        lineNumber: 157,
                                         columnNumber: 21
                                     }, this)
-                                }, event.id, false, {
+                                }, event._id || event.id, false, {
                                     fileName: "[project]/app/(public)/explore/page.jsx",
-                                    lineNumber: 191,
+                                    lineNumber: 156,
                                     columnNumber: 19
                                 }, this);
                             })
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 179,
+                            lineNumber: 144,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$carousel$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CarouselPrevious"], {
                             className: "left-4"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 238,
+                            lineNumber: 203,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$carousel$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CarouselNext"], {
                             className: "right-4"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 239,
+                            lineNumber: 204,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(public)/explore/page.jsx",
-                    lineNumber: 173,
+                    lineNumber: 138,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(public)/explore/page.jsx",
-                lineNumber: 172,
+                lineNumber: 137,
                 columnNumber: 9
             }, this),
             localEvents && localEvents.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1533,24 +1507,24 @@ function ExplorePage() {
                                         children: "Events Near You"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                        lineNumber: 249,
+                                        lineNumber: 214,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                         className: "text-muted-foreground",
                                         children: [
                                             "Happening in ",
-                                            currentUser?.location?.city || "your area"
+                                            user?.location?.city || "your area"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                        lineNumber: 250,
+                                        lineNumber: 215,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                lineNumber: 248,
+                                lineNumber: 213,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1563,19 +1537,19 @@ function ExplorePage() {
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(public)/explore/page.jsx",
-                                        lineNumber: 259,
+                                        lineNumber: 224,
                                         columnNumber: 24
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                lineNumber: 254,
+                                lineNumber: 219,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 247,
+                        lineNumber: 212,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1584,20 +1558,20 @@ function ExplorePage() {
                                 event: event,
                                 variant: "compact",
                                 onClick: ()=>handleEventClick(event.slug)
-                            }, event.id, false, {
+                            }, event._id || event.id, false, {
                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                lineNumber: 265,
+                                lineNumber: 230,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 263,
+                        lineNumber: 228,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(public)/explore/page.jsx",
-                lineNumber: 246,
+                lineNumber: 211,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1608,7 +1582,7 @@ function ExplorePage() {
                         children: "Browse by Category"
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 277,
+                        lineNumber: 242,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1624,7 +1598,7 @@ function ExplorePage() {
                                             children: category.icon
                                         }, void 0, false, {
                                             fileName: "[project]/app/(public)/explore/page.jsx",
-                                            lineNumber: 287,
+                                            lineNumber: 252,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1635,7 +1609,7 @@ function ExplorePage() {
                                                     children: category.label
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(public)/explore/page.jsx",
-                                                    lineNumber: 289,
+                                                    lineNumber: 254,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1647,35 +1621,35 @@ function ExplorePage() {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/app/(public)/explore/page.jsx",
-                                                    lineNumber: 292,
+                                                    lineNumber: 257,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(public)/explore/page.jsx",
-                                            lineNumber: 288,
+                                            lineNumber: 253,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/(public)/explore/page.jsx",
-                                    lineNumber: 286,
+                                    lineNumber: 251,
                                     columnNumber: 15
                                 }, this)
                             }, category.id, false, {
                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                lineNumber: 281,
+                                lineNumber: 246,
                                 columnNumber: 13
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 279,
+                        lineNumber: 244,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(public)/explore/page.jsx",
-                lineNumber: 276,
+                lineNumber: 241,
                 columnNumber: 7
             }, this),
             popularEvents && popularEvents.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1689,7 +1663,7 @@ function ExplorePage() {
                                 children: "Popular Events"
                             }, void 0, false, {
                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                lineNumber: 306,
+                                lineNumber: 271,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1697,13 +1671,13 @@ function ExplorePage() {
                                 children: "Trending events"
                             }, void 0, false, {
                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                lineNumber: 307,
+                                lineNumber: 272,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 305,
+                        lineNumber: 270,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1712,20 +1686,20 @@ function ExplorePage() {
                                 event: event,
                                 variant: "list",
                                 onClick: ()=>handleEventClick(event.slug)
-                            }, event.id, false, {
+                            }, event._id || event.id, false, {
                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                lineNumber: 312,
+                                lineNumber: 277,
                                 columnNumber: 15
                             }, this))
                     }, void 0, false, {
                         fileName: "[project]/app/(public)/explore/page.jsx",
-                        lineNumber: 310,
+                        lineNumber: 275,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(public)/explore/page.jsx",
-                lineNumber: 304,
+                lineNumber: 269,
                 columnNumber: 9
             }, this),
             !isLoading && (!featuredEvents || featuredEvents.length === 0) && (!localEvents || localEvents.length === 0) && (!popularEvents || popularEvents.length === 0) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$card$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
@@ -1738,7 +1712,7 @@ function ExplorePage() {
                             children: "🎉"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 329,
+                            lineNumber: 294,
                             columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -1746,7 +1720,7 @@ function ExplorePage() {
                             children: "No events yet"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 330,
+                            lineNumber: 295,
                             columnNumber: 15
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1754,43 +1728,59 @@ function ExplorePage() {
                             children: "Be the first to create an event in your area!"
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 331,
+                            lineNumber: 296,
                             columnNumber: 15
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                        isMounted && isAuthenticated ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
                             asChild: true,
-                            className: "gap-2",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                            className: "gap-2 bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
                                 href: "/create-event",
                                 children: "Create Event"
                             }, void 0, false, {
                                 fileName: "[project]/app/(public)/explore/page.jsx",
-                                lineNumber: 335,
-                                columnNumber: 17
+                                lineNumber: 301,
+                                columnNumber: 19
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/(public)/explore/page.jsx",
-                            lineNumber: 334,
-                            columnNumber: 15
+                            lineNumber: 300,
+                            columnNumber: 17
+                        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ui$2f$button$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
+                            asChild: true,
+                            className: "gap-2 bg-zinc-800 hover:bg-zinc-700 text-white font-bold border border-white/10",
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                href: "/sign-in",
+                                children: "Sign in to Create Event"
+                            }, void 0, false, {
+                                fileName: "[project]/app/(public)/explore/page.jsx",
+                                lineNumber: 305,
+                                columnNumber: 19
+                            }, this)
+                        }, void 0, false, {
+                            fileName: "[project]/app/(public)/explore/page.jsx",
+                            lineNumber: 304,
+                            columnNumber: 17
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(public)/explore/page.jsx",
-                    lineNumber: 328,
+                    lineNumber: 293,
                     columnNumber: 13
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(public)/explore/page.jsx",
-                lineNumber: 327,
+                lineNumber: 292,
                 columnNumber: 11
             }, this)
         ]
     }, void 0, true);
 }
-_s(ExplorePage, "8RLUSmGk7hwKmVU8IK6jaD7eyb0=", false, function() {
+_s(ExplorePage, "htV/xJcHpmV6Cu1X7iUKkL/+ydA=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
-        __TURBOPACK__imported__module__$5b$project$5d2f$components$2f$providers$2f$supabase$2d$provider$2e$jsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useSupabase"]
+        __TURBOPACK__imported__module__$5b$project$5d2f$hooks$2f$use$2d$auth$2d$store$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$convex$2f$dist$2f$esm$2f$react$2f$client$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useQuery"]
     ];
 });
 _c = ExplorePage;

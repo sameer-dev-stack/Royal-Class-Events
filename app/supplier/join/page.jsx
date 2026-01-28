@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { useUserRoles } from "@/hooks/use-user-roles";
+import useAuthStore from "@/hooks/use-auth-store";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Store,
@@ -52,8 +54,9 @@ const STEPS = [
 
 export default function SupplierJoinPage() {
     const router = useRouter();
-    const { supabase } = useSupabase();
+    const onboardSupplier = useMutation(api.suppliers.onboard);
     const { user, isVendor, isLoading: isAuthLoading } = useUserRoles();
+    const { token } = useAuthStore();
 
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -111,46 +114,25 @@ export default function SupplierJoinPage() {
         try {
             const slug = formData.slug || formData.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
 
-            // 1. Create Supplier Profile in Supabase
-            const { error: supplierError } = await supabase
-                .from('suppliers')
-                .insert([{
-                    user_id: user.id,
-                    name: formData.name,
-                    slug,
-                    description: formData.description,
-                    categories: formData.categories,
-                    contact_info: {
-                        email: formData.email || user.email,
-                        phone: formData.phone,
-                        website: formData.website,
-                        instagram: formData.instagram,
-                    },
-                    location: {
-                        city: formData.city,
-                        country: formData.country,
-                        address: formData.address,
-                    },
-                    license_url: formData.license_url,
-                    id_proof_url: formData.id_proof_url,
-                    bank_details: {
-                        bank_name: formData.bank_name,
-                        account_number: formData.account_number,
-                        account_holder: formData.account_holder,
-                    },
-                    status: 'active',
-                    verification_status: 'pending'
-                }]);
-
-            if (supplierError) throw supplierError;
-
-            // 2. Upgrade User Role to 'vendor'
-            const { error: roleError } = await supabase
-                .from('profiles')
-                .update({ role: 'vendor' })
-                .eq('id', user.id);
-
-            if (roleError) throw roleError;
+            // Create Supplier Profile via Convex
+            await onboardSupplier({
+                token: token,
+                name: formData.name,
+                slug,
+                description: formData.description,
+                categories: formData.categories,
+                contact: {
+                    email: formData.email || user.email,
+                    phone: formData.phone,
+                    website: formData.website,
+                    instagram: formData.instagram,
+                },
+                location: {
+                    city: formData.city,
+                    country: formData.country,
+                    address: formData.address,
+                },
+            });
 
             toast.success("Welcome to the Royal Marketplace! 👑");
             setTimeout(() => {

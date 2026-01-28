@@ -1,6 +1,7 @@
 "use client";
 
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Bell, Check, ExternalLink, Inbox, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,68 +13,28 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { formatDistanceToNow } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 export function NotificationBell() {
-    const { supabase } = useSupabase();
-    const { user } = useAuthStore();
+    const { user, token } = useAuthStore();
     const router = useRouter();
     const [open, setOpen] = useState(false);
-    const [notifications, setNotifications] = useState<any[] | null>(null);
-    const [unreadCount, setUnreadCount] = useState(0);
 
-    useEffect(() => {
-        if (!user) return;
+    // Convex queries and mutations
+    const notifications = useQuery(
+        api.notifications.get,
+        user ? { token: token || "" } : "skip"
+    ) || [];
+    const markAllRead = useMutation(api.notifications.markAllRead);
+    const markAsRead = useMutation(api.notifications.markRead);
 
-        // 1. Initial Fetch
-        const fetchNotifications = async () => {
-            const { data, error } = await supabase
-                .from('notifications')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false })
-                .limit(20);
-
-            if (data && !error) {
-                setNotifications(data);
-                setUnreadCount(data.filter(n => !n.is_read).length);
-            }
-        };
-
-        fetchNotifications();
-
-        // 2. Realtime Subscription
-        const channel = supabase
-            .channel(`notifications:${user.id}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: '*',
-                    schema: 'public',
-                    table: 'notifications',
-                    filter: `user_id=eq.${user.id}`,
-                },
-                () => {
-                    // Re-fetch on any change to keep logic simple for now
-                    fetchNotifications();
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
-    }, [user, supabase]);
+    const unreadCount = notifications.filter((n: any) => !n.isRead).length;
 
     const handleMarkAllRead = async () => {
         if (!user) return;
         try {
-            await supabase
-                .from('notifications')
-                .update({ is_read: true })
-                .eq('user_id', user.id)
-                .eq('is_read', false);
+            await markAllRead({ token: token || "" });
         } catch (err) {
             console.error("Failed to mark all as read", err);
         }
@@ -81,10 +42,7 @@ export function NotificationBell() {
 
     const handleNotificationClick = async (n: any) => {
         try {
-            await supabase
-                .from('notifications')
-                .update({ is_read: true })
-                .eq('id', n.id);
+            await markAsRead({ notificationId: n._id, token: token || "" });
 
             if (n.link) {
                 router.push(n.link);
@@ -98,7 +56,7 @@ export function NotificationBell() {
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative hover:bg-muted rounded-full transition-all">
+                <Button variant="ghost" size="icon" className="relative hover:bg-muted rounded-full transition-all" aria-label="Notifications">
                     <Bell className="w-5 h-5 text-muted-foreground hover:text-foreground" />
                     {unreadCount > 0 ? (
                         <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-black text-white ring-2 ring-background">

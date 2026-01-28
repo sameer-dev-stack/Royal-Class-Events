@@ -112,10 +112,6 @@ export default function LandingPage() {
       {/* --- EVENT LIST SECTION (Upcoming Events) --- */}
       <section className="container mx-auto px-6 pb-24 relative z-10">
         <FadeIn delay={0.4}>
-          <div className="flex items-center gap-4 mb-8">
-            <h2 className="text-3xl font-bold text-foreground">Upcoming <span className="text-gradient-gold">Events</span></h2>
-            <div className="h-px flex-1 bg-gradient-to-r from-white/20 to-transparent" />
-          </div>
           <EventList />
         </FadeIn>
       </section>

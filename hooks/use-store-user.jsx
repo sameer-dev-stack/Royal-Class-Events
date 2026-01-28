@@ -9,10 +9,9 @@ export function useStoreUser() {
   const { user, isAuthenticated, isLoading } = useAuthStore();
 
   return {
-    isLoading,
+    isLoading: isLoading === undefined ? true : isLoading,
     isAuthenticated,
     user,
     storeFailed: false,
   };
 }
-

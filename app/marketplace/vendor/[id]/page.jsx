@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useParams, notFound } from "next/navigation";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -19,6 +20,7 @@ import {
     CheckCircle2,
     Clock,
     Users,
+    Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ServiceCard from "@/components/marketplace/service-card";
@@ -27,74 +29,20 @@ import MarketplaceBookingModal from "@/components/marketplace/booking-modal";
 
 export default function VendorProfilePage() {
     const params = useParams();
-    const supplierId = params?.id;
-    const { supabase } = useSupabase();
+    const rawId = params?.id;
+    const supplierId = rawId && rawId !== "undefined" ? rawId : null;
     const [isRFQModalOpen, setIsRFQModalOpen] = useState(false);
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
     const [selectedService, setSelectedService] = useState(null);
 
-    const [profile, setProfile] = useState(undefined);
-    const [isLoading, setIsLoading] = useState(true);
+    // Convex query for supplier profile with services and reviews
+    const profile = useQuery(
+        api.suppliers.getById,
+        supplierId ? { supplierId } : "skip"
+    );
+    const isLoading = profile === undefined;
 
-    useEffect(() => {
-        if (!supplierId) return;
 
-        async function fetchVendorProfile() {
-            try {
-                // 1. Fetch Basic Supplier Profile
-                const { data: vendor, error: vendorError } = await supabase
-                    .from('suppliers')
-                    .select('*')
-                    .eq('id', supplierId)
-                    .single();
-
-                if (vendorError || !vendor) {
-                    setProfile(null);
-                    return;
-                }
-
-                // 2. Fetch Services
-                const { data: services } = await supabase
-                    .from('supplier_services')
-                    .select('*')
-                    .eq('supplier_id', supplierId)
-                    .eq('is_active', true);
-
-                // 3. Fetch Reviews with Reviewer Info
-                const { data: reviews } = await supabase
-                    .from('supplier_reviews')
-                    .select(`
-                        *,
-                        reviewer:profiles(full_name, avatar_url)
-                    `)
-                    .eq('supplier_id', supplierId)
-                    .order('created_at', { ascending: false });
-
-                // Calculate local starting price if not stored
-                const minPrice = services?.length > 0
-                    ? Math.min(...services.map(s => Number(s.price)))
-                    : null;
-
-                setProfile({
-                    ...vendor,
-                    services: services || [],
-                    reviews: reviews?.map(r => ({
-                        ...r,
-                        reviewerName: r.reviewer?.full_name || "Guest User",
-                        reviewerImage: r.reviewer?.avatar_url
-                    })) || [],
-                    startingPrice: minPrice || vendor.starting_price
-                });
-
-            } catch (err) {
-                console.error("Failed to fetch vendor:", err);
-                setProfile(null);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        fetchVendorProfile();
-    }, [supplierId, supabase]);
 
     // Loading State
     if (isLoading || profile === undefined) {

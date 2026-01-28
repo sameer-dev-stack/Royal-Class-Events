@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { getSystemSettings } from "./utils";
 
 /**
@@ -10,7 +10,7 @@ export const createLead = mutation({
     args: {
         supplierId: v.id("suppliers"),
         token: v.optional(v.string()), // Auth Token
-        eventDate: v.string(), // ISO String
+        eventDate: v.number(), // Unix Timestamp (changed from v.string())
         guestCount: v.number(),
         budget: v.number(),
         message: v.string(),
@@ -26,6 +26,18 @@ export const createLead = mutation({
             throw new Error("Supplier not found or not accepting requests.");
         }
 
+        // 2.5 Check Availability (Collision Detection)
+        // Convert ISO string to timestamp if needed, or assume args.eventDate is the start
+        const availabilityCheck = await ctx.runQuery(internal.availability.checkCollision, {
+            supplierId: args.supplierId,
+            startDateTime: args.eventDate,
+            durationMinutes: 60 // Default booking duration check
+        });
+
+        if (availabilityCheck.collision) {
+            throw new Error(`Slot unavailable: ${availabilityCheck.reason}`);
+        }
+
         // 3. Create Lead (using our schema structure)
         const leadId = await ctx.db.insert("leads", {
             userId: user._id,
@@ -35,6 +47,7 @@ export const createLead = mutation({
                 eventDate: args.eventDate,
                 guestCount: args.guestCount,
                 budget: args.budget,
+                requirements: args.message,
             },
             lastActionAt: Date.now(),
             createdAt: Date.now(),
@@ -491,79 +504,49 @@ export const processPayment = mutation({
         const vendorEarnings = totalAmount - commissionAmount;
         // ============================================
 
-        // 1. Update Message Metadata to 'paid'
+        // 1. Update Message Metadata to 'pending'
         await ctx.db.patch(args.messageId, {
             metadata: {
                 ...message.metadata,
-                offerStatus: "paid",
-                paidAt: now,
-                paidAmount: totalAmount,
-                commissionDeducted: commissionAmount,
-                vendorReceived: vendorEarnings,
+                offerStatus: "pending_payment",
+                paymentInitiatedAt: now,
+                requestedAmount: totalAmount,
             }
         });
 
-        // 2. Update Lead status to 'booked'
+        // 2. Update Lead status to 'payment_pending'
         await ctx.db.patch(args.leadId, {
-            status: "booked",
+            status: "payment_pending",
             updatedAt: now,
             lastActionAt: now,
         });
 
-        // 3. Create Transaction: Full Payment (Escrow In)
-        await ctx.db.insert("transactions", {
+        // 3. Create Transaction: Full Payment (PENDING)
+        const transactionId = await ctx.db.insert("transactions", {
             leadId: args.leadId,
             payerId: user._id,
             payeeId: lead.supplierId,
             amount: totalAmount,
             type: "escrow_in",
-            status: "completed",
+            status: "pending",
+            sbos_status: "pending",
             timestamp: now,
             metadata: {
                 messageId: args.messageId,
                 note: `Payment for offer: ${message.metadata?.offerTitle}`,
+                commissionRate,
+                commissionAmount,
+                vendorEarnings
             },
         });
 
-        // 4. Create Transaction: Platform Commission (10%)
-        await ctx.db.insert("transactions", {
-            leadId: args.leadId,
-            payerId: lead.supplierId, // Deducted from vendor
-            payeeId: null, // Platform
-            amount: commissionAmount,
-            type: "commission",
-            status: "completed",
-            timestamp: now,
-            metadata: {
-                rate: commissionRate,
-                sourceTransaction: args.messageId,
-            },
-        });
-
-        // 5. Create Transaction: Vendor Credit (90%)
-        await ctx.db.insert("transactions", {
-            leadId: args.leadId,
-            payerId: user._id,
-            payeeId: lead.supplierId,
-            amount: vendorEarnings,
-            type: "vendor_credit",
-            status: "completed",
-            timestamp: now,
-            metadata: {
-                afterCommission: true,
-                commissionDeducted: commissionAmount,
-            },
-        });
-
-        // 6. ========== UPDATE VENDOR BALANCE ==========
-        const currentBalance = supplier.walletBalance || 0;
-        const currentTotalEarnings = supplier.totalEarnings || 0;
-
-        await ctx.db.patch(lead.supplierId, {
-            walletBalance: currentBalance + vendorEarnings,
-            totalEarnings: currentTotalEarnings + vendorEarnings,
-            updatedAt: now,
-        });
+        return {
+            success: true,
+            transactionId,
+            totalAmount,
+            commissionAmount,
+            vendorEarnings
+        };
         // =============================================
 
         // 7. Insert System Message
@@ -596,11 +579,114 @@ export const processPayment = mutation({
 
         return {
             success: true,
-            breakdown: {
-                total: totalAmount,
-                commission: commissionAmount,
-                vendorEarnings: vendorEarnings,
-            }
+            transactionId,
         };
     },
+});
+
+export const confirmOfferPayment = mutation({
+    args: {
+        transactionId: v.id("transactions"),
+        sbosPaymentIntentId: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const transaction = await ctx.db.get(args.transactionId);
+        if (!transaction || transaction.status === "success") return;
+
+        const now = Date.now();
+        const { messageId, commissionAmount, vendorEarnings, commissionRate } = transaction.metadata;
+
+        // 1. Update Transaction
+        await ctx.db.patch(args.transactionId, {
+            status: "success",
+            sbos_status: "paid",
+            sbos_payment_intent_id: args.sbosPaymentIntentId,
+            timestamp: now,
+        });
+
+        // 2. Update Message
+        const message = await ctx.db.get(messageId);
+        if (message) {
+            await ctx.db.patch(messageId, {
+                metadata: {
+                    ...message.metadata,
+                    offerStatus: "paid",
+                    paidAt: now,
+                    paidAmount: transaction.amount,
+                    commissionDeducted: commissionAmount,
+                    vendorReceived: vendorEarnings,
+                }
+            });
+        }
+
+        // 3. Update Lead
+        await ctx.db.patch(transaction.leadId, {
+            status: "booked",
+            updatedAt: now,
+            lastActionAt: now,
+        });
+
+        // 4. Update Vendor Balance
+        const supplier = await ctx.db.get(transaction.payeeId);
+        if (supplier) {
+            await ctx.db.patch(transaction.payeeId, {
+                walletBalance: (supplier.walletBalance || 0) + vendorEarnings,
+                totalEarnings: (supplier.totalEarnings || 0) + vendorEarnings,
+                updatedAt: now,
+            });
+        }
+
+        // 5. Create System Messages
+        const lead = await ctx.db.get(transaction.leadId);
+        if (lead && lead.conversationId) {
+            await ctx.db.insert("messages", {
+                conversationId: lead.conversationId,
+                senderId: transaction.userId || transaction.payerId,
+                content: `✅ Payment Successful!\n💰 Total: ৳${transaction.amount.toLocaleString()}\n💵 Vendor received their share.`,
+                type: "text",
+                metadata: { isSystemMessage: true, paymentConfirmation: true },
+                createdAt: now,
+            });
+        }
+    }
+});
+
+export const failOfferPayment = mutation({
+    args: {
+        transactionId: v.id("transactions"),
+        reason: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const transaction = await ctx.db.get(args.transactionId);
+        if (!transaction) return;
+
+        const now = Date.now();
+        const { messageId } = transaction.metadata;
+
+        // 1. Update Transaction
+        await ctx.db.patch(args.transactionId, {
+            status: "failed",
+            sbos_status: "failed",
+            timestamp: now,
+        });
+
+        // 2. Update Message
+        if (messageId) {
+            const message = await ctx.db.get(messageId);
+            if (message) {
+                await ctx.db.patch(messageId, {
+                    metadata: {
+                        ...message.metadata,
+                        offerStatus: "failed",
+                    }
+                });
+            }
+        }
+
+        // 3. Update Lead
+        await ctx.db.patch(transaction.leadId, {
+            status: "quoted", // Revert to quoted
+            updatedAt: now,
+        });
+    }
 });

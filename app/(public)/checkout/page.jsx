@@ -16,7 +16,9 @@ import {
     Clock,
     Check,
 } from "lucide-react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery, useAction } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import useAuthStore from "@/hooks/use-auth-store";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -46,6 +48,10 @@ export default function CheckoutPage() {
     const [promoCode, setPromoCode] = useState("");
     const [promoDiscount, setPromoDiscount] = useState(0);
     const [showExpiredModal, setShowExpiredModal] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [attendeeDetails, setAttendeeDetails] = useState([]);
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
+    const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
     // Form State
     const [attendeeInfo, setAttendeeInfo] = useState({
@@ -54,45 +60,42 @@ export default function CheckoutPage() {
         mobile: "+880",
     });
     const [errors, setErrors] = useState({});
+    const [promoToValidate, setPromoToValidate] = useState("");
 
-    const { supabase } = useSupabase();
-    const [user, setUser] = useState(null);
-    const [event, setEvent] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isProcessing, setIsProcessing] = useState(false);
+    const { user, token } = useAuthStore();
+    const initiateSbosPayment = useAction(api.payments.initiateSbosPayment);
 
-    // 1. Fetch Auth State
+    // Fetch Event Data (Convex)
+    const event = useQuery(api.events.getBySlug, { slug: eventId || "" });
+    const isLoading = event === undefined;
+
+    // Calculate Totals
+    const subtotal = tickets.reduce(
+        (sum, ticket) => sum + ticket.price * ticket.quantity,
+        0
+    );
+
+    // Promo Validation Query
+    const couponResult = useQuery(api.coupons.validateCoupon,
+        promoToValidate ? { code: promoToValidate, eventId: event?._id, amount: subtotal } : "skip"
+    );
+
+    // Watch coupon result
     useEffect(() => {
-        async function getAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) setUser(session.user);
-        }
-        getAuth();
-    }, [supabase]);
-
-    // 2. Fetch Event Data
-    useEffect(() => {
-        if (!eventId) return;
-        async function fetchEvent() {
-            setIsLoading(true);
-            try {
-                const { data, error } = await supabase
-                    .from('events')
-                    .select('*')
-                    .eq('slug', eventId)
-                    .single();
-
-                if (error) throw error;
-                setEvent(data);
-            } catch (err) {
-                console.error("Checkout event fetch failed:", err);
-            } finally {
-                setIsLoading(false);
+        if (promoToValidate && couponResult) {
+            if (couponResult.valid) {
+                setAppliedCoupon(couponResult);
+                toast.success("Promo code applied!");
+                setPromoDiscount(couponResult.discountValue); // Still keeping for legacy display if needed
+            } else if (couponResult.valid === false) {
+                toast.error(couponResult.message || "Invalid promo code");
+                setAppliedCoupon(null);
+                setPromoDiscount(0);
             }
+            setIsValidatingCoupon(false);
+            setPromoToValidate(""); // Reset to allow re-entry of same code if needed or just stop polling
         }
-        fetchEvent();
-    }, [eventId, supabase]);
-
+    }, [couponResult, promoToValidate]);
 
     const eventTitle = event?.title?.en || event?.title || "Sample Event";
 
@@ -141,13 +144,15 @@ export default function CheckoutPage() {
                     const parsed = JSON.parse(storedSeatIds);
                     if (Array.isArray(parsed)) {
                         setSeatIds(parsed);
+                        // Initialize attendee details
+                        setAttendeeDetails(parsed.map(id => ({ seatId: id, name: "" })));
                     }
                 } catch (e) {
                     console.error('Failed to parse checkout seat IDs:', e);
                 }
             }
         }
-    }, [router]);
+    }, []);
 
     // Countdown Timer
     useEffect(() => {
@@ -168,15 +173,20 @@ export default function CheckoutPage() {
         return () => clearInterval(timer);
     }, [timeLeft]);
 
-    // Calculate Totals
-    const subtotal = tickets.reduce(
-        (sum, ticket) => sum + ticket.price * ticket.quantity,
-        0
-    );
     const platformFee = Math.round(subtotal * (PLATFORM_FEE_PERCENT / 100));
     const vat = Math.round(subtotal * (VAT_PERCENT / 100));
-    const discount = Math.round(subtotal * (promoDiscount / 100));
-    const total = subtotal + platformFee + vat - discount;
+
+    // Improved Discount Calculation
+    const calculateDiscount = () => {
+        if (!appliedCoupon) return 0;
+        if (appliedCoupon.discountType === "percentage") {
+            return Math.round(subtotal * (appliedCoupon.discountValue / 100));
+        }
+        return appliedCoupon.discountValue;
+    };
+
+    const discountAmount = calculateDiscount();
+    const total = subtotal + platformFee + vat - discountAmount;
 
     // Ticket Quantity Handlers
     const updateQuantity = (id, delta) => {
@@ -199,28 +209,14 @@ export default function CheckoutPage() {
 
     // Promo Code Handler
     const applyPromoCode = () => {
-        // Demo promo codes
-        const promoCodes = {
-            ROYAL10: 10,
-            VIP20: 20,
-            EARLY15: 15,
-        };
-
-        if (promoCodes[promoCode.toUpperCase()]) {
-            setPromoDiscount(promoCodes[promoCode.toUpperCase()]);
-            toast.success(`Promo code applied! ${promoCodes[promoCode.toUpperCase()]}% discount`);
-        } else {
-            toast.error("Invalid promo code");
-        }
+        if (!promoCode) return;
+        setIsValidatingCoupon(true);
+        setPromoToValidate(promoCode);
     };
 
     // Form Validation
     const validateForm = () => {
         const newErrors = {};
-
-        if (!attendeeInfo.fullName.trim()) {
-            newErrors.fullName = "Full name is required";
-        }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!attendeeInfo.email.trim()) {
@@ -235,6 +231,13 @@ export default function CheckoutPage() {
         } else if (!mobileRegex.test(attendeeInfo.mobile)) {
             newErrors.mobile = "Invalid mobile number (must be +880 followed by 10 digits)";
         }
+
+        // Validate individual attendee names
+        attendeeDetails.forEach((attendee, index) => {
+            if (!attendee.name.trim()) {
+                newErrors[`attendee_${index}`] = "Name is required";
+            }
+        });
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -262,41 +265,37 @@ export default function CheckoutPage() {
             return;
         }
 
-        if (!event || !event.id) {
+        if (!event || !event._id) {
             toast.error("Event data not loaded. Please wait or refresh.");
             return;
         }
 
         if (total <= 0) {
             toast.error("Invalid total amount. Please ensure you have selected tickets.");
-            console.error("Checkout Error: Total is 0", { total, tickets });
             return;
         }
 
+        setIsProcessing(true);
         try {
-            const response = await fetch("/api/payment/sslcommerz/init", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    amount: total,
-                    eventId: event.id,
-                    userId: user.id,
-                    attendeeName: attendeeInfo.fullName,
-                    attendeeEmail: attendeeInfo.email,
-                    ticketQuantity: tickets.reduce((sum, t) => sum + t.quantity, 0),
-                    tickets: tickets.map(t => t.details || t),
-                    seatIds: seatIds,
-                }),
+            const result = await initiateSbosPayment({
+                eventId: event._id,
+                seatIds: seatIds,
+                amount: total,
+                token: token,
+                guestName: attendeeDetails[0]?.name || "Guest",
+                guestEmail: attendeeInfo.email,
+                guestPhone: attendeeInfo.mobile,
+                attendeeDetails: attendeeDetails,
+                couponCode: appliedCoupon ? promoCode : undefined,
+                success_url: `${window.location.origin}/my-tickets?payment=success`,
+                failure_url: `${window.location.origin}/explore?payment=failed`,
             });
 
-            const data = await response.json();
-            toast.dismiss();
-
-            if (data.status === "SUCCESS" && data.gatewayPageURL) {
+            if (result.success && result.gateway_redirect_url) {
                 toast.success("Redirecting to payment gateway...");
-                window.location.href = data.gatewayPageURL;
+                window.location.href = result.gateway_redirect_url;
             } else {
-                throw new Error(data.error || "Failed to initialize payment");
+                throw new Error("Failed to initialize payment");
             }
         } catch (error) {
             console.error("Checkout Error:", error);
@@ -449,39 +448,10 @@ export default function CheckoutPage() {
                             </div>
                         </Card>
 
-                        {/* Attendee Information */}
+                        {/* Contact Information */}
                         <Card className="p-6 bg-card border-border">
-                            <h3 className="font-semibold text-lg mb-4 text-foreground">Attendee Information</h3>
-
-                            <div className="mb-4">
-                                <label className="flex items-center gap-2 cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={useUserInfo}
-                                        onChange={(e) => setUseUserInfo(e.target.checked)}
-                                        className="w-4 h-4 accent-[#D4AF37]"
-                                    />
-                                    <span className="text-sm text-foreground">Same as logged-in user</span>
-                                </label>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <Label htmlFor="fullName" className="text-foreground">Full Name *</Label>
-                                    <Input
-                                        id="fullName"
-                                        value={attendeeInfo.fullName}
-                                        onChange={(e) =>
-                                            setAttendeeInfo({ ...attendeeInfo, fullName: e.target.value })
-                                        }
-                                        className="mt-1.5 bg-input border-border text-foreground focus:border-[#D4AF37]"
-                                        placeholder="Enter your full name"
-                                    />
-                                    {errors.fullName && (
-                                        <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
-                                    )}
-                                </div>
-
+                            <h3 className="font-semibold text-lg mb-4 text-foreground">Contact Information</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <Label htmlFor="email" className="text-foreground">Email Address *</Label>
                                     <Input
@@ -517,6 +487,63 @@ export default function CheckoutPage() {
                                 </div>
                             </div>
                         </Card>
+
+                        {/* Attendee Assignment */}
+                        <Card className="p-6 bg-card border-border">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-semibold text-lg text-foreground">Ticket Assignment</h3>
+                                <label className="flex items-center gap-2 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={useUserInfo}
+                                        onChange={(e) => {
+                                            setUseUserInfo(e.target.checked);
+                                            if (e.target.checked) {
+                                                // Fill first attendee with user info
+                                                const newDetails = [...attendeeDetails];
+                                                if (newDetails.length > 0) {
+                                                    newDetails[0].name = user?.name || "";
+                                                    setAttendeeDetails(newDetails);
+                                                }
+                                            }
+                                        }}
+                                        className="w-4 h-4 accent-[#D4AF37]"
+                                    />
+                                    <span className="text-xs text-muted-foreground">Fill primary attendee from profile</span>
+                                </label>
+                            </div>
+
+                            <div className="space-y-4">
+                                {attendeeDetails.map((attendee, index) => {
+                                    const ticket = tickets.find(t => t.id === attendee.seatId);
+                                    return (
+                                        <div key={attendee.seatId} className="space-y-2 p-4 rounded-lg bg-zinc-500/5 border border-border">
+                                            <div className="flex justify-between items-center mb-1">
+                                                <Label className="text-foreground font-semibold">
+                                                    Ticket #{index + 1} - {ticket?.name || "Seat"}
+                                                </Label>
+                                                <span className="text-[10px] uppercase tracking-tighter text-[#D4AF37] bg-[#D4AF37]/10 px-2 py-0.5 rounded border border-[#D4AF37]/20">
+                                                    Required
+                                                </span>
+                                            </div>
+                                            <Input
+                                                value={attendee.name}
+                                                onChange={(e) => {
+                                                    const newDetails = [...attendeeDetails];
+                                                    newDetails[index].name = e.target.value;
+                                                    setAttendeeDetails(newDetails);
+                                                }}
+                                                className="bg-input border-border text-foreground focus:border-[#D4AF37]"
+                                                placeholder={`Full Name of Attendee ${index + 1}`}
+                                            />
+                                            {errors[`attendee_${index}`] && (
+                                                <p className="text-red-500 text-sm mt-1">{errors[`attendee_${index}`]}</p>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </Card>
                     </div>
 
                     {/* RIGHT COLUMN: Payment & Summary (Sticky) */}
@@ -538,10 +565,10 @@ export default function CheckoutPage() {
                                     <span className="text-muted-foreground">VAT ({VAT_PERCENT}%)</span>
                                     <span className="text-foreground">BDT {vat.toLocaleString()}</span>
                                 </div>
-                                {promoDiscount > 0 && (
+                                {appliedCoupon && (
                                     <div className="flex justify-between text-sm text-green-500">
-                                        <span>Discount ({promoDiscount}%)</span>
-                                        <span>- BDT {discount.toLocaleString()}</span>
+                                        <span>Discount ({appliedCoupon.discountType === 'percentage' ? `${appliedCoupon.discountValue}%` : 'Fixed'})</span>
+                                        <span>- BDT {discountAmount.toLocaleString()}</span>
                                     </div>
                                 )}
                             </div>
@@ -558,13 +585,14 @@ export default function CheckoutPage() {
                                     <Button
                                         variant="outline"
                                         onClick={applyPromoCode}
+                                        disabled={isValidatingCoupon || !promoCode}
                                         className="border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37]/10"
                                     >
-                                        Apply
+                                        {isValidatingCoupon ? "..." : "Apply"}
                                     </Button>
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-2">
-                                    Try: ROYAL10, VIP20, EARLY15
+                                    Try: WELCOME10, SAVE500
                                 </p>
                             </div>
 
@@ -580,26 +608,16 @@ export default function CheckoutPage() {
                             {/* Payment Methods */}
                             <div className="mb-6">
                                 <h4 className="font-semibold mb-3 text-foreground">Payment Method</h4>
-                                <div className="grid grid-cols-3 gap-3">
-                                    {["stripe", "bkash", "nagad"].map((method) => (
-                                        <button
-                                            key={method}
-                                            onClick={() => setSelectedPayment(method)}
-                                            className={`relative p-4 rounded-lg border-2 transition-all ${selectedPayment === method
-                                                ? "border-[#D4AF37] bg-[#D4AF37]/5"
-                                                : "border-border hover:border-[#D4AF37]/50"
-                                                }`}
-                                        >
-                                            <div className="text-sm font-medium text-foreground capitalize">
-                                                {method === "stripe" && "Stripe (International)"}
-                                                {method === "bkash" && "bKash"}
-                                                {method === "nagad" && "Nagad"}
-                                            </div>
-                                            {selectedPayment === method && (
-                                                <Check className="absolute top-2 right-2 w-4 h-4 text-[#D4AF37]" />
-                                            )}
-                                        </button>
-                                    ))}
+                                <div className="grid grid-cols-1 gap-3">
+                                    <button
+                                        onClick={() => setSelectedPayment("switchboard")}
+                                        className="relative p-4 rounded-lg border-2 border-[#D4AF37] bg-[#D4AF37]/5 transition-all"
+                                    >
+                                        <div className="text-sm font-medium text-foreground">
+                                            Online Payment (Credit Card, bKash, Nagad, etc.)
+                                        </div>
+                                        <Check className="absolute top-2 right-2 w-4 h-4 text-[#D4AF37]" />
+                                    </button>
                                 </div>
                             </div>
 
@@ -628,11 +646,20 @@ export default function CheckoutPage() {
                             {/* Checkout Button */}
                             <Button
                                 onClick={handleCheckout}
-                                disabled={timeLeft <= 0 || !agreeToTerms || total <= 0 || !event}
+                                disabled={isProcessing || timeLeft <= 0 || !agreeToTerms || total <= 0 || !event}
                                 className="w-full py-6 text-lg font-bold bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black border-none"
                             >
-                                <Lock className="w-5 h-5 mr-2" />
-                                Pay Securely BDT {total.toLocaleString()}
+                                {isProcessing ? (
+                                    <>
+                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2"></div>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Lock className="w-5 h-5 mr-2" />
+                                        Pay Securely BDT {total.toLocaleString()}
+                                    </>
+                                )}
                             </Button>
 
                             <p className="text-xs text-center text-muted-foreground mt-4">
@@ -653,11 +680,20 @@ export default function CheckoutPage() {
                 <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t border-border shadow-lg">
                     <Button
                         onClick={handleCheckout}
-                        disabled={timeLeft <= 0 || !agreeToTerms}
+                        disabled={isProcessing || timeLeft <= 0 || !agreeToTerms}
                         className="w-full py-6 text-lg font-bold bg-[#D4AF37] hover:bg-[#D4AF37]/90 text-black"
                     >
-                        <Lock className="w-5 h-5 mr-2" />
-                        Pay BDT {total.toLocaleString()}
+                        {isProcessing ? (
+                            <>
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2"></div>
+                                Processing...
+                            </>
+                        ) : (
+                            <>
+                                <Lock className="w-5 h-5 mr-2" />
+                                Pay BDT {total.toLocaleString()}
+                            </>
+                        )}
                     </Button>
                 </div>
             </div>

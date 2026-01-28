@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { Plus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useUserRoles } from "@/hooks/use-user-roles";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import useAuthStore from "@/hooks/use-auth-store";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -16,6 +18,7 @@ import EventCard from "@/components/event-card";
 
 export default function MyEventsPage() {
   const router = useRouter();
+  const { token } = useAuthStore();
 
   // Role Check
   const { isOrganizer, isAdmin, isLoading: isRoleLoading, user } = useUserRoles();
@@ -27,34 +30,13 @@ export default function MyEventsPage() {
     }
   }, [isRoleLoading, user, isOrganizer, isAdmin, router]);
 
-  // Supabase State
-  const { supabase } = useSupabase();
-  const [events, setEvents] = useState([]);
-  const [isLoadingEvents, setIsLoadingEvents] = useState(true);
-
-  // Fetch Events
-  useEffect(() => {
-    if (!user) return; // Wait for role check
-
-    async function loadEvents() {
-      try {
-        const { data, error } = await supabase
-          .from('events')
-          .select('*')
-          .eq('owner_id', user.id)
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setEvents(data || []);
-      } catch (err) {
-        console.error("Failed to load events", err);
-        toast.error("Could not load your events");
-      } finally {
-        setIsLoadingEvents(false);
-      }
-    }
-    loadEvents();
-  }, [user, supabase]);
+  // Convex State
+  const events = useQuery(
+    api.events.getMyEvents,
+    user && token ? { token } : "skip"
+  ) || [];
+  const deleteEvent = useMutation(api.events.deleteEvent);
+  const isLoadingEvents = events === undefined;
 
   const handleDelete = async (eventId) => {
     const confirmed = window.confirm(
@@ -64,20 +46,15 @@ export default function MyEventsPage() {
     if (!confirmed) return;
 
     try {
-      const { error } = await supabase
-        .from('events')
-        .delete()
-        .eq('id', eventId);
-
-      if (error) throw error;
+      await deleteEvent({ eventId, token });
 
       toast.success("Event deleted successfully");
-      // Optimistic update
-      setEvents(prev => prev.filter(e => e.id !== eventId));
+      // Convex will automatically update the UI via reactive query
     } catch (error) {
       toast.error(error.message || "Failed to delete event");
     }
   };
+
 
 
 
@@ -146,11 +123,11 @@ export default function MyEventsPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events?.map((event) => (
               <EventCard
-                key={event.id}
+                key={event._id || event.id}
                 event={event}
                 action="event"
-                onClick={() => handleEventClick(event.id)}
-                onDelete={() => handleDelete(event.id)}
+                onClick={() => handleEventClick(event.slug)}
+                onDelete={() => handleDelete(event._id || event.id)}
               />
             ))}
           </div>

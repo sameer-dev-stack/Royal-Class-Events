@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useAuthStore from "@/hooks/use-auth-store";
 import Image from "next/image";
 import { format } from "date-fns";
@@ -58,6 +58,40 @@ export default function MyTicketsPage() {
   const [currentTicketIndex, setCurrentTicketIndex] = useState(0);
 
   const [isMounted, setIsMounted] = useState(false);
+  const searchParams = useSearchParams();
+  const paymentStatus = searchParams.get("payment");
+  const isMock = searchParams.get("mock") === "true";
+  const mockConfirm = useMutation(api.payments.mockConfirmLatestPayment);
+
+  useEffect(() => {
+    if (paymentStatus === "success") {
+      toast.success("Congratulations! Your payment was successful.", {
+        description: "Your tickets are now available in the Active Passes tab.",
+        duration: 5000,
+      });
+
+      if (isMock) {
+        const runMock = async () => {
+          try {
+            await mockConfirm({ token });
+          } catch (e) {
+            console.error("Mock confirm failed:", e);
+          }
+        };
+        runMock();
+      }
+
+      // Clear URL params to avoid re-triggering on refresh
+      const newUrl = window.location.pathname;
+      window.history.replaceState({ path: newUrl }, "", newUrl);
+    } else if (paymentStatus === "failed") {
+      toast.error("Payment failed or was cancelled.", {
+        description: "Please try again or contact support if problems persist.",
+      });
+      const newUrl = window.location.pathname;
+      window.history.replaceState({ path: newUrl }, "", newUrl);
+    }
+  }, [paymentStatus, isMock, token, mockConfirm]);
 
   useEffect(() => {
     setIsMounted(true);

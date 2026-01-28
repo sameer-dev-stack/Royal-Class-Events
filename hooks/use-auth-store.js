@@ -9,6 +9,9 @@ const useAuthStore = create(
       token: Cookies.get("auth-token") || undefined,
       isAuthenticated: !!Cookies.get("auth-token"),
       viewMode: "attendee",
+      isLoading: true,
+
+      setIsLoading: (loading) => set({ isLoading: loading }),
 
       login: (userData, token) => {
         Cookies.set("auth-token", token, {

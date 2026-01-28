@@ -173,6 +173,7 @@ function HeaderContent() {
                       "lg:hidden h-9 w-9 text-muted-foreground hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 border border-transparent hover:border-[#D4AF37]/20 transition-all",
                       isMenuOpen && "text-[#D4AF37] bg-[#D4AF37]/10 rotate-90"
                     )}
+                    aria-label="Toggle Navigation Menu"
                   >
                     {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                   </Button>

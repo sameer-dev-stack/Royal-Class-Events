@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -16,8 +17,8 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) {
-    const { user } = useAuthStore();
-    const { supabase } = useSupabase();
+    const { user, token } = useAuthStore();
+    const createLead = useMutation(api.leads.createLead);
     const router = useRouter();
 
     const [loading, setLoading] = useState(false);
@@ -45,24 +46,14 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
 
         setLoading(true);
         try {
-            const { data: lead, error } = await supabase
-                .from('leads')
-                .insert({
-                    supplier_id: supplierId,
-                    user_id: user.id,
-                    status: 'new',
-                    details: {
-                        eventDate: date.getTime(),
-                        guestCount: parseInt(guests),
-                        budget: parseInt(budget),
-                        requirements: message,
-                    },
-                    last_action_at: new Date().toISOString()
-                })
-                .select()
-                .single();
-
-            if (error) throw error;
+            const leadId = await createLead({
+                token: token,
+                supplierId: supplierId,
+                eventDate: date.getTime(),
+                guestCount: parseInt(guests),
+                budget: parseInt(budget),
+                message: message,
+            });
 
             toast.success("Quote Requested Successfully! 🚀");
             onClose();
@@ -74,7 +65,7 @@ export default function RFQModal({ isOpen, onClose, supplierId, supplierName }) 
             setMessage("");
 
             // Redirect to Chat (or a confirmation page if chat isn't ready)
-            router.push(`/messages?leadId=${lead.id}`);
+            router.push(`/messages?leadId=${leadId}`);
         } catch (error) {
             console.error(error);
             toast.error(error.message || "Failed to send request");

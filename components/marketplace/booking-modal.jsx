@@ -19,18 +19,31 @@ import {
     Loader2
 } from "lucide-react";
 import { format } from "date-fns";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function MarketplaceBookingModal({ isOpen, onClose, service, supplierId }) {
-    const { supabase } = useSupabase();
-    const { user } = useAuthStore();
+    const createLead = useMutation(api.leads.createLead);
+    const { user, token } = useAuthStore();
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState("10:00");
     const [step, setStep] = useState(1); // 1: Schedule, 2: Review/Pay, 3: Success
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Fetch availability for the selected date
+    const startOfDayTimestamp = date ? new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime() : 0;
+    const endOfDayTimestamp = startOfDayTimestamp + (24 * 60 * 60 * 1000);
+
+    const schedule = useQuery(api.availability.getSchedule,
+        supplierId && date ? {
+            supplierId,
+            startDate: startOfDayTimestamp,
+            endDate: endOfDayTimestamp
+        } : "skip"
+    );
 
     if (!service) return null;
 
@@ -47,57 +60,22 @@ export default function MarketplaceBookingModal({ isOpen, onClose, service, supp
             const startDateTime = new Date(date);
             startDateTime.setHours(hours, minutes, 0, 0);
 
-            // Assume 2 hour default duration for now
-            const endDateTime = new Date(startDateTime);
-            endDateTime.setHours(startDateTime.getHours() + 2);
-
-            // 1. Create Booking in Supabase
-            const { data: booking, error: bookingError } = await supabase
-                .from('marketplace_bookings')
-                .insert([{
-                    customer_id: user.id,
-                    supplier_id: supplierId,
-                    service_id: service.id,
-                    status: 'awaiting_payment',
-                    start_time: startDateTime.toISOString(),
-                    end_time: endDateTime.toISOString(),
-                    total_amount: service.price,
-                    escrow_status: 'none'
-                }])
-                .select()
-                .single();
-
-            if (bookingError) throw bookingError;
-
-            // 2. Simulate Payment & Escrow
-            // In a real app, we'd call Stripe here.
-            const { error: txError } = await supabase
-                .from('marketplace_transactions')
-                .insert([{
-                    booking_id: booking.id,
-                    amount: service.price,
-                    platform_fee: service.price * 0.15, // 15% commission as per doc
-                    vendor_payout: service.price * 0.85,
-                    status: 'completed'
-                }]);
-
-            if (txError) throw txError;
-
-            // 3. Update Booking Status to Confirmed/Held in Escrow
-            await supabase
-                .from('marketplace_bookings')
-                .update({
-                    status: 'confirmed',
-                    escrow_status: 'held'
-                })
-                .eq('id', booking.id);
+            // Create Lead/RFQ in Convex (which handles booking workflow)
+            await createLead({
+                token: token,
+                supplierId: supplierId,
+                eventDate: startDateTime.getTime(), // Send Timestamp (Number) instead of String
+                guestCount: 0,
+                budget: Number(service.price),
+                message: `Direct booking for ${service.title} on ${format(startDateTime, "MMMM do, yyyy")} at ${time}`,
+            });
 
             setStep(3);
-            toast.success("Booking confirmed and funds held in escrow!");
+            toast.success("Booking request submitted! The vendor will confirm shortly.");
 
         } catch (error) {
             console.error("Booking error:", error);
-            toast.error("Failed to complete booking: " + error.message);
+            toast.error("Failed to submit booking: " + error.message);
         } finally {
             setIsSubmitting(false);
         }
@@ -107,6 +85,31 @@ export default function MarketplaceBookingModal({ isOpen, onClose, service, supp
         "09:00", "10:00", "11:00", "12:00", "13:00",
         "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"
     ];
+
+    // Helper to check if a slot is available
+    const isSlotAvailable = (slotTime) => {
+        if (!schedule) return true; // Assume available while loading (or maybe false?)
+
+        const [hours, minutes] = slotTime.split(":").map(Number);
+        const slotStart = new Date(date);
+        slotStart.setHours(hours, minutes, 0, 0);
+        const startTs = slotStart.getTime();
+        const endTs = startTs + (60 * 60 * 1000); // Assume 1 hour duration
+
+        // Check Blocks
+        const isBlocked = schedule.blocks.some(b =>
+            (b.startDateTime < endTs) && (b.endDateTime > startTs)
+        );
+        if (isBlocked) return false;
+
+        // Check Bookings
+        const isBooked = schedule.bookings.some(b =>
+            (b.startDateTime < endTs) && (b.endDateTime > startTs)
+        );
+        if (isBooked) return false;
+
+        return true;
+    };
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => {
@@ -140,20 +143,26 @@ export default function MarketplaceBookingModal({ isOpen, onClose, service, supp
                                     <Clock className="w-3 h-3" /> Available Slots
                                 </label>
                                 <div className="grid grid-cols-4 gap-2">
-                                    {timeSlots.map((ts) => (
-                                        <button
-                                            key={ts}
-                                            onClick={() => setTime(ts)}
-                                            className={cn(
-                                                "py-2 rounded-lg text-xs font-bold border transition-all",
-                                                time === ts
-                                                    ? "bg-[#D4AF37] border-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/20"
-                                                    : "bg-background border-border text-muted-foreground hover:border-[#D4AF37]/50"
-                                            )}
-                                        >
-                                            {ts}
-                                        </button>
-                                    ))}
+                                    {timeSlots.map((ts) => {
+                                        const available = isSlotAvailable(ts);
+                                        return (
+                                            <button
+                                                key={ts}
+                                                onClick={() => available && setTime(ts)}
+                                                disabled={!available}
+                                                className={cn(
+                                                    "py-2 rounded-lg text-xs font-bold border transition-all",
+                                                    time === ts && available
+                                                        ? "bg-[#D4AF37] border-[#D4AF37] text-black shadow-lg shadow-[#D4AF37]/20"
+                                                        : available
+                                                            ? "bg-background border-border text-muted-foreground hover:border-[#D4AF37]/50"
+                                                            : "bg-red-500/10 border-red-500/20 text-red-900/50 cursor-not-allowed decoration-red-900/50 line-through"
+                                                )}
+                                            >
+                                                {ts}
+                                            </button>
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </div>

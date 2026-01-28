@@ -5,20 +5,21 @@ import { motion } from "framer-motion";
 import { Bell, Mail, MessageSquare, Globe } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import { toast } from "sonner";
 
 export default function NotificationsSettingsPage() {
-    const { supabase } = useSupabase();
-    const { user, updateUser } = useAuthStore();
+    const updateProfile = useMutation(api.users.updateProfile);
+    const { user, updateUser, token } = useAuthStore();
     const [settings, setSettings] = React.useState({
         email: true,
         push: false,
         marketplace: true,
         messages: true
     });
-    const [loadingKey, setLoadingKey] = React.useState(null);
+    const [loadingKey, setLoadingKey] = React.useState<string | null>(null);
 
     // Load initial settings from metadata
     React.useEffect(() => {
@@ -27,29 +28,29 @@ export default function NotificationsSettingsPage() {
         }
     }, [user]);
 
-    const handleToggle = async (key) => {
+    const handleToggle = async (key: string) => {
         if (!user) return;
-        const newValue = !settings[key];
+        const newValue = !settings[key as keyof typeof settings];
         setSettings(prev => ({ ...prev, [key]: newValue })); // Optimistic update
         setLoadingKey(key);
 
         try {
-            const updatedMetadata = {
-                ...user.metadata,
-                notifications: {
-                    ...settings,
-                    [key]: newValue
-                }
+            const updatedNotifications = {
+                ...settings,
+                [key]: newValue
             };
 
-            const { error } = await supabase
-                .from('profiles')
-                .update({ metadata: updatedMetadata })
-                .eq('id', user.id);
+            await updateProfile({
+                token: token || "",
+                notifications: updatedNotifications,
+            });
 
-            if (error) throw error;
-
-            updateUser({ metadata: updatedMetadata });
+            updateUser({
+                metadata: {
+                    ...user.metadata,
+                    notifications: updatedNotifications
+                }
+            });
             toast.success("Settings saved");
         } catch (error) {
             console.error("Failed to save setting:", error);
@@ -58,6 +59,7 @@ export default function NotificationsSettingsPage() {
         } finally {
             setLoadingKey(null);
         }
+
     };
 
     return (

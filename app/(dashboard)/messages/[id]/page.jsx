@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import Link from "next/link";
@@ -71,7 +71,7 @@ export default function ChatPage() {
     const sendOfferMutation = useMutation(api.leads.sendOffer);
     const acceptOfferMutation = useMutation(api.leads.acceptOffer);
     const declineOfferMutation = useMutation(api.leads.declineOffer);
-    const processPaymentMutation = useMutation(api.leads.processPayment);
+    const initiateOfferPaymentAction = useAction(api.payments.initiateOfferPayment);
 
     // Auto-scroll to bottom on new messages
     useEffect(() => {
@@ -137,20 +137,22 @@ export default function ChatPage() {
         setActiveOfferId(selectedOffer.id);
         setIsAcceptingOffer(true);
         try {
-            await processPaymentMutation({
+            const result = await initiateOfferPaymentAction({
                 messageId: selectedOffer.id,
                 leadId,
                 amount: selectedOffer.amount,
                 token,
+                success_url: `${window.location.origin}/messages/${leadId}?payment=success`,
+                failure_url: `${window.location.origin}/messages/${leadId}?payment=failed`,
             });
-            // Result is handled by system messages in thread
+
+            return result; // Result is handled by PaymentModal redirect
         } catch (error) {
             console.error("Payment failed:", error);
             throw error; // Let PaymentModal handle the error toast
         } finally {
             setIsAcceptingOffer(false);
             setActiveOfferId(null);
-            setSelectedOffer(null);
         }
     };
 
@@ -285,6 +287,7 @@ export default function ChatPage() {
                             size="icon"
                             className="lg:hidden"
                             onClick={() => router.push("/messages")}
+                            aria-label="Back to Messages"
                         >
                             <ArrowLeft className="w-5 h-5" />
                         </Button>
@@ -315,6 +318,7 @@ export default function ChatPage() {
                         size="icon"
                         onClick={() => setShowDetails(!showDetails)}
                         className="lg:hidden"
+                        aria-label="Toggle Details"
                     >
                         <Info className="w-5 h-5" />
                     </Button>
@@ -430,6 +434,7 @@ export default function ChatPage() {
                             type="submit"
                             disabled={!message.trim() || isSending}
                             className="bg-[#D4AF37] hover:bg-[#8C7326] text-black px-6"
+                            aria-label="Send Message"
                         >
                             {isSending ? (
                                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -480,7 +485,7 @@ export default function ChatPage() {
                 {/* Mobile Close Button */}
                 <div className="lg:hidden flex items-center justify-between p-4 border-b border-border">
                     <h3 className="font-bold text-foreground">Deal Details</h3>
-                    <Button variant="ghost" size="icon" onClick={() => setShowDetails(false)}>
+                    <Button variant="ghost" size="icon" onClick={() => setShowDetails(false)} aria-label="Close Details">
                         <X className="w-5 h-5" />
                     </Button>
                 </div>

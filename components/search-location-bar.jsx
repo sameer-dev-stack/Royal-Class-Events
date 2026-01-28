@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { Search, MapPin, Calendar, Loader2, X, ChevronDown, Crosshair } from "lucide-react";
 import { City, Country } from "country-state-city";
 import { format } from "date-fns";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import { createLocationSlug } from "@/lib/location-utils";
 import { bdDistricts, allBdCities } from "@/lib/bd-locations"; // Custom Data
@@ -18,7 +19,6 @@ import { cn } from "@/lib/utils";
 
 export default function SearchLocationBar() {
   const router = useRouter();
-  const { supabase } = useSupabase();
   const { user, updateUser } = useAuthStore();
 
   // --- Auth & Profile State ---
@@ -27,38 +27,14 @@ export default function SearchLocationBar() {
   // --- Event Search State ---
   const [eventQuery, setEventQuery] = useState("");
   const [showEventResults, setShowEventResults] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchLoading, setSearchLoading] = useState(false);
   const eventSearchRef = useRef(null);
 
-  // --- Search Logic (Supabase) ---
-  useEffect(() => {
-    if (eventQuery.trim().length < 2) {
-      setSearchResults([]);
-      return;
-    }
-
-    const delayDebounceFn = setTimeout(async () => {
-      setSearchLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('events')
-          .select('*')
-          .ilike('title', `%${eventQuery}%`)
-          .limit(5);
-
-        if (!error) {
-          setSearchResults(data);
-        }
-      } catch (err) {
-        console.error("Search failed:", err);
-      } finally {
-        setSearchLoading(false);
-      }
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [eventQuery, supabase]);
+  // Convex search query
+  const searchResults = useQuery(
+    api.search.searchEvents,
+    eventQuery.trim().length >= 2 ? { query: eventQuery, limit: 5 } : "skip"
+  ) || [];
+  const searchLoading = eventQuery.trim().length >= 2 && searchResults === undefined;
 
   // --- Location State ---
   const [locationOpen, setLocationOpen] = useState(false);

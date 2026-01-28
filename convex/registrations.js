@@ -21,8 +21,8 @@ export const registerForEvent = mutation({
     token: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const userDoc = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
-    if (!userDoc) throw new Error("Not logged in");
+    const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
+    if (!user) throw new Error("Not logged in");
 
     const event = await ctx.db.get(args.eventId);
     if (!event) throw new Error("Event not found");
@@ -53,7 +53,7 @@ export const registerForEvent = mutation({
     const existingRegistration = await ctx.db
       .query("registrations")
       .withIndex("by_event_user", (q) =>
-        q.eq("eventId", args.eventId).eq("userId", user._id)
+        q.eq("eventId", args.eventId).eq("userId", userId)
       )
       .unique();
 
@@ -68,7 +68,7 @@ export const registerForEvent = mutation({
     const registrationId = await ctx.db.insert("registrations", {
       tenantId: event.tenantId, // Inherit from event
       eventId: args.eventId,
-      userId: user._id,
+      userId: userId,
       externalId: regNum,
       registrationNumber: regNum,
 
@@ -83,7 +83,7 @@ export const registerForEvent = mutation({
         history: [{
           status: "confirmed",
           changedAt: now,
-          changedBy: user._id, // Self registered
+          changedBy: userId, // Self registered
           notes: "Self registration"
         }],
         lastUpdated: now
@@ -92,7 +92,7 @@ export const registerForEvent = mutation({
       // Attendee Info
       attendeeInfo: {
         primary: {
-          userId: user._id,
+          userId: userId,
           verifiedName: args.attendeeName,
           verifiedEmail: args.attendeeEmail,
           verifiedPhone: user.profile?.mobilePhone?.number,
@@ -345,7 +345,7 @@ export const checkInAttendee = mutation({
 
     const event = await ctx.db.get(regDoc.eventId);
     const isAdmin = user?.role === "admin" || user?.roles?.some(r => r.key === "admin");
-    const isOwner = event.userId === user?._id;
+    const isOwner = event.ownerId === user?._id;
 
     // DEV_AUTH_BYPASS
     const isMockUser = user?.externalId === "mock-user-id-12345";
@@ -568,13 +568,24 @@ export const bookSeats = mutation({
   args: {
     eventId: v.id("events"),
     seatIds: v.array(v.string()), // The requested seats
-    amount: v.number(),
+    amount: v.number(), // Total amount before discount
     token: v.optional(v.string()), // Auth token for logged in users
 
-    // Guest Details
+    // Guest Details (Buyer)
     guestName: v.string(),
     guestEmail: v.string(),
     guestPhone: v.string(),
+
+    // Individual Attendee Details
+    attendeeDetails: v.array(
+      v.object({
+        seatId: v.string(),
+        name: v.string(),
+      })
+    ),
+
+    // Optional Promo Code
+    couponCode: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     // 0. Resolve User Identity
@@ -589,13 +600,35 @@ export const bookSeats = mutation({
     }
     console.log("bookSeats: resolved userId", userId);
 
-    // A. ATOMIC CHECK: Fetch current inventory
+    // A. Verify Coupon if provided
+    let discountAmount = 0;
+    let couponId = undefined;
+    if (args.couponCode) {
+      const couponResult = await ctx.runQuery(api.coupons.validateCoupon, {
+        code: args.couponCode,
+        eventId: args.eventId,
+        amount: args.amount,
+      });
+
+      if (couponResult.valid) {
+        couponId = couponResult.couponId;
+        if (couponResult.discountType === "percentage") {
+          discountAmount = (args.amount * couponResult.discountValue) / 100;
+        } else {
+          discountAmount = couponResult.discountValue;
+        }
+      } else {
+        throw new Error(`Coupon Error: ${couponResult.message}`);
+      }
+    }
+
+    const finalAmount = Math.max(0, args.amount - discountAmount);
+
+    // B. ATOMIC CHECK: Fetch current inventory
     const existingBookings = await ctx.db
       .query("registrations")
       .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
       .collect();
-
-    console.log("bookSeats: total existing bookings for event", existingBookings.length);
 
     // Filter confirmed only
     const confirmedBookings = existingBookings.filter(reg => {
@@ -614,118 +647,83 @@ export const bookSeats = mutation({
       .withIndex("by_key", (q) => q.eq("key", "commission_rate"))
       .unique();
     const commissionRate = commissionSetting?.value || 10;
-    const platformFee = (args.amount * commissionRate) / 100;
-    const netAmount = args.amount - platformFee;
+    const platformFee = (finalAmount * commissionRate) / 100;
+    const netAmount = finalAmount - platformFee;
 
-    // B. Validate Availability
-    // Check if any of the requested seats are in the sold list
+    // C. Validate Availability
     const unavailable = args.seatIds.filter(seat => allSoldSeats.has(seat));
     if (unavailable.length > 0) {
-      console.error("bookSeats: Seats unavailable", unavailable);
       throw new Error(`Seats ${unavailable.join(", ")} are no longer available.`);
     }
 
     const bookingIds = [];
     const now = Date.now();
 
-    console.log("bookSeats: Creating", args.seatIds.length, "registrations");
-
-    // C. Create Registrations (One per seat for granular tracking)
+    // D. Create Registrations (One per seat for granular tracking)
     for (const seatId of args.seatIds) {
       const regNum = generateRegNumber();
-      console.log("bookSeats: Inserting seat", seatId, "with regNum", regNum);
+      // Find name for this specific seat
+      const attendeeName = args.attendeeDetails.find(a => a.seatId === seatId)?.name || args.guestName;
 
       const registrationId = await ctx.db.insert("registrations", {
         eventId: args.eventId,
-        userId: userId, // Link to user if logged in, otherwise null
+        userId: userId,
         externalId: regNum,
         registrationNumber: regNum,
 
         ticketQuantity: 1,
-        unitPrice: args.amount / args.seatIds.length, // Distribute amount
+        unitPrice: finalAmount / args.seatIds.length,
 
         status: {
-          current: "confirmed",
+          current: "pending_payment",
           history: [{
-            status: "confirmed",
+            status: "pending_payment",
             changedAt: now,
             changedBy: userId || "system",
-            notes: "Seat Booking"
+            notes: "Awaiting payment via Switchboard OS"
           }],
           lastUpdated: now
         },
 
         metadata: {
-          selectedSeatIds: [seatId], // Link specific seat
-          isSeated: true
+          selectedSeatIds: [seatId],
+          isSeated: true,
+          couponId,
+          originalPrice: args.amount / args.seatIds.length,
         },
 
         attendeeInfo: {
           primary: {
-            verifiedName: args.guestName,
-            verifiedEmail: args.guestEmail,
+            verifiedName: attendeeName,
+            verifiedEmail: args.guestEmail, // All tickets linked to buyer email currently
             verifiedPhone: args.guestPhone,
           }
         },
 
-        // Minimal required fields to satisfy schema
         checkIn: { status: "not_checked_in" },
         financials: {
-          totalAmount: args.amount / args.seatIds.length,
+          totalAmount: finalAmount / args.seatIds.length,
           currency: "BDT",
-          amountPaid: args.amount / args.seatIds.length,
-          serviceFee: platformFee / args.seatIds.length
+          amountPaid: finalAmount / args.seatIds.length,
+          serviceFee: platformFee / args.seatIds.length,
+          discountAmount: discountAmount / args.seatIds.length,
         },
         source: { source: "web", registrationCompleted: now },
         audit: { createdAt: now, updatedAt: now, version: 1 }
       });
 
       bookingIds.push(registrationId);
-
-      // Update Event Analytics (increment registration count)
-      // Note: doing this in loop is inefficient but fine for small cart sizes (max 4-6)
     }
 
-    // Bulk update event analytics once
-    const event = await ctx.db.get(args.eventId);
-    if (event) {
-      const currentAnalytics = event.analytics || {};
-      await ctx.db.patch(args.eventId, {
-        analytics: {
-          // Engagement (Required)
-          views: currentAnalytics.views || 0,
-          uniqueViews: currentAnalytics.uniqueViews || 0,
-          saves: currentAnalytics.saves || 0,
-          shares: currentAnalytics.shares || 0,
-
-          // Conversion (Required)
-          conversionRate: currentAnalytics.conversionRate || 0,
-          dropOffRate: currentAnalytics.dropOffRate || 0,
-
-          // Performance (Required)
-          loadTime: currentAnalytics.loadTime || 0,
-          uptime: currentAnalytics.uptime || 100,
-          errorRate: currentAnalytics.errorRate || 0,
-
-          // Satisfaction (Required)
-          predictedNps: currentAnalytics.predictedNps || 0,
-          sentimentScore: currentAnalytics.sentimentScore || 0,
-
-          // Optional/UI Compatibility
-          ...currentAnalytics,
-          registrations: (currentAnalytics.registrations || 0) + bookingIds.length
-        }
-      });
-    }
-
-    // Log Transaction
-    await ctx.db.insert("transactions", {
+    // E. Log Transaction (PENDING)
+    const transactionId = await ctx.db.insert("transactions", {
       eventId: args.eventId,
-      userId: userId, // Can be undefined for guest
-      payerId: userId, // Backward compatibility
-      amount: args.amount,
+      userId: userId,
+      payerId: userId,
+      amount: finalAmount,
       type: "ticket_sale",
-      status: "success",
+      status: "pending",
+      sbos_status: "pending",
       timestamp: now,
       metadata: {
         bookingIds,
@@ -733,11 +731,141 @@ export const bookSeats = mutation({
         guestEmail: args.guestEmail,
         platformFee,
         commissionRate,
-        netAmount
+        netAmount,
+        couponId,
+        discountApplied: discountAmount
       }
     });
 
-    return { success: true, bookingIds };
+    // F. Increment Coupon Usage if applicable
+    if (couponId) {
+      const coupon = await ctx.db.get(couponId);
+      if (coupon) {
+        await ctx.db.patch(couponId, { usedCount: (coupon.usedCount || 0) + 1 });
+      }
+    }
+
+    return { success: true, bookingIds, transactionId, amount: finalAmount };
+  },
+});
+
+export const confirmBooking = mutation({
+  args: {
+    transactionId: v.id("transactions"),
+    sbosPaymentIntentId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const transaction = await ctx.db.get(args.transactionId);
+    if (!transaction) throw new Error("Transaction not found");
+    if (transaction.status === "success") return; // Already confirmed
+
+    const now = Date.now();
+    const bookingIds = transaction.metadata?.bookingIds || [];
+
+    // 1. Update Transaction status
+    await ctx.db.patch(args.transactionId, {
+      status: "success",
+      sbos_status: "paid",
+      sbos_payment_intent_id: args.sbosPaymentIntentId,
+      timestamp: now,
+    });
+
+    // 2. Update Registrations status to 'confirmed'
+    for (const bookingId of bookingIds) {
+      const reg = await ctx.db.get(bookingId);
+      if (reg) {
+        await ctx.db.patch(bookingId, {
+          status: {
+            current: "confirmed",
+            history: [
+              ...(reg.status?.history || []),
+              {
+                status: "confirmed",
+                changedAt: now,
+                changedBy: "system",
+                notes: "Payment confirmed via Switchboard OS"
+              }
+            ],
+            lastUpdated: now
+          }
+        });
+      }
+    }
+
+    // 3. Update Event Analytics
+    const event = await ctx.db.get(transaction.eventId);
+    if (event) {
+      const currentAnalytics = event.analytics || {};
+      await ctx.db.patch(transaction.eventId, {
+        analytics: {
+          ...currentAnalytics,
+          registrations: (currentAnalytics.registrations || 0) + bookingIds.length
+        }
+      });
+    }
+
+    return { success: true };
+  },
+});
+
+export const failBooking = mutation({
+  args: {
+    transactionId: v.id("transactions"),
+    reason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const transaction = await ctx.db.get(args.transactionId);
+    if (!transaction) throw new Error("Transaction not found");
+
+    const now = Date.now();
+    const bookingIds = transaction.metadata?.bookingIds || [];
+
+    // 1. Update Transaction status
+    await ctx.db.patch(args.transactionId, {
+      status: "failed",
+      sbos_status: "failed",
+      metadata: {
+        ...transaction.metadata,
+        failureReason: args.reason,
+      },
+      timestamp: now,
+    });
+
+    // 2. Update Registrations status to 'cancelled' or 'failed'
+    for (const bookingId of bookingIds) {
+      const reg = await ctx.db.get(bookingId);
+      if (reg) {
+        await ctx.db.patch(bookingId, {
+          status: {
+            current: "cancelled",
+            history: [
+              ...(reg.status?.history || []),
+              {
+                status: "cancelled",
+                changedAt: now,
+                changedBy: "system",
+                notes: `Payment failed: ${args.reason}`
+              }
+            ],
+            lastUpdated: now
+          }
+        });
+      }
+    }
+
+    return { success: true };
+  },
+});
+
+export const updateTransactionIntent = mutation({
+  args: {
+    transactionId: v.id("transactions"),
+    sbosPaymentIntentId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.transactionId, {
+      sbos_payment_intent_id: args.sbosPaymentIntentId,
+    });
   },
 });
 

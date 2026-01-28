@@ -11,7 +11,12 @@ import { State, City, Country } from "country-state-city";
 import { CalendarIcon, Loader2, Sparkles, Crown, Upload, Image as ImageIcon } from "lucide-react";
 import { useUserRoles } from "@/hooks/use-user-roles";
 import { toast } from "sonner";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import useAuthStore from "@/hooks/use-auth-store";
+import { createClient } from "@/lib/supabase/client";
+
+const supabase = createClient();
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +40,7 @@ import { Switch } from "@/components/ui/switch";
 
 import UnsplashImagePicker from "@/components/unsplash-image-picker";
 import AIEventCreator from "./_components/ai-event-creator";
+import LocationPicker from "@/components/ui/location-picker";
 import AIIntelligencePanel from "@/components/ai-intelligence-panel";
 import { CATEGORIES } from "@/lib/data";
 import Image from "next/image";
@@ -50,8 +56,11 @@ const eventSchema = z.object({
   startTime: z.string().min(1, "Start Time is required").regex(timeRegex, "Invalid time format"),
   endTime: z.string().min(1, "End Time is required").regex(timeRegex, "Invalid time format"),
   locationType: z.enum(["physical", "online"]).default("physical"),
-  venue: z.string().optional(),
-  address: z.string().optional(),
+  location: z.object({
+    address: z.string(),
+    coordinates: z.array(z.number()),
+    name: z.string().optional()
+  }).optional(),
   country: z.string().min(1, "Country is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().optional(),
@@ -68,6 +77,8 @@ const eventSchema = z.object({
 export default function CreateEventPage() {
   const router = useRouter();
   const fileInputRef = useRef(null);
+  const { token } = useAuthStore();
+  const createEvent = useMutation(api.events.createEvent);
 
   const [showImagePicker, setShowImagePicker] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
@@ -80,8 +91,7 @@ export default function CreateEventPage() {
   // TODO: Implement Pro subscription check with Supabase/Stripe
   const hasPro = false;
 
-  // Supabase
-  const { supabase } = useSupabase();
+  // User Roles
   const { isOrganizer, isAdmin, isLoading: isRoleLoading, user } = useUserRoles();
   const [isCreating, setIsCreating] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
@@ -136,9 +146,10 @@ export default function CreateEventPage() {
   const availableCities = useMemo(() => {
     if (!selectedCountry) return [];
 
-    // Custom curated list for Bangladesh
+    // Custom curated list for Bangladesh - Major Cities & Districts
     if (selectedCountry === "BD") {
       return [
+        // Major Cities
         { name: "Dhaka" },
         { name: "Chittagong" },
         { name: "Sylhet" },
@@ -146,7 +157,31 @@ export default function CreateEventPage() {
         { name: "Rajshahi" },
         { name: "Khulna" },
         { name: "Barisal" },
-        { name: "Rangpur" }
+        { name: "Rangpur" },
+        { name: "Mymensingh" },
+        { name: "Comilla" },
+        { name: "Narayanganj" },
+        { name: "Gazipur" },
+        // Popular Areas in Dhaka
+        { name: "Gulshan" },
+        { name: "Banani" },
+        { name: "Uttara" },
+        { name: "Dhanmondi" },
+        { name: "Bashundhara" },
+        { name: "Mirpur" },
+        { name: "Motijheel" },
+        { name: "Mohammadpur" },
+        // District Headquarters
+        { name: "Bogra" },
+        { name: "Dinajpur" },
+        { name: "Jessore" },
+        { name: "Faridpur" },
+        { name: "Tangail" },
+        { name: "Brahmanbaria" },
+        { name: "Narsingdi" },
+        { name: "Savar" },
+        { name: "Tongi" },
+        { name: "Nawabganj" }
       ];
     }
 
@@ -238,8 +273,47 @@ export default function CreateEventPage() {
   };
 
   const handleFileUpload = async (event) => {
-    // Note: Supabase Storage logic placeholder
-    toast.error("Image upload to Supabase Storage coming soon. Use Unsplash for now!");
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please upload an image file.");
+      return;
+    }
+
+    // Validate size (e.g., 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image size should be less than 5MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+      const filePath = `event-covers/${fileName}`;
+
+      const { data, error: uploadError } = await supabase.storage
+        .from("event-covers")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get Public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from("event-covers")
+        .getPublicUrl(filePath);
+
+      setImagePreview(publicUrl);
+      setValue("coverImage", publicUrl);
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload image: " + error.message);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const combineDateTime = (date, time) => {
@@ -262,42 +336,39 @@ export default function CreateEventPage() {
 
       if (!start || !end) {
         toast.error("Please select both date and time.");
+        setIsCreating(false);
         return;
       }
 
-      const slug = `${generateSlug(data.title)}-${Math.random().toString(36).substring(2, 7)}`;
-
-      const { data: newEvent, error } = await supabase
-        .from('events')
-        .insert([{
-          title: data.title,
-          slug: slug,
-          description: data.description,
-          status: 'draft', // Modern flow: Start as draft
-          start_date: start.toISOString(),
-          end_date: end.toISOString(),
-          owner_id: user.id,
-          category: data.category,
-          capacity: data.capacity,
-          ticket_price: data.ticketType === 'free' ? 0 : (data.ticketPrice || 0),
-          cover_image: data.coverImage,
-          seating_mode: data.seatingMode || 'venue',
-          city: data.city,
-          address: data.address
-        }])
-        .select()
-        .single();
-
-      if (error) throw error;
+      // Use Convex mutation instead of Supabase
+      const eventId = await createEvent({
+        title: data.title,
+        description: data.description || "",
+        category: data.category || "general",
+        tags: [],
+        startDate: start.getTime(),
+        endDate: end.getTime(),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        locationType: data.locationType || "physical",
+        venue: data.location?.name || "",
+        address: data.location?.address || "",
+        city: data.location?.city || data.city || "Dhaka",
+        state: data.state || "",
+        country: data.country || "BD",
+        capacity: data.capacity || 50,
+        ticketType: data.ticketType || "free",
+        ticketPrice: data.ticketType === "paid" ? (data.ticketPrice || 0) : 0,
+        coverImage: data.coverImage || "",
+        themeColor: data.themeColor || "#d97706",
+        seatingMode: data.seatingMode || "GENERAL",
+        token: token,
+      });
 
       toast.success("Event created as draft! Redirecting to setup...");
-      router.push(`/my-events/${newEvent.id}`);
+      router.push(`/my-events/${eventId}`);
     } catch (error) {
       console.error("Submission Error:", error);
-      if (error.details) console.error("Error Details:", error.details);
-      if (error.hint) console.error("Error Hint:", error.hint);
-      if (error.code) console.error("Error Code:", error.code);
-      toast.error(error.message || "Failed to create event");
+      toast.error(error?.message || "Failed to create event. Please try again.");
     } finally {
       setIsCreating(false);
     }
@@ -566,8 +637,27 @@ export default function CreateEventPage() {
               />
             </div>
             {errors.city && <p className="text-sm text-red-500">{errors.city.message}</p>}
-            <Input {...register("venue")} placeholder="Venue Name / Google Maps Link" className="bg-background border-input text-foreground placeholder:text-muted-foreground" />
-            <Input {...register("address")} placeholder="Full address" className="bg-background border-input text-foreground placeholder:text-muted-foreground" />
+
+            <div className="col-span-full space-y-2 mt-2">
+              <Label className="text-muted-foreground">Venue Location</Label>
+              <Controller
+                control={control}
+                name="location"
+                render={({ field }) => (
+                  <LocationPicker
+                    value={field.value}
+                    onChange={(locationData) => {
+                      field.onChange(locationData);
+                      // Auto-update city field from LocationPicker data
+                      if (locationData.city) {
+                        setValue("city", locationData.city);
+                      }
+                    }}
+                  />
+                )}
+              />
+              <p className="text-xs text-muted-foreground">Search for a venue or use the 📍 button to get your current location.</p>
+            </div>
           </div>
 
           <div className="space-y-2">

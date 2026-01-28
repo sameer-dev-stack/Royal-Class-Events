@@ -1,71 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
+import Cookies from "js-cookie";
 
 export const AuthProvider = ({ children }) => {
-    const { supabase } = useSupabase();
-    const { login, logout, updateUser } = useAuthStore();
+    const { logout, updateUser } = useAuthStore();
     const [isLoading, setIsLoading] = useState(true);
 
+    const token = Cookies.get("auth-token");
+    const user = useQuery(api.users.getCurrentUser, { token: token || "" });
+
     useEffect(() => {
-        let mounted = true;
+        // user is undefined during initial fetch
+        if (user === undefined) return;
 
-        const syncUser = async (session) => {
-            if (!session) {
-                logout();
-                setIsLoading(false);
-                return;
-            }
-
-            try {
-                // Fetch profile from Supabase
-                const { data: profile, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-
-                if (error) {
-                    console.error("AuthProvider: Sync error:", error);
-                }
-
-                if (mounted) {
-                    // Update Zustand store
-                    login(session.user, session.access_token);
-                    if (profile) {
-                        updateUser({
-                            role: profile.role,
-                            profile: profile,
-                            name: profile.full_name,
-                            metadata: profile.metadata // Sync metadata for onboarding check
-                        });
-                    }
-                    setIsLoading(false);
-                }
-            } catch (err) {
-                console.error("AuthProvider: Critical sync failure:", err);
-                if (mounted) setIsLoading(false);
-            }
-        };
-
-        // Initial check
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            syncUser(session);
-        });
-
-        // Listen for changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            syncUser(session);
-        });
-
-        return () => {
-            mounted = false;
-            subscription.unsubscribe();
-        };
-    }, [supabase, login, logout, updateUser]);
+        if (user) {
+            updateUser({
+                ...user,
+                // Ensure internal user fields map to store expectation
+                role: user.role,
+                name: user.name || user.profile?.displayName,
+            });
+        } else if (token) {
+            // Token invalid or expired - silent logout for consistency
+            console.log("AuthProvider: Token invalid or session expired. Logging out.");
+            logout();
+        }
+        setIsLoading(false);
+        useAuthStore.getState().setIsLoading(false);
+    }, [user, token, logout, updateUser]);
 
     return <>{children}</>;
 };
-

@@ -7,9 +7,9 @@ import { ArrowLeft, Sparkles } from "lucide-react";
 const CATEGORIES = [
     { name: "Venue", img: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80" },
     { name: "Catering", img: "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80" },
-    { name: "Photography", img: "https://images.unsplash.com/photo-1520854221256-17451cc330e7?w=800&q=80" },
+    { name: "Photography", img: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&q=80" },
     { name: "Decor", img: "https://images.unsplash.com/photo-1478146896981-b80fe463b330?w=800&q=80" },
-    { name: "Entertainment", img: "https://images.unsplash.com/photo-1493225255756-d95298119351?w=800&q=80" },
+    { name: "Entertainment", img: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80" },
     { name: "Security", img: "https://images.unsplash.com/photo-1555952517-2e8e729e0b44?w=800&q=80" },
 ];
 

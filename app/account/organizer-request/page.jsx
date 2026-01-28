@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -11,42 +12,17 @@ import { Loader2, Crown, CheckCircle2, XCircle, Clock, ShieldCheck } from "lucid
 import { motion } from "framer-motion";
 
 export default function OrganizerRequestPage() {
-    const { supabase } = useSupabase();
-    const { user } = useAuthStore();
+    const { user, token } = useAuthStore();
     const [reason, setReason] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const [request, setRequest] = useState(null);
-    const [isLoadingRequest, setIsLoadingRequest] = useState(true);
-
-    const fetchRequest = useCallback(async () => {
-        if (!user?.id) return;
-        setIsLoadingRequest(true);
-        try {
-            const { data, error } = await supabase
-                .from('organizer_requests')
-                .select('*')
-                .eq('user_id', user.id)
-                .order('created_at', { ascending: false })
-                .limit(1)
-                .single();
-
-            if (error && error.code !== 'PGRST116') { // PGRST116 is "Row not found"
-                console.error("Error fetching request:", error);
-            } else if (data) {
-                setRequest(data);
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setIsLoadingRequest(false);
-        }
-    }, [user, supabase]);
-
-    useEffect(() => {
-        fetchRequest();
-    }, [fetchRequest]);
-
+    // Convex query for existing request
+    const request = useQuery(
+        api.users.getOrganizerRequest,
+        user && token ? { token } : "skip"
+    );
+    const submitRequest = useMutation(api.users.requestOrganizerRole);
+    const isLoadingRequest = request === undefined;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -57,19 +33,13 @@ export default function OrganizerRequestPage() {
 
         setIsSubmitting(true);
         try {
-            const { error } = await supabase
-                .from('organizer_requests')
-                .insert({
-                    user_id: user.id,
-                    reason: reason,
-                    status: 'pending'
-                });
-
-            if (error) throw error;
+            await submitRequest({
+                token: token || "",
+                reason: reason,
+            });
 
             toast.success("Request submitted successfully!");
             setReason("");
-            fetchRequest(); // Refresh state
 
         } catch (error) {
             console.error(error);
@@ -78,6 +48,7 @@ export default function OrganizerRequestPage() {
             setIsSubmitting(false);
         }
     };
+
 
     if (isLoadingRequest) {
         return (

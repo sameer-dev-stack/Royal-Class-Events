@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
 
 // Pages that require onboarding (attendee-centered)
@@ -12,9 +13,9 @@ export function useOnboarding() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { supabase } = useSupabase();
-  const { user, isAuthenticated, updateUser } = useAuthStore();
+  const { user, isAuthenticated, updateUser, token } = useAuthStore();
   const [isLoading, setIsLoading] = useState(true);
+  const completeOnboarding = useMutation(api.users.completeOnboarding);
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
@@ -23,15 +24,7 @@ export function useOnboarding() {
     }
 
     // Check if user hasn't completed onboarding in their profile
-    // Note: In Supabase, this is stored in public.profiles.metadata OR a dedicated column
-    // For now, checking user.metadata from our Auth Store hydration
-
-    // Explicitly check for true string or boolean in both metadata sources
-    const hasCompleted =
-      user?.metadata?.has_completed_onboarding === true ||
-      user?.metadata?.has_completed_onboarding === "true" ||
-      user?.profile?.metadata?.has_completed_onboarding === true ||
-      user?.profile?.metadata?.has_completed_onboarding === "true";
+    const hasCompleted = user?.metadata?.hasCompletedOnboarding === true;
 
     if (!hasCompleted) {
       const requiresOnboarding = ATTENDEE_PAGES.some((page) =>
@@ -47,23 +40,19 @@ export function useOnboarding() {
     setIsLoading(false);
   }, [user, pathname, isAuthenticated]);
 
-  const handleOnboardingComplete = async () => {
+  const handleOnboardingComplete = async (data) => {
     setShowOnboarding(false);
 
-    // 1. Update Local Store Immediately (Optimistic)
-    const newMetadata = { ...user.metadata, has_completed_onboarding: true };
-    updateUser({ metadata: newMetadata });
-
-    // 2. Update Supabase profile
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        metadata: newMetadata
-      })
-      .eq('id', user.id);
-
-    if (error) console.error("Failed to update onboarding status:", error);
-
+    // Logic handled by OnboardingModal component
+    // Just update local state if needed
+    if (data) {
+      updateUser({
+        metadata: {
+          ...user.metadata,
+          hasCompletedOnboarding: true
+        }
+      });
+    }
     router.refresh();
   };
 

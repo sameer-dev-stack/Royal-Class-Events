@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { useUserRoles } from "@/hooks/use-user-roles";
+import useAuthStore from "@/hooks/use-auth-store";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -40,47 +42,24 @@ import {
 import { cn } from "@/lib/utils";
 
 export default function AuditPage() {
-    const { supabase } = useSupabase();
+    const { token } = useAuthStore();
     const { isAdmin, isLoading: isRoleLoading } = useUserRoles();
-    const [logs, setLogs] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [actionFilter, setActionFilter] = useState("all");
     const [searchTerm, setSearchTerm] = useState("");
 
-    useEffect(() => {
-        if (!isRoleLoading && isAdmin) {
-            fetchLogs();
-        }
-    }, [isRoleLoading, isAdmin, actionFilter]);
-
-    const fetchLogs = async () => {
-        setIsLoading(true);
-        try {
-            let query = supabase
-                .from('audit_logs')
-                .select('*')
-                .order('created_at', { ascending: false });
-
-            if (actionFilter !== "all") {
-                query = query.eq('action', actionFilter);
-            }
-
-            const { data, error } = await query.limit(100);
-
-            if (error) throw error;
-            setLogs(data || []);
-        } catch (error) {
-            console.error("Error fetching audit logs:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    // Convex query for audit logs
+    const logs = useQuery(
+        api.admin.getAuditLogs,
+        isAdmin && token ? { token, actionFilter: actionFilter !== "all" ? actionFilter : undefined } : "skip"
+    ) || [];
+    const isLoading = logs === undefined;
 
     const filteredLogs = logs.filter(log => {
-        const adminMatch = (log.admin_name || "").toLowerCase().includes(searchTerm.toLowerCase());
-        const targetMatch = (log.target_id || "").toLowerCase().includes(searchTerm.toLowerCase());
+        const adminMatch = (log.adminName || "").toLowerCase().includes(searchTerm.toLowerCase());
+        const targetMatch = (log.targetId || "").toLowerCase().includes(searchTerm.toLowerCase());
         return adminMatch || targetMatch;
     });
+
 
     const getActionBadge = (action) => {
         switch (action) {
@@ -169,13 +148,13 @@ export default function AuditPage() {
                                 </TableCell>
                             </TableRow>
                         ) : filteredLogs.map((log) => (
-                            <TableRow key={log.id} className="border-zinc-800/50 hover:bg-zinc-800/10 transition-all group">
+                            <TableRow key={log._id} className="border-zinc-800/50 hover:bg-zinc-800/10 transition-all group">
                                 <TableCell className="py-5 pl-6">
                                     <div className="flex items-center gap-3">
                                         <div className="p-2 bg-zinc-900 rounded-lg group-hover:bg-zinc-800 transition-colors">
                                             <UserCircle className="w-4 h-4 text-zinc-500" />
                                         </div>
-                                        <span className="font-bold text-white uppercase tracking-tight text-sm">{log.admin_name}</span>
+                                        <span className="font-bold text-white uppercase tracking-tight text-sm">{log.adminName || log.admin_name}</span>
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -183,13 +162,13 @@ export default function AuditPage() {
                                 </TableCell>
                                 <TableCell>
                                     <span className="text-[10px] font-mono text-zinc-500 bg-zinc-900/50 px-2 py-1 rounded border border-zinc-800">
-                                        {log.target_id || "N/A"}
+                                        {log.targetId || log.target_id || "N/A"}
                                     </span>
                                 </TableCell>
                                 <TableCell className="text-zinc-600 text-xs font-medium">
                                     <div className="flex items-center gap-2">
                                         <Calendar className="w-3.5 h-3.5 text-zinc-800" />
-                                        {format(new Date(log.created_at), "MMM d, yyyy • HH:mm:ss")}
+                                        {format(new Date(log.timestamp || log._creationTime || Date.now()), "MMM d, yyyy • HH:mm:ss")}
                                     </div>
                                 </TableCell>
                                 <TableCell className="text-right pr-6">
@@ -212,7 +191,7 @@ export default function AuditPage() {
                                                 <pre className="text-emerald-500">{JSON.stringify(log.details, null, 2)}</pre>
                                             </div>
                                             <div className="mt-2 text-[10px] text-zinc-700 font-black uppercase text-center">
-                                                Registry Integrity Valid • Hash: {log.id?.substring(0, 16)}...
+                                                Registry Integrity Valid • Hash: {log._id?.substring(0, 16)}...
                                             </div>
                                         </DialogContent>
                                     </Dialog>

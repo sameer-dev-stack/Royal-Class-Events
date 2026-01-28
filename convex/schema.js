@@ -429,6 +429,11 @@ export default defineSchema(
       // Configuration
       timeConfiguration: v.optional(v.any()),
       locationConfig: v.optional(v.any()),
+      location: v.optional(v.object({
+        name: v.optional(v.string()),
+        address: v.string(),
+        coordinates: v.optional(v.array(v.number())),
+      })),
       capacityConfig: v.optional(v.any()),
       registrationConfig: v.optional(v.any()),
       financials: v.optional(v.any()),
@@ -792,6 +797,20 @@ export default defineSchema(
         searchField: "name",
         filterFields: ["tenantId", "type", "address.city", "address.country"],
       }),
+
+    // ==================== MARKETPLACE & AVAILABILITY ====================
+    supplier_availability: defineTable({
+      supplierId: v.id("suppliers"),
+      startDateTime: v.number(), // Unix timestamp
+      endDateTime: v.number(),
+      isBlocked: v.boolean(),    // True = Blocked by supplier, False = Available/Special Hours
+      reason: v.optional(v.string()), // e.g., "Holiday", "Maintenance"
+      recurrenceRule: v.optional(v.string()), // RRule string for recurring blocks (future proofing)
+      metadata: v.optional(v.any()),
+    })
+      .index("by_supplier", ["supplierId"])
+      .index("by_date_range", ["startDateTime", "endDateTime"])
+      .index("by_supplier_date", ["supplierId", "startDateTime"]),
 
     // ==================== TICKET TIERS ====================
     ticketTiers: defineTable({
@@ -3380,6 +3399,25 @@ export default defineSchema(
 
       isFeatured: v.optional(v.boolean()), // Highlight on landing page
 
+      // Verification Documents
+      licenseUrl: v.optional(v.string()),
+      idProofUrl: v.optional(v.string()),
+
+      // Financials
+      bankDetails: v.optional(v.object({
+        bankName: v.string(),
+        accountHolder: v.string(),
+        accountNumber: v.string(),
+      })),
+
+      // Admin verification status
+      verificationStatus: v.optional(v.union(
+        v.literal('pending'),
+        v.literal('verified'),
+        v.literal('rejected'),
+        v.literal('unverified')
+      )),
+
       // Audit
       createdAt: v.number(),
       updatedAt: v.number(),
@@ -3461,6 +3499,11 @@ export default defineSchema(
       type: v.string(), // escrow_in, payout, ticket_sale
       status: v.string(), // held, released, refunded, success
       timestamp: v.number(),
+
+      // Switchboard OS Integration
+      sbos_payment_intent_id: v.optional(v.string()),
+      sbos_status: v.optional(v.string()), // pending, paid, failed
+
       metadata: v.optional(v.any()),
     })
       .index("by_payer", ["payerId"])
@@ -3563,4 +3606,48 @@ export default defineSchema(
       key: v.string(), // e.g. 'commission_rate', 'maintenance_mode'
       value: v.any()
     }).index("by_key", ["key"]),
+
+    // ==================== PAYMENTS (SWITCHBOARD) ====================
+    ticket_payments: defineTable({
+      eventId: v.id("events"),
+      registrationId: v.id("registrations"),
+      userId: v.id("users"),
+
+      // SBOS Specific Fields
+      sbos_payment_intent_id: v.optional(v.string()),
+      sbos_transaction_id: v.optional(v.string()),
+      sbos_status: v.optional(v.string()), // Raw status from SBOS: PENDING, COMPLETED, FAILED
+
+      // Normalized Status
+      status: v.string(), // pending, success, failed, refunded
+
+      amount: v.number(),
+      currency: v.string(),
+      provider: v.string(), // "switchboard"
+      metadata: v.optional(v.any()),
+      createdAt: v.number(),
+      updatedAt: v.number()
+    })
+      .index("by_sbos_intent", ["sbos_payment_intent_id"])
+      .index("by_registration", ["registrationId"])
+      .index("by_user", ["userId"]),
+
+    processed_webhooks: defineTable({
+      eventId: v.string(), // This is the Switchboard event ID
+      provider: v.string(),
+      processedAt: v.number()
+    })
+      .index("by_event", ["eventId"]),
+
+    coupons: defineTable({
+      code: v.string(), // e.g. "OFF10"
+      discountType: v.union(v.literal("percentage"), v.literal("fixed")),
+      discountValue: v.number(),
+      eventId: v.optional(v.id("events")), // Specific to event or global
+      minPurchase: v.optional(v.number()),
+      maxUses: v.optional(v.number()),
+      usedCount: v.number(),
+      expiresAt: v.optional(v.number()),
+      active: v.boolean(),
+    }).index("by_code", ["code"]),
   }, { schemaValidation: false });

@@ -13,52 +13,90 @@ import { startOfDay, format } from "date-fns";
 import { motion } from "framer-motion";
 
 export default function SupplierCalendarPage() {
-    const { token } = useAuthStore();
-    const existingAvailability = useQuery(api.suppliers.getAvailability, token ? { token } : "skip");
-    const updateAvailability = useMutation(api.suppliers.updateAvailability);
+    const { token, user } = useAuthStore();
 
-    const [selectedDates, setSelectedDates] = useState([]);
+    // Fetch Supplier ID for the current user (assuming 1:1 mapping for now)
+    // In a real app, we might get this from the user's profile/session or a separate query
+    // For now, we'll try to get it if we can, or rely on the query to resolve it from token if possible.
+    // Actually, getSchedule takes supplierId. We need to resolve that first.
+    // Let's assume we can get it via a query or if the user object has it.
+    // To keep it simple, let's look up the supplier first.
+
+    const mysupplier = useQuery(api.suppliers.getMyProfile, token ? { token } : "skip");
+
+    const [viewDate, setViewDate] = useState(new Date());
+
+    // Calculate start/end of current month view
+    const viewStart = startOfDay(new Date(viewDate.getFullYear(), viewDate.getMonth(), 1)).getTime();
+    const viewEnd = new Date(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getTime();
+
+    const schedule = useQuery(api.availability.getSchedule,
+        mysupplier ? {
+            supplierId: mysupplier._id,
+            startDate: viewStart,
+            endDate: viewEnd
+        } : "skip"
+    );
+
+    const addBlock = useMutation(api.availability.addBlock);
+    const removeBlock = useMutation(api.availability.removeBlock);
+
     const [isSaving, setIsSaving] = useState(false);
 
-    // Initialize state from backend data
-    useEffect(() => {
-        if (existingAvailability) {
-            setSelectedDates(existingAvailability.map(ts => new Date(ts)));
-        }
-    }, [existingAvailability]);
-
-    const handleDateSelect = (dates) => {
-        // react-day-picker returns an array of dates in 'multiple' mode
-        setSelectedDates(dates || []);
+    // Helper to check if a date has a block
+    const getBlockForDate = (date) => {
+        if (!schedule?.blocks) return null;
+        const t = startOfDay(date).getTime();
+        return schedule.blocks.find(b => b.startDateTime === t);
     };
 
-    const handleSave = async () => {
-        if (!token) return;
+    const handleDateSelect = async (date) => {
+        if (!date || !mysupplier || !token) return;
+        if (!schedule) return;
+
         setIsSaving(true);
         try {
-            // Convert dates to timestamps (start of day)
-            const timestamps = selectedDates.map(d => startOfDay(d).getTime());
+            // Check if already blocked
+            const existingBlock = getBlockForDate(date);
 
-            await updateAvailability({
-                token,
-                availability: timestamps
-            });
-
-            toast.success("Schedule updated successfully! 🎉");
+            if (existingBlock) {
+                // Unblock
+                await removeBlock({ token, blockId: existingBlock._id });
+                toast.success("Date unblocked!");
+            } else {
+                // Block
+                const start = startOfDay(date).getTime();
+                const end = start + (24 * 60 * 60 * 1000); // Full day block
+                await addBlock({
+                    token,
+                    startDateTime: start,
+                    endDateTime: end,
+                    reason: "Manual Block"
+                });
+                toast.success("Date blocked!");
+            }
         } catch (error) {
             console.error(error);
-            toast.error("Failed to update schedule.");
+            toast.error("Failed to update schedule");
         } finally {
             setIsSaving(false);
         }
     };
 
-    if (existingAvailability === undefined) {
+    // Prepare modifiers for react-day-picker
+    const blockedDays = schedule?.blocks?.map(b => new Date(b.startDateTime)) || [];
+    const bookedDays = schedule?.bookings?.map(b => new Date(b.startDateTime)) || [];
+
+    if (mysupplier === undefined || schedule === undefined) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
                 <Loader2 className="w-8 h-8 text-[#D4AF37] animate-spin" />
             </div>
         );
+    }
+
+    if (mysupplier === null) {
+        return <div className="p-10 text-center text-red-500">Supplier profile not found. Please join as a vendor first.</div>;
     }
 
     return (
@@ -68,21 +106,13 @@ export default function SupplierCalendarPage() {
                 <div>
                     <h1 className="text-3xl font-bold text-white tracking-tight">Availability Calendar</h1>
                     <p className="text-muted-foreground mt-1 text-lg">
-                        Mark dates when you are unavailable or already booked.
+                        Manage your schedule. Click a date to toggle blocked status.
                     </p>
                 </div>
-                <Button
-                    onClick={handleSave}
-                    disabled={isSaving}
-                    className="bg-[#D4AF37] hover:bg-[#8C7326] text-black font-bold h-12 px-6 rounded-xl shadow-lg shadow-[#D4AF37]/20 transition-all active:scale-95"
-                >
-                    {isSaving ? (
-                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    ) : (
-                        <Save className="w-4 h-4 mr-2" />
-                    )}
-                    Save Changes
-                </Button>
+                <div className="flex items-center gap-2 text-sm">
+                    <span className="flex items-center gap-1"><div className="w-3 h-3 bg-red-500/80 rounded-full"></div> Blocked</span>
+                    <span className="flex items-center gap-1"><div className="w-3 h-3 bg-blue-500/80 rounded-full"></div> Booked</span>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -94,22 +124,29 @@ export default function SupplierCalendarPage() {
                                 <CalendarIcon className="w-5 h-5 text-[#D4AF37]" />
                             </div>
                             <div>
-                                <CardTitle className="text-xl">Manage Dates</CardTitle>
+                                <CardTitle className="text-xl">Manage Schedule</CardTitle>
                                 <CardDescription className="text-zinc-500">
-                                    Click dates to toggle your availability state.
+                                    {isSaving ? "Updating..." : "Tap dates to block/unblock."}
                                 </CardDescription>
                             </div>
                         </div>
                     </CardHeader>
                     <CardContent className="p-8 flex justify-center">
                         <Calendar
-                            mode="multiple"
-                            selected={selectedDates}
+                            mode="single"
                             onSelect={handleDateSelect}
+                            onMonthChange={setViewDate}
                             className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 shadow-2xl"
+                            modifiers={{
+                                blocked: blockedDays,
+                                booked: bookedDays
+                            }}
+                            modifiersStyles={{
+                                blocked: { color: 'white', backgroundColor: '#ef4444' }, // Red
+                                booked: { color: 'white', backgroundColor: '#3b82f6', cursor: 'default' } // Blue
+                            }}
                             classNames={{
-                                day_selected: "bg-[#D4AF37] text-black hover:bg-[#8C7326] focus:bg-[#D4AF37] focus:text-black font-bold pointer-events-auto",
-                                day_today: "bg-zinc-800 text-[#D4AF37]",
+                                day_today: "bg-zinc-800 text-[#D4AF37] font-bold",
                                 head_cell: "text-zinc-500 font-bold uppercase text-[10px] tracking-widest",
                                 nav_button: "hover:bg-zinc-800 text-zinc-400 transition-colors",
                                 caption: "font-semibold text-white",
@@ -123,81 +160,49 @@ export default function SupplierCalendarPage() {
                     <Card className="bg-zinc-900/50 border-zinc-800 rounded-3xl overflow-hidden backdrop-blur-sm">
                         <CardHeader>
                             <CardTitle className="text-lg flex items-center gap-2">
-                                <Info className="w-5 h-5 text-[#D4AF37]" />
-                                Instructions
+                                <Sparkles className="w-5 h-5 text-[#D4AF37]" />
+                                Your Schedule
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4 text-sm text-zinc-400 leading-relaxed">
-                            <p>
-                                <strong className="text-white">Marking Busy:</strong> Select dates when you are fully booked or taking time off.
-                            </p>
-                            <p>
-                                <strong className="text-white">Client View:</strong> These dates will appear as "Unavailable" in your public storefront booking widget.
-                            </p>
-                            <p>
-                                <strong className="text-white">Multi-Select:</strong> You can click multiple dates to select or deselect them.
-                            </p>
-                        </CardContent>
-                    </Card>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <h4 className="text-xs font-bold uppercase text-zinc-500">Upcoming Bookings</h4>
+                                {schedule.bookings.length === 0 ? (
+                                    <p className="text-sm text-zinc-600 italic">No confirmed bookings this month.</p>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {schedule.bookings.slice(0, 3).map(b => (
+                                            <div key={b._id} className="text-sm bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg text-blue-200">
+                                                {format(new Date(b.startDateTime), "MMM d")} - {b.title}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
 
-                    <Card className="bg-gradient-to-br from-[#D4AF37]/10 to-[#8C7326]/5 border-[#D4AF37]/20 rounded-3xl overflow-hidden backdrop-blur-sm">
-                        <CardHeader>
-                            <CardTitle className="text-lg flex items-center gap-2 text-[#D4AF37]">
-                                <Sparkles className="w-5 h-5" />
-                                Selection Summary
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-3">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-zinc-400 font-medium">Currently Selected</span>
-                                    <span className="text-white font-bold px-2 py-1 bg-zinc-800 rounded-lg">
-                                        {selectedDates.length} days
-                                    </span>
-                                </div>
-
-                                <div className="max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                                    {selectedDates.length > 0 ? (
-                                        <div className="grid grid-cols-1 gap-2 mt-4">
-                                            {[...selectedDates].sort((a, b) => a - b).map((date, i) => (
-                                                <motion.div
-                                                    initial={{ opacity: 0, x: -10 }}
-                                                    animate={{ opacity: 1, x: 0 }}
-                                                    key={i}
-                                                    className="flex items-center justify-between text-xs py-2 px-3 bg-zinc-950/50 rounded-xl border border-zinc-800/50"
-                                                >
-                                                    <span className="text-zinc-300">{format(date, "EEEE")}</span>
-                                                    <span className="text-white font-mono">{format(date, "MMM dd, yyyy")}</span>
-                                                </motion.div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="text-xs text-zinc-600 italic py-8 text-center">
-                                            No unavailable dates selected.
-                                        </p>
-                                    )}
-                                </div>
+                            <div className="space-y-2">
+                                <h4 className="text-xs font-bold uppercase text-zinc-500">Blocked Dates</h4>
+                                {schedule.blocks.length === 0 ? (
+                                    <p className="text-sm text-zinc-600 italic">No manual blocks.</p>
+                                ) : (
+                                    <div className="flex flex-wrap gap-2">
+                                        {[...schedule.blocks].sort((a, b) => a.startDateTime - b.startDateTime).slice(0, 5).map(b => (
+                                            <span key={b._id} className="text-xs bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-1 rounded">
+                                                {format(new Date(b.startDateTime), "MMM d")}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
                 </div>
             </div>
 
-            {/* Global Hover Style override for the calendar because we're using dark mode */}
+            {/* Global Hover Style override */}
             <style jsx global>{`
-                .rdp-day:hover:not(.rdp-day_selected) {
-                    background-color: #1a1a1a !important;
-                    color: white !important;
-                }
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 4px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #27272a;
-                    border-radius: 10px;
+                .rdp-day:hover:not(.rdp-day_selected):not(.rdp-day_outside) {
+                    background-color: #27272a;
                 }
             `}</style>
         </div>

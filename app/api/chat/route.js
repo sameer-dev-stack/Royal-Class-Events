@@ -14,74 +14,72 @@ export async function POST(req) {
       );
     }
 
-    let model;
-    try {
-      model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    } catch (e) {
-      model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    }
+    const lastMessage = messages[messages.length - 1];
+    const availableModels = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
+    let text = "";
+    let success = false;
 
     const validHistory = messages.slice(0, -1).map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.content }]
     }));
 
-    const chatSession = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: [{
-            text: `You are the AI Concierge for "Royal Class Events", a premium event management platform. 
-          Your name is "Royal Assistant".
-          Your tone should be professional, polite, and helpful (like a high-end hotel concierge).
-          Keep responses concise (max 2-3 sentences).` }],
-        },
-        {
-          role: "model",
-          parts: [{ text: "I am ready to assist our esteemed guests with the utmost professionalism." }],
-        },
-        ...validHistory
-      ],
-    });
+    // Try models until one works or we run out
+    for (const modelName of availableModels) {
+      if (success) break;
 
-    const lastMessage = messages[messages.length - 1];
-    let text;
-    try {
-      const result = await chatSession.sendMessage(lastMessage.content);
-      const response = await result.response;
-      text = response.text();
-    } catch (apiError) {
-      console.error("Gemini Primary Model Error in Chat, attempting fallback:", apiError);
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        const chatSession = model.startChat({
+          history: [
+            {
+              role: "user",
+              parts: [{
+                text: `You are the AI Concierge for "Royal Class Events", a premium event management platform. 
+              Your name is "Royal Assistant".
+              Your tone should be professional, polite, and helpful (like a high-end hotel concierge).
+              Always refer to the user as "Esteemed Guest".
+              Keep responses concise (max 2-3 sentences).` }],
+            },
+            {
+              role: "model",
+              parts: [{ text: "I am ready to assist our esteemed guests with the utmost professionalism." }],
+            },
+            ...validHistory
+          ],
+        });
 
-      const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const fallbackSession = fallbackModel.startChat({
-        history: [
-          { role: "user", parts: [{ text: "System Instruction: You are the Royal Assistant for Royal Class Events. Be brief and polite." }] },
-          { role: "model", parts: [{ text: "Understood." }] },
-          ...validHistory
-        ],
-      });
-      const result = await fallbackSession.sendMessage(lastMessage.content);
-      const response = await result.response;
-      text = response.text();
+        const result = await chatSession.sendMessage(lastMessage.content);
+        const response = await result.response;
+        text = response.text();
+        success = true;
+        console.log(`Successfully used model: ${modelName}`);
+      } catch (apiError) {
+        console.warn(`Model ${modelName} failed, trying next... Error:`, apiError.message);
+        continue;
+      }
     }
 
-    return NextResponse.json({ role: "assistant", content: text });
+    if (success) {
+      return NextResponse.json({ role: "assistant", content: text });
+    } else {
+      // All models failed - likely a key or project issue
+      const isDev = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_DEV_AUTH === "true";
+      if (isDev) {
+        return NextResponse.json({
+          role: "assistant",
+          content: "Esteemed Guest, I am currently performing some maintenance on my royal records to ensure your security. I shall be at your service shortly. In the meantime, how else may I guide your journey today?"
+        });
+      }
+      return NextResponse.json(
+        { error: "Concierge service currently restricted. Please try again later." },
+        { status: 503 }
+      );
+    }
   } catch (error) {
-    console.error("Error in chat API:", error);
-
-    // DEV_FALLBACK: If Gemini quota is exceeded or other errors occur in development
-    const isDev = process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_DEV_AUTH === "true";
-    if (isDev) {
-      console.log("Using DEV_FALLBACK for Chat API");
-      return NextResponse.json({
-        role: "assistant",
-        content: "I am currently performing some maintenance on my royal records, but I can still assist you! How can I help with your elite event planning today?"
-      });
-    }
-
+    console.error("Fatal Error in Chat API:", error);
     return NextResponse.json(
-      { error: "Concierge service currently at capacity. Please try again shortly." },
+      { error: "Our systems are currently indisposed. Please pardon this rarity." },
       { status: 500 }
     );
   }

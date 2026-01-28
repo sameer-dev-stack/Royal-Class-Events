@@ -3,29 +3,27 @@ import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { CheckCircle, Circle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useSupabase } from "@/components/providers/supabase-provider";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import useAuthStore from "@/hooks/use-auth-store";
 import { useState } from "react";
 
 // Attendee Card Component
 export function AttendeeCard({ registration }) {
-  const { supabase } = useSupabase();
+  const { token } = useAuthStore();
+  const checkInAttendee = useMutation(api.registrations.checkIn);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleManualCheckIn = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from('registrations')
-        .update({
-          checked_in: true,
-          checked_in_at: new Date().toISOString()
-        })
-        .eq('id', registration._id);
-
-      if (error) throw error;
+      await checkInAttendee({
+        token: token || "",
+        registrationId: registration._id,
+      });
 
       toast.success("Attendee checked in successfully");
-      window.location.reload(); // Refresh to update statistics
+      // Convex will automatically update via reactive queries
     } catch (error) {
       console.error("Check-in Error:", error);
       toast.error(error.message || "Failed to check in attendee");
