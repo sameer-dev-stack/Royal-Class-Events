@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { toast } from "sonner";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -203,17 +204,32 @@ export default function LocationPicker({ value, onChange, className }: LocationP
                         message = "Location access denied. Please enable location in your browser settings.";
                         break;
                     case 2: // POSITION_UNAVAILABLE
-                        message = "Location unavailable. Please try again or search manually.";
-                        break;
+                        message = "Your precise location is currently unavailable. Trying low-accuracy mode...";
+                        // Retry with low accuracy if high accuracy failed
+                        navigator.geolocation.getCurrentPosition(
+                            async (pos) => {
+                                const { longitude, latitude } = pos.coords;
+                                setViewState({ longitude, latitude, zoom: 14 });
+                                setMarker({ longitude, latitude });
+                                await reverseGeocode(longitude, latitude);
+                                setIsLocating(false);
+                            },
+                            () => {
+                                toast.error("Location unavailable. Please search for your venue manually.");
+                                setIsLocating(false);
+                            },
+                            { enableHighAccuracy: false, timeout: 5000 }
+                        );
+                        return; // Exit early as retry is handled
                     case 3: // TIMEOUT
                         message = "Location request timed out. Please try again.";
                         break;
                 }
 
-                alert(message);
+                toast.error(message);
                 setIsLocating(false);
             },
-            { enableHighAccuracy: true, timeout: 10000 }
+            { enableHighAccuracy: false, timeout: 8000, maximumAge: 0 }
         );
     };
 

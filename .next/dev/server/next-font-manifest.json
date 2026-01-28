@@ -6,6 +6,9 @@
     "[project]/app/(main)/create-event/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
+    "[project]/app/(main)/my-events/[eventId]/analytics/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
     "[project]/app/(main)/my-events/[eventId]/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
@@ -15,7 +18,16 @@
     "[project]/app/(main)/my-tickets/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
+    "[project]/app/(organizer)/events/[slug]/edit/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/(public)/about/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
     "[project]/app/(public)/checkout/page": [
+      "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
+    ],
+    "[project]/app/(public)/contact/page": [
       "static/media/1b99372b3eaef0c8-s.p.758e15a8.woff2"
     ],
     "[project]/app/(public)/events/[slug]/page": [

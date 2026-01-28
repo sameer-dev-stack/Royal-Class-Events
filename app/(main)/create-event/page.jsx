@@ -291,14 +291,19 @@ export default function CreateEventPage() {
     setIsUploading(true);
     try {
       const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
-      const filePath = `event-covers/${fileName}`;
+      const filePath = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
 
       const { data, error: uploadError } = await supabase.storage
         .from("event-covers")
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Supabase Upload Error:", uploadError);
+        throw new Error(uploadError.message || "Upload failed");
+      }
 
       // Get Public URL
       const { data: { publicUrl } } = supabase.storage
@@ -309,8 +314,8 @@ export default function CreateEventPage() {
       setValue("coverImage", publicUrl);
       toast.success("Image uploaded successfully!");
     } catch (error) {
-      console.error("Upload error:", error);
-      toast.error("Failed to upload image: " + error.message);
+      console.error("Detailed Upload Catch:", error);
+      toast.error(`Upload failed: ${error.message || "Unknown error"}`);
     } finally {
       setIsUploading(false);
     }

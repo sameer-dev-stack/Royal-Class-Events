@@ -295,12 +295,22 @@ export const getMyRegistrations = query({
 
 export const getEventRegistrations = query({
   args: {
-    eventId: v.id("events"),
+    eventId: v.string(), // Changed to string to support slugs
     token: v.optional(v.string())
   },
   handler: async (ctx, args) => {
     const user = await ctx.runQuery(api.users.getCurrentUser, { token: args.token });
-    const event = await ctx.db.get(args.eventId);
+
+    // Support both direct ID and Slug lookup
+    const id = ctx.db.normalizeId("events", args.eventId);
+    let event = id ? await ctx.db.get(id) : null;
+
+    if (!event) {
+      event = await ctx.db.query("events")
+        .withIndex("by_slug", q => q.eq("slug", args.eventId))
+        .unique();
+    }
+
     if (!event) throw new Error("Event not found");
 
     const isAdmin = user?.role === "admin" || user?.roles?.some(r => r.key === "admin");
@@ -312,7 +322,7 @@ export const getEventRegistrations = query({
 
     const registrations = await ctx.db
       .query("registrations")
-      .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+      .withIndex("by_event", (q) => q.eq("eventId", event._id))
       .collect();
 
     return registrations;

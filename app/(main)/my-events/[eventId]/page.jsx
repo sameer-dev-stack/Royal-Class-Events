@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useMemo, useDeferredValue } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -26,8 +26,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
-import { useEventDashboard } from "@/hooks/use-event-dashboard";
-import { useEventRegistrations } from "@/hooks/use-event-registrations";
+// Removed unused imports to save bundle size
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -82,12 +81,63 @@ export default function EventDashboardPage() {
   );
 
   const event = dashboardData?.event;
-  const metrics = dashboardData?.metrics;
+  const stats = dashboardData?.stats;
   const isLoading = dashboardData === undefined;
   const loadingRegistrations = registrations === undefined;
 
   const updateEventStatus = useMutation(api.events.updateStatus);
   const deleteEvent = useMutation(api.events.deleteEvent);
+  const updateEventMode = useMutation(api.events.updateEvent);
+
+  const eventData = event;
+
+  const {
+    eventTitle,
+    eventCoverImage,
+    eventCategory,
+    eventStartDate,
+    eventLocationType,
+    eventCity,
+    eventState,
+    eventCountry,
+    eventTicketType
+  } = useMemo(() => {
+    if (!eventData) return {};
+    return {
+      eventTitle: eventData.title?.en || (typeof eventData.title === 'string' ? eventData.title : "Untitled Event"),
+      eventCoverImage: eventData.content?.coverImage?.url || eventData.coverImage || eventData.cover_image || "/hero_placeholder.jpg",
+      eventCategory: eventData.category || eventData.eventSubType || "general",
+      eventStartDate: eventData.timeConfiguration?.startDateTime || eventData.startDate || eventData.start_date,
+      eventLocationType: eventData.locationType || eventData.locationConfig?.type || "physical",
+      eventCity: eventData.city || eventData.metadata?.legacyProps?.city || "Unknown",
+      eventState: eventData.state || eventData.metadata?.legacyProps?.state || "",
+      eventCountry: eventData.country || eventData.metadata?.legacyProps?.country || "Bangladesh",
+      eventTicketType: eventData.ticketType || (eventData.ticket_price > 0 ? "paid" : "free")
+    };
+  }, [eventData]);
+
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+
+  // Filter registrations based on active tab and search
+  const filteredRegistrations = useMemo(() => {
+    if (!registrations) return [];
+    const searchLower = deferredSearchQuery.toLowerCase();
+
+    return registrations.filter((reg) => {
+      const matchesSearch =
+        (reg.attendeeName?.toLowerCase() || "").includes(searchLower) ||
+        (reg.attendeeEmail?.toLowerCase() || "").includes(searchLower) ||
+        (reg.qrCode?.toLowerCase() || "").includes(searchLower);
+
+      if (activeTab === "all") return matchesSearch && reg.status === "confirmed";
+      if (activeTab === "checked-in")
+        return matchesSearch && reg.checkedIn && reg.status === "confirmed";
+      if (activeTab === "pending")
+        return matchesSearch && !reg.checkedIn && reg.status === "confirmed";
+
+      return matchesSearch;
+    });
+  }, [registrations, deferredSearchQuery, activeTab]);
 
   const handlePublish = async () => {
     const confirmed = window.confirm("Are you sure you want to publish this event? It will become visible to all users.");
@@ -171,6 +221,7 @@ export default function EventDashboardPage() {
     toast.success("CSV exported successfully");
   };
 
+  // Early returns now safely follow all hook declarations
   if (isLoading || loadingRegistrations) {
     return (
       <div className="min-h-screen pb-20 px-4">
@@ -227,16 +278,8 @@ export default function EventDashboardPage() {
     notFound();
   }
 
-  const { event: eventData, stats } = dashboardData;
-  const eventTitle = eventData.title?.en || (typeof eventData.title === 'string' ? eventData.title : "Untitled Event");
-  const eventCoverImage = eventData.content?.coverImage?.url || eventData.coverImage || eventData.cover_image || "/hero_placeholder.jpg";
-  const eventCategory = eventData.category || eventData.eventSubType || "general";
-  const eventStartDate = eventData.timeConfiguration?.startDateTime || eventData.startDate || eventData.start_date;
-  const eventLocationType = eventData.locationType || (eventData.seating_mode === 'GENERAL' ? 'physical' : 'virtual');
-  const eventCity = eventData.city || eventData.metadata?.legacyProps?.city || "Unknown";
-  const eventState = eventData.state || eventData.metadata?.legacyProps?.state || "";
-  const eventCountry = eventData.country || eventData.metadata?.legacyProps?.country || "Bangladesh";
-  const eventTicketType = eventData.ticketType || (eventData.ticket_price > 0 ? "paid" : "free");
+  // No changes needed here, just removing the redundant line if it exists
+  // dashboardData check happens above return
 
   // Safe Date Formatter
   const safeFormat = (dateStr, formatStr) => {
@@ -247,22 +290,6 @@ export default function EventDashboardPage() {
       return "N/A";
     }
   };
-
-  // Filter registrations based on active tab and search
-  const filteredRegistrations = registrations?.filter((reg) => {
-    const matchesSearch =
-      (reg.attendeeName?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-      (reg.attendeeEmail?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-      (reg.qrCode?.toLowerCase() || "").includes(searchQuery.toLowerCase());
-
-    if (activeTab === "all") return matchesSearch && reg.status === "confirmed";
-    if (activeTab === "checked-in")
-      return matchesSearch && reg.checkedIn && reg.status === "confirmed";
-    if (activeTab === "pending")
-      return matchesSearch && !reg.checkedIn && reg.status === "confirmed";
-
-    return matchesSearch;
-  });
 
   return (
     <div className="min-h-screen pb-20 px-4">
@@ -320,28 +347,34 @@ export default function EventDashboardPage() {
 
           <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
             {/* 1. SEATING TOGGLE (Integrated) */}
-            <div className="flex items-center gap-2 bg-zinc-900/40 backdrop-blur-md p-1.5 px-3 rounded-full border border-white/5 shadow-sm mr-2">
+            <div className={cn(
+              "flex items-center gap-2 p-1.5 px-3 rounded-full border transition-all shadow-sm mr-2",
+              (event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING")
+                ? "bg-[#D4AF37]/10 border-[#D4AF37]/30"
+                : "bg-zinc-900 border-white/5"
+            )}>
               <Settings className="w-3.5 h-3.5 text-[#D4AF37]" />
               <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Seat Map</Label>
               <Switch
-                checked={event.seating_mode === "RESERVED" || event.seating_mode === "RESERVED_SEATING"}
+                checked={event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING"}
                 onCheckedChange={async (checked) => {
+                  setIsUpdatingMode(true);
                   try {
-                    const { error } = await supabase
-                      .from('events')
-                      .update({ seating_mode: checked ? "RESERVED" : "GENERAL" })
-                      .eq('id', eventId);
-
-                    if (error) throw error;
-
+                    await updateEventMode({
+                      eventId: event._id,
+                      seatingMode: checked ? "RESERVED" : "GENERAL",
+                      token: token || ""
+                    });
                     toast.success(`Seating mode changed to ${checked ? "Reserved" : "General"}`);
-                    window.location.reload();
                   } catch (error) {
                     console.error("Update Seating Error:", error);
                     toast.error(error.message || "Failed to update seating mode");
+                  } finally {
+                    setIsUpdatingMode(false);
                   }
                 }}
                 className="h-4 w-7 data-[state=checked]:bg-[#D4AF37]"
+                disabled={isUpdatingMode}
               />
             </div>
 
@@ -377,23 +410,23 @@ export default function EventDashboardPage() {
               </Button>
             )}
 
-            <div className="flex items-center gap-1.5 bg-zinc-900/40 backdrop-blur-md p-1 rounded-xl border border-white/5">
-              <Link href={`/seat-builder?eventId=${eventId}`}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-lg"
-                  title="Configure Seating"
-                >
-                  <Grid3X3 className="w-4 h-4" />
-                </Button>
-              </Link>
+            <div className="flex items-center gap-2 bg-zinc-900 border border-white/5 p-1 rounded-xl">
+              {(event.seatingMode === "RESERVED" || event.seatingMode === "RESERVED_SEATING") && (
+                <Link href={`/seat-builder?eventId=${eventId}`}>
+                  <Button
+                    className="bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30 rounded-xl px-4 h-10 transition-all font-bold group"
+                  >
+                    <Grid3X3 className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                    Seat Builder
+                  </Button>
+                </Link>
+              )}
 
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => router.push(`/events/${event.slug}/edit`)}
-                className="h-9 w-9 text-zinc-400 hover:text-white hover:bg-white/5 rounded-lg"
+                className="h-10 w-10 text-zinc-400 hover:text-white hover:bg-white/5 rounded-xl border border-transparent hover:border-white/10"
                 title="Edit Details"
               >
                 <Edit3 className="w-4 h-4" />
@@ -439,7 +472,7 @@ export default function EventDashboardPage() {
         {stats.isEventToday && !stats.isEventPast && (
           <Button
             size="lg"
-            className="mb-8 w-full gap-2 h-12 bg-zinc-900/50 backdrop-blur-md border border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all duration-500 font-bold tracking-widest"
+            className="mb-8 w-full gap-2 h-12 bg-zinc-900 border border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-colors duration-200 font-bold tracking-widest shadow-lg"
             onClick={() => setShowQRScanner(true)}
           >
             <QrCode className="w-5 h-5" />
@@ -450,7 +483,7 @@ export default function EventDashboardPage() {
         {/* Glass & Gold Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
           {/* Capacity */}
-          <Card className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+          <Card className="bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden shadow-2xl transition-transform hover:scale-[1.02] duration-200">
             <CardContent className="p-7 flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-[#D4AF37]/10 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110">
                 <Users className="w-6 h-6 text-[#D4AF37]" />
@@ -463,7 +496,7 @@ export default function EventDashboardPage() {
           </Card>
 
           {/* Check-ins */}
-          <Card className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+          <Card className="bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden shadow-2xl transition-transform hover:scale-[1.02] duration-200">
             <CardContent className="p-7 flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-4">
                 <CheckCircle className="w-6 h-6 text-emerald-500" />
@@ -476,7 +509,7 @@ export default function EventDashboardPage() {
           </Card>
 
           {/* Revenue/Rate */}
-          <Card className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+          <Card className="bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden shadow-2xl transition-transform hover:scale-[1.02] duration-200">
             <CardContent className="p-7 flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-4">
                 <TrendingUp className="w-6 h-6 text-blue-500" />
@@ -491,7 +524,7 @@ export default function EventDashboardPage() {
           </Card>
 
           {/* Time Left */}
-          <Card className="bg-zinc-900/50 backdrop-blur-md border border-white/5 rounded-3xl overflow-hidden shadow-2xl">
+          <Card className="bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden shadow-2xl transition-transform hover:scale-[1.02] duration-200">
             <CardContent className="p-7 flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-[#F7E08B]/10 rounded-2xl flex items-center justify-center mb-4">
                 <Clock className="w-6 h-6 text-[#8C7326]" />

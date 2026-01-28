@@ -6,10 +6,10 @@ import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
-import { useState } from "react";
+import React, { memo, useState } from "react";
 
-// Attendee Card Component
-export function AttendeeCard({ registration }) {
+// Attendee Card Component - Memoized to prevent unnecessary re-renders during search
+export const AttendeeCard = memo(({ registration }) => {
   const { token } = useAuthStore();
   const checkInAttendee = useMutation(api.registrations.checkIn);
   const [isLoading, setIsLoading] = useState(false);
@@ -94,4 +94,4 @@ export function AttendeeCard({ registration }) {
       </CardContent>
     </Card>
   );
-}
+});

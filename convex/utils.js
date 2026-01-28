@@ -61,10 +61,14 @@ export function isEventVisible(event) {
     // 2. Strict whitelist: Only "published" or "active"
     const isPublished = (resolvedStatus === "published") || (resolvedStatus === "active");
 
-    // 3. Date check: Ensure event is not in the deep past
+    // 3. Filter out "test" or "junk" data
+    const title = event.title?.en || (typeof event.title === "string" ? event.title : "");
+    const isTesting = title.toLowerCase().includes("test") || title.toLowerCase().includes("junk");
+
+    // 4. Date check: Ensure event is not in the deep past
     const startTime = event.timeConfiguration?.startDateTime || event.startDate || 0;
     // Give 48h grace for timezones/same-day displays
     const isNotPast = startTime > Date.now() - (48 * 60 * 60 * 1000);
 
-    return isPublished && isNotPast;
+    return isPublished && isNotPast && !isTesting;
 }

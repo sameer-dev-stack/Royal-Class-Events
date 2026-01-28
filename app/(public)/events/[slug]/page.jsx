@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import BookingModal from "@/components/booking/booking-modal";
+import EventMap from "@/components/event/event-map";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import useAuthStore from "@/hooks/use-auth-store";
@@ -196,6 +197,24 @@ export default function EventDetailPage() {
               </p>
             </div>
           </div>
+
+          {/* Event Map Section */}
+          {event.locationConfig?.coordinates && (
+            <section className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/20">
+                  <MapPin className="w-5 h-5 text-[#D4AF37]" />
+                </div>
+                <h2 className="text-3xl font-bold tracking-tight">Experience <span className="text-gradient-gold">Venue</span></h2>
+              </div>
+              <EventMap
+                coordinates={[event.locationConfig.coordinates.lng, event.locationConfig.coordinates.lat]}
+                venueName={event.locationConfiguration?.venueName}
+                address={event.locationConfiguration?.address}
+                className="h-[300px] w-full"
+              />
+            </section>
+          )}
         </div>
 
         {/* Sidebar / CTA */}

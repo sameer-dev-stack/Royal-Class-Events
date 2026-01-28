@@ -1014,3 +1014,627 @@ Import traces:
 [02:54:29.990] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632011285}
 [02:54:36.645] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/marketplace color: rgb(120, 120, 120) color: inherit {"dp":"/marketplace","o":"http://localhost:3000/marketplace","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632017892}
 [02:54:42.653] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"attribution":{"eventTarget":"#radix-_r_1_","eventType":"pointerdown"},"href":"http://localhost:3000/marketplace?category=Venue","id":"v3-1769630420437-4700303655096","route":"/marketplace","type":"INP","value":112}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:01:01.861] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[03:01:01.862] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[03:01:07.590] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632408886}
+[03:01:16.472] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/marketplace color: rgb(120, 120, 120) color: inherit {"dp":"/marketplace","o":"http://localhost:3000/marketplace","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632417604}
+[03:01:16.472] Browser WARN    Image with src "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:01:16.472] Browser WARN    Image with src "https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:01:16.472] Browser WARN    Image with src "https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:01:16.472] Browser WARN    Image with src "https://images.unsplash.com/photo-1555952517-2e8e729e0b44?w=800&q=80" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:01:16.472] Browser WARN    Image with src "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&q=80" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:01:16.472] Browser WARN    Image with src "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=800&q=80" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:01:16.472] Browser WARN    Image with src "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:01:16.669] Browser WARN    Image with src "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?q=80&w=2098&auto=format&fit=crop" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:01:25.160] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/contact color: rgb(120, 120, 120) color: inherit {"dp":"/contact","o":"http://localhost:3000/contact","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632426446}
+[03:01:33.460] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632434764}
+[03:01:34.419] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/marketplace color: rgb(120, 120, 120) color: inherit {"dp":"/marketplace","o":"http://localhost:3000/marketplace","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632435668}
+[03:01:35.182] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/contact color: rgb(120, 120, 120) color: inherit {"dp":"/contact","o":"http://localhost:3000/contact","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632436478}
+[03:01:36.322] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/about color: rgb(120, 120, 120) color: inherit {"dp":"/about","o":"http://localhost:3000/about","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632437629}
+[03:01:46.754] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632448053}
+[03:01:51.761] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/marketplace color: rgb(120, 120, 120) color: inherit {"dp":"/marketplace","o":"http://localhost:3000/marketplace","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632453020}
+[03:01:55.597] Server  LOG     ✓ Finished filesystem cache database compaction in 11.8s
+[03:02:05.437] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632466736}
+[03:02:11.215] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/explore color: rgb(120, 120, 120) color: inherit {"dp":"/explore","o":"http://localhost:3000/explore","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632472517}
+[03:02:11.824] Browser WARN    Image with src "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:02:16.065] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/events/testing-1769626396992 color: rgb(120, 120, 120) color: inherit {"dp":"/events/[slug]","o":"http://localhost:3000/events/testing-1769626396992","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632477367}
+[03:02:25.639] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"attribution":{"eventTarget":"a.inline-flex.items-center.justify-center.whitespace-nowrap.text-sm.font-medium.disabled:pointer-events-none.disabled:opacity-50.[&_svg]:pointer-events-none.[&_svg:not([class*='size-'])]:size-4.shrink-0.[&_svg]:shrink-0.outline-none.focus-visible:border-ring.focus-visible:ring-ring/50.focus-visible:ring-[3px].aria-invalid:ring-destructive/20.dark:aria-invalid:ring-destructive/40.aria-invalid:border-destructive.dark:hover:bg-accent/50.h-8.rounded-md.gap-1.5.px-3.has-[>svg]:px-2.5.transition-all.text-muted-foreground.hover:text-[#F7E08B].hover:bg-[#D4AF37]/10","eventType":"pointerdown"},"href":"http://localhost:3000/events/testing-1769626396992","id":"v3-1769631353955-2585293382507","route":"/events/[slug]","type":"INP","value":464}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:03:17.913] Server  LOG     ✓ Compiled in 474ms
+[03:03:45.514] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:03:46.554] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:03:46.554] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/events/testing-1769626396992","route":"/events/[slug]"}
+[03:03:46.554] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/events/testing-1769626396992 color: rgb(120, 120, 120) color: inherit {"dp":"/events/[slug]","o":"http://localhost:3000/events/testing-1769626396992","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632567860}
+[03:03:46.554] Browser LOG     %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:03:58.648] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"href":"http://localhost:3000/events/testing-1769626396992","id":"v3-1769632567862-7073916301846","route":"/events/[slug]","type":"FCP","value":2348},{"href":"http://localhost:3000/events/testing-1769626396992","id":"v3-1769632567862-5588374620122","route":"/events/[slug]","type":"TTFB","value":2237},{"attribution":{"eventTarget":"img.object-cover.transition-transform.duration-700.group-hover:scale-105"},"href":"http://localhost:3000/events/testing-1769626396992","id":"v3-1769632567862-8352789810348","route":"/events/[slug]","type":"LCP","value":5024},{"attribution":{"eventTarget":"div.relative.z-10>div.container.mx-auto.px-6.py-12.max-w-7xl"},"href":"http://localhost:3000/events/testing-1769626396992","id":"v3-1769632567863-8531925515006","route":"/events/[slug]","type":"CLS","value":0.1027}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:04:04.416] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/create-event color: rgb(120, 120, 120) color: inherit {"dp":"/create-event","o":"http://localhost:3000/create-event","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769632585328}
+[03:04:11.174] Browser ERROR   Geolocation error: 2 
+[03:04:18.641] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"attribution":{"eventTarget":"span.hidden.xl:inline","eventType":"pointerdown"},"href":"http://localhost:3000/create-event","id":"v3-1769632567862-2827468722561","route":"/create-event","type":"INP","value":24}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:04:28.004] Server  LOG     ✓ Finished filesystem cache database compaction in 20.8s
+[03:04:28.239] Server  LOG     ✓ Finished writing to filesystem cache in 13.7s
+[03:04:40.965] Server  LOG     ✓ Compiled in 262ms
+[03:04:50.222] Server  LOG     ✓ Compiled in 263ms
+[03:06:28.178] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[03:06:28.178] Browser WARN    Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[03:06:37.266] Browser ERROR   Upload error: {"message":"Bucket not found","name":"StorageApiError","status":400,"statusCode":"404"}
+[03:06:43.642] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"attribution":{"eventTarget":"","eventType":"click"},"href":"http://localhost:3000/create-event","id":"v3-1769632567862-2827468722561","route":"/create-event","type":"INP","value":288}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:08:12.766] Browser LOG     Form Validation Errors: {"description":{"message":"Description is required","ref":{"__reactEvents$2enjs1414eb":{},"__reactFiber$2enjs1414eb":{"_debugHookTypes":null,"_debugInfo":null,"_debugNeedsRemount":false,"_debugOwner":{"_debugHookTypes":null,"_debugInfo":null,"_debugNeedsRemount":false,"_debugOwner":"[Object]","_debugStack":{},"_debugTask":"[Object]","actualDuration":0,"actualStartTime":172652.90000000224,"alternate":"[Object]","child":"[Circular]","childLanes":0,"deletions":null,"dependencies":null,"flags":1,"index":1,"key":null,"lanes":0,"memoizedProps":"[Object]","memoizedState":null,"mode":27,"pendingProps":"[Object]","refCleanup":null,"return":"[Object]","selfBaseDuration":0,"sibling":null,"stateNode":null,"subtreeFlags":4194820,"tag":0,"treeBaseDuration":0,"updateQueue":null},"_debugStack":{},"_debugTask":{},"actualDuration":0,"actualStartTime":172652.90000000224,"alternate":{"_debugHookTypes":null,"_debugInfo":null,"_debugNeedsRemount":false,"_debugOwner":"[Object]","_debugStack":{},"_debugTask":"[Object]","actualDuration":0,"actualStartTime":174181.5,"alternate":"[Circular]","child":null,"childLanes":0,"deletions":null,"dependencies":null,"elementType":"textarea","flags":4194820,"index":0,"key":null,"lanes":0,"memoizedProps":"[Object]","memoizedState":null,"mode":27,"pendingProps":"[Object]","return":"[Object]","selfBaseDuration":0,"sibling":null,"stateNode":"[Circular]","subtreeFlags":0,"tag":5,"treeBaseDuration":0,"type":"textarea","updateQueue":null},"child":null,"childLanes":0,"deletions":null,"dependencies":null,"elementType":"textarea","flags":4194820,"index":0,"key":null,"lanes":0,"memoizedProps":{"className":"focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm bg-background border-input text-foreground placeholder:text-muted-foreground resize-none","data-slot":"textarea","name":"description","placeholder":"Details...","rows":4},"memoizedState":null,"mode":27,"pendingProps":{"className":"focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm bg-background border-input text-foreground placeholder:text-muted-foreground resize-none","data-slot":"textarea","name":"description","placeholder":"Details...","rows":4},"return":{"_debugHookTypes":null,"_debugInfo":null,"_debugNeedsRemount":false,"_debugOwner":"[Object]","_debugStack":{},"_debugTask":"[Object]","actualDuration":0,"actualStartTime":172652.90000000224,"alternate":"[Object]","child":"[Circular]","childLanes":0,"deletions":null,"dependencies":null,"flags":1,"index":1,"key":null,"lanes":0,"memoizedProps":"[Object]","memoizedState":null,"mode":27,"pendingProps":"[Object]","refCleanup":null,"return":"[Object]","selfBaseDuration":0,"sibling":null,"stateNode":null,"subtreeFlags":4194820,"tag":0,"treeBaseDuration":0,"updateQueue":null},"selfBaseDuration":0,"sibling":null,"stateNode":"[Circular]","subtreeFlags":0,"tag":5,"treeBaseDuration":0,"type":"textarea","updateQueue":null},"__reactProps$2enjs1414eb":{"className":"focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm bg-background border-input text-foreground placeholder:text-muted-foreground resize-none","data-slot":"textarea","name":"description","placeholder":"Details...","rows":4},"_valueTracker":{},"value":""},"type":"too_small"}}
+[03:09:54.615] Server  LOG     ✓ Compiled in 375ms
+[03:09:55.638] Browser WARN    GoTrueClient@sb-mlwwuglsuoufaggiqolu-auth-token:1 (2.91.1) 2026-01-28T20:42:16.058Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.
+[03:09:55.638] Browser WARN    GoTrueClient@sb-mlwwuglsuoufaggiqolu-auth-token:2 (2.91.1) 2026-01-28T20:42:16.070Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.
+[03:10:05.808] Server  LOG     ✓ Compiled in 273ms
+[03:10:06.652] Browser WARN    GoTrueClient@sb-mlwwuglsuoufaggiqolu-auth-token:3 (2.91.1) 2026-01-28T20:42:27.217Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.
+[03:10:06.652] Browser WARN    GoTrueClient@sb-mlwwuglsuoufaggiqolu-auth-token:4 (2.91.1) 2026-01-28T20:42:27.221Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.
+[03:11:19.501] Server  ERROR   Gemini Primary Model Error, attempting fallback: Error: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [403 Forbidden] Your API key was reported as leaked. Please use another API key.
+[03:11:19.803] Server  ERROR   AI Analysis Error: Error: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+[03:11:19.804] Server  LOG     Using DEV_FALLBACK for AI analysis due to error: "[GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods."
+[03:11:34.666] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633035960}
+[03:11:42.424] Browser ERROR   Update Seating Error: {}
+[03:11:51.646] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"attribution":{"eventTarget":"","eventType":"click"},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769632567862-2827468722561","route":"/my-events/[eventId]","type":"INP","value":272}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:12:00.390] Server  LOG     ✓ Finished filesystem cache database compaction in 15.1s
+[03:12:54.102] Server  LOG     ✓ Compiled in 310ms
+[03:13:03.250] Browser LOG     received query results totaling 0.01MB which took more than 20s to arrive (89171ms)
+[03:13:09.003] Server  LOG     ✓ Compiled in 331ms
+[03:14:37.655] Server  LOG     ✓ Compiled in 578ms
+[03:14:48.922] Server  LOG     ✓ Compiled in 342ms
+[03:17:55.382] Server  LOG     ✓ Compiled in 325ms
+[03:18:44.699] Server  LOG     ✓ Compiled in 334ms
+[03:20:41.399] Server  LOG     ✓ Compiled in 390ms
+[03:21:59.438] Server  LOG     ✓ Compiled in 308ms
+[03:22:14.053] Server  LOG     ✓ Compiled in 228ms
+[03:22:22.086] Server  LOG     ✓ Compiled in 427ms
+[03:22:58.127] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/create-event color: rgb(120, 120, 120) color: inherit {"dp":"/create-event","o":"http://localhost:3000/create-event","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633718959}
+[03:23:19.699] Server  LOG     ✓ Compiled in 263ms
+[03:23:27.517] Server  LOG     ✓ Compiled in 279ms
+[03:23:27.620] Browser ERROR   ./app/(main)/my-events/_components/attendee-card.jsx:97:2
+Parsing ecmascript source code failed
+  95 |     </Card>
+  96 |   );
+> 97 | }
+     |  ^
+  98 |
+
+Expected ',', got '<eof>'
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/_components/attendee-card.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/_components/attendee-card.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:23:28.643] Browser ERROR   ./app/(main)/my-events/_components/attendee-card.jsx:97:2
+Parsing ecmascript source code failed
+  95 |     </Card>
+  96 |   );
+> 97 | }
+     |  ^
+  98 |
+
+Expected ',', got '<eof>'
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/_components/attendee-card.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/_components/attendee-card.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:23:32.305] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633753611}
+[03:23:32.630] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ EventDashboardPage 1. useContext                 useContext
+2. useContext                 useContext
+3. useCallback                useCallback
+4. useCallback                useCallback
+5. useSyncExternalStore       useSyncExternalStore
+6. useDebugValue              useDebugValue
+7. useState                   useState
+8. useState                   useState
+9. useState                   useState
+10. useCallback               useCallback
+11. useCallback               useCallback
+12. useSyncExternalStore      useSyncExternalStore
+13. useDebugValue             useDebugValue
+14. useState                  useState
+15. useState                  useState
+16. useState                  useState
+17. useMemo                   useMemo
+18. useContext                useContext
+19. useMemo                   useMemo
+20. useState                  useState
+21. useEffect                 useEffect
+22. useMemo                   useMemo
+23. useState                  useState
+24. useEffect                 useEffect
+25. useMemo                   useMemo
+26. useContext                useContext
+27. useMemo                   useMemo
+28. useState                  useState
+29. useEffect                 useEffect
+30. useMemo                   useMemo
+31. useState                  useState
+32. useEffect                 useEffect
+33. useContext                useContext
+34. useMemo                   useMemo
+35. useContext                useContext
+36. useMemo                   useMemo
+37. useContext                useContext
+38. useMemo                   useMemo
+39. undefined                 useMemo
+
+[03:23:32.630] Browser ERROR   uncaughtError: Error: Rendered more hooks than during the previous render.
+[03:23:33.815] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[03:23:35.566] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633755256}
+[03:23:35.566] Browser ERROR   uncaughtError: Error: Rendered more hooks than during the previous render.
+[03:23:35.936] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:23:37.180] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:23:37.180] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","route":"/my-events/[eventId]"}
+[03:23:37.180] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633758491}
+[03:23:37.180] Browser LOG     %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:23:38.459] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ EventDashboardPage 1. useContext                 useContext
+2. useContext                 useContext
+3. useCallback                useCallback
+4. useCallback                useCallback
+5. useSyncExternalStore       useSyncExternalStore
+6. useDebugValue              useDebugValue
+7. useState                   useState
+8. useState                   useState
+9. useState                   useState
+10. useCallback               useCallback
+11. useCallback               useCallback
+12. useSyncExternalStore      useSyncExternalStore
+13. useDebugValue             useDebugValue
+14. useState                  useState
+15. useState                  useState
+16. useState                  useState
+17. useMemo                   useMemo
+18. useContext                useContext
+19. useMemo                   useMemo
+20. useState                  useState
+21. useEffect                 useEffect
+22. useMemo                   useMemo
+23. useState                  useState
+24. useEffect                 useEffect
+25. useMemo                   useMemo
+26. useContext                useContext
+27. useMemo                   useMemo
+28. useState                  useState
+29. useEffect                 useEffect
+30. useMemo                   useMemo
+31. useState                  useState
+32. useEffect                 useEffect
+33. useContext                useContext
+34. useMemo                   useMemo
+35. useContext                useContext
+36. useMemo                   useMemo
+37. useContext                useContext
+38. useMemo                   useMemo
+39. undefined                 useMemo
+
+[03:23:38.459] Browser ERROR   uncaughtError: Error: Rendered more hooks than during the previous render.
+[03:23:41.638] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633758494-3845608848825","route":"/my-events/[eventId]","type":"FCP","value":1948},{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633758494-4664454454900","route":"/my-events/[eventId]","type":"TTFB","value":1770},{"attribution":{"eventTarget":""},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633758494-5582602256316","route":"/my-events/[eventId]","type":"LCP","value":4604},{"attribution":{},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633758495-9497015780770","route":"/my-events/[eventId]","type":"CLS","value":0}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:23:58.642] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"attribution":{"eventTarget":"#__next_error__>body>script>nextjs-portal","eventType":"click"},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633758494-2264950094707","route":"/my-events/[eventId]","type":"INP","value":48}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:24:18.703] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[03:24:18.727] Server  LOG     ✓ Compiled in 249ms
+[03:24:21.277] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:24:22.554] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:24:22.554] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","route":"/my-events/[eventId]"}
+[03:24:22.554] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633803866}
+[03:24:22.554] Browser LOG     %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:24:23.846] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ EventDashboardPage 1. useContext                 useContext
+2. useContext                 useContext
+3. useCallback                useCallback
+4. useCallback                useCallback
+5. useSyncExternalStore       useSyncExternalStore
+6. useDebugValue              useDebugValue
+7. useState                   useState
+8. useState                   useState
+9. useState                   useState
+10. useCallback               useCallback
+11. useCallback               useCallback
+12. useSyncExternalStore      useSyncExternalStore
+13. useDebugValue             useDebugValue
+14. useState                  useState
+15. useState                  useState
+16. useState                  useState
+17. useMemo                   useMemo
+18. useContext                useContext
+19. useMemo                   useMemo
+20. useState                  useState
+21. useEffect                 useEffect
+22. useMemo                   useMemo
+23. useState                  useState
+24. useEffect                 useEffect
+25. useMemo                   useMemo
+26. useContext                useContext
+27. useMemo                   useMemo
+28. useState                  useState
+29. useEffect                 useEffect
+30. useMemo                   useMemo
+31. useState                  useState
+32. useEffect                 useEffect
+33. useContext                useContext
+34. useMemo                   useMemo
+35. useContext                useContext
+36. useMemo                   useMemo
+37. useContext                useContext
+38. useMemo                   useMemo
+39. undefined                 useMemo
+
+[03:24:23.846] Browser ERROR   uncaughtError: Error: Rendered more hooks than during the previous render.
+[03:24:27.647] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633803867-5326271853399","route":"/my-events/[eventId]","type":"FCP","value":2448},{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633803867-2514157970512","route":"/my-events/[eventId]","type":"TTFB","value":2333},{"attribution":{"eventTarget":""},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633803867-4260577617658","route":"/my-events/[eventId]","type":"LCP","value":5072},{"attribution":{},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633803869-9471584503610","route":"/my-events/[eventId]","type":"CLS","value":0}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:24:37.295] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:24:38.473] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:24:38.473] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","route":"/my-events/[eventId]"}
+[03:24:38.473] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633819787}
+[03:24:38.473] Browser LOG     %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:24:39.812] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ EventDashboardPage 1. useContext                 useContext
+2. useContext                 useContext
+3. useCallback                useCallback
+4. useCallback                useCallback
+5. useSyncExternalStore       useSyncExternalStore
+6. useDebugValue              useDebugValue
+7. useState                   useState
+8. useState                   useState
+9. useState                   useState
+10. useCallback               useCallback
+11. useCallback               useCallback
+12. useSyncExternalStore      useSyncExternalStore
+13. useDebugValue             useDebugValue
+14. useState                  useState
+15. useState                  useState
+16. useState                  useState
+17. useMemo                   useMemo
+18. useContext                useContext
+19. useMemo                   useMemo
+20. useState                  useState
+21. useEffect                 useEffect
+22. useMemo                   useMemo
+23. useState                  useState
+24. useEffect                 useEffect
+25. useMemo                   useMemo
+26. useContext                useContext
+27. useMemo                   useMemo
+28. useState                  useState
+29. useEffect                 useEffect
+30. useMemo                   useMemo
+31. useState                  useState
+32. useEffect                 useEffect
+33. useContext                useContext
+34. useMemo                   useMemo
+35. useContext                useContext
+36. useMemo                   useMemo
+37. useContext                useContext
+38. useMemo                   useMemo
+39. undefined                 useMemo
+
+[03:24:39.812] Browser ERROR   uncaughtError: Error: Rendered more hooks than during the previous render.
+[03:24:45.646] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633819788-3342252009508","route":"/my-events/[eventId]","type":"FCP","value":248},{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633819788-1793103193214","route":"/my-events/[eventId]","type":"TTFB","value":155},{"attribution":{"eventTarget":""},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633819788-4121264188448","route":"/my-events/[eventId]","type":"LCP","value":2776},{"attribution":{"eventTarget":"#__next_error__>body>script>nextjs-portal","eventType":"pointerdown"},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633819788-1025086143821","route":"/my-events/[eventId]","type":"FID","value":1.09},{"attribution":{"eventTarget":"#__next_error__>body>script>nextjs-portal","eventType":"pointerdown"},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633819788-6246690039871","route":"/my-events/[eventId]","type":"INP","value":0},{"attribution":{},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633819788-6948470293796","route":"/my-events/[eventId]","type":"CLS","value":0}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:25:15.676] Server  LOG     ✓ Compiled in 346ms
+[03:25:16.644] Browser ERROR   ./app/(main)/my-events/[eventId]/page.jsx:282:11
+Ecmascript file had an error
+  280 |   }
+  281 |
+> 282 |   const { event } = dashboardData;
+      |           ^^^^^
+  283 |
+  284 |   return (
+  285 |     <div className="min-h-screen pb-20 px-4">
+
+the name `event` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:25:16.644] Browser ERROR   ./app/(main)/my-events/[eventId]/page.jsx:282:11
+Ecmascript file had an error
+  280 |   }
+  281 |
+> 282 |   const { event } = dashboardData;
+      |           ^^^^^
+  283 |
+  284 |   return (
+  285 |     <div className="min-h-screen pb-20 px-4">
+
+the name `event` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:25:28.728] Server  LOG     ✓ Compiled in 529ms
+[03:25:29.640] Browser ERROR   ./app/(main)/my-events/[eventId]/page.jsx:282:11
+Ecmascript file had an error
+  280 |   }
+  281 |
+> 282 |   const { event } = dashboardData;
+      |           ^^^^^
+  283 |
+  284 |   // Safe Date Formatter
+  285 |   const safeFormat = (dateStr, formatStr) => {
+
+the name `event` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:25:29.641] Browser ERROR   ./app/(main)/my-events/[eventId]/page.jsx:282:11
+Ecmascript file had an error
+  280 |   }
+  281 |
+> 282 |   const { event } = dashboardData;
+      |           ^^^^^
+  283 |
+  284 |   // Safe Date Formatter
+  285 |   const safeFormat = (dateStr, formatStr) => {
+
+the name `event` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:25:59.203] Server  LOG     ✓ Compiled in 325ms
+[03:25:59.204] Server  WARN    ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[03:26:01.429] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:26:02.639] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:26:02.639] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","route":"/my-events/[eventId]"}
+[03:26:02.639] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633903926}
+[03:26:02.639] Browser LOG     %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:26:22.237] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633903928-9013727771097","route":"/my-events/[eventId]","type":"TTFB","value":1895}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:26:43.684] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]/analytics","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633944965}
+[03:26:44.003] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[03:26:44.003] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[03:26:44.003] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[03:26:44.003] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[03:26:47.769] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:26:49.089] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:26:49.089] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/%20my%20-%20events%20/%20j57313ec0ny1k2n42tv7g5z2zs803f17","route":"/%20my%20-%20events%20/%20j57313ec0ny1k2n42tv7g5z2zs803f17"}
+[03:26:49.089] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/%20my%20-%20events%20/%20j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/%20my%20-%20events%20/%20j57313ec0ny1k2n42tv7g5z2zs803f17","o":"http://localhost:3000/%20my%20-%20events%20/%20j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633950396}
+[03:26:49.089] Browser LOG     %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:26:50.814] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:26:52.483] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:26:52.483] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics","route":"/my-events/[eventId]/analytics"}
+[03:26:52.484] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]/analytics","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633953787}
+[03:26:52.484] Browser LOG     %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:26:53.588] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[03:26:53.588] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[03:26:53.588] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[03:26:53.588] Browser WARN    The width(-1) and height(-1) of chart should be greater than 0,
+       please check the style of container, or the props width(100%) and height(100%),
+       or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+       height and width.
+[03:27:06.677] Server  LOG     ✓ Finished filesystem cache database compaction in 14.6s
+[03:27:06.976] Server  LOG     ✓ Finished writing to filesystem cache in 12.4s
+[03:27:18.395] Server  LOG     ✓ Finished filesystem cache database compaction in 11.4s
+[03:27:37.024] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics","id":"v3-1769633953787-9215904441746","route":"/my-events/[eventId]/analytics","type":"FCP","value":692},{"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics","id":"v3-1769633953787-1532706754613","route":"/my-events/[eventId]/analytics","type":"TTFB","value":555},{"attribution":{"eventTarget":"div.max-w-7xl.mx-auto.space-y-8>div.flex.items-center.justify-between>div.space-y-1>p.text-white/60"},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics","id":"v3-1769633953787-3124836272716","route":"/my-events/[eventId]/analytics","type":"LCP","value":3604},{"attribution":{"eventTarget":"html.dark>body.outfit_21940f47-module__B-V10W__className.bg-background.text-foreground.antialiased","eventType":"pointerdown"},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17/analytics","id":"v3-1769633953787-2616759726088","route":"/my-events/[eventId]/analytics","type":"FID","value":6}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:27:37.230] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769633998538}
+[03:27:46.588] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/events/school-event-1769633036420/edit color: rgb(120, 120, 120) color: inherit {"dp":"/events/[slug]/edit","o":"http://localhost:3000/events/school-event-1769633036420/edit","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634007891}
+[03:27:47.312] Browser WARN    Select is changing from uncontrolled to controlled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.
+[03:27:47.312] Browser WARN    Select is changing from uncontrolled to controlled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.
+[03:27:47.312] Browser WARN    Select is changing from uncontrolled to controlled. Components should not switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncontrolled value for the lifetime of the component.
+[03:27:47.312] Browser WARN    Image with src "https://mlwwuglsuoufaggiqolu.supabase.co/storage/v1/object/public/event-covers/sicbs4g4vna-1769633001926.png" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:27:57.892] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634019185}
+[03:28:01.774] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/events/school-event-1769633036420 color: rgb(120, 120, 120) color: inherit {"dp":"/events/[slug]","o":"http://localhost:3000/events/school-event-1769633036420","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634023085}
+[03:28:10.792] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634032096}
+[03:28:12.652] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"attribution":{"eventTarget":"","eventType":"click"},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633953787-3537273830361","route":"/my-events/[eventId]","type":"INP","value":264},{"attribution":{"eventTarget":"main.relative.min-h-screen.container.mx-auto.pt-24.md:pt-32.pb-12>div.relative.z-10"},"href":"http://localhost:3000/my-events/j57313ec0ny1k2n42tv7g5z2zs803f17","id":"v3-1769633953788-4364807709358","route":"/my-events/[eventId]","type":"CLS","value":0.1394}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:28:20.056] Browser ERROR   ./app/(main)/my-events/_components/attendee-card.jsx:97:2
+Parsing ecmascript source code failed
+  95 |     </Card>
+  96 |   );
+> 97 | }
+     |  ^
+  98 |
+
+Expected ',', got '<eof>'
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/_components/attendee-card.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/_components/attendee-card.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:28:20.056] Browser ERROR   ./app/(main)/my-events/[eventId]/page.jsx:282:11
+Ecmascript file had an error
+  280 |   }
+  281 |
+> 282 |   const { event } = dashboardData;
+      |           ^^^^^
+  283 |
+  284 |   return (
+  285 |     <div className="min-h-screen pb-20 px-4">
+
+the name `event` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:28:20.056] Browser ERROR   ./app/(main)/my-events/[eventId]/page.jsx:282:11
+Ecmascript file had an error
+  280 |   }
+  281 |
+> 282 |   const { event } = dashboardData;
+      |           ^^^^^
+  283 |
+  284 |   // Safe Date Formatter
+  285 |   const safeFormat = (dateStr, formatStr) => {
+
+the name `event` is defined multiple times
+
+Import traces:
+  Client Component Browser:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component Browser]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+
+  Client Component SSR:
+    ./app/(main)/my-events/[eventId]/page.jsx [Client Component SSR]
+    ./app/(main)/my-events/[eventId]/page.jsx [Server Component]
+[03:28:26.567] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events color: rgb(120, 120, 120) color: inherit {"dp":"/my-events","o":"http://localhost:3000/my-events","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634047870}
+[03:28:27.009] Browser WARN    Image with src "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:28:36.928] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/school-event-1769633036420 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/school-event-1769633036420","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634058230}
+[03:28:37.533] Browser ERROR   uncaughtError: Error: [CONVEX Q(registrations:getEventRegistrations)] [Request ID: 10277cf52874dff0] Server Error
+ArgumentValidationError: Value does not match validator.
+Path: .eventId
+Value: "school-event-1769633036420"
+Validator: v.id("events")
+
+
+  Called by client
+[03:29:12.296] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[03:29:13.682] Browser LOG     %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:29:13.682] Browser LOG     %c[Vercel Web Analytics]%c Running queued event color: rgb(120, 120, 120) color: inherit pageview {"path":"/my-events/school-event-1769633036420","route":"/my-events/[eventId]"}
+[03:29:13.682] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/my-events/school-event-1769633036420 color: rgb(120, 120, 120) color: inherit {"dp":"/my-events/[eventId]","o":"http://localhost:3000/my-events/school-event-1769633036420","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634094985}
+[03:29:13.682] Browser LOG     %c[Vercel Speed Insights]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit
+[03:29:17.652] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"href":"http://localhost:3000/my-events/school-event-1769633036420","id":"v3-1769634094991-5927129433047","route":"/my-events/[eventId]","type":"FCP","value":316},{"href":"http://localhost:3000/my-events/school-event-1769633036420","id":"v3-1769634094992-9081164235546","route":"/my-events/[eventId]","type":"TTFB","value":149},{"attribution":{"eventTarget":"div.max-w-7xl.mx-auto>div.relative.h-[350px].rounded-2xl.overflow-hidden.mb-6>img.object-cover"},"href":"http://localhost:3000/my-events/school-event-1769633036420","id":"v3-1769634094991-2815209865769","route":"/my-events/[eventId]","type":"LCP","value":3176},{"attribution":{"eventTarget":"main.relative.min-h-screen.container.mx-auto.pt-24.md:pt-32.pb-12>div.relative.z-10"},"href":"http://localhost:3000/my-events/school-event-1769633036420","id":"v3-1769634094992-2327022202461","route":"/my-events/[eventId]","type":"CLS","value":0.1208}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:30:05.172] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634146465}
+[03:30:07.504] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/explore color: rgb(120, 120, 120) color: inherit {"dp":"/explore","o":"http://localhost:3000/explore","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634148810}
+[03:30:08.043] Browser WARN    Image with src "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:30:12.644] Browser LOG     %c[Vercel Speed Insights]%c [vitals] color: rgb(120, 120, 120) color: inherit {"metrics":[{"attribution":{"eventTarget":"span.text-xl.font-bold.tracking-tighter.text-foreground","eventType":"pointerdown"},"href":"http://localhost:3000/explore","id":"v3-1769634094991-6318426899036","route":"/explore","type":"INP","value":40}],"scriptVersion":"0.1.3","sdkName":"@vercel/speed-insights/next","sdkVersion":"1.3.1","speed":"4g"}
+[03:33:48.763] Server  LOG     ✓ Compiled in 1585ms
+[03:33:49.649] Browser ERROR   ./components/event-card.jsx:170:3
+Parsing ecmascript source code failed
+  168 |   );
+  169 | }
+> 170 |   );
+      |   ^
+  171 | }
+  172 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/event-card.jsx [Client Component Browser]
+    ./components/event-list.jsx [Client Component Browser]
+    ./app/page.js [Client Component Browser]
+    ./app/page.js [Server Component]
+
+  Client Component SSR:
+    ./components/event-card.jsx [Client Component SSR]
+    ./components/event-list.jsx [Client Component SSR]
+    ./app/page.js [Client Component SSR]
+    ./app/page.js [Server Component]
+[03:33:49.649] Browser ERROR   ./components/event-card.jsx:170:3
+Parsing ecmascript source code failed
+  168 |   );
+  169 | }
+> 170 |   );
+      |   ^
+  171 | }
+  172 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/event-card.jsx [Client Component Browser]
+    ./components/event-list.jsx [Client Component Browser]
+    ./app/page.js [Client Component Browser]
+    ./app/page.js [Server Component]
+
+  Client Component SSR:
+    ./components/event-card.jsx [Client Component SSR]
+    ./components/event-list.jsx [Client Component SSR]
+    ./app/page.js [Client Component SSR]
+    ./app/page.js [Server Component]
+[03:33:49.649] Browser ERROR   ./components/event-card.jsx:170:3
+Parsing ecmascript source code failed
+  168 |   );
+  169 | }
+> 170 |   );
+      |   ^
+  171 | }
+  172 |
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./components/event-card.jsx [Client Component Browser]
+    ./components/event-list.jsx [Client Component Browser]
+    ./app/page.js [Client Component Browser]
+    ./app/page.js [Server Component]
+
+  Client Component SSR:
+    ./components/event-card.jsx [Client Component SSR]
+    ./components/event-list.jsx [Client Component SSR]
+    ./app/page.js [Client Component SSR]
+    ./app/page.js [Server Component]
+[03:34:05.769] Server  LOG     ✓ Compiled in 6.3s
+[03:34:08.363] Server  LOG     ✓ Finished filesystem cache database compaction in 17.0s
+[03:35:36.208] Server  LOG     ✓ Finished filesystem cache database compaction in 15.1s
+[03:38:47.364] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/about color: rgb(120, 120, 120) color: inherit {"dp":"/about","o":"http://localhost:3000/about","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634668652}
+[03:38:47.537] Browser WARN    Image with src "/hero_image.jpeg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[03:38:48.694] Browser LOG     %c[Vercel Web Analytics]%c [pageview] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {"dp":"/","o":"http://localhost:3000/","sdkn":"@vercel/analytics/next","sdkv":"1.6.1","sv":"0.1.3","ts":1769634669996}
